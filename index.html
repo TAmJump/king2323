@@ -1,0 +1,2158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>KINGMAKER 23:23 — To be chosen, you must choose.</title>
+<meta name="description" content="A global ritual support platform. 100 yen. 100 Coin. Every Friday 23:23, the Bell opens. Every Monday 23:23, the world has chosen." />
+<link rel="icon" type="image/png" href="assets/logo-128.png" />
+<link rel="apple-touch-icon" href="assets/logo-256.png" />
+<link rel="stylesheet" href="css/main.css" />
+<style>
+
+/* ============== HERO ============== */
+.hero {
+  min-height: 100vh;
+  padding: 120px var(--pad) 80px;
+  display: grid;
+  grid-template-columns: 1.05fr 1fr;
+  align-items: center;
+  gap: 80px;
+  border-bottom: var(--rule);
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '23:23';
+  position: absolute;
+  bottom: -120px;
+  right: -40px;
+  font-family: var(--f-display);
+  font-size: clamp(280px, 45vw, 640px);
+  font-weight: 900;
+  color: rgba(212, 175, 55, 0.025);
+  letter-spacing: -0.02em;
+  pointer-events: none;
+  line-height: 0.8;
+}
+
+.hero-left { position: relative; z-index: 2; }
+.hero-eyebrow { margin-bottom: 32px; }
+.hero h1 {
+  font-size: clamp(48px, 7.6vw, 110px);
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  line-height: 0.95;
+  margin-bottom: 32px;
+  color: var(--bone);
+}
+.hero h1 .gold {
+  background: linear-gradient(180deg, var(--gold-bright), var(--gold) 50%, var(--gold-deep));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-style: italic;
+  font-family: var(--f-editorial);
+  font-weight: 500;
+}
+.hero h1 .small {
+  display: block;
+  font-family: var(--f-editorial);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 0.45em;
+  color: var(--ash);
+  margin-top: 12px;
+  letter-spacing: 0;
+}
+.hero-tag {
+  font-family: var(--f-editorial);
+  font-style: italic;
+  font-size: clamp(18px, 1.6vw, 22px);
+  color: var(--bone);
+  margin-bottom: 16px;
+  letter-spacing: 0.01em;
+}
+.hero-tag-jp {
+  font-family: var(--f-jp);
+  font-size: 14px;
+  color: var(--dust);
+  margin-bottom: 48px;
+  letter-spacing: 0.18em;
+}
+.hero-cta { display: flex; gap: 16px; flex-wrap: wrap; }
+
+/* Hero right: gorilla + countdown */
+.hero-right {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+  z-index: 2;
+}
+.gorilla-frame {
+  position: relative;
+  width: clamp(280px, 36vw, 420px);
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.gorilla-frame::before {
+  content: '';
+  position: absolute;
+  inset: -8px;
+  border: 1px solid var(--gold);
+  opacity: 0.18;
+  border-radius: 50%;
+  pointer-events: none;
+}
+.gorilla-frame::after {
+  content: '';
+  position: absolute;
+  inset: -32px;
+  border: 1px solid var(--gold);
+  opacity: 0.08;
+  border-radius: 50%;
+  animation: slowBreathe 4s ease-in-out infinite;
+  pointer-events: none;
+}
+.gorilla-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 0 60px rgba(212, 175, 55, 0.35));
+  position: relative;
+  z-index: 2;
+}
+
+.crown-arc {
+  position: absolute;
+  width: 110%;
+  height: 110%;
+  top: -5%; left: -5%;
+}
+
+.countdown {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+.countdown-label {
+  font-family: var(--f-display);
+  font-size: 10px;
+  letter-spacing: 0.42em;
+  color: var(--ash);
+  text-transform: uppercase;
+}
+.countdown-time {
+  display: flex;
+  align-items: baseline;
+  gap: 18px;
+  font-family: var(--f-display);
+  font-weight: 700;
+  font-size: clamp(36px, 5vw, 56px);
+  color: var(--gold);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.06em;
+}
+.countdown-unit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.countdown-unit .num {
+  background: linear-gradient(180deg, var(--gold-bright), var(--gold) 50%, var(--gold-deep));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 0 30px rgba(212, 175, 55, 0.3);
+}
+.countdown-unit .lab {
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: var(--dust);
+  text-transform: uppercase;
+  font-weight: 400;
+}
+.countdown-time .colon { color: var(--gold-deep); }
+
+.countdown-target {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  color: var(--dust);
+  letter-spacing: 0.16em;
+  margin-top: 4px;
+}
+
+@media (max-width: 900px) {
+  .hero {
+    grid-template-columns: 1fr;
+    padding-top: 100px;
+    text-align: center;
+  }
+  .hero-cta { justify-content: center; }
+  .hero-eyebrow::before { display: inline-block; }
+}
+
+/* ============== TICKER ============== */
+.ticker {
+  border-top: var(--rule);
+  border-bottom: var(--rule);
+  background: var(--ink);
+  padding: 16px 0;
+  overflow: hidden;
+  position: relative;
+}
+.ticker-track {
+  display: flex;
+  gap: 64px;
+  white-space: nowrap;
+  animation: ticker 60s linear infinite;
+  font-family: var(--f-display);
+  font-size: 12px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+}
+.ticker-track span { color: var(--gold); }
+.ticker-track .dim { color: var(--ash); }
+.ticker-track .sep { color: var(--gold-deep); }
+@keyframes ticker {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+/* ============== BELL RITUAL ============== */
+.bell-ritual {
+  background: linear-gradient(180deg, var(--black), var(--ink) 50%, var(--black));
+  text-align: center;
+}
+.bell-grid {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 0;
+  align-items: center;
+  margin-top: 64px;
+  border: var(--rule-bright);
+  background: rgba(0,0,0,0.4);
+}
+.bell-side {
+  padding: 56px 40px;
+  text-align: center;
+}
+.bell-divider {
+  width: 1px;
+  height: 70%;
+  background: linear-gradient(180deg, transparent, var(--gold), transparent);
+}
+.bell-day {
+  font-family: var(--f-display);
+  font-size: 11px;
+  letter-spacing: 0.42em;
+  color: var(--ash);
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+.bell-time {
+  font-family: var(--f-display);
+  font-size: clamp(48px, 7vw, 88px);
+  font-weight: 800;
+  color: var(--gold);
+  letter-spacing: 0.04em;
+  line-height: 1;
+  margin-bottom: 24px;
+}
+.bell-msg {
+  font-family: var(--f-editorial);
+  font-style: italic;
+  font-size: clamp(16px, 1.6vw, 22px);
+  color: var(--bone);
+}
+.bell-msg-sub {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  color: var(--dust);
+  letter-spacing: 0.18em;
+  margin-top: 12px;
+}
+@media (max-width: 800px) {
+  .bell-grid { grid-template-columns: 1fr; }
+  .bell-divider { width: 70%; height: 1px; background: linear-gradient(90deg, transparent, var(--gold), transparent); }
+}
+
+/* ============== HOW IT WORKS ============== */
+.how-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  border: var(--rule-bright);
+}
+.how-step {
+  padding: 56px 40px;
+  position: relative;
+  border-right: var(--rule-bright);
+}
+.how-step:last-child { border-right: none; }
+.how-num {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  color: var(--gold-deep);
+  letter-spacing: 0.2em;
+  margin-bottom: 24px;
+}
+.how-amount {
+  font-family: var(--f-display);
+  font-size: clamp(32px, 4vw, 48px);
+  font-weight: 700;
+  color: var(--gold);
+  margin-bottom: 16px;
+  line-height: 1;
+}
+.how-amount .unit {
+  font-size: 0.5em;
+  color: var(--ash);
+  font-family: var(--f-editorial);
+  font-style: italic;
+  font-weight: 400;
+  margin-left: 8px;
+}
+.how-title {
+  font-family: var(--f-display);
+  font-size: 14px;
+  letter-spacing: 0.24em;
+  color: var(--bone);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+.how-desc {
+  font-family: var(--f-editorial);
+  font-style: italic;
+  font-size: 15px;
+  color: var(--ash);
+  line-height: 1.6;
+}
+@media (max-width: 800px) {
+  .how-grid { grid-template-columns: 1fr; }
+  .how-step { border-right: none; border-bottom: var(--rule-bright); }
+  .how-step:last-child { border-bottom: none; }
+}
+
+/* ============== LAWS ============== */
+.laws { background: var(--black); }
+.laws-list {
+  max-width: 920px;
+  margin: 64px auto 0;
+  display: flex;
+  flex-direction: column;
+}
+.law-row {
+  display: grid;
+  grid-template-columns: 80px 1fr auto;
+  align-items: center;
+  gap: 32px;
+  padding: 36px 8px;
+  border-bottom: var(--rule);
+  position: relative;
+  transition: padding 0.4s;
+}
+.law-row:last-child { border-bottom: none; }
+.law-row::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 1px;
+  background: var(--gold);
+  transition: width 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.law-row:hover::before { width: 32px; }
+.law-row:hover { padding-left: 56px; }
+.law-num {
+  font-family: var(--f-display);
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--gold);
+  letter-spacing: 0.32em;
+}
+.law-text {
+  font-family: var(--f-editorial);
+  font-size: clamp(20px, 2.2vw, 30px);
+  font-weight: 500;
+  color: var(--bone);
+  letter-spacing: 0.005em;
+}
+.law-text em {
+  font-style: italic;
+  color: var(--gold);
+}
+.law-mark {
+  font-family: var(--f-mono);
+  font-size: 10px;
+  color: var(--dust);
+  letter-spacing: 0.18em;
+}
+@media (max-width: 700px) {
+  .law-row { grid-template-columns: 60px 1fr; gap: 16px; padding: 28px 0; }
+  .law-mark { display: none; }
+}
+
+/* ============== THE THREE PREVIEW ============== */
+.three-preview {
+  background: linear-gradient(180deg, var(--black), var(--ink-2));
+}
+.three-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+.three-card {
+  padding: 40px 32px;
+  position: relative;
+  background: linear-gradient(180deg, rgba(20, 16, 10, 0.95), rgba(10, 8, 5, 0.98));
+  border: 1px solid var(--line);
+  transition: border-color 0.4s, transform 0.4s;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  min-height: 360px;
+}
+.three-card:hover {
+  border-color: var(--gold);
+  transform: translateY(-4px);
+}
+.three-card .corner { position: absolute; width: 12px; height: 12px; }
+.three-card .corner.tl { top: -1px; left: -1px; border-top: 1px solid var(--gold); border-left: 1px solid var(--gold); }
+.three-card .corner.tr { top: -1px; right: -1px; border-top: 1px solid var(--gold); border-right: 1px solid var(--gold); }
+.three-card .corner.bl { bottom: -1px; left: -1px; border-bottom: 1px solid var(--gold); border-left: 1px solid var(--gold); }
+.three-card .corner.br { bottom: -1px; right: -1px; border-bottom: 1px solid var(--gold); border-right: 1px solid var(--gold); }
+
+.three-tag {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--f-mono);
+  font-size: 10px;
+  color: var(--dust);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+.three-tag .letter {
+  color: var(--gold);
+  font-family: var(--f-display);
+  font-size: 14px;
+  font-weight: 700;
+}
+.three-nick {
+  font-family: var(--f-display);
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--bone);
+  letter-spacing: 0.04em;
+}
+.three-meta {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  color: var(--ash);
+  letter-spacing: 0.14em;
+  display: flex;
+  gap: 12px;
+}
+.three-meta .sep { color: var(--gold-deep); }
+.three-mission {
+  font-family: var(--f-editorial);
+  font-style: italic;
+  font-size: 19px;
+  color: var(--bone);
+  line-height: 1.4;
+  flex-grow: 1;
+}
+.three-use {
+  font-family: var(--f-body);
+  font-size: 13px;
+  color: var(--ash);
+  border-top: var(--rule);
+  padding-top: 12px;
+}
+.three-use .lab {
+  font-family: var(--f-mono);
+  font-size: 9px;
+  color: var(--gold);
+  letter-spacing: 0.24em;
+  display: block;
+  margin-bottom: 4px;
+}
+.three-line {
+  font-family: var(--f-editorial);
+  font-style: italic;
+  font-size: 13px;
+  color: var(--dust);
+  border-left: 2px solid var(--gold-deep);
+  padding-left: 12px;
+}
+@media (max-width: 800px) {
+  .three-grid { grid-template-columns: 1fr; }
+}
+
+/* ============== STORIES ============== */
+.stories { background: var(--black); }
+.stories-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+}
+.story {
+  padding: 32px;
+  border: 1px solid var(--line);
+  background: rgba(10, 8, 5, 0.6);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  position: relative;
+  transition: border-color 0.4s;
+}
+.story:hover { border-color: var(--gold-deep); }
+.story-week {
+  font-family: var(--f-mono);
+  font-size: 10px;
+  color: var(--gold-deep);
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}
+.story-king {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  font-family: var(--f-display);
+  font-weight: 700;
+}
+.story-king .crown {
+  font-size: 14px;
+  color: var(--gold);
+  letter-spacing: 0.32em;
+}
+.story-king .name {
+  font-size: 24px;
+  color: var(--bone);
+  letter-spacing: 0.04em;
+}
+.story-mission {
+  font-family: var(--f-editorial);
+  font-style: italic;
+  font-size: 17px;
+  color: var(--ash);
+  line-height: 1.5;
+}
+.story-grant {
+  display: flex;
+  justify-content: space-between;
+  border-top: var(--rule);
+  padding-top: 14px;
+  font-family: var(--f-mono);
+  font-size: 11px;
+  color: var(--ash);
+  letter-spacing: 0.14em;
+}
+.story-grant .amount { color: var(--gold); }
+@media (max-width: 700px) { .stories-grid { grid-template-columns: 1fr; } }
+
+/* ============== VERIFY ============== */
+.verify {
+  background: linear-gradient(180deg, var(--ink-2), var(--black));
+}
+.verify-panel {
+  max-width: 980px;
+  margin: 0 auto;
+  border: var(--rule-bright);
+  background: rgba(0,0,0,0.5);
+  padding: 48px;
+  position: relative;
+}
+.verify-panel::before, .verify-panel::after {
+  content: '';
+  position: absolute;
+  width: 24px; height: 24px;
+}
+.verify-panel::before {
+  top: -1px; left: -1px;
+  border-top: 2px solid var(--gold);
+  border-left: 2px solid var(--gold);
+}
+.verify-panel::after {
+  bottom: -1px; right: -1px;
+  border-bottom: 2px solid var(--gold);
+  border-right: 2px solid var(--gold);
+}
+.verify-quote {
+  font-family: var(--f-editorial);
+  font-style: italic;
+  font-size: clamp(20px, 2.4vw, 30px);
+  color: var(--bone);
+  text-align: center;
+  margin-bottom: 32px;
+  letter-spacing: 0.005em;
+}
+.verify-quote::before, .verify-quote::after {
+  content: '"';
+  color: var(--gold);
+  font-size: 1.4em;
+  font-family: var(--f-display);
+  vertical-align: -0.15em;
+  margin: 0 4px;
+}
+.verify-data {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  border-top: var(--rule);
+  padding-top: 32px;
+}
+.verify-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.verify-row .lab {
+  font-family: var(--f-mono);
+  font-size: 10px;
+  color: var(--gold);
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}
+.verify-row .val {
+  font-family: var(--f-mono);
+  font-size: 14px;
+  color: var(--bone);
+  letter-spacing: 0.06em;
+  word-break: break-all;
+}
+.verify-row .val.hash {
+  font-size: 11px;
+  color: var(--ash);
+}
+@media (max-width: 700px) { .verify-data { grid-template-columns: 1fr; } }
+
+/* ============== PROHIBITED / RULES STRIP ============== */
+.never {
+  background: var(--black);
+  padding: 80px var(--pad);
+  text-align: center;
+}
+.never-eyebrow {
+  font-family: var(--f-display);
+  font-size: 11px;
+  letter-spacing: 0.42em;
+  color: var(--crimson);
+  text-transform: uppercase;
+  margin-bottom: 32px;
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+}
+.never-eyebrow::before, .never-eyebrow::after {
+  content: ''; width: 28px; height: 1px; background: var(--crimson);
+}
+.never-grid {
+  max-width: 960px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+}
+.never-cell {
+  background: var(--black);
+  padding: 24px 12px;
+  font-family: var(--f-display);
+  font-size: 12px;
+  letter-spacing: 0.22em;
+  color: var(--ash);
+  text-transform: uppercase;
+  position: relative;
+  text-decoration: line-through;
+  text-decoration-color: var(--crimson);
+  text-decoration-thickness: 2px;
+}
+.never-cell.major { color: var(--bone); }
+@media (max-width: 700px) { .never-grid { grid-template-columns: repeat(2, 1fr); } }
+
+/* ============== FINAL CTA ============== */
+.final-cta {
+  background: var(--black);
+  text-align: center;
+  padding: 140px var(--pad);
+  position: relative;
+}
+.final-cta::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, rgba(212, 175, 55, 0.06), transparent 70%);
+  pointer-events: none;
+}
+.final-cta .question {
+  font-family: var(--f-editorial);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(36px, 5vw, 64px);
+  color: var(--bone);
+  margin-bottom: 16px;
+  position: relative;
+}
+.final-cta .question .gold {
+  background: linear-gradient(180deg, var(--gold-bright), var(--gold) 50%, var(--gold-deep));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.final-cta .answer {
+  font-family: var(--f-display);
+  font-size: 14px;
+  letter-spacing: 0.42em;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin-bottom: 56px;
+  position: relative;
+}
+.final-cta .actions {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+  position: relative;
+}
+
+/* ============== WHY 23:23 (THE EDGE) ============== */
+.why-edge {
+  padding: 140px var(--pad) 140px;
+  border-bottom: var(--rule);
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse 60% 50% at 50% 50%, rgba(212, 175, 55, 0.05), transparent 70%),
+    var(--black);
+}
+.why-edge .container { max-width: 1100px; margin: 0 auto; position: relative; z-index: 2; }
+.why-edge::before {
+  content: '23:23';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: var(--f-display);
+  font-size: clamp(220px, 32vw, 480px);
+  font-weight: 900;
+  color: rgba(212, 175, 55, 0.025);
+  letter-spacing: -0.02em;
+  pointer-events: none;
+  line-height: 0.8;
+  z-index: 1;
+}
+.edge-mark {
+  text-align: center;
+  margin-bottom: 56px;
+}
+.edge-time {
+  display: inline-block;
+  font-family: var(--f-display);
+  font-size: clamp(60px, 8vw, 120px);
+  font-weight: 900;
+  background: linear-gradient(180deg, var(--gold-bright), var(--gold) 50%, var(--gold-deep));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  letter-spacing: 0.04em;
+}
+.edge-colon {
+  animation: pulse-colon 2.3s ease-in-out infinite;
+}
+@keyframes pulse-colon {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+.edge-headline {
+  font-family: var(--f-display);
+  font-size: clamp(32px, 4.5vw, 64px);
+  font-weight: 600;
+  line-height: 1.18;
+  text-align: center;
+  margin-bottom: 24px;
+  color: var(--bone);
+  letter-spacing: 0.005em;
+}
+.gold-italic {
+  font-family: var(--f-editorial);
+  font-style: italic;
+  font-weight: 500;
+  background: linear-gradient(180deg, var(--gold-bright), var(--gold) 50%, var(--gold-deep));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.edge-headline-jp {
+  font-family: var(--f-jp);
+  font-size: clamp(13px, 1.3vw, 16px);
+  letter-spacing: 0.22em;
+  color: var(--ash);
+  text-align: center;
+  margin-bottom: 80px;
+  font-weight: 500;
+}
+.edge-grid {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 48px;
+  align-items: center;
+  max-width: 880px;
+  margin: 0 auto 64px;
+}
+.edge-num {
+  font-family: var(--f-display);
+  font-size: clamp(80px, 9vw, 140px);
+  font-weight: 800;
+  color: var(--gold);
+  line-height: 0.9;
+  margin-bottom: 16px;
+  text-align: center;
+  text-shadow: 0 0 60px rgba(212, 175, 55, 0.25);
+}
+.edge-text {
+  font-family: var(--f-editorial);
+  font-style: italic;
+  font-size: 18px;
+  color: var(--ash);
+  text-align: center;
+  line-height: 1.55;
+  max-width: 320px;
+  margin: 0 auto;
+}
+.edge-divider {
+  font-family: var(--f-display);
+  font-size: clamp(80px, 8vw, 120px);
+  color: var(--gold-deep);
+  font-weight: 900;
+  line-height: 0.8;
+  opacity: 0.6;
+}
+.edge-foot {
+  text-align: center;
+  font-family: var(--f-mono);
+  font-size: 12px;
+  color: var(--dust);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  margin-top: 24px;
+}
+.edge-foot .gold { color: var(--gold); font-weight: 700; }
+
+/* ============== TIER OUTCOMES (KING / CROWN / LEGEND) ============== */
+.tier-section {
+  padding: 120px var(--pad);
+  border-bottom: var(--rule);
+  background: linear-gradient(180deg, var(--ink) 0%, var(--black) 100%);
+}
+.tier-section .container { max-width: 1280px; margin: 0 auto; }
+.tier-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 1fr;
+  gap: 24px;
+  margin-top: 64px;
+}
+.tier-card {
+  background: var(--ink);
+  border: var(--rule);
+  padding: 40px 32px;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.4s ease, border-color 0.4s ease;
+}
+.tier-card:hover { transform: translateY(-4px); border-color: rgba(212, 175, 55, 0.4); }
+.tier-card.king {
+  background: linear-gradient(180deg, rgba(212, 175, 55, 0.06), var(--ink));
+  border-color: rgba(212, 175, 55, 0.5);
+}
+.tier-card.king::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+.tier-rank {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  color: var(--dust);
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+.tier-rank.first { color: var(--gold); }
+.tier-name {
+  font-family: var(--f-display);
+  font-size: 44px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  margin-bottom: 8px;
+  color: var(--bone);
+}
+.tier-name.king-name {
+  background: linear-gradient(180deg, var(--gold-bright), var(--gold) 50%, var(--gold-deep));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.tier-jp {
+  font-family: var(--f-jp);
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  color: var(--dust);
+  margin-bottom: 24px;
+}
+.tier-prize {
+  font-family: var(--f-editorial);
+  font-style: italic;
+  font-size: 17px;
+  line-height: 1.5;
+  color: var(--bone);
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--line);
+}
+.tier-detail {
+  font-size: 13px;
+  line-height: 1.65;
+  color: var(--ash);
+  margin-bottom: 12px;
+}
+.tier-mark {
+  font-family: var(--f-mono);
+  font-size: 9px;
+  letter-spacing: 0.3em;
+  color: var(--dust);
+  text-transform: uppercase;
+  position: absolute;
+  bottom: 24px;
+  right: 32px;
+}
+
+/* ============== ROYAL DUTY ============== */
+.duty-section {
+  padding: 140px var(--pad);
+  border-bottom: var(--rule);
+  position: relative;
+  overflow: hidden;
+}
+.duty-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 70% 50% at 50% 50%, rgba(212, 175, 55, 0.07), transparent 70%);
+  pointer-events: none;
+}
+.duty-section .container {
+  max-width: 980px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+  text-align: center;
+}
+.duty-quote {
+  font-family: var(--f-display);
+  font-size: clamp(32px, 4.5vw, 60px);
+  font-weight: 600;
+  line-height: 1.2;
+  margin: 48px 0 16px;
+  color: var(--bone);
+}
+.duty-quote em {
+  font-family: var(--f-editorial);
+  font-style: italic;
+  font-weight: 500;
+  background: linear-gradient(180deg, var(--gold-bright), var(--gold) 50%, var(--gold-deep));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.duty-jp {
+  font-family: var(--f-jp);
+  font-size: 14px;
+  letter-spacing: 0.22em;
+  color: var(--ash);
+  margin-bottom: 64px;
+}
+.duty-flow {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr auto 1fr;
+  gap: 24px;
+  align-items: center;
+  margin: 64px 0;
+}
+.duty-step {
+  border: var(--rule);
+  background: var(--ink);
+  padding: 32px 24px;
+  text-align: center;
+}
+.duty-step-mark {
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+.duty-step-num {
+  font-family: var(--f-display);
+  font-size: 56px;
+  font-weight: 800;
+  color: var(--bone);
+  line-height: 1;
+  margin-bottom: 8px;
+}
+.duty-step-num em {
+  font-family: var(--f-editorial);
+  font-style: italic;
+  font-weight: 500;
+  background: linear-gradient(180deg, var(--gold-bright), var(--gold-deep));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.duty-step-text {
+  font-size: 13px;
+  color: var(--ash);
+  line-height: 1.55;
+  margin-top: 12px;
+}
+.duty-arrow {
+  font-family: var(--f-display);
+  font-size: 28px;
+  color: var(--gold);
+  font-weight: 300;
+}
+.duty-foot {
+  font-family: var(--f-editorial);
+  font-style: italic;
+  font-size: 18px;
+  color: var(--ash);
+  margin-top: 32px;
+  max-width: 680px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ============== MONEY LOGIC SUMMARY ============== */
+.money-summary {
+  padding: 140px var(--pad);
+  border-bottom: var(--rule);
+  background: var(--ink);
+}
+.money-summary .container { max-width: 1180px; margin: 0 auto; }
+.money-statement {
+  font-family: var(--f-display);
+  font-size: clamp(28px, 3.6vw, 48px);
+  font-weight: 600;
+  line-height: 1.3;
+  text-align: center;
+  margin: 48px auto 16px;
+  max-width: 880px;
+  color: var(--bone);
+}
+.money-statement em {
+  font-family: var(--f-editorial);
+  font-style: italic;
+  font-weight: 500;
+  background: linear-gradient(180deg, var(--gold-bright), var(--gold) 50%, var(--gold-deep));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.money-statement-jp {
+  font-family: var(--f-jp);
+  font-size: 13px;
+  letter-spacing: 0.2em;
+  text-align: center;
+  color: var(--dust);
+  margin-bottom: 64px;
+}
+.money-flow {
+  display: grid;
+  grid-template-columns: 1fr auto 2fr;
+  gap: 32px;
+  align-items: center;
+  margin-bottom: 56px;
+  background: var(--black);
+  border: var(--rule);
+  padding: 48px 40px;
+}
+.money-source {
+  text-align: center;
+  padding: 32px 24px;
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  background: linear-gradient(180deg, rgba(212, 175, 55, 0.04), transparent);
+}
+.money-source-num {
+  font-family: var(--f-display);
+  font-size: 48px;
+  font-weight: 800;
+  background: linear-gradient(180deg, var(--gold-bright), var(--gold-deep));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+.money-source-lab {
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  color: var(--ash);
+  text-transform: uppercase;
+}
+.money-arrow {
+  font-family: var(--f-display);
+  font-size: 36px;
+  color: var(--gold);
+  text-align: center;
+}
+.money-split {
+  display: grid;
+  grid-template-columns: 60fr 40fr;
+  gap: 12px;
+}
+.money-split-cell {
+  padding: 24px 20px;
+  text-align: center;
+  border: 1px solid var(--line);
+}
+.money-split-cell.grant {
+  background: linear-gradient(180deg, rgba(212, 175, 55, 0.1), rgba(212, 175, 55, 0.02));
+  border-color: rgba(212, 175, 55, 0.4);
+}
+.money-split-cell.revenue { background: var(--ink-2); }
+.money-split-pct {
+  font-family: var(--f-display);
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--bone);
+  margin-bottom: 6px;
+}
+.money-split-cell.grant .money-split-pct {
+  background: linear-gradient(180deg, var(--gold-bright), var(--gold-deep));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.money-split-name {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--ash);
+  margin-bottom: 4px;
+}
+.money-split-detail {
+  font-size: 11px;
+  color: var(--dust);
+}
+.money-cta {
+  text-align: center;
+  margin-top: 48px;
+}
+
+/* ============== EDGE RULES ============== */
+.edge-rules {
+  padding: 140px var(--pad);
+  border-bottom: var(--rule);
+}
+.edge-rules .container { max-width: 1280px; margin: 0 auto; }
+.rules-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--line);
+  border: var(--rule);
+  margin-top: 64px;
+}
+.rule-card {
+  background: var(--ink);
+  padding: 32px 28px;
+  position: relative;
+  transition: background 0.3s ease;
+}
+.rule-card:hover { background: var(--ink-2); }
+.rule-num {
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+.rule-q {
+  font-family: var(--f-editorial);
+  font-style: italic;
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--bone);
+  margin-bottom: 14px;
+  line-height: 1.35;
+}
+.rule-q-jp {
+  font-family: var(--f-jp);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  color: var(--dust);
+  margin-bottom: 16px;
+}
+.rule-a {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--ash);
+}
+.rule-a strong {
+  color: var(--gold);
+  font-weight: 600;
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 4px;
+}
+
+/* ============== MANIFESTO ============== */
+.manifesto {
+  padding: 160px var(--pad);
+  border-bottom: var(--rule);
+  position: relative;
+  overflow: hidden;
+  background: var(--black);
+}
+.manifesto::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 20% 30%, rgba(212, 175, 55, 0.08), transparent 40%),
+    radial-gradient(circle at 80% 70%, rgba(212, 175, 55, 0.05), transparent 40%);
+  pointer-events: none;
+}
+.manifesto .container {
+  max-width: 1080px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+}
+.manifesto-statement {
+  font-family: var(--f-display);
+  font-size: clamp(40px, 6vw, 86px);
+  font-weight: 700;
+  line-height: 1.1;
+  text-align: center;
+  margin-bottom: 32px;
+  letter-spacing: 0.01em;
+}
+.manifesto-statement .l1 { display: block; color: var(--bone); }
+.manifesto-statement .l2 {
+  display: block;
+  font-family: var(--f-editorial);
+  font-style: italic;
+  font-weight: 500;
+  background: linear-gradient(180deg, var(--gold-bright), var(--gold) 50%, var(--gold-deep));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  margin-top: 8px;
+}
+.manifesto-jp {
+  font-family: var(--f-jp);
+  font-size: clamp(13px, 1.5vw, 18px);
+  letter-spacing: 0.22em;
+  text-align: center;
+  color: var(--ash);
+  margin-bottom: 96px;
+  line-height: 1.9;
+}
+.purpose-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1px;
+  background: var(--line);
+  border: var(--rule);
+}
+.purpose-cell {
+  background: var(--ink);
+  padding: 40px 32px;
+  position: relative;
+}
+.purpose-num {
+  font-family: var(--f-display);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--gold);
+  letter-spacing: 0.3em;
+  margin-bottom: 16px;
+}
+.purpose-title {
+  font-family: var(--f-editorial);
+  font-style: italic;
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 1.3;
+  color: var(--bone);
+  margin-bottom: 12px;
+}
+.purpose-jp {
+  font-family: var(--f-jp);
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  color: var(--dust);
+  margin-bottom: 16px;
+}
+.purpose-text {
+  font-size: 13px;
+  line-height: 1.65;
+  color: var(--ash);
+}
+
+/* ============== UTILITY ============== */
+.center { text-align: center; }
+.eyebrow.center {
+  display: inline-block;
+  margin: 0 auto 24px;
+  text-align: center;
+  width: fit-content;
+}
+
+/* ============== RESPONSIVE ============== */
+@media (max-width: 900px) {
+  .tier-grid { grid-template-columns: 1fr; }
+  .duty-flow { grid-template-columns: 1fr; gap: 20px; }
+  .duty-arrow { transform: rotate(90deg); }
+  .money-flow { grid-template-columns: 1fr; }
+  .money-arrow { transform: rotate(90deg); }
+  .rules-grid { grid-template-columns: 1fr; }
+  .purpose-grid { grid-template-columns: 1fr; }
+  .edge-grid { grid-template-columns: 1fr; gap: 24px; }
+  .edge-divider { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- ============== NAV ============== -->
+<nav class="nav">
+  <a href="#top" class="nav-brand">
+    <img src="assets/logo-128.png" alt="" />
+    <span>KINGMAKER</span>
+    <span class="glyph">23:23</span>
+  </a>
+  <ul class="nav-menu">
+    <li><a href="#why">23:23</a></li>
+    <li><a href="#bell">Bell</a></li>
+    <li><a href="money.html">Money</a></li>
+    <li><a href="#three">The Three</a></li>
+    <li><a href="#duty">Royal Duty</a></li>
+    <li><a href="#laws">Doctrine</a></li>
+    <li><a href="#stories">Stories</a></li>
+  </ul>
+  <div class="nav-cta">
+    <a href="#apply" class="btn btn-primary" style="padding: 12px 22px; font-size: 11px;">Begin</a>
+  </div>
+</nav>
+
+<!-- ============== HERO ============== -->
+<header class="hero" id="top">
+  <div class="hero-left">
+    <div class="eyebrow hero-eyebrow fade-up">Global Ritual Support Platform · v1.0</div>
+    <h1 class="fade-up d1">
+      Not everyone can be<br/>
+      <span class="gold">king</span>.<br/>
+      But everyone can<br/>make <span class="gold">one</span>.
+      <span class="small">— this week, only this week —</span>
+    </h1>
+    <p class="hero-tag fade-up d2">To be chosen, you must choose.</p>
+    <p class="hero-tag-jp fade-up d2">誰もが王になれるわけじゃない。でも、誰かを王にすることはできる。</p>
+    <div class="hero-cta fade-up d3">
+      <a href="#apply" class="btn btn-primary">Take 100 Coin · ¥100</a>
+      <a href="#why" class="btn btn-ghost">Why 23:23?</a>
+    </div>
+  </div>
+
+  <div class="hero-right fade-up d2">
+    <div class="gorilla-frame">
+      <img src="assets/logo-512.png" alt="King Gorilla" />
+    </div>
+    <div class="countdown" id="countdown">
+      <div class="countdown-label">— The Bell opens in —</div>
+      <div class="countdown-time tabular">
+        <div class="countdown-unit"><span class="num" id="cd-d">02</span><span class="lab">Days</span></div>
+        <span class="colon">·</span>
+        <div class="countdown-unit"><span class="num" id="cd-h">14</span><span class="lab">Hrs</span></div>
+        <span class="colon">·</span>
+        <div class="countdown-unit"><span class="num" id="cd-m">37</span><span class="lab">Min</span></div>
+        <span class="colon">·</span>
+        <div class="countdown-unit"><span class="num" id="cd-s">52</span><span class="lab">Sec</span></div>
+      </div>
+      <div class="countdown-target" id="cd-target">Friday · 23:23 · Tokyo</div>
+    </div>
+  </div>
+</header>
+
+<!-- ============== TICKER ============== -->
+<div class="ticker" aria-hidden="true">
+  <div class="ticker-track">
+    <span>The Bell is open.</span><span class="sep">✦</span>
+    <span class="dim">Friday 23:23 — Monday 23:23 (JST)</span><span class="sep">✦</span>
+    <span>Choose before being chosen.</span><span class="sep">✦</span>
+    <span class="dim">Coin is a voice. Never cash.</span><span class="sep">✦</span>
+    <span>Never choose yourself.</span><span class="sep">✦</span>
+    <span class="dim">The King makes the next King.</span><span class="sep">✦</span>
+    <span>One Coin. One Vote.</span><span class="sep">✦</span>
+    <span class="dim">Grant Fund: 60% of every yen.</span><span class="sep">✦</span>
+    <span>The Bell is open.</span><span class="sep">✦</span>
+    <span class="dim">Friday 23:23 — Monday 23:23 (JST)</span><span class="sep">✦</span>
+    <span>Choose before being chosen.</span><span class="sep">✦</span>
+    <span class="dim">Coin is a voice. Never cash.</span><span class="sep">✦</span>
+    <span>Never choose yourself.</span><span class="sep">✦</span>
+    <span class="dim">The King makes the next King.</span><span class="sep">✦</span>
+    <span>One Coin. One Vote.</span><span class="sep">✦</span>
+    <span class="dim">Grant Fund: 60% of every yen.</span><span class="sep">✦</span>
+  </div>
+</div>
+
+<!-- ============== WHY 23:23 (THE EDGE) ============== -->
+<section id="why" class="why-edge">
+  <div class="container">
+    <div class="edge-mark" aria-hidden="true">
+      <span class="edge-time">23:23</span>
+    </div>
+    <div class="edge-body">
+      <div class="eyebrow center">Chapter 0 · The Hour</div>
+      <h2 class="edge-headline">
+        23:23 is the edge<br/>
+        between <span class="gold-italic">who you were</span><br/>
+        and <span class="gold-italic">who you become</span>.
+      </h2>
+      <p class="edge-headline-jp">23:23は、昨日の自分と、王になる自分の境界。</p>
+      <div class="edge-grid">
+        <div>
+          <div class="edge-num">23</div>
+          <p class="edge-text">The last hour of the day. The world is almost asleep. Almost over. <em>Almost</em>.</p>
+        </div>
+        <div>
+          <div class="edge-divider" aria-hidden="true">:</div>
+        </div>
+        <div>
+          <div class="edge-num">23</div>
+          <p class="edge-text">The minute before midnight closes. The minute we choose, before tomorrow chooses us.</p>
+        </div>
+      </div>
+      <p class="edge-foot">No other hour. No other minute. <span class="gold">23:23, JST</span> — the world's pulse, twice a week.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============== BELL RITUAL ============== -->
+<section id="bell" class="bell-ritual">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow">Chapter I · The Ritual</div>
+      <h2>Two Bells.<br/>One Week.</h2>
+      <p class="lede">The world stops, twice. At the first bell, choosing begins. At the second, the world has chosen. There is no in-between.</p>
+    </div>
+
+    <div class="bell-grid">
+      <div class="bell-side">
+        <div class="bell-day">Friday</div>
+        <div class="bell-time">23:23</div>
+        <div class="bell-msg">The Bell is open.</div>
+        <div class="bell-msg-sub">5 minutes. Three names. One choice.</div>
+      </div>
+      <div class="bell-divider"></div>
+      <div class="bell-side">
+        <div class="bell-day">Monday</div>
+        <div class="bell-time">23:23</div>
+        <div class="bell-msg">The world has chosen.</div>
+        <div class="bell-msg-sub">One King. Two Crowns. The rest, next week.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== HOW IT WORKS ============== -->
+<section id="how" class="how">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow">Chapter II · The Coin</div>
+      <h2>One hundred yen.<br/>For the rest of your life.</h2>
+      <p class="lede">No subscription. No tier. No upsell. You pay once. You hold one hundred Coin. Each week, you spend ten on someone else. Forever.</p>
+    </div>
+
+    <div class="how-grid">
+      <div class="how-step">
+        <div class="how-num">— Step 01 —</div>
+        <div class="how-amount">¥100<span class="unit">once</span></div>
+        <div class="how-title">Take the Coin</div>
+        <div class="how-desc">A single, lifetime entry. You are now part of the Ritual.</div>
+      </div>
+      <div class="how-step">
+        <div class="how-num">— Step 02 —</div>
+        <div class="how-amount">100<span class="unit">Coin</span></div>
+        <div class="how-title">Hold the Wallet</div>
+        <div class="how-desc">Your Coin cannot be sold, traded, or refunded. They are votes, not money.</div>
+      </div>
+      <div class="how-step">
+        <div class="how-num">— Step 03 —</div>
+        <div class="how-amount">10<span class="unit">/ week</span></div>
+        <div class="how-title">Spend on Another</div>
+        <div class="how-desc">Every Friday at 23:23, give 10 Coin to one person. Never yourself. Miss a week, lose a chance.</div>
+      </div>
+    </div>
+
+    <div class="ornament">
+      <div class="line"></div>
+      <span class="dot">✦</span>
+      <div class="line"></div>
+    </div>
+
+    <p class="center" style="font-family: var(--f-editorial); font-style: italic; font-size: 18px; color: var(--ash); max-width: 640px; margin: 0 auto;">
+      This is not a lottery. Not an investment. Not a wager. <br/>
+      <span style="color: var(--gold);">It is a ritual of mutual elevation.</span>
+    </p>
+  </div>
+</section>
+
+<!-- ============== MONEY LOGIC SUMMARY ============== -->
+<section id="money" class="money-summary">
+  <div class="container">
+    <div class="eyebrow center">Chapter II·b · The Money</div>
+    <h2 class="money-statement">
+      Your Coin does not become cash.<br/>
+      Your Coin becomes <em>a voice</em>.<br/>
+      Voices create Kings.
+    </h2>
+    <p class="money-statement-jp">Coinはお金にならない。Coinは"声"になる。声がKingを生む。</p>
+
+    <div class="money-flow">
+      <div class="money-source">
+        <div class="money-source-num">¥100</div>
+        <div class="money-source-lab">— One member · One pass —</div>
+      </div>
+      <div class="money-arrow">→</div>
+      <div class="money-split">
+        <div class="money-split-cell grant">
+          <div class="money-split-pct">60%</div>
+          <div class="money-split-name">Grant Fund</div>
+          <div class="money-split-detail">¥60 · Escrow · public pool</div>
+        </div>
+        <div class="money-split-cell revenue">
+          <div class="money-split-pct">40%</div>
+          <div class="money-split-name">Revenue</div>
+          <div class="money-split-detail">¥40 · Operations</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--line); border: var(--rule);">
+      <div style="background: var(--ink); padding: 28px 20px; text-align: center;">
+        <div style="font-family: var(--f-mono); font-size: 10px; color: var(--gold); letter-spacing: 0.25em; margin-bottom: 8px;">— BRONZE —</div>
+        <div style="font-family: var(--f-display); font-size: 22px; font-weight: 700; color: var(--bone); margin-bottom: 6px;">10,000 Coin</div>
+        <div style="font-family: var(--f-mono); font-size: 13px; color: var(--gold-bright);">¥100,000</div>
+      </div>
+      <div style="background: var(--ink); padding: 28px 20px; text-align: center;">
+        <div style="font-family: var(--f-mono); font-size: 10px; color: var(--gold); letter-spacing: 0.25em; margin-bottom: 8px;">— SILVER —</div>
+        <div style="font-family: var(--f-display); font-size: 22px; font-weight: 700; color: var(--bone); margin-bottom: 6px;">100,000 Coin</div>
+        <div style="font-family: var(--f-mono); font-size: 13px; color: var(--gold-bright);">¥1,000,000</div>
+      </div>
+      <div style="background: var(--ink); padding: 28px 20px; text-align: center;">
+        <div style="font-family: var(--f-mono); font-size: 10px; color: var(--gold); letter-spacing: 0.25em; margin-bottom: 8px;">— GOLD —</div>
+        <div style="font-family: var(--f-display); font-size: 22px; font-weight: 700; color: var(--bone); margin-bottom: 6px;">1,000,000 Coin</div>
+        <div style="font-family: var(--f-mono); font-size: 13px; color: var(--gold-bright);">¥10,000,000</div>
+      </div>
+      <div style="background: linear-gradient(180deg, rgba(212, 175, 55, 0.08), var(--ink)); padding: 28px 20px; text-align: center; border-left: 1px solid rgba(212, 175, 55, 0.3);">
+        <div style="font-family: var(--f-mono); font-size: 10px; color: var(--gold-bright); letter-spacing: 0.25em; margin-bottom: 8px;">— ROYAL —</div>
+        <div style="font-family: var(--f-display); font-size: 22px; font-weight: 700; color: var(--bone); margin-bottom: 6px;">10,000,000 Coin</div>
+        <div style="font-family: var(--f-mono); font-size: 13px; color: var(--gold-bright);">Manual Review</div>
+      </div>
+    </div>
+
+    <div style="margin-top: 32px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; padding: 32px 0; border-top: var(--rule); border-bottom: var(--rule);">
+      <div>
+        <div style="font-family: var(--f-mono); font-size: 10px; color: var(--gold); letter-spacing: 0.25em; margin-bottom: 8px; text-transform: uppercase;">Grant Pool Cap</div>
+        <p style="font-size: 13px; color: var(--ash); line-height: 1.6;">If the cycle's Fund is short of the Tier amount, the Grant equals the public Pool Cap. Never more. Never less. Visible in real time at <a href="money.html#fund" style="color: var(--gold); text-decoration: underline;">/fund</a>.</p>
+      </div>
+      <div>
+        <div style="font-family: var(--f-mono); font-size: 10px; color: var(--gold); letter-spacing: 0.25em; margin-bottom: 8px; text-transform: uppercase;">Coin · Forever</div>
+        <p style="font-size: 13px; color: var(--ash); line-height: 1.6;">Coin never expires. Once bought, your voice persists — even if you only ever buy ¥100. The platform protects the smallest voice.</p>
+      </div>
+      <div>
+        <div style="font-family: var(--f-mono); font-size: 10px; color: var(--gold); letter-spacing: 0.25em; margin-bottom: 8px; text-transform: uppercase;">Escrow · Separated</div>
+        <p style="font-size: 13px; color: var(--ash); line-height: 1.6;">Grant Fund sits in a dedicated escrow, legally distinct from the Revenue account. Operator insolvency does not touch the Fund.</p>
+      </div>
+    </div>
+
+    <div class="money-cta">
+      <a href="money.html" class="btn btn-primary">Read Money Logic v1.0 in full</a>
+      <a href="money.html#fund" class="btn btn-ghost">Open /fund (live transparency)</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============== LAWS ============== -->
+<section id="laws" class="laws">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow">Chapter III · The Five Laws</div>
+      <h2>Doctrine.</h2>
+      <p class="lede">These five laws govern every Coin, every voter, every King. They are not rules. They are the spine.</p>
+    </div>
+
+    <div class="laws-list">
+      <div class="law-row">
+        <div class="law-num">I.</div>
+        <div class="law-text">Choose before being <em>chosen</em>.</div>
+        <div class="law-mark">L · 01</div>
+      </div>
+      <div class="law-row">
+        <div class="law-num">II.</div>
+        <div class="law-text">Never choose <em>yourself</em>.</div>
+        <div class="law-mark">L · 02</div>
+      </div>
+      <div class="law-row">
+        <div class="law-num">III.</div>
+        <div class="law-text">Miss one week, <em>lose one chance</em>.</div>
+        <div class="law-mark">L · 03</div>
+      </div>
+      <div class="law-row">
+        <div class="law-num">IV.</div>
+        <div class="law-text">Every Coin <em>changes a life</em>.</div>
+        <div class="law-mark">L · 04</div>
+      </div>
+      <div class="law-row">
+        <div class="law-num">V.</div>
+        <div class="law-text">The King serves <em>the next King</em>.</div>
+        <div class="law-mark">L · 05</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== THE THREE ============== -->
+<section id="three" class="three-preview">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow">Chapter IV · The Three</div>
+      <h2>Only three names <br/>cross the world.</h2>
+      <p class="lede">From every applicant, a public-data seed selects three. KINGMAKER cannot interfere. The seed is verifiable. The three appear at 23:23. Then disappear.</p>
+    </div>
+
+    <div class="chip" style="display: flex; margin: 0 auto 32px; width: fit-content;">
+      <span class="live-dot"></span>
+      <span>Cycle 47 · Preview</span>
+    </div>
+
+    <div class="three-grid">
+      <article class="three-card">
+        <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+        <div class="three-tag">
+          <span class="letter">A</span>
+          <span>The First</span>
+        </div>
+        <div class="three-nick">Ash23</div>
+        <div class="three-meta"><span>Japan</span><span class="sep">·</span><span>42</span></div>
+        <div class="three-mission">Open my first café — a quiet room where night-shift nurses can drink something hot, free.</div>
+        <div class="three-use">
+          <span class="lab">— Use —</span>
+          One commercial espresso machine.
+        </div>
+        <div class="three-line">"I failed twice. Not this time."</div>
+      </article>
+
+      <article class="three-card">
+        <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+        <div class="three-tag">
+          <span class="letter">B</span>
+          <span>The Second</span>
+        </div>
+        <div class="three-nick">Selva</div>
+        <div class="three-meta"><span>Brazil</span><span class="sep">·</span><span>29</span></div>
+        <div class="three-mission">Replant 1,000 native trees in the gully behind my mother's house, before the rains.</div>
+        <div class="three-use">
+          <span class="lab">— Use —</span>
+          Saplings, irrigation, three months of work.
+        </div>
+        <div class="three-line">"My grandfather taught me each one. He's gone now."</div>
+      </article>
+
+      <article class="three-card">
+        <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+        <div class="three-tag">
+          <span class="letter">C</span>
+          <span>The Third</span>
+        </div>
+        <div class="three-nick">Marek_K</div>
+        <div class="three-meta"><span>Poland</span><span class="sep">·</span><span>54</span></div>
+        <div class="three-mission">Finish my late wife's translation of an Icelandic saga — the manuscript stops mid-chapter.</div>
+        <div class="three-use">
+          <span class="lab">— Use —</span>
+          Editor, archive access, print run of 200.</div>
+        <div class="three-line">"Forty years. I owe her the last page."</div>
+      </article>
+    </div>
+
+    <div class="ornament">
+      <div class="line"></div>
+      <span class="dot">✦</span>
+      <div class="line"></div>
+    </div>
+
+    <p class="center" style="font-family: var(--f-mono); font-size: 11px; color: var(--dust); letter-spacing: 0.2em; text-transform: uppercase;">
+      Voting opens Friday · 23:23 JST · 5 minutes only
+    </p>
+  </div>
+</section>
+
+<!-- ============== TIER OUTCOMES (KING / CROWN / LEGEND) ============== -->
+<section class="tier-section">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow">Chapter IV·b · The Outcome</div>
+      <h2>Three names enter.<br/>Three are honored.</h2>
+      <p class="lede">One becomes King. The other two do not return empty-handed. Losing carries weight. That is the law.</p>
+    </div>
+
+    <div class="tier-grid">
+      <article class="tier-card king">
+        <div class="tier-rank first">— Rank · 1st —</div>
+        <div class="tier-name king-name">KING</div>
+        <div class="tier-jp">王 · 助成対象</div>
+        <div class="tier-prize">Receives a Grant from the public Fund. Up to ¥10,000,000 (Gold tier).</div>
+        <p class="tier-detail">Tiered by total Coin received. Bronze · Silver · Gold · Royal — paid from the published Grant Pool of the cycle.</p>
+        <p class="tier-detail">Bound by the Royal Duty: must distribute 10 free Coins the following week.</p>
+        <span class="tier-mark">T · 01</span>
+      </article>
+
+      <article class="tier-card">
+        <div class="tier-rank">— Rank · 2nd —</div>
+        <div class="tier-name">CROWN</div>
+        <div class="tier-jp">冠 · 翌週応募優先権</div>
+        <div class="tier-prize">Auto-applies for next cycle. The seed cannot exclude them.</div>
+        <p class="tier-detail">A second chance is not a consolation. It is the reward for being one breath from the throne.</p>
+        <p class="tier-detail">Crown holders enter the next pool with verified standing.</p>
+        <span class="tier-mark">T · 02</span>
+      </article>
+
+      <article class="tier-card">
+        <div class="tier-rank">— Rank · 3rd —</div>
+        <div class="tier-name">LEGEND</div>
+        <div class="tier-jp">伝説 · Coinボーナス</div>
+        <div class="tier-prize">Receives a Coin Bonus — 30 free Coins, gifted to spend in future cycles.</div>
+        <p class="tier-detail">Their name is permanently engraved in the Hall of Three. The story does not vanish.</p>
+        <p class="tier-detail">Coin Bonus is voice, not cash. Same as all Coin.</p>
+        <span class="tier-mark">T · 03</span>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============== ROYAL DUTY ============== -->
+<section id="duty" class="duty-section">
+  <div class="container">
+    <div class="eyebrow center">Chapter IV·c · The Soul</div>
+    <h2 class="duty-quote">
+      The King <em>makes</em><br/>the next King.
+    </h2>
+    <p class="duty-jp">王は、次の王を作る義務を負う。</p>
+
+    <div class="duty-flow">
+      <div class="duty-step">
+        <div class="duty-step-mark">— Monday 23:23 —</div>
+        <div class="duty-step-num">King</div>
+        <p class="duty-step-text">Crowned. Grant disbursed from the Fund.</p>
+      </div>
+      <div class="duty-arrow">→</div>
+      <div class="duty-step">
+        <div class="duty-step-mark">— Within 7 days —</div>
+        <div class="duty-step-num"><em>10</em></div>
+        <p class="duty-step-text">Free Coins distributed by the King — to anyone they choose.</p>
+      </div>
+      <div class="duty-arrow">→</div>
+      <div class="duty-step">
+        <div class="duty-step-mark">— Friday 23:23 —</div>
+        <div class="duty-step-num">Bell</div>
+        <p class="duty-step-text">Their voices enter the next Bell. The throne moves.</p>
+      </div>
+    </div>
+
+    <p class="duty-foot">Every King is, by law, a kingmaker. Refuse the duty, lose the title — the Grant returns to the Fund. The crown only fits those who hand it onward.</p>
+  </div>
+</section>
+
+<!-- ============== VERIFY ============== -->
+<section id="verify" class="verify">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow">Chapter V · Verify</div>
+      <h2>The Three<br/>are not chosen by us.</h2>
+      <p class="lede">Public market data, hashed and timestamped, picks the three. We cannot edit. We cannot weight. We can only watch, like you.</p>
+    </div>
+
+    <div class="verify-panel">
+      <p class="verify-quote">KINGMAKER cannot choose The Three.</p>
+
+      <div class="verify-data">
+        <div class="verify-row">
+          <span class="lab">— Cycle —</span>
+          <span class="val">Week 47 · 2026</span>
+        </div>
+        <div class="verify-row">
+          <span class="lab">— Pool —</span>
+          <span class="val">14,287</span>
+        </div>
+        <div class="verify-row">
+          <span class="lab">— Excluded —</span>
+          <span class="val">312 <span style="color: var(--dust); font-size: 0.85em;">/ KYC, ban, dup</span></span>
+        </div>
+        <div class="verify-row">
+          <span class="lab">— Seed · BTC Close —</span>
+          <span class="val">$87,402.18</span>
+        </div>
+        <div class="verify-row">
+          <span class="lab">— Seed · Nikkei —</span>
+          <span class="val">38,247.91</span>
+        </div>
+        <div class="verify-row">
+          <span class="lab">— Seed · Applicants —</span>
+          <span class="val">14,287</span>
+        </div>
+      </div>
+
+      <div style="border-top: var(--rule); margin-top: 28px; padding-top: 20px;">
+        <div class="verify-row">
+          <span class="lab">— Hash · SHA-256 —</span>
+          <span class="val hash">7a4f9c2e8b1d6a5f3e0c9b8a7d6e5f4c3b2a1908f7e6d5c4b3a2918072f6e5d4</span>
+        </div>
+      </div>
+
+      <div style="text-align: center; margin-top: 32px;">
+        <a href="#" class="btn btn-ghost" style="font-size: 10px;">Open Public Ledger</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== STORIES ============== -->
+<section id="stories" class="stories">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow">Chapter VI · Stories</div>
+      <h2>The Throne<br/>has had names.</h2>
+      <p class="lede">Every Monday at 23:23, the throne moves. These are some who have held it.</p>
+    </div>
+
+    <div class="stories-grid">
+      <article class="story">
+        <div class="story-week">— Cycle 41 · King —</div>
+        <div class="story-king">
+          <span class="crown">♛ KING</span>
+          <span class="name">Naia_R</span>
+        </div>
+        <div class="story-mission">Bought a used kiln. Opened a free pottery class for the kids in the foster home she grew up in.</div>
+        <div class="story-grant">
+          <span>Cebu · 31</span>
+          <span class="amount">¥100,000</span>
+        </div>
+      </article>
+
+      <article class="story">
+        <div class="story-week">— Cycle 38 · King —</div>
+        <div class="story-king">
+          <span class="crown">♛ KING</span>
+          <span class="name">Hokori</span>
+        </div>
+        <div class="story-mission">Finished his father's woodblock workshop after 9 years of dust. First print run sold out in three days.</div>
+        <div class="story-grant">
+          <span>Kyoto · 47</span>
+          <span class="amount">¥100,000</span>
+        </div>
+      </article>
+
+      <article class="story">
+        <div class="story-week">— Cycle 35 · King —</div>
+        <div class="story-king">
+          <span class="crown">♛ KING</span>
+          <span class="name">Lior_T</span>
+        </div>
+        <div class="story-mission">Recorded his grandmother's last 11 songs in Yiddish, in the apartment she's about to leave.</div>
+        <div class="story-grant">
+          <span>Tel Aviv · 38</span>
+          <span class="amount">¥100,000</span>
+        </div>
+      </article>
+
+      <article class="story">
+        <div class="story-week">— Cycle 32 · King —</div>
+        <div class="story-king">
+          <span class="crown">♛ KING</span>
+          <span class="name">Quiet_M</span>
+        </div>
+        <div class="story-mission">Took her father to the sea. He had not seen it in 22 years. They stayed three nights.</div>
+        <div class="story-grant">
+          <span>Lisbon · 44</span>
+          <span class="amount">¥100,000</span>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============== EDGE RULES ============== -->
+<section id="rules" class="edge-rules">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow">Chapter VI · Edge Rules</div>
+      <h2>The questions<br/>everyone asks.</h2>
+      <p class="lede">A ritual without answers cannot be law. Twelve edge cases — answered before they happen, in the open.</p>
+    </div>
+
+    <div class="rules-grid">
+      <div class="rule-card">
+        <div class="rule-num">— Q · 01 —</div>
+        <div class="rule-q">What if two candidates tie?</div>
+        <div class="rule-q-jp">同率の場合、どうする？</div>
+        <p class="rule-a"><strong>Answer · Tie Break</strong>Not first-come. Tie resolved by support rate from the country with the largest applicant pool, then re-hashed against a public seed published live. No human edit. No private dice.</p>
+      </div>
+
+      <div class="rule-card">
+        <div class="rule-num">— Q · 02 —</div>
+        <div class="rule-q">When does my Coin expire?</div>
+        <div class="rule-q-jp">Coinの期限は？</div>
+        <p class="rule-a"><strong>Answer · Permanent</strong>Coin never expires. The platform protects the smallest voice — the person who can only ever afford the first ¥100. Their voice persists.</p>
+      </div>
+
+      <div class="rule-card">
+        <div class="rule-num">— Q · 03 —</div>
+        <div class="rule-q">If I leave, what happens to my Coin?</div>
+        <div class="rule-q-jp">途中退会したら？</div>
+        <p class="rule-a"><strong>Answer · Forfeit</strong>Coin is voice, not balance. On voluntary departure, remaining Coin is extinguished. No refund, no transfer. The voice goes silent.</p>
+      </div>
+
+      <div class="rule-card">
+        <div class="rule-num">— Q · 04 —</div>
+        <div class="rule-q">If a candidate dies after applying?</div>
+        <div class="rule-q-jp">応募後の死亡は？</div>
+        <p class="rule-a"><strong>Answer · Legacy King</strong>A pre-named family member or estate executor inherits the candidacy. The Mission lives. The throne does not vanish because a body did.</p>
+      </div>
+
+      <div class="rule-card">
+        <div class="rule-num">— Q · 05 —</div>
+        <div class="rule-q">Who pays the tax on the Grant?</div>
+        <div class="rule-q-jp">国ごとの税金は？</div>
+        <p class="rule-a"><strong>Answer · King's Burden</strong>The King is responsible for self-reporting in their country of residence. Operator pays revenue tax on its 40%. International transfer fees are deducted from the Grant.</p>
+      </div>
+
+      <div class="rule-card">
+        <div class="rule-num">— Q · 06 —</div>
+        <div class="rule-q">How do you stop fake accounts?</div>
+        <div class="rule-q-jp">不正投票対策は？</div>
+        <p class="rule-a"><strong>Answer · Device Fingerprint</strong>SMS verification + cryptographic device fingerprint + behavioral signal. Same household, same office, same VPN — all flagged for re-verification before any vote counts.</p>
+      </div>
+
+      <div class="rule-card">
+        <div class="rule-num">— Q · 07 —</div>
+        <div class="rule-q">What about organized self-promotion?</div>
+        <div class="rule-q-jp">自演・組織票は？</div>
+        <p class="rule-a"><strong>Answer · Bell Cap + Anomaly Detection</strong>Per-IP cap on votes per Bell. Statistical anomaly detection on cluster patterns, geographic outliers, timing spikes. Flagged Coin is held until human audit.</p>
+      </div>
+
+      <div class="rule-card">
+        <div class="rule-num">— Q · 08 —</div>
+        <div class="rule-q">If the operator dies, what happens to the Fund?</div>
+        <div class="rule-q-jp">運営が死んだら？</div>
+        <p class="rule-a"><strong>Answer · Escrow</strong>The Grant Fund sits in a legally separated escrow account, governed by a third-party trustee. Operator death, illness, or insolvency cannot touch a single yen of it.</p>
+      </div>
+
+      <div class="rule-card">
+        <div class="rule-num">— Q · 09 —</div>
+        <div class="rule-q">What if I cannot afford even ¥100?</div>
+        <div class="rule-q-jp">100円も払えない人は？</div>
+        <p class="rule-a"><strong>Answer · Weekly Rescue Ticket</strong>One free entry per month, granted to participants with a verified four-week voting history. The ritual is for everyone, not only those who can pay.</p>
+      </div>
+
+      <div class="rule-card">
+        <div class="rule-num">— Q · 10 —</div>
+        <div class="rule-q">What if a King fakes the receipts?</div>
+        <div class="rule-q-jp">領収書偽造は？</div>
+        <p class="rule-a"><strong>Answer · AI OCR + Human Audit</strong>All receipts are scanned by OCR for tampering, cross-referenced with vendor records, then reviewed by a human auditor. False reporting forfeits the Grant and bans the participant for life.</p>
+      </div>
+
+      <div class="rule-card">
+        <div class="rule-num">— Q · 11 —</div>
+        <div class="rule-q">If the King declines the Grant?</div>
+        <div class="rule-q-jp">Kingが辞退したら？</div>
+        <p class="rule-a"><strong>Answer · Roll Over</strong>The Grant returns to the Fund. The Pool grows for the following cycle. Nothing leaves the system. Nothing is lost. The Bell rings again.</p>
+      </div>
+
+      <div class="rule-card">
+        <div class="rule-num">— Q · 12 —</div>
+        <div class="rule-q">Why 23:23 and not 00:00?</div>
+        <div class="rule-q-jp">なぜ23:23？</div>
+        <p class="rule-a"><strong>Answer · The Edge</strong>23:23 is the edge between the day that ends and the day that has not begun. Between who you were and who you become. Midnight closes. 23:23 chooses.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== NEVER STRIP ============== -->
+<section class="never">
+  <div class="never-eyebrow">Absolutely Forbidden</div>
+  <div class="never-grid">
+    <div class="never-cell major">Lottery</div>
+    <div class="never-cell major">Wager</div>
+    <div class="never-cell major">Dividend</div>
+    <div class="never-cell major">Principal</div>
+    <div class="never-cell">Random Draw</div>
+    <div class="never-cell">Bell Resale</div>
+    <div class="never-cell">Self-Vote</div>
+    <div class="never-cell">House Vote</div>
+    <div class="never-cell">Coin Cashout</div>
+    <div class="never-cell">Coin Resale</div>
+    <div class="never-cell">Vote Selling</div>
+    <div class="never-cell">Receipt Forgery</div>
+  </div>
+  <p style="margin-top: 32px; font-family: var(--f-editorial); font-style: italic; color: var(--ash); font-size: 14px;">
+    KINGMAKER 23:23 is a ritual of giving. It is none of the above.
+  </p>
+</section>
+
+<!-- ============== MANIFESTO ============== -->
+<section id="manifesto" class="manifesto">
+  <div class="container">
+    <div class="eyebrow center">Chapter VII · The Manifesto</div>
+    <h2 class="manifesto-statement">
+      <span class="l1">Not everyone can be King.</span>
+      <span class="l2">But everyone can make one.</span>
+    </h2>
+    <p class="manifesto-jp">誰もが王になれるわけじゃない。<br/>でも、誰かを王にすることはできる。</p>
+
+    <div class="purpose-grid">
+      <div class="purpose-cell">
+        <div class="purpose-num">— I —</div>
+        <h3 class="purpose-title">Equal starting line.</h3>
+        <p class="purpose-jp">平等な不平等の再設計。</p>
+        <p class="purpose-text">Bill Gates. A student. A homeless person. The first ¥100 is the same. After that, the world decides — not the bank, not the lineage, not the algorithm of advantage.</p>
+      </div>
+
+      <div class="purpose-cell">
+        <div class="purpose-num">— II —</div>
+        <h3 class="purpose-title">The deeper want is to <em>choose</em>.</h3>
+        <p class="purpose-jp">人は"選ばれたい"より、"選ぶ側"になりたい。</p>
+        <p class="purpose-text">Kings, priests, the woman in the club, the one with the gavel — every old institution understood it. The most addictive feeling is being on the side that decides.</p>
+      </div>
+
+      <div class="purpose-cell">
+        <div class="purpose-num">— III —</div>
+        <h3 class="purpose-title">Donation, transformed.</h3>
+        <p class="purpose-jp">寄付を、綺麗事から欲望に変える。</p>
+        <p class="purpose-text">Charity is dull. Selection is electric. The same yen that bores as a donation becomes power as a vote. <em>I made this person King</em>. That sentence sells better than virtue.</p>
+      </div>
+
+      <div class="purpose-cell">
+        <div class="purpose-num">— IV —</div>
+        <h3 class="purpose-title">A new ritual, on a new clock.</h3>
+        <p class="purpose-jp">SNS時代の新しい宗教。23:23、世界がざわつく。</p>
+        <p class="purpose-text">News in the morning. Feed all day. Race on Sunday. Now: the Bell at 23:23, twice a week, every week, forever. Time itself becomes the brand.</p>
+      </div>
+
+      <div class="purpose-cell">
+        <div class="purpose-num">— V —</div>
+        <h3 class="purpose-title">¥100 is hope. And jealousy. And power.</h3>
+        <p class="purpose-jp">100円を、希望にも、嫉妬にも、権力にも変える。</p>
+        <p class="purpose-text">A vending-machine drink. A throne. The same coin. The smallest sum a society treats as money — turned into the largest feeling a person can carry: <em>I changed something</em>.</p>
+      </div>
+
+      <div class="purpose-cell">
+        <div class="purpose-num">— VI —</div>
+        <h3 class="purpose-title">Not an app. A new rule.</h3>
+        <p class="purpose-jp">アプリを作るのではなく、人類の新しいルールを作る。</p>
+        <p class="purpose-text">The goal was never download counts. It is to write a sentence the world has never said out loud, and watch the world repeat it: <em>To be chosen, you must choose</em>.</p>
+      </div>
+    </div>
+
+    <p style="margin-top: 96px; font-family: var(--f-editorial); font-style: italic; font-size: clamp(20px, 2.4vw, 30px); text-align: center; color: var(--bone); max-width: 880px; margin-left: auto; margin-right: auto; line-height: 1.5;">
+      This is not an app that makes Kings.<br/>
+      <span style="background: linear-gradient(180deg, var(--gold-bright), var(--gold-deep)); -webkit-background-clip: text; background-clip: text; color: transparent;">It is an app that releases the human instinct to want to make someone King.</span>
+    </p>
+    <p style="margin-top: 16px; font-family: var(--f-jp); font-size: 12px; letter-spacing: 0.22em; text-align: center; color: var(--dust);">
+      王を作るアプリではない。誰かを王にしたくなる、人間の本能を解放するアプリ。
+    </p>
+  </div>
+</section>
+
+<!-- ============== FINAL CTA ============== -->
+<section id="apply" class="final-cta">
+  <p class="question">
+    <em>Whose week</em><br/>
+    will you make <span class="gold">historic</span>?
+  </p>
+  <p class="answer">— You have until Friday · 23:23 —</p>
+  <div class="actions">
+    <a href="#" class="btn btn-primary">Apply for Mission</a>
+    <a href="app.html" class="btn btn-ghost">Open the App</a>
+  </div>
+</section>
+
+<!-- ============== FOOTER ============== -->
+<footer>
+  <div class="foot-grid">
+    <div>
+      <a href="#top" class="nav-brand" style="font-size: 14px;">
+        <img src="assets/logo-128.png" alt="" style="width: 36px; height: 36px;" />
+        <span>KINGMAKER</span>
+        <span class="glyph">23:23</span>
+      </a>
+      <p class="foot-tagline">Not everyone can be King.<br/>But everyone can make one.</p>
+    </div>
+    <div>
+      <h5>Ritual</h5>
+      <ul>
+        <li><a href="#why">Why 23:23</a></li>
+        <li><a href="#bell">The Bell</a></li>
+        <li><a href="#three">The Three</a></li>
+        <li><a href="#duty">Royal Duty</a></li>
+      </ul>
+    </div>
+    <div>
+      <h5>The Money</h5>
+      <ul>
+        <li><a href="money.html">Money Logic v1.0</a></li>
+        <li><a href="money.html#fund">/fund (live)</a></li>
+        <li><a href="money.html#tiers">Grant Tiers</a></li>
+        <li><a href="#laws">The Five Laws</a></li>
+      </ul>
+    </div>
+    <div>
+      <h5>Take Part</h5>
+      <ul>
+        <li><a href="#apply">Apply</a></li>
+        <li><a href="app.html">Open App</a></li>
+        <li><a href="#stories">Stories</a></li>
+        <li><a href="#rules">Edge Rules</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot-bottom">
+    <span>© 2026 · KINGMAKER 23:23 · Tokyo</span>
+    <span>Not a lottery · Not an investment · Not a wager · Coin is a voice, never cash</span>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+</body>
+</html>
