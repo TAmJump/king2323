@@ -98,31 +98,38 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #FFFFFF;
+  box-shadow:
+    0 0 0 2px rgba(212, 175, 55, 0.6),
+    0 0 60px rgba(212, 175, 55, 0.25);
 }
 .gorilla-frame::before {
   content: '';
   position: absolute;
-  inset: -8px;
+  inset: -16px;
   border: 1px solid var(--gold);
-  opacity: 0.18;
+  opacity: 0.35;
   border-radius: 50%;
   pointer-events: none;
+  z-index: 3;
 }
 .gorilla-frame::after {
   content: '';
   position: absolute;
-  inset: -32px;
+  inset: -40px;
   border: 1px solid var(--gold);
-  opacity: 0.08;
+  opacity: 0.12;
   border-radius: 50%;
   animation: slowBreathe 4s ease-in-out infinite;
   pointer-events: none;
+  z-index: 3;
 }
 .gorilla-frame img {
-  width: 100%;
-  height: 100%;
+  width: 92%;
+  height: 92%;
   object-fit: contain;
-  filter: drop-shadow(0 0 60px rgba(212, 175, 55, 0.35));
   position: relative;
   z-index: 2;
 }
@@ -1386,7 +1393,7 @@
 
   <div class="hero-right fade-up d2">
     <div class="gorilla-frame">
-      <img src="assets/logo-512.png" alt="King Gorilla" />
+      <img src="assets/logo-w-512.png" alt="King Gorilla" />
     </div>
     <div class="countdown" id="countdown">
       <div class="countdown-label">— The Bell opens in —</div>
