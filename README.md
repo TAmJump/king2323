@@ -22,7 +22,7 @@ A static, dependency-free site for KINGMAKER 23:23. Black × Gold. Imperial. Han
 
 The site is pure static HTML/CSS/JS. No build step. No runtime. Drop into any static host.
 
-- Production: **https://kingmaker2323.com** (GitHub Pages · `main` branch)
+- Production: **https://king2323.tamjump.com** (GitHub Pages · `main` branch)
 - Repo: [github.com/TAmJump/king2323](https://github.com/TAmJump/king2323)
 
 ## The Five Laws
