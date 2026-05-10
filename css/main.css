@@ -6,27 +6,32 @@
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800;900&family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;0,6..96,700;0,6..96,900;1,6..96,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=JetBrains+Mono:wght@400;500;700&family=Noto+Serif+JP:wght@400;500;700;900&display=swap');
 
 :root {
-  /* Core */
-  --black: #000000;
-  --ink: #0a0805;
-  --ink-2: #14100a;
-  --ink-3: #1a140c;
-  --line: #2a2117;
-  --line-2: #3a2f20;
+  /* Core — INVERTED (white theme) */
+  --paper: #FAF7F0;        /* warm off-white base */
+  --paper-2: #F2EBDA;      /* secondary surface */
+  --ink: #0F0E0C;          /* near-black for text */
+  --ink-2: #2A251D;        /* mid-dark */
+  --ink-3: #4A4234;        /* darker mid */
 
-  /* Gold spectrum */
-  --gold: #D4AF37;
-  --gold-bright: #F4D77A;
-  --gold-deep: #9A7B1F;
-  --gold-edge: #F8E08E;
-  --gold-shadow: #5a4514;
+  /* Aliases kept for backward compatibility (so existing var(--black), var(--bone) still work) */
+  --black: var(--paper);   /* "background" = now white */
+  --bone: var(--ink);      /* "main text" = now dark */
+
+  --line: #C9BC9A;         /* warm beige line */
+  --line-2: #B5A57F;
+
+  /* Gold spectrum — slightly deeper for contrast on white */
+  --gold: #B8862D;         /* deeper gold for white-bg readability */
+  --gold-bright: #D4A547;
+  --gold-deep: #7A5A18;
+  --gold-edge: #E8C76B;
+  --gold-shadow: #4A3812;
 
   /* Text */
   --white: #FFFFFF;
-  --bone: #F5EFE0;
-  --ash: #B8AC95;
-  --dust: #6E6450;
-  --shadow: #3a3527;
+  --ash: #5C5240;          /* mid muted (was light muted on dark) */
+  --dust: #8C8270;         /* lighter muted */
+  --shadow: #B8AC95;
 
   /* Functional */
   --crimson: #8B1A1A;
@@ -41,8 +46,8 @@
 
   /* Rhythm */
   --pad: clamp(20px, 4vw, 64px);
-  --rule: 1px solid rgba(212, 175, 55, 0.15);
-  --rule-bright: 1px solid rgba(212, 175, 55, 0.45);
+  --rule: 1px solid rgba(184, 134, 45, 0.25);
+  --rule-bright: 1px solid rgba(184, 134, 45, 0.55);
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -50,8 +55,8 @@
 html { scroll-behavior: smooth; }
 
 body {
-  background: var(--black);
-  color: var(--bone);
+  background: var(--paper);
+  color: var(--ink);
   font-family: var(--f-body);
   font-size: 16px;
   line-height: 1.55;
@@ -61,21 +66,21 @@ body {
   text-rendering: optimizeLegibility;
   overflow-x: hidden;
   background-image:
-    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(212, 175, 55, 0.06), transparent 60%),
-    radial-gradient(ellipse 50% 50% at 100% 100%, rgba(212, 175, 55, 0.03), transparent 60%);
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(184, 134, 45, 0.08), transparent 60%),
+    radial-gradient(ellipse 50% 50% at 100% 100%, rgba(184, 134, 45, 0.05), transparent 60%);
   min-height: 100vh;
 }
 
-/* Subtle grain overlay */
+/* Subtle paper-grain overlay (now darker noise on light bg) */
 body::before {
   content: '';
   position: fixed;
   inset: 0;
   pointer-events: none;
   z-index: 1000;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.06 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
-  mix-blend-mode: overlay;
-  opacity: 0.4;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.04 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  mix-blend-mode: multiply;
+  opacity: 0.35;
 }
 
 /* ============== TYPOGRAPHY ============== */
@@ -85,7 +90,7 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 700;
   letter-spacing: 0.04em;
   line-height: 1.1;
-  color: var(--bone);
+  color: var(--ink);
 }
 
 .eyebrow {
@@ -152,28 +157,28 @@ a:hover { color: var(--gold); }
 }
 .btn:hover {
   background: var(--gold);
-  color: var(--black);
+  color: var(--ink);
   letter-spacing: 0.4em;
 }
 .btn-primary {
   background: linear-gradient(180deg, var(--gold-bright) 0%, var(--gold) 50%, var(--gold-deep) 100%);
-  color: var(--black);
+  color: var(--ink);
   border: 1px solid var(--gold-edge);
-  box-shadow: 0 0 0 1px rgba(0,0,0,0.4) inset, 0 8px 28px rgba(212, 175, 55, 0.18);
+  box-shadow: 0 0 0 1px rgba(15, 14, 12, 0.3) inset, 0 8px 28px rgba(184, 134, 45, 0.25);
 }
 .btn-primary:hover {
   background: linear-gradient(180deg, var(--gold-edge) 0%, var(--gold-bright) 60%, var(--gold) 100%);
   letter-spacing: 0.4em;
-  box-shadow: 0 0 0 1px rgba(0,0,0,0.4) inset, 0 12px 40px rgba(212, 175, 55, 0.32);
+  box-shadow: 0 0 0 1px rgba(15, 14, 12, 0.4) inset, 0 12px 40px rgba(184, 134, 45, 0.4);
 }
 .btn-ghost {
-  border-color: var(--shadow);
-  color: var(--ash);
+  border-color: var(--ink-3);
+  color: var(--ink-2);
 }
 .btn-ghost:hover {
   border-color: var(--gold);
   background: transparent;
-  color: var(--gold);
+  color: var(--gold-deep);
 }
 
 /* ============== NAV ============== */
@@ -186,7 +191,7 @@ a:hover { color: var(--gold); }
   align-items: center;
   justify-content: space-between;
   padding: 18px var(--pad);
-  background: rgba(0, 0, 0, 0.55);
+  background: rgba(250, 247, 240, 0.85);
   backdrop-filter: blur(14px) saturate(140%);
   -webkit-backdrop-filter: blur(14px) saturate(140%);
   border-bottom: var(--rule);
@@ -300,20 +305,22 @@ section {
 /* ============== CARDS ============== */
 
 .card {
-  background: linear-gradient(180deg, rgba(20, 16, 10, 0.8), rgba(10, 8, 5, 0.9));
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.85), rgba(242, 235, 218, 0.6));
   border: 1px solid var(--line);
   position: relative;
-  transition: border-color 0.4s, transform 0.4s;
+  transition: border-color 0.4s, transform 0.4s, box-shadow 0.4s;
+  box-shadow: 0 1px 3px rgba(15, 14, 12, 0.04);
 }
 .card::before {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(212,175,55,0.04), transparent 40%);
+  background: linear-gradient(135deg, rgba(184, 134, 45, 0.05), transparent 40%);
   pointer-events: none;
 }
 .card:hover {
   border-color: var(--line-2);
+  box-shadow: 0 8px 24px rgba(15, 14, 12, 0.08);
 }
 
 .card-corner {

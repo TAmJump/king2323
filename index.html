@@ -98,40 +98,33 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
-  overflow: hidden;
-  background: #FFFFFF;
-  box-shadow:
-    0 0 0 2px rgba(212, 175, 55, 0.6),
-    0 0 60px rgba(212, 175, 55, 0.25);
 }
 .gorilla-frame::before {
   content: '';
   position: absolute;
-  inset: -16px;
+  inset: -12px;
   border: 1px solid var(--gold);
   opacity: 0.35;
   border-radius: 50%;
   pointer-events: none;
-  z-index: 3;
 }
 .gorilla-frame::after {
   content: '';
   position: absolute;
-  inset: -40px;
+  inset: -36px;
   border: 1px solid var(--gold);
-  opacity: 0.12;
+  opacity: 0.18;
   border-radius: 50%;
   animation: slowBreathe 4s ease-in-out infinite;
   pointer-events: none;
-  z-index: 3;
 }
 .gorilla-frame img {
-  width: 92%;
-  height: 92%;
+  width: 100%;
+  height: 100%;
   object-fit: contain;
   position: relative;
   z-index: 2;
+  filter: drop-shadow(0 12px 40px rgba(15, 14, 12, 0.25));
 }
 
 .crown-arc {
@@ -210,7 +203,7 @@
 .ticker {
   border-top: var(--rule);
   border-bottom: var(--rule);
-  background: var(--ink);
+  background: var(--paper-2);
   padding: 16px 0;
   overflow: hidden;
   position: relative;
@@ -235,7 +228,7 @@
 
 /* ============== BELL RITUAL ============== */
 .bell-ritual {
-  background: linear-gradient(180deg, var(--black), var(--ink) 50%, var(--black));
+  background: linear-gradient(180deg, var(--black), var(--paper-2) 50%, var(--black));
   text-align: center;
 }
 .bell-grid {
@@ -410,7 +403,7 @@
 
 /* ============== THE THREE PREVIEW ============== */
 .three-preview {
-  background: linear-gradient(180deg, var(--black), var(--ink-2));
+  background: linear-gradient(180deg, var(--black), var(--paper-2));
 }
 .three-grid {
   display: grid;
@@ -568,7 +561,7 @@
 
 /* ============== VERIFY ============== */
 .verify {
-  background: linear-gradient(180deg, var(--ink-2), var(--black));
+  background: linear-gradient(180deg, var(--paper-2), var(--black));
 }
 .verify-panel {
   max-width: 980px;
@@ -860,7 +853,7 @@
 .tier-section {
   padding: 120px var(--pad);
   border-bottom: var(--rule);
-  background: linear-gradient(180deg, var(--ink) 0%, var(--black) 100%);
+  background: linear-gradient(180deg, var(--paper-2) 0%, var(--black) 100%);
 }
 .tier-section .container { max-width: 1280px; margin: 0 auto; }
 .tier-grid {
@@ -870,7 +863,7 @@
   margin-top: 64px;
 }
 .tier-card {
-  background: var(--ink);
+  background: var(--paper-2);
   border: var(--rule);
   padding: 40px 32px;
   position: relative;
@@ -879,7 +872,7 @@
 }
 .tier-card:hover { transform: translateY(-4px); border-color: rgba(212, 175, 55, 0.4); }
 .tier-card.king {
-  background: linear-gradient(180deg, rgba(212, 175, 55, 0.06), var(--ink));
+  background: linear-gradient(180deg, rgba(212, 175, 55, 0.06), var(--paper-2));
   border-color: rgba(212, 175, 55, 0.5);
 }
 .tier-card.king::before {
@@ -1000,7 +993,7 @@
 }
 .duty-step {
   border: var(--rule);
-  background: var(--ink);
+  background: var(--paper-2);
   padding: 32px 24px;
   text-align: center;
 }
@@ -1056,7 +1049,7 @@
 .money-summary {
   padding: 140px var(--pad);
   border-bottom: var(--rule);
-  background: var(--ink);
+  background: var(--paper-2);
 }
 .money-summary .container { max-width: 1180px; margin: 0 auto; }
 .money-statement {
@@ -1140,7 +1133,7 @@
   background: linear-gradient(180deg, rgba(212, 175, 55, 0.1), rgba(212, 175, 55, 0.02));
   border-color: rgba(212, 175, 55, 0.4);
 }
-.money-split-cell.revenue { background: var(--ink-2); }
+.money-split-cell.revenue { background: var(--paper-2); }
 .money-split-pct {
   font-family: var(--f-display);
   font-size: 32px;
@@ -1186,12 +1179,12 @@
   margin-top: 64px;
 }
 .rule-card {
-  background: var(--ink);
+  background: var(--paper-2);
   padding: 32px 28px;
   position: relative;
   transition: background 0.3s ease;
 }
-.rule-card:hover { background: var(--ink-2); }
+.rule-card:hover { background: var(--paper-2); }
 .rule-num {
   font-family: var(--f-mono);
   font-size: 10px;
@@ -1293,7 +1286,7 @@
   border: var(--rule);
 }
 .purpose-cell {
-  background: var(--ink);
+  background: var(--paper-2);
   padding: 40px 32px;
   position: relative;
 }
@@ -1393,7 +1386,7 @@
 
   <div class="hero-right fade-up d2">
     <div class="gorilla-frame">
-      <img src="assets/logo-w-512.png" alt="King Gorilla" />
+      <img src="assets/logo-512.png" alt="King Gorilla" />
     </div>
     <div class="countdown" id="countdown">
       <div class="countdown-label">— The Bell opens in —</div>
@@ -1567,22 +1560,22 @@
     </div>
 
     <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--line); border: var(--rule);">
-      <div style="background: var(--ink); padding: 28px 20px; text-align: center;">
+      <div style="background: var(--paper-2); padding: 28px 20px; text-align: center;">
         <div style="font-family: var(--f-mono); font-size: 10px; color: var(--gold); letter-spacing: 0.25em; margin-bottom: 8px;">— BRONZE —</div>
         <div style="font-family: var(--f-display); font-size: 22px; font-weight: 700; color: var(--bone); margin-bottom: 6px;">10,000 Coin</div>
         <div style="font-family: var(--f-mono); font-size: 13px; color: var(--gold-bright);">¥100,000</div>
       </div>
-      <div style="background: var(--ink); padding: 28px 20px; text-align: center;">
+      <div style="background: var(--paper-2); padding: 28px 20px; text-align: center;">
         <div style="font-family: var(--f-mono); font-size: 10px; color: var(--gold); letter-spacing: 0.25em; margin-bottom: 8px;">— SILVER —</div>
         <div style="font-family: var(--f-display); font-size: 22px; font-weight: 700; color: var(--bone); margin-bottom: 6px;">100,000 Coin</div>
         <div style="font-family: var(--f-mono); font-size: 13px; color: var(--gold-bright);">¥1,000,000</div>
       </div>
-      <div style="background: var(--ink); padding: 28px 20px; text-align: center;">
+      <div style="background: var(--paper-2); padding: 28px 20px; text-align: center;">
         <div style="font-family: var(--f-mono); font-size: 10px; color: var(--gold); letter-spacing: 0.25em; margin-bottom: 8px;">— GOLD —</div>
         <div style="font-family: var(--f-display); font-size: 22px; font-weight: 700; color: var(--bone); margin-bottom: 6px;">1,000,000 Coin</div>
         <div style="font-family: var(--f-mono); font-size: 13px; color: var(--gold-bright);">¥10,000,000</div>
       </div>
-      <div style="background: linear-gradient(180deg, rgba(212, 175, 55, 0.08), var(--ink)); padding: 28px 20px; text-align: center; border-left: 1px solid rgba(212, 175, 55, 0.3);">
+      <div style="background: linear-gradient(180deg, rgba(212, 175, 55, 0.08), var(--paper-2)); padding: 28px 20px; text-align: center; border-left: 1px solid rgba(212, 175, 55, 0.3);">
         <div style="font-family: var(--f-mono); font-size: 10px; color: var(--gold-bright); letter-spacing: 0.25em; margin-bottom: 8px;">— ROYAL —</div>
         <div style="font-family: var(--f-display); font-size: 22px; font-weight: 700; color: var(--bone); margin-bottom: 6px;">10,000,000 Coin</div>
         <div style="font-family: var(--f-mono); font-size: 13px; color: var(--gold-bright);">Manual Review</div>
