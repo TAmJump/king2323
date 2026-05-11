@@ -215,7 +215,16 @@
   .hero-eyebrow::before { display: inline-block; }
 
   /* Hero right (logo + countdown) */
-  .hero-right { padding: 0; }
+  .hero-right { padding: 0; max-width: 100%; width: 100%; overflow: visible; }
+
+  /* Gorilla frame & decorative rings — keep inside the viewport */
+  .gorilla-frame {
+    width: clamp(220px, 60vw, 320px);   /* was clamp(280px, 36vw, 420px) → too wide on phone */
+    max-width: calc(100% - 80px);        /* leave room for the outer rings */
+  }
+  .gorilla-frame::before { inset: -8px; }   /* was -12px */
+  .gorilla-frame::after  { inset: -20px; }  /* was -36px → was the real overflow culprit */
+  .crown-arc { display: none; }              /* decorative; out-of-bounds on mobile */
 
   /* Countdown 縮小 */
   .countdown-time {
