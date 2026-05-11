@@ -555,3 +555,26 @@ body {
   background: transparent !important;
   box-shadow: none !important;
 }
+
+/* ============== GOOGLE TRANSLATE BANNER - HIDE ============== */
+/* Newer Google Translate banner uses these class/id patterns: */
+.skiptranslate iframe.skiptranslate,
+iframe.goog-te-banner-frame,
+iframe[id=":1.container"],
+.goog-te-banner-frame {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+}
+
+body {
+  top: 0 !important;
+  position: static !important;
+}
+
+/* Hide highlight Google adds on translated text hover */
+font[style*="background-color"],
+.goog-text-highlight {
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
