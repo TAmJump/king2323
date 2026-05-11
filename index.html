@@ -1761,19 +1761,6 @@ body.ritual-locked { overflow: hidden; }
     <span>KINGMAKER</span>
     <span class="glyph">23:23</span>
   </a>
-  <ul class="nav-menu notranslate" translate="no">
-    <li><a href="#why">23:23</a></li>
-    <li><a href="#trial">THE TRIAL</a></li>
-    <li><a href="#bell">Bell</a></li>
-    <li><a href="#resonance">Bell Nature</a></li>
-    <li><a href="money.html">Money</a></li>
-    <li><a href="verify.html">Verify</a></li>
-    <li><a href="#three">Crown Slot</a></li>
-    <li><a href="#duty">Royal Duty</a></li>
-    <li><a href="#laws">Doctrine</a></li>
-    <li><a href="#stories">Stories</a></li>
-    <li class="nav-menu-cta"><a href="#apply">Begin</a></li>
-  </ul>
   <div id="google_translate_element" style="position:fixed;bottom:0;right:0;width:1px;height:1px;opacity:0;pointer-events:none;overflow:hidden;z-index:-1;"></div>
   <div class="lang-picker notranslate" translate="no">
     <button class="lang-btn notranslate" translate="no" data-lang="ja">JA</button>
@@ -1786,10 +1773,22 @@ body.ritual-locked { overflow: hidden; }
     <span class="bar"></span>
     <span class="bar"></span>
   </button>
-  <div class="nav-cta">
-    <a href="#apply" class="btn btn-primary" style="padding: 12px 22px; font-size: 11px;">Begin</a>
-  </div>
 </nav>
+
+<!-- Fullscreen drawer — sibling of .nav, NOT inside it (avoids backdrop-filter containing-block trap) -->
+<ul class="nav-menu">
+  <li><a href="#why">23:23</a></li>
+  <li><a href="#trial">THE TRIAL</a></li>
+  <li><a href="#bell">Bell</a></li>
+  <li><a href="#resonance">Bell Nature</a></li>
+  <li><a href="money.html">Money</a></li>
+  <li><a href="verify.html">Verify</a></li>
+  <li><a href="#three">Crown Slot</a></li>
+  <li><a href="#duty">Royal Duty</a></li>
+  <li><a href="#laws">Doctrine</a></li>
+  <li><a href="#stories">Stories</a></li>
+  <li class="nav-menu-cta"><a href="#apply">Begin</a></li>
+</ul>
 
 <!-- ============== HERO ============== -->
 <header class="hero" id="top">

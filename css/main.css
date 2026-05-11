@@ -223,43 +223,57 @@ a:hover { color: var(--gold); }
   margin-left: 6px;
   opacity: 0.7;
 }
+/* Nav menu — hamburger drawer at ALL viewport sizes (desktop + mobile unified) */
 .nav-menu {
-  display: flex;
+  display: flex !important;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  flex-direction: column;
+  justify-content: flex-start;
   align-items: center;
-  gap: 36px;
+  gap: 0;
+  background: rgba(250, 247, 240, 0.97);
+  backdrop-filter: blur(10px) saturate(140%);
+  -webkit-backdrop-filter: blur(10px) saturate(140%);
+  padding: 96px 24px 40px;
+  transform: translateY(-100%);
+  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+  z-index: 90;
+  overflow-y: auto;
+  margin: 0;
   list-style: none;
 }
-.nav-menu li.nav-menu-cta { display: none; }  /* mobile only (shown inside hamburger) */
+.nav-menu.open { transform: translateY(0); }
+.nav-menu li { width: 100%; max-width: 360px; text-align: center; list-style: none; }
+.nav-menu li.nav-menu-cta { display: block; margin-top: 28px; }
 .nav-menu a {
+  display: block;
   font-family: var(--f-display);
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.28em;
-  text-transform: uppercase;
-  color: var(--ash);
-  position: relative;
-  padding: 4px 0;
+  font-size: 17px;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--line);
+  letter-spacing: 0.18em;
+  color: var(--ink);
   transition: color 0.3s;
 }
 .nav-menu a:hover { color: var(--gold); }
 .nav-menu a.active { color: var(--gold); }
-.nav-menu a.active::after {
-  content: '';
-  position: absolute;
-  bottom: -6px; left: 50%;
-  transform: translateX(-50%);
-  width: 4px; height: 4px;
+.nav-menu li.nav-menu-cta a {
   background: var(--gold);
-  border-radius: 50%;
-}
-.nav-cta {
-  display: flex;
-  gap: 12px;
+  color: var(--paper);
+  padding: 16px 36px;
+  border: none;
+  display: inline-block;
+  width: auto;
+  font-size: 13px;
 }
 
-/* Hamburger toggle (mobile only) */
+/* Begin button next to lang picker — hidden at all sizes (Begin lives inside hamburger drawer) */
+.nav-cta { display: none; }
+
+/* Hamburger toggle — shown at all viewport sizes */
 .nav-toggle {
-  display: none;
+  display: flex;
   background: var(--paper);
   border: 1px solid var(--line);
   padding: 10px 11px;
@@ -285,6 +299,7 @@ a:hover { color: var(--gold); }
 .nav-toggle[aria-expanded="true"] .bar:nth-child(2) { opacity: 0; }
 .nav-toggle[aria-expanded="true"] .bar:nth-child(3) { transform: translateY(-5.5px) rotate(-45deg); }
 
+/* Below 900px, nav itself goes white instead of using backdrop-filter */
 @media (max-width: 900px) {
   .nav {
     padding: 14px var(--pad);
@@ -292,50 +307,8 @@ a:hover { color: var(--gold); }
     -webkit-backdrop-filter: none;
     background: rgba(250, 247, 240, 0.94);
   }
-  .nav-toggle { display: flex; }
-  .nav-cta { display: none; }
   .nav-brand { font-size: 12px; letter-spacing: 0.2em; gap: 10px; }
   .nav-brand .glyph { display: none; }
-
-  .nav-menu {
-    display: flex !important;
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
-    gap: 0;
-    background: rgba(250, 247, 240, 0.97);
-    backdrop-filter: blur(10px) saturate(140%);
-    -webkit-backdrop-filter: blur(10px) saturate(140%);
-    padding: 96px 24px 40px;
-    transform: translateY(-100%);
-    transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
-    z-index: 90;
-    overflow-y: auto;
-    margin: 0;
-    list-style: none;
-  }
-  .nav-menu.open { transform: translateY(0); }
-  .nav-menu li { width: 100%; max-width: 320px; text-align: center; list-style: none; }
-  .nav-menu li.nav-menu-cta { display: block; margin-top: 28px; }
-  .nav-menu a {
-    display: block;
-    font-size: 17px;
-    padding: 18px 0;
-    border-bottom: 1px solid var(--line);
-    letter-spacing: 0.18em;
-    color: var(--ink);
-  }
-  .nav-menu li.nav-menu-cta a {
-    background: var(--gold);
-    color: var(--paper);
-    padding: 16px 36px;
-    border: none;
-    display: inline-block;
-    width: auto;
-    font-size: 13px;
-  }
 }
 
 /* ============== LAYOUT ============== */
