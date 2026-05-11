@@ -16,9 +16,9 @@
   min-height: 100vh;
   padding: 120px var(--pad) 80px;
   display: grid;
-  grid-template-columns: 1.05fr 1fr;
+  grid-template-columns: 1fr 1.15fr;
   align-items: center;
-  gap: 80px;
+  gap: 64px;
   border-bottom: var(--rule);
   position: relative;
   overflow: hidden;
@@ -40,11 +40,11 @@
 .hero-left { position: relative; z-index: 2; }
 .hero-eyebrow { margin-bottom: 32px; }
 .hero h1 {
-  font-size: clamp(40px, 5.4vw, 84px);
+  font-size: clamp(32px, 4.2vw, 64px);
   font-weight: 800;
   letter-spacing: 0.02em;
-  line-height: 1.0;
-  margin-bottom: 32px;
+  line-height: 1.05;
+  margin-bottom: 28px;
   color: var(--bone);
 }
 .hero h1 .gold {
@@ -94,7 +94,7 @@
 }
 .gorilla-frame {
   position: relative;
-  width: clamp(280px, 36vw, 420px);
+  width: clamp(340px, 46vw, 560px);
   aspect-ratio: 1;
   display: flex;
   align-items: center;
@@ -103,7 +103,7 @@
 .gorilla-frame::before {
   content: '';
   position: absolute;
-  inset: -12px;
+  inset: -16px;
   border: 1px solid var(--gold);
   opacity: 0.35;
   border-radius: 50%;
@@ -112,7 +112,7 @@
 .gorilla-frame::after {
   content: '';
   position: absolute;
-  inset: -36px;
+  inset: -44px;
   border: 1px solid var(--gold);
   opacity: 0.18;
   border-radius: 50%;
@@ -198,12 +198,12 @@
     min-height: auto;
   }
   .hero h1 {
-    font-size: clamp(32px, 9vw, 44px);
-    margin-bottom: 20px;
-    line-height: 1.0;
+    font-size: clamp(24px, 7vw, 36px);
+    margin-bottom: 18px;
+    line-height: 1.05;
   }
   .hero h1 .small {
-    font-size: 11px;
+    font-size: 10px;
     margin-top: 10px;
     letter-spacing: 0.25em;
   }
@@ -217,14 +217,14 @@
   /* Hero right (logo + countdown) */
   .hero-right { padding: 0; max-width: 100%; width: 100%; overflow: visible; }
 
-  /* Gorilla frame & decorative rings — keep inside the viewport */
+  /* Gorilla frame & decorative rings — bigger on mobile too */
   .gorilla-frame {
-    width: clamp(220px, 60vw, 320px);   /* was clamp(280px, 36vw, 420px) → too wide on phone */
-    max-width: calc(100% - 80px);        /* leave room for the outer rings */
+    width: clamp(280px, 78vw, 400px);   /* was clamp(220px, 60vw, 320px) — bigger now */
+    max-width: calc(100% - 60px);
   }
-  .gorilla-frame::before { inset: -8px; }   /* was -12px */
-  .gorilla-frame::after  { inset: -20px; }  /* was -36px → was the real overflow culprit */
-  .crown-arc { display: none; }              /* decorative; out-of-bounds on mobile */
+  .gorilla-frame::before { inset: -10px; }
+  .gorilla-frame::after  { inset: -24px; }
+  .crown-arc { display: none; }
 
   /* Countdown 縮小 */
   .countdown-time {
@@ -242,9 +242,9 @@
 }
 
 @media (max-width: 420px) {
-  .hero { padding: 76px 18px 36px; gap: 32px; }
-  .hero h1 { font-size: 28px; }
-  .hero h1 .small { font-size: 10px; }
+  .hero { padding: 76px 18px 36px; gap: 24px; }
+  .hero h1 { font-size: 22px; }
+  .hero h1 .small { font-size: 9px; }
   .hero-tag { font-size: 15px; }
   .hero-eyebrow { font-size: 9px; letter-spacing: 0.25em; }
   .countdown-time { font-size: 22px; gap: 6px; }
