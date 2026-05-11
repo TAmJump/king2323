@@ -221,6 +221,7 @@ a:hover { color: var(--gold); }
   gap: 36px;
   list-style: none;
 }
+.nav-menu li.nav-menu-cta { display: none; }  /* mobile only (shown inside hamburger) */
 .nav-menu a {
   font-family: var(--f-display);
   font-size: 11px;
@@ -309,6 +310,7 @@ a:hover { color: var(--gold); }
   }
   .nav-menu.open { transform: translateY(0); }
   .nav-menu li { width: 100%; max-width: 320px; text-align: center; list-style: none; }
+  .nav-menu li.nav-menu-cta { display: block; margin-top: 28px; }
   .nav-menu a {
     display: block;
     font-size: 17px;
@@ -317,7 +319,6 @@ a:hover { color: var(--gold); }
     letter-spacing: 0.18em;
     color: var(--ink);
   }
-  .nav-menu li.nav-menu-cta { margin-top: 28px; }
   .nav-menu li.nav-menu-cta a {
     background: var(--gold);
     color: var(--paper);

@@ -153,7 +153,7 @@
   const hasFundUI = Object.values(fundEls).some(Boolean);
 
   if (hasFundUI) {
-    let lastTotal = null;
+    let lastUpdateMs = Date.now();
 
     function updateFund() {
       const cycleStartMs = getCycleStartMs();
@@ -163,7 +163,7 @@
       // 基準値(cycle 47 想定の見え方)
       const baseTotal      = 5872400;
       const baseInflow7d   = 857400;
-      const basePatron7d   = 124800;   // Patron 流入(7日累計のbase)
+      const basePatron7d   = 124800;
       const baseOutflow7d  = 1000000;
       const baseCycleCap   = 3248000;
 
@@ -183,20 +183,14 @@
       const patron7d  = basePatron7d + patronAdd;
       const reserve   = Math.max(0, total - cycleCap);
 
-      // Live tick · this second(秒間平均流入。ノイズで自然な揺れ)
-      const tickAmt = (memberPerSec * memNoise) + (patronPerSec * patNoise);
-      lastTotal = total;
-
       if (fundEls.total)    fundEls.total.textContent    = fmtYen(total);
       if (fundEls.cycleCap) fundEls.cycleCap.textContent = fmtYen(cycleCap);
       if (fundEls.inflow)   fundEls.inflow.textContent   = fmtYenSigned(inflow7d, '+');
       if (fundEls.patron)   fundEls.patron.textContent   = fmtYenSigned(patron7d, '+');
       if (fundEls.outflow)  fundEls.outflow.textContent  = fmtYenSigned(baseOutflow7d, '−');
       if (fundEls.reserve)  fundEls.reserve.textContent  = fmtYen(reserve);
-      if (fundEls.tick)     fundEls.tick.textContent     = fmtYenSigned(Math.max(0, tickAmt), '+');
       if (fundEls.heroLive) fundEls.heroLive.textContent = fmtYen(total);
       if (fundEls.heroLivePatron) fundEls.heroLivePatron.textContent = fmtYenSigned(patron7d, '+');
-      if (fundEls.label)    fundEls.label.textContent    = '— Live · Cycle 47 · Updated now —';
 
       const progressPct = Math.min(100, (elapsedSec / cycleSec) * 100);
       if (fundEls.cycleProgressFill) {
@@ -209,10 +203,28 @@
         const m = Math.floor((remain % 3600) / 60);
         fundEls.cycleProgressLabel.textContent = progressPct.toFixed(0) + '% · ' + d + 'd ' + h + 'h ' + m + 'm';
       }
+
+      lastUpdateMs = Date.now();
+    }
+
+    // 「Updated Xs ago」ラベルだけ毎秒更新(数字は動かさない・チカチカしない)
+    function updateLabel() {
+      if (!fundEls.label) return;
+      const ago = Math.floor((Date.now() - lastUpdateMs) / 1000);
+      let txt;
+      if (ago < 3)        txt = 'just now';
+      else if (ago < 60)  txt = ago + 's ago';
+      else if (ago < 3600) txt = Math.floor(ago / 60) + 'm ago';
+      else                txt = 'a while ago';
+      fundEls.label.textContent = '— Live · Cycle 47 · Updated ' + txt + ' —';
     }
 
     updateFund();
-    setInterval(updateFund, 1000);
+    updateLabel();
+    // 数字は10秒ごと(見てて鬱陶しくない頻度)
+    setInterval(updateFund, 10000);
+    // ラベルだけは毎秒更新(経過時間表示)
+    setInterval(updateLabel, 1000);
   }
 
   // ---------- IntersectionObserver: reveal on scroll ----------
