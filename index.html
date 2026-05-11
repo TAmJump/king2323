@@ -1733,6 +1733,7 @@ body.ritual-locked { overflow: hidden; }
     <li><a href="#why">23:23</a></li>
     <li><a href="#trial">THE TRIAL</a></li>
     <li><a href="#bell">Bell</a></li>
+    <li><a href="#resonance">Bell Nature</a></li>
     <li><a href="money.html">Money</a></li>
     <li><a href="verify.html">Verify</a></li>
     <li><a href="#three">Crown Slot</a></li>
@@ -1770,6 +1771,11 @@ body.ritual-locked { overflow: hidden; }
     <div class="hero-cta fade-up d3">
       <button type="button" class="btn btn-primary" data-ritual-open="coin">100 Coin · ¥100</button>
     </div>
+    <p class="fade-up d4 notranslate" translate="no" style="font-family: var(--f-editorial); font-style: italic; font-size: clamp(14px, 1.4vw, 17px); color: var(--gold-deep); margin-top: 20px; letter-spacing: 0.02em; line-height: 1.5;">
+      You never lose your <em style="font-weight:600;">Bell</em>.<br/>
+      You only lose your <em style="font-weight:600;">chance</em>.
+      <span style="display:block; font-family: var(--f-jp); font-style: normal; font-size: 0.78em; color: var(--ash); margin-top: 6px; letter-spacing: 0.05em;">— Bellは失われない。失うのは、今週の資格だけ。</span>
+    </p>
   </div>
 
   <div class="hero-right fade-up d2">
@@ -2584,33 +2590,36 @@ body.ritual-locked { overflow: hidden; }
 <!-- ============== RITUAL CONTENT TEMPLATES ============== -->
 <template id="ritual-coin">
   <div class="ritual-eyebrow">— The Offering —</div>
-  <h2 class="ritual-title">100 Coin <em>· ¥100</em></h2>
-  <p class="ritual-subtitle">100円。100コイン。10票。一週間。</p>
+  <h2 class="ritual-title">100 <em>Bell</em></h2>
+  <p class="ritual-subtitle">100円 = 100 Bell。一生残る、参加資格。</p>
   <div class="ritual-divider"></div>
   <div class="ritual-content">
-    <p class="accent">One Coin is <em>one vote</em>.<br/>Never cash.</p>
-    <p>¥100 を支払うと、KINGMAKER に <strong>100 Coin</strong> が刻まれる。これは資産ではない。換金もできない。譲れない。残らない。<strong>毎週の儀式に投じる声</strong>、それだけ。</p>
-    <p class="jp">毎週の THE TRIAL に挑むには 10 Coin を「鳴らす(ring the Bell)」。正解すれば10 Coin はあなたに戻る。失敗すれば、Bell は王冠の元へ捧げられる(Crown Poolへ Burn)。</p>
+    <p class="accent">You never <em>lose</em> your Bell.<br/>You only lose your <em>chance</em>.</p>
+    <p class="jp" style="text-align:center;">Bellは失わない。<br/>失うのは、今週の資格だけ。</p>
+
+    <p>¥100 を支払うと、KINGMAKER に <strong>100 Bell</strong> が刻まれる。Bell は<strong>参加資格(Participation Right)</strong>。法定通貨でも、暗号資産でも、前払式支払手段でもない。換金されず、譲渡されず、価値として測られない。</p>
+    <p class="jp">毎週の THE TRIAL に挑むときは、10 Bell を鳴らす。3問突破で <strong>King 候補資格</strong>が解放される。途中で間違えても、<strong>Bell は減らない</strong>。失うのは「今週の資格」だけ。来週、また鳴らせる。</p>
 
     <div class="ritual-mini-grid">
-      <div class="ritual-mini"><div class="k">Coin</div><div class="v">100</div></div>
-      <div class="ritual-mini"><div class="k">Price</div><div class="v">¥ 100</div></div>
-      <div class="ritual-mini"><div class="k">Per Bell</div><div class="v"><em>ring 10</em></div></div>
-      <div class="ritual-mini"><div class="k">Refund</div><div class="v">—</div></div>
+      <div class="ritual-mini"><div class="k">Bell</div><div class="v">100</div></div>
+      <div class="ritual-mini"><div class="k">Offering</div><div class="v">¥ 100</div></div>
+      <div class="ritual-mini"><div class="k">Per Trial</div><div class="v"><em>ring 10</em></div></div>
+      <div class="ritual-mini"><div class="k">Forfeit</div><div class="v"><em>none</em></div></div>
     </div>
 
-    <p class="accent" style="margin-top:32px;">Only the careless<br/>lose their <em>Bell</em>.</p>
-    <p class="jp" style="text-align:center;">注意深い者だけが Bell を残す。<br/>選ばれた者だけが王冠をかぶる。</p>
-
     <ul class="ritual-list">
-      <li>1 Coin = 1 Vote. 換金不可・譲渡不可・払戻不可。</li>
-      <li>毎週 THE TRIAL で 10 Coin を鳴らす。3問全問正解で Coin は維持。</li>
-      <li>不正解時は当該10 Coin が Crown Pool に焚き上げられる(Bell Burned)。</li>
-      <li>未使用 Coin の有効期限: 取得後12ヶ月。決済は Square 経由。</li>
+      <li><strong>Bell = Participation Right.</strong> 換金不可・譲渡不可・資産性なし。</li>
+      <li>毎週 THE TRIAL で 10 Bell を鳴らす(= 鳴ったまま手元に残る)。</li>
+      <li>失敗しても Bell は減らない。失うのは <strong>その週の King 候補資格</strong> だけ。</li>
+      <li>3問突破 → Qualification Unlocked → CROWN SLOT へ進む。</li>
+      <li>未使用 Bell の有効期限: 取得後12ヶ月。決済は Square 経由。</li>
     </ul>
 
+    <p class="accent" style="margin-top:32px;">100円は、<em>一生</em>残る。</p>
+    <p class="jp" style="text-align:center; margin-top:-8px;">Your offering lives forever.</p>
+
     <div class="ritual-cta">
-      <a href="https://square.link/u/bc9p0BET" target="_blank" rel="noopener" class="btn btn-primary">⌘ Proceed to Square · 決済へ</a>
+      <a href="https://square.link/u/bc9p0BET" target="_blank" rel="noopener" class="btn btn-primary">⌘ Proceed to Square · 100円を捧げる</a>
       <div class="ritual-note">— Webhook 結線テスト中 · Sandbox環境 —</div>
     </div>
   </div>
@@ -2636,30 +2645,31 @@ body.ritual-locked { overflow: hidden; }
   <div class="ritual-divider"></div>
   <div class="ritual-content">
     <p class="accent">5 minutes. <em>3 trials.</em><br/>One world. One Crown.</p>
-    <p>毎週 <strong>金曜 23:23</strong>(各国Local)、Bell が鳴り、世界中のあなたと同じ100円を払った者たちが、<strong>5分間の儀式</strong>に立つ。1億人が応募していても、5分で全員のMissionを読む者はいない。だから KINGMAKER は、誰かが3人を「選ぶ」のではなく、<strong>世界全員が同じ瞬間に挑む</strong>。</p>
+    <p>毎週 <strong>金曜 23:23</strong>(各国Local)、Bell が鳴る。100円を捧げた者は誰でも <strong>5分間の儀式</strong>に立てる。1億人が応募しても、5分で全員のMissionを読む者はいない。だから KINGMAKER は誰かに3人を「選ばせない」。<strong>世界全員が同じ瞬間に挑む</strong>。</p>
 
     <div class="ritual-divider"></div>
 
     <h3 style="font-family: var(--f-display); font-size: 16px; letter-spacing: 0.2em; color: var(--gold-deep); text-transform: uppercase; margin: 24px 0 12px; text-align: center;">Round 1 · THE MIND</h3>
     <p class="jp" style="text-align:center;">10〜20秒。4択。フラッシュ暗算 / 順列 / 比率…</p>
-    <p>例: <code style="background:rgba(184,134,45,0.12); padding:2px 8px; font-family:var(--f-mono);">17 + 28 − 6 × 2 = ?</code> 正解で次へ。不正解で終了。</p>
+    <p>例: <code style="background:rgba(184,134,45,0.12); padding:2px 8px; font-family:var(--f-mono);">17 + 28 − 6 × 2 = ?</code> 正解で次へ。不正解は<strong>その週の資格を失う</strong>(Bell は残る)。</p>
 
     <h3 style="font-family: var(--f-display); font-size: 16px; letter-spacing: 0.2em; color: var(--gold-deep); text-transform: uppercase; margin: 32px 0 12px; text-align: center;">Round 2 · THE INSTINCT</h3>
     <p class="jp" style="text-align:center;">10〜20秒。世界文化 / 図形 / 記憶 / 国旗 / 通貨 / 元素…</p>
     <p>例: 「KTX は何の略か?」「インドの通貨は?」「メキシコの首都は?」<br/>— 日本人有利も、英語圏有利も、ない。</p>
 
     <h3 style="font-family: var(--f-display); font-size: 16px; letter-spacing: 0.2em; color: var(--gold-deep); text-transform: uppercase; margin: 32px 0 12px; text-align: center;">Round 3 · THE CROWN</h3>
-    <p class="jp" style="text-align:center;">スロットを止める。00〜99。最頻値が王の元へ近づく。</p>
-    <p>残った者全員が同時にタップ。世界中の指が止まった数字のうち、<strong>最も多くの人が止めた数字</strong>がその週の Crown Number。同数字に止めた応募者の Mission の中から、自動Seed導出で <strong>King が確定する</strong>。</p>
+    <p class="jp" style="text-align:center;">スロットを止める。00〜99。世界の最頻値が王の元へ近づく。</p>
+    <p>2問突破した者全員が同時にタップ。世界中の指が止まった数字のうち、<strong>最頻値</strong>がその週の Crown Number。同じ数字に止めた応募者の中から、公開Seedで<strong>1人が King として確定する</strong>。</p>
 
     <div class="ritual-divider"></div>
 
-    <p class="accent"><em>Knowledge. Instinct. Fate.</em><br/>すべてが、5分に。</p>
+    <p class="accent">Qualification, <em>not money</em>.</p>
+    <p class="jp" style="text-align:center;">失敗しても、お金は失わない。失うのは、その週の<strong>King候補資格</strong>だけ。</p>
 
     <ul class="ritual-list">
       <li>Bell Open: 金曜 23:23(各国Local)</li>
       <li>Bell Close: 金曜 23:28</li>
-      <li>King Crowned: 直後、自動公開</li>
+      <li>King Confirmed: 直後、自動公開</li>
       <li>Royal Proof Due: 戴冠から30日以内</li>
     </ul>
   </div>
@@ -2671,22 +2681,22 @@ body.ritual-locked { overflow: hidden; }
   <p class="ritual-subtitle">最終の儀式。世界中の指が、同じ数字に止まるとき。</p>
   <div class="ritual-divider"></div>
   <div class="ritual-content">
-    <p class="accent">3 trials passed.<br/>Now <em>tap to stop.</em></p>
-    <p>Round 1 と Round 2 を生き残った者だけが、Round 3 — <strong>CROWN SLOT</strong> に立てる。画面には 00〜99 のスロットが回転している。あなたは1度だけタップして、止める。</p>
-    <p class="jp">世界中の指が同じ瞬間にスロットを止める。一番多くの人が止めた数字、それがその週の <strong>Crown Number</strong>。</p>
+    <p class="accent">2 trials passed.<br/>Now <em>tap to stop.</em></p>
+    <p>Round 1 と Round 2 を生き残った者だけが、Round 3 — <strong>CROWN SLOT</strong> に立つ資格を得る。画面には 00〜99 のスロットが回転している。あなたは1度だけタップして、止める。</p>
+    <p class="jp">世界中の指が同じ瞬間にスロットを止める。最も多くの人が止めた数字、それがその週の <strong>Crown Number</strong>。</p>
 
     <div class="ritual-divider"></div>
 
-    <p>同じ数字に止めた応募者の Mission リストの中から、Verify Seed(BTC・Nikkei・S&P・応募人数のSHA-256)で1人が選ばれ、<strong>その者が King</strong> となる。</p>
+    <p>同じ数字に止めた応募者の Mission の中から、公開Seed(BTC・Nikkei・S&P・応募人数のSHA-256)で <strong>King が確定する</strong>。これは選定ではなく、<strong>世界の合意 + 公開数式</strong> による確定。</p>
 
     <div class="ritual-mini-grid">
       <div class="ritual-mini"><div class="k">Slot Range</div><div class="v">00 – 99</div></div>
       <div class="ritual-mini"><div class="k">Tap</div><div class="v"><em>once</em></div></div>
-      <div class="ritual-mini"><div class="k">Crown #</div><div class="v">mode</div></div>
-      <div class="ritual-mini"><div class="k">Final pick</div><div class="v">Seed</div></div>
+      <div class="ritual-mini"><div class="k">Crown #</div><div class="v">world's mode</div></div>
+      <div class="ritual-mini"><div class="k">Final</div><div class="v">public Seed</div></div>
     </div>
 
-    <p class="accent" style="margin-top:32px;">1億人が願っても、<br/><em>舞台に立てるのは数十人</em>。<br/>立っても、王になるのは<em>1人</em>。</p>
+    <p class="accent" style="margin-top:32px;">1億人が捧げても、<br/><em>立つのは生き残った者だけ</em>。<br/>立っても、王になるのは<em>1人</em>。</p>
 
     <div class="ritual-cta">
       <a href="verify.html" class="btn btn-primary">⌘ Verify the Seed</a>
@@ -2698,27 +2708,33 @@ body.ritual-locked { overflow: hidden; }
 <template id="ritual-money">
   <div class="ritual-eyebrow">— Chapter IV · The Money —</div>
   <h2 class="ritual-title">The <em>Money</em></h2>
-  <p class="ritual-subtitle">100円の流れと、Crown Pool。</p>
+  <p class="ritual-subtitle">100円の流れと、Grant Fund。</p>
   <div class="ritual-divider"></div>
   <div class="ritual-content">
-    <p class="accent">¥100 のうち、<em>¥60 が Grant</em> に。</p>
-    <p>100円の決済は分割される。<strong>60% = Grant Fund</strong>(Kingへの援助金プール)、<strong>30% = 運営</strong>、<strong>10% = 決済手数料</strong>。Fund は常時公開される。</p>
+    <p class="accent">¥100 のうち、<em>¥60 が Grant Fund</em> に。</p>
+    <p>100円の決済は分割される。<strong>60% = Grant Fund</strong>(公開された助成プール)、<strong>30% = 運営</strong>、<strong>10% = 決済手数料</strong>。Fund 残高は常時 <code style="background:rgba(184,134,45,0.12); padding:2px 6px; font-family:var(--f-mono);">/fund</code> で公開される。</p>
     <div class="ritual-mini-grid">
       <div class="ritual-mini"><div class="k">Grant Fund</div><div class="v"><em>60%</em></div></div>
       <div class="ritual-mini"><div class="k">Operations</div><div class="v">30%</div></div>
       <div class="ritual-mini"><div class="k">Processing</div><div class="v">10%</div></div>
-      <div class="ritual-mini"><div class="k">Coin → Cash</div><div class="v">—</div></div>
+      <div class="ritual-mini"><div class="k">Bell → Cash</div><div class="v">—</div></div>
     </div>
 
     <div class="ritual-divider"></div>
 
-    <h3 style="font-family: var(--f-display); font-size: 16px; letter-spacing: 0.2em; color: var(--gold-deep); text-transform: uppercase; margin: 24px 0 12px; text-align: center;">— The Crown Pool —</h3>
-    <p class="accent">Answer correctly, <em>keep your Bell</em>.<br/>Fail, and your Bell joins the Crown.</p>
-    <p class="jp" style="text-align:center;">正解すれば Bell は残る。<br/>失敗すれば Bell は王冠へ捧げられる。</p>
+    <h3 style="font-family: var(--f-display); font-size: 16px; letter-spacing: 0.2em; color: var(--gold-deep); text-transform: uppercase; margin: 24px 0 12px; text-align: center;">— Grant is not a prize —</h3>
+    <p class="accent"><em>Bell unlocks qualification.</em><br/>Qualified missions may<br/>receive grants from the Fund.</p>
+    <p class="jp" style="text-align:center;">Bellは資格を解放するだけ。<br/>資格を得た Mission が、Fund から助成を受ける可能性がある。</p>
 
-    <p>毎週、参加者は 10 Coin を鳴らして THE TRIAL に挑む。3問全問正解した者は <strong>10 Coin が手元に戻る</strong> — つまり100円は一生残り続ける。失敗した者の 10 Coin は <strong>Crown Pool</strong> に焚き上げられ、その週の King の Grant Tier を引き上げる重みになる。</p>
+    <p>Grant は <strong>賞金ではない</strong>。THE TRIAL を生き残り、CROWN SLOT で確定した者は、まず <strong>KYC・AML・Mission Truth 審査</strong> を受ける。すべてを通過した Mission に対してのみ、運営は Grant Fund から <strong>助成(grant)</strong> を支給する。</p>
 
-    <p class="jp"><strong>注意:</strong> Coin は他のユーザーに直接移転されない。Crown Pool は「King Tier 計算上の重み」として機能し、現実の Grant は運営 Fund から支払われる。これは賭博・参加者間の金銭移転を意図しない設計。</p>
+    <ul class="ritual-list">
+      <li>Bell は決して現金にならない。</li>
+      <li>Bell は資格を解放するだけ。</li>
+      <li>失敗者の Bell は他ユーザーに移転しない。</li>
+      <li>Grant は審査と証明義務を伴う「助成」。配当でも当選金でもない。</li>
+      <li>Mission 完了の Proof が提出されない場合、Grant は剥奪・次順位へ承継。</li>
+    </ul>
 
     <div class="ritual-cta">
       <a href="money.html" class="btn btn-primary">⌘ Money Logic を読む</a>
@@ -2782,9 +2798,9 @@ body.ritual-locked { overflow: hidden; }
   <div class="ritual-content">
     <p class="accent">5 Laws. <em>No exceptions.</em></p>
     <ul class="ritual-list">
-      <li><strong>I.</strong> Coin is a voice, never cash. — Coinは声であり、金ではない。</li>
-      <li><strong>II.</strong> Never choose yourself. — 自分のMissionに票を投げてはならない。</li>
-      <li><strong>III.</strong> Only the careless lose their Bell. — 注意深い者だけが Bell を残す。</li>
+      <li><strong>I.</strong> Bell is a Right, never cash. — Bellは資格であり、金ではない。</li>
+      <li><strong>II.</strong> You never lose your Bell. — Bellは失われない。失うのは、その週の資格だけ。</li>
+      <li><strong>III.</strong> Grant is not a prize. — Grantは賞金ではなく、審査と証明を経た助成。</li>
       <li><strong>IV.</strong> The Crown has weight. — 王冠には重みがある。</li>
       <li><strong>V.</strong> Expose the result, not the person. — 人を晒すのではなく、結果を晒す。</li>
     </ul>
@@ -2813,18 +2829,31 @@ body.ritual-locked { overflow: hidden; }
 
     <div class="ritual-divider"></div>
 
-    <h3 style="font-family: var(--f-display); font-size: 14px; letter-spacing: 0.25em; color: var(--gold-deep); text-transform: uppercase; margin: 28px 0 10px; text-align:center;">— Bell Economics —</h3>
-    <p class="accent">Answer correctly,<br/><em>keep your Bell</em>.</p>
-    <p>挑戦には 10 Coin = 1 Bell を鳴らす。全問正解で 10 Coin は手元に戻る(100円は一生残る)。不正解の Bell は <strong>Crown Pool</strong> に焚き上げられ、その週の King の Tier を引き上げる。</p>
+    <h3 style="font-family: var(--f-display); font-size: 14px; letter-spacing: 0.25em; color: var(--gold-deep); text-transform: uppercase; margin: 28px 0 10px; text-align:center;">— The Rule —</h3>
+    <p class="accent">You never lose your <em>Bell</em>.<br/>You only lose your <em>chance</em>.</p>
+    <p class="jp" style="text-align:center;">Bellは失わない。失うのは、今週の資格だけ。</p>
+
+    <p>10 Bell を鳴らして挑戦。失敗してもBellは減らない。次週、また鳴らせる。3問突破した者は <strong>Qualification Unlocked</strong> ステータスを得て、CROWN SLOT に進む。</p>
 
     <ul class="ritual-list">
-      <li>Question Bank: 10万問。運営も内容を知らない。</li>
+      <li>Question Bank: 10万問。運営も内容を事前に知らない。</li>
       <li>出題ID: 毎週 Seed から SHA-256 で機械的に導出。</li>
       <li>毎週ジャンル変動: Math / Memory / Logic / Language / Culture / Science。</li>
       <li>同問題の再出題: 数週間〜数ヶ月のクールタイム設計。</li>
     </ul>
 
-    <p style="text-align:center; font-family: var(--f-editorial); font-style: italic; color: var(--gold-deep); margin-top:20px;">Knowledge. Instinct. Fate.<br/>All within five minutes.</p>
+    <div class="ritual-divider"></div>
+
+    <h3 style="font-family: var(--f-display); font-size: 14px; letter-spacing: 0.25em; color: var(--gold-deep); text-transform: uppercase; margin: 28px 0 10px; text-align:center;">— Standing & Streaks —</h3>
+    <p>3問突破するたび、あなたの <strong>Standing</strong> に印が残る。連続記録は称号として刻まれる。称号には金銭価値はない — だが、世界の中での「立ち位置」を示す。</p>
+    <div class="ritual-mini-grid">
+      <div class="ritual-mini"><div class="k">3 weeks</div><div class="v"><em>Streak</em></div></div>
+      <div class="ritual-mini"><div class="k">10 weeks</div><div class="v"><em>Crown Flame</em></div></div>
+      <div class="ritual-mini"><div class="k">52 weeks</div><div class="v"><em>Eternal</em></div></div>
+      <div class="ritual-mini"><div class="k">100 weeks</div><div class="v"><em>Oracle</em></div></div>
+    </div>
+
+    <p style="text-align:center; font-family: var(--f-editorial); font-style: italic; color: var(--gold-deep); margin-top:24px;">Knowledge. Instinct. Fate.<br/>All within five minutes.</p>
 
     <div class="ritual-cta">
       <a href="verify.html" class="btn btn-primary">⌘ How questions are chosen</a>
@@ -2832,16 +2861,84 @@ body.ritual-locked { overflow: hidden; }
   </div>
 </template>
 
+<template id="ritual-resonance">
+  <div class="ritual-eyebrow">— The Nature of Bell —</div>
+  <h2 class="ritual-title">Bell never <em>becomes cash</em>.</h2>
+  <p class="ritual-subtitle">Bellは、参加資格であり、金銭ではない。</p>
+  <div class="ritual-divider"></div>
+  <div class="ritual-content">
+    <p class="accent">Bell <em>unlocks</em> qualification.<br/>Nothing more.</p>
+    <p class="jp" style="text-align:center;">Bellは資格を解放する。それだけ。</p>
+
+    <p>KINGMAKER は <strong>賭博ではない</strong>。投資商品でもない。福引でもない。ここで100円を捧げると、あなたは <strong>世界同時5分の儀式に立つ資格</strong> を得る。それは資産ではなく、譲渡もされず、現金にも戻らない。</p>
+
+    <div class="ritual-divider"></div>
+
+    <h3 style="font-family: var(--f-display); font-size: 14px; letter-spacing: 0.25em; color: var(--gold-deep); text-transform: uppercase; margin: 28px 0 10px; text-align:center;">— The Flow —</h3>
+
+    <p>1. あなたが <strong>100円を捧げる</strong>。</p>
+    <p>2. <strong>100 Bell</strong> が刻まれる。参加資格。</p>
+    <p>3. 毎週 10 Bell を鳴らして THE TRIAL に挑む。</p>
+    <p>4. 失敗してもBellは<strong>減らない</strong>。<strong>来週、また鳴らせる</strong>。</p>
+    <p>5. 3問突破 → Qualification Unlocked。</p>
+    <p>6. CROWN SLOT → King 確定。</p>
+    <p>7. King は <strong>KYC・AML・Mission Truth 審査</strong> を受ける。</p>
+    <p>8. 通過した Mission に対して、運営 <strong>Grant Fund から助成金</strong> が支払われる。</p>
+    <p>9. 30日以内に <strong>Royal Proof</strong> 提出。</p>
+
+    <div class="ritual-divider"></div>
+
+    <h3 style="font-family: var(--f-display); font-size: 14px; letter-spacing: 0.25em; color: var(--gold-deep); text-transform: uppercase; margin: 28px 0 10px; text-align:center;">— What Bell is NOT —</h3>
+    <ul class="ritual-list">
+      <li>法定通貨ではない</li>
+      <li>暗号資産ではない</li>
+      <li>前払式支払手段ではない(資金決済法 第3条)</li>
+      <li>有価証券・投資商品ではない(金商法)</li>
+      <li>ポイント・マイレージ・リワードではない</li>
+      <li>当選金・配当・賞金ではない</li>
+      <li>他のユーザーへ移転されない</li>
+    </ul>
+
+    <h3 style="font-family: var(--f-display); font-size: 14px; letter-spacing: 0.25em; color: var(--gold-deep); text-transform: uppercase; margin: 28px 0 10px; text-align:center;">— What Bell IS —</h3>
+    <ul class="ritual-list">
+      <li>KINGMAKER 内の Participation Right(参加資格)</li>
+      <li>毎週の THE TRIAL に挑む権利の単位</li>
+      <li>Mission 応募者にとっての <strong>King 候補資格を解放するための鍵</strong></li>
+      <li>金銭価値を持たない、儀式に必要な「鳴り物」</li>
+    </ul>
+
+    <div class="ritual-divider"></div>
+
+    <p class="accent">Bell never becomes cash.<br/>Grant is <em>not</em> a prize.</p>
+    <p style="text-align:center; font-family: var(--f-editorial); font-style: italic; color: var(--gold-deep); margin-top: 8px;">Bell unlocks qualification.<br/>Qualified missions may receive grants<br/>from the public Grant Fund.</p>
+  </div>
+</template>
+
 <template id="ritual-stories">
   <div class="ritual-eyebrow">— Chapter VIII · Stories —</div>
   <h2 class="ritual-title">Past <em>Kings</em></h2>
-  <p class="ritual-subtitle">これまで世界が選んだ王。</p>
+  <p class="ritual-subtitle">これまで世界が確定した王と、Standing。</p>
   <div class="ritual-divider"></div>
   <div class="ritual-content">
     <p class="accent">Every cycle leaves <em>a mark</em>.</p>
-    <p>Cycle 46 で確定した King は、借金完済を Mission とした 38歳の男性だった。Grant ¥1.2M。30日後、完済証明が提出され、Crown は <strong>Verified</strong> となった。</p>
-    <p>Cycle 45 では、Mission に対する Proof が提出されず、Crown は剥奪。次順位の候補に承継された。</p>
+    <p>Cycle 46 で確定した King は、借金完済を Mission とした 38歳の男性だった。Grant ¥1.2M。30日後、完済証明が提出され、Standing は <strong>Verified</strong> となった。</p>
+    <p>Cycle 45 では、Mission に対する Proof が提出されず、Crown は剥奪。次順位の応募者が承継された。</p>
     <p class="jp">過去全サイクルの記録は /verify で公開されている。</p>
+
+    <div class="ritual-divider"></div>
+
+    <h3 style="font-family: var(--f-display); font-size: 14px; letter-spacing: 0.25em; color: var(--gold-deep); text-transform: uppercase; margin: 28px 0 10px; text-align:center;">— Standing & Titles —</h3>
+    <p>THE TRIAL を生き残った週が積み重なると、あなたの <strong>Standing</strong> に称号が刻まれる。<strong>金銭価値はない</strong>。世界の中での「立ち位置」、それだけ。</p>
+
+    <div class="ritual-mini-grid">
+      <div class="ritual-mini"><div class="k">3 weeks</div><div class="v"><em>Streak</em></div></div>
+      <div class="ritual-mini"><div class="k">10 weeks</div><div class="v"><em>Crown Flame</em></div></div>
+      <div class="ritual-mini"><div class="k">52 weeks</div><div class="v"><em>Eternal</em></div></div>
+      <div class="ritual-mini"><div class="k">100 weeks</div><div class="v"><em>Oracle</em></div></div>
+    </div>
+
+    <p class="jp" style="text-align:center; margin-top:18px;">称号は売れない。譲れない。換金されない。<br/>ただ、世界の記憶に残る。</p>
+
     <div class="ritual-cta">
       <a href="verify.html#history" class="btn btn-primary">⌘ 過去サイクルを見る</a>
     </div>
@@ -2885,6 +2982,7 @@ body.ritual-locked { overflow: hidden; }
     '#why': 'why',
     '#trial': 'trial',
     '#bell': 'bell',
+    '#resonance': 'resonance',
     '#three': 'three',
     '#duty': 'duty',
     '#laws': 'doctrine',
