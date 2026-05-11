@@ -487,8 +487,8 @@ footer .foot-grid {
   max-width: 1280px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr;
-  gap: 48px;
+  grid-template-columns: 2fr 1fr 1fr 1fr 1.2fr;
+  gap: 40px;
   padding-bottom: 56px;
   border-bottom: var(--rule);
 }
