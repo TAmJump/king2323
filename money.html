@@ -280,7 +280,7 @@
 }
 .fund-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
   gap: 24px;
   border-top: var(--rule);
   padding-top: 32px;
@@ -620,6 +620,51 @@
     </div>
   </section>
 
+  <!-- ============== § 3.5. THE PATRON PATH ============== -->
+  <section class="chapter">
+    <div class="chapter-num">— § 3.5 · The Patron Path —</div>
+    <h2 class="chapter-title">¥100 stays sacred. But the Crown welcomes <em>Patrons</em>.</h2>
+    <p class="chapter-title-jp">参加は誰でも¥100。それ以上の支援は、別の道で受ける。</p>
+
+    <p>One person, one entry, ¥100. The voice is equal. <strong>Money does not buy more votes — ever.</strong> That law does not move.</p>
+
+    <p>But some want to give more — not to win, but to lift the Pool itself. To stand behind the Crown. The <em>Patron path</em> is for them. Patron gifts add zero Coin and zero votes; every yen flows straight into the public Fund, on the same ledger as ¥100 entries, with the same transparency.</p>
+
+    <div class="kv-table">
+      <div class="kv-row">
+        <div class="k">Patron gift amount</div>
+        <div class="v">Any amount · one-time or recurring · separate from ¥100 entry</div>
+      </div>
+      <div class="kv-row">
+        <div class="k">Coin granted</div>
+        <div class="v">0 · always · forever</div>
+      </div>
+      <div class="kv-row">
+        <div class="k">Vote weight</div>
+        <div class="v">unchanged · 1 person = 1 voice</div>
+      </div>
+      <div class="kv-row">
+        <div class="k">Where the money goes</div>
+        <div class="v">100% to public Fund · same Escrow · same ledger</div>
+      </div>
+      <div class="kv-row">
+        <div class="k">Public attribution (opt-in)</div>
+        <div class="v">"Patron of the Crown" · listed at <a href="#fund" style="color: var(--gold); text-decoration: none; border-bottom: 1px solid var(--gold);">/fund</a> · anonymity allowed</div>
+      </div>
+      <div class="kv-row">
+        <div class="k">Refunds / Tax</div>
+        <div class="v">Non-refundable · not a security · not a donation tax credit</div>
+      </div>
+    </div>
+
+    <p style="margin-top: 32px; color: var(--ash);">日本語要約 — 参加は¥100で全員平等。お金で投票数を増やすことは絶対にしない。<strong style="color: var(--ink);">「もっとPoolを大きくしたい」「Crownを支えたい」</strong>という意志は、Patron(後援者)の道で受ける。Patron資金はCoinにならない。投票権も増えない。資金は100%、参加費と同じFund・同じ台帳に流入する。任意で「Patron of the Crown」として /fund に名前掲載できる(匿名も可)。</p>
+
+    <blockquote style="font-family: var(--f-editorial); font-style: italic; font-size: clamp(18px, 2vw, 24px); color: var(--gold-deep); border-left: 3px solid var(--gold); padding: 16px 24px; margin: 40px 0 16px; background: linear-gradient(90deg, rgba(184,134,45,0.06), transparent);">
+      Voices stay equal. The Pool grows. Patrons lift the Crown — not their own vote.<br/>
+      <span style="font-family: var(--f-jp); font-style: normal; color: var(--ash); font-size: 14px; display: block; margin-top: 8px;">声は平等のまま。Poolだけが育つ。Patronは王冠を持ち上げる — 自分の票ではなく。</span>
+    </blockquote>
+  </section>
+
   <!-- ============== § 4. SCALE EXAMPLE ============== -->
   <section class="chapter">
     <div class="chapter-num">— § 4 · At scale —</div>
@@ -723,42 +768,52 @@
     <div class="fund-panel">
       <div class="fund-status">
         <span class="fund-pulse"></span>
-        <span class="fund-status-label">— Live · Cycle 47 · Updated 1s ago —</span>
+        <span class="fund-status-label" id="fund-update-label">— Live · Cycle 47 · Updated 1s ago —</span>
       </div>
 
-      <div class="fund-current">¥ 3,248,000</div>
+      <div class="fund-current" id="fund-cycle-cap">¥ 3,248,000</div>
       <div class="fund-current-label">— Grant Pool · this Cycle · Cap —</div>
 
       <div class="fund-grid">
         <div class="fund-cell">
           <div class="k">Current Fund</div>
-          <div class="v">¥ 5,872,400</div>
+          <div class="v" id="fund-current-total">¥ 5,872,400</div>
           <div class="sub">All-time accumulation, post-disbursement</div>
         </div>
         <div class="fund-cell">
-          <div class="k">Incoming · 7d</div>
-          <div class="v in">+ ¥ 857,400</div>
-          <div class="sub">14,290 new pass purchases × ¥60</div>
+          <div class="k">Member Inflow · 7d</div>
+          <div class="v in" id="fund-inflow">+ ¥ 857,400</div>
+          <div class="sub">¥100 × Members, 60% to Fund</div>
+        </div>
+        <div class="fund-cell">
+          <div class="k">Patron Inflow · 7d</div>
+          <div class="v in" id="fund-patron">+ ¥ 124,800</div>
+          <div class="sub">Direct donations · 100% to Fund · zero votes</div>
         </div>
         <div class="fund-cell">
           <div class="k">Outgoing · 7d</div>
-          <div class="v out">− ¥ 1,000,000</div>
+          <div class="v out" id="fund-outflow">− ¥ 1,000,000</div>
           <div class="sub">Cycle 46 King · Silver tier · Hokori</div>
         </div>
         <div class="fund-cell">
           <div class="k">Reserve</div>
-          <div class="v">¥ 2,624,400</div>
+          <div class="v" id="fund-reserve">¥ 2,624,400</div>
           <div class="sub">Held for cycle continuity, not yet allocated</div>
+        </div>
+        <div class="fund-cell">
+          <div class="k">Live tick · this second</div>
+          <div class="v in" id="fund-tick">+ ¥ 0</div>
+          <div class="sub">Member + Patron, per-second flow</div>
         </div>
       </div>
 
       <div class="fund-cycle-bar">
         <div class="fund-cycle-bar-label">
-          <span>Cycle 47 progress · Friday 23:23 → Monday 23:23</span>
-          <span>67% · 2d 14h 37m</span>
+          <span>Cycle 47 progress · Friday 23:23 → Monday 23:23 JST</span>
+          <span id="fund-cycle-progress-label">67% · 2d 14h 37m</span>
         </div>
         <div class="fund-cycle-track">
-          <div class="fund-cycle-fill"></div>
+          <div class="fund-cycle-fill" id="fund-cycle-fill-bar"></div>
         </div>
       </div>
     </div>
@@ -892,6 +947,7 @@
 </footer>
 
 <script src="js/i18n.js"></script>
+<script src="js/main.js"></script>
 
 </body>
 </html>

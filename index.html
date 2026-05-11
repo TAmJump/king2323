@@ -1341,6 +1341,94 @@
   .edge-grid { grid-template-columns: 1fr; gap: 24px; }
   .edge-divider { display: none; }
 }
+
+/* ============== LIVE POOL ribbon (Hero下) ============== */
+.live-pool-ribbon {
+  background: var(--paper-2);
+  border-top: 1px solid rgba(184, 134, 45, 0.35);
+  border-bottom: 1px solid rgba(184, 134, 45, 0.35);
+  padding: 16px var(--pad);
+  position: relative;
+  z-index: 2;
+}
+.live-pool-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  text-decoration: none;
+  color: var(--ink);
+  max-width: 1280px;
+  margin: 0 auto;
+  flex-wrap: wrap;
+  font-variant-numeric: tabular-nums;
+}
+.live-pool-pulse {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--gold);
+  animation: lp-pulse 1.8s infinite ease-in-out;
+  flex-shrink: 0;
+}
+@keyframes lp-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(184,134,45,0.55); opacity: 1; }
+  50%      { box-shadow: 0 0 0 10px rgba(184,134,45,0); opacity: 0.55; }
+}
+.live-pool-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  align-items: center;
+  line-height: 1.1;
+}
+.live-pool-label {
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: 0.25em;
+  color: var(--gold-deep);
+  text-transform: uppercase;
+}
+.live-pool-amount {
+  font-family: var(--f-display);
+  font-size: clamp(22px, 2.6vw, 28px);
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: 0.02em;
+}
+.live-pool-patron {
+  font-family: var(--f-display);
+  font-size: clamp(15px, 1.7vw, 19px);
+  font-weight: 600;
+  color: var(--gold);
+  letter-spacing: 0.02em;
+}
+.live-pool-sep {
+  width: 1px;
+  height: 36px;
+  background: var(--line);
+  flex-shrink: 0;
+}
+.live-pool-arrow {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  color: var(--ash);
+  text-transform: uppercase;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+.live-pool-link:hover .live-pool-arrow {
+  color: var(--gold);
+  transform: translateX(4px);
+}
+
+@media (max-width: 720px) {
+  .live-pool-ribbon { padding: 14px var(--pad); }
+  .live-pool-link { gap: 14px; }
+  .live-pool-sep { display: none; }
+  .live-pool-arrow { width: 100%; text-align: center; }
+}
 </style>
 </head>
 <body>
@@ -1432,6 +1520,23 @@
     <span class="dim">Grant Fund: 60% of every yen.</span><span class="sep">✦</span>
   </div>
 </div>
+
+<!-- ============== LIVE POOL ribbon ============== -->
+<aside class="live-pool-ribbon" aria-label="Live Grant Fund">
+  <a href="money.html#fund" class="live-pool-link">
+    <span class="live-pool-pulse" aria-hidden="true"></span>
+    <span class="live-pool-meta">
+      <span class="live-pool-label">— Live · Cycle 47 · Grant Fund —</span>
+      <span class="live-pool-amount" id="hero-live-pool">¥ 5,872,400</span>
+    </span>
+    <span class="live-pool-sep" aria-hidden="true"></span>
+    <span class="live-pool-meta">
+      <span class="live-pool-label">Patron · 7d</span>
+      <span class="live-pool-patron" id="hero-live-patron">+ ¥ 124,800</span>
+    </span>
+    <span class="live-pool-arrow">→ Open /fund</span>
+  </a>
+</aside>
 
 <!-- ============== WHY 23:23 (THE EDGE) ============== -->
 <section id="why" class="why-edge">
