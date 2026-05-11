@@ -145,6 +145,7 @@ a:hover { color: var(--gold); }
   font-weight: 600;
   letter-spacing: 0.32em;
   text-transform: uppercase;
+  white-space: nowrap;
   border: 1px solid var(--gold);
   background: transparent;
   color: var(--gold);
@@ -574,6 +575,8 @@ footer .foot-tagline {
   cursor: pointer;
   transition: border-color 0.2s, color 0.2s, background 0.2s;
   min-width: 70px;
+  white-space: nowrap;
+  flex-shrink: 0;
   justify-content: space-between;
 }
 .lang-trigger:hover { border-color: var(--gold); color: var(--gold-deep); }
