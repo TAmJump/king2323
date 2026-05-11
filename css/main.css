@@ -531,18 +531,16 @@ html[lang="hi"] .hero-tag-jp {
 }
 
 /* ============== GOOGLE TRANSLATE - HIDE DEFAULT UI ============== */
-/* Google injects a banner at top of page + various decorations.
-   We use only the hidden <select> via .goog-te-combo. Kill everything else. */
+/* We hide the visible bits Google injects but NEVER touch .goog-te-combo
+   (the <select> we drive programmatically) or its container.
+   The container itself is positioned off-screen via inline style. */
 
+.goog-te-banner-frame,
 .goog-te-banner-frame.skiptranslate,
-.goog-te-gadget-icon,
-.goog-logo-link,
-.goog-te-gadget span,
 #goog-gt-tt,
 .goog-tooltip,
 .goog-tooltip:hover,
-.VIpgJd-ZVi9od-l4eHX-hSRGPd,
-.VIpgJd-ZVi9od-ORHb-OEVmcd {
+.goog-text-highlight {
   display: none !important;
 }
 
@@ -552,11 +550,7 @@ body {
   position: static !important;
 }
 
-html, body {
-  min-height: 100vh;
-}
-
-/* Suppress Google's font/colour overrides on translated text */
+/* Don't let Google's auto-injected font/colour override our typography */
 .goog-text-highlight {
   background: transparent !important;
   box-shadow: none !important;

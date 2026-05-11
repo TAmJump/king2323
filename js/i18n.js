@@ -20,6 +20,8 @@
       console.log('[i18n] Google Translate initialized');
 
       // Wait for the <select> Google injects, then unblock
+      let attempts = 0;
+      const maxAttempts = 100;  // 10 seconds (100ms × 100)
       const waitForCombo = () => {
         const combo = document.querySelector('.goog-te-combo');
         if (combo) {
@@ -29,8 +31,11 @@
             applyLang(pendingLang);
             pendingLang = null;
           }
-        } else {
+        } else if (attempts++ < maxAttempts) {
           setTimeout(waitForCombo, 100);
+        } else {
+          console.error('[i18n] Combo never appeared after 10s — dumping element contents:');
+          console.error(document.querySelector('#google_translate_element')?.innerHTML || '(empty)');
         }
       };
       waitForCombo();
