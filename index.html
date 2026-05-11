@@ -192,11 +192,56 @@
 @media (max-width: 900px) {
   .hero {
     grid-template-columns: 1fr;
-    padding-top: 100px;
+    padding: 80px var(--pad) 48px;
     text-align: center;
+    gap: 40px;
+    min-height: auto;
   }
+  .hero h1 {
+    font-size: clamp(32px, 9vw, 44px);
+    margin-bottom: 20px;
+    line-height: 1.0;
+  }
+  .hero h1 .small {
+    font-size: 11px;
+    margin-top: 10px;
+    letter-spacing: 0.25em;
+  }
+  .hero-eyebrow { margin-bottom: 24px; }
+  .hero-tag { font-size: 16px; margin-bottom: 6px; }
+  .hero-tag-jp { font-size: 12px; margin-bottom: 24px; }
   .hero-cta { justify-content: center; }
+  .hero-cta .btn { padding: 14px 22px; font-size: 11px; }
   .hero-eyebrow::before { display: inline-block; }
+
+  /* Hero right (logo + countdown) */
+  .hero-right { padding: 0; }
+
+  /* Countdown 縮小 */
+  .countdown-time {
+    font-size: clamp(26px, 7vw, 34px);
+    gap: 10px;
+    letter-spacing: 0.02em;
+  }
+  .countdown-unit { gap: 2px; }
+  .countdown-unit .lab {
+    font-size: 9px;
+    letter-spacing: 0.15em;
+  }
+  .countdown-label { font-size: 9px; letter-spacing: 0.3em; }
+  .countdown-target { font-size: 10px; }
+}
+
+@media (max-width: 420px) {
+  .hero { padding: 76px 18px 36px; gap: 32px; }
+  .hero h1 { font-size: 28px; }
+  .hero h1 .small { font-size: 10px; }
+  .hero-tag { font-size: 15px; }
+  .hero-eyebrow { font-size: 9px; letter-spacing: 0.25em; }
+  .countdown-time { font-size: 22px; gap: 6px; }
+  .countdown-unit .lab { font-size: 8px; }
+  .hero-cta { flex-direction: column; gap: 10px; }
+  .hero-cta .btn { width: 100%; max-width: 280px; }
 }
 
 /* ============== TICKER ============== */
@@ -1449,6 +1494,7 @@
     <li><a href="#duty">Royal Duty</a></li>
     <li><a href="#laws">Doctrine</a></li>
     <li><a href="#stories">Stories</a></li>
+    <li class="nav-menu-cta"><a href="#apply">Begin</a></li>
   </ul>
   <div id="google_translate_element" style="position:fixed;bottom:0;right:0;width:1px;height:1px;opacity:0;pointer-events:none;overflow:hidden;z-index:-1;"></div>
   <div class="lang-picker notranslate" translate="no">
@@ -1457,6 +1503,11 @@
     <button class="lang-btn notranslate" translate="no" data-lang="ko">KO</button>
     <button class="lang-btn notranslate" translate="no" data-lang="hi">HI</button>
   </div>
+  <button class="nav-toggle notranslate" translate="no" aria-label="Menu" aria-expanded="false">
+    <span class="bar"></span>
+    <span class="bar"></span>
+    <span class="bar"></span>
+  </button>
   <div class="nav-cta">
     <a href="#apply" class="btn btn-primary" style="padding: 12px 22px; font-size: 11px;">Begin</a>
   </div>
@@ -1484,7 +1535,7 @@
     <div class="gorilla-frame">
       <img src="assets/logo-v3-512.png" alt="King Gorilla" />
     </div>
-    <div class="countdown" id="countdown">
+    <div class="countdown notranslate" id="countdown" translate="no">
       <div class="countdown-label">— The Bell opens in —</div>
       <div class="countdown-time tabular">
         <div class="countdown-unit"><span class="num" id="cd-d">02</span><span class="lab">Days</span></div>
@@ -1495,7 +1546,7 @@
         <span class="colon">·</span>
         <div class="countdown-unit"><span class="num" id="cd-s">52</span><span class="lab">Sec</span></div>
       </div>
-      <div class="countdown-target" id="cd-target">Friday · 23:23 · Tokyo</div>
+      <div class="countdown-target" id="cd-target">Friday · 23:23 JST</div>
     </div>
   </div>
 </header>

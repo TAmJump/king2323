@@ -87,6 +87,29 @@
   window.addEventListener('scroll', updateActiveNav, { passive: true });
   updateActiveNav();
 
+  // ---------- Mobile hamburger menu ----------
+  const navToggle = document.querySelector('.nav-toggle');
+  const navMenu = document.querySelector('.nav-menu');
+  if (navToggle && navMenu) {
+    const closeMenu = () => {
+      navToggle.classList.remove('open');
+      navMenu.classList.remove('open');
+      navToggle.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+    };
+    navToggle.addEventListener('click', () => {
+      const isOpen = navMenu.classList.toggle('open');
+      navToggle.classList.toggle('open', isOpen);
+      navToggle.setAttribute('aria-expanded', String(isOpen));
+      document.body.style.overflow = isOpen ? 'hidden' : '';
+    });
+    navMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMenu));
+    // Close on escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && navMenu.classList.contains('open')) closeMenu();
+    });
+  }
+
   // ---------- /fund Live counters ----------
   // 直近の金曜23:23 JST(現サイクル開始時刻)
   function getCycleStartMs() {
