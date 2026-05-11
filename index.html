@@ -47,6 +47,38 @@
   margin-bottom: 28px;
   color: var(--bone);
 }
+
+/* 2-line invariant: each line is one full sentence, never wrapped.
+   font-size is driven by the LINE's container width so the whole
+   sentence always fits — no matter the viewport. */
+.hero-h1-2line {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.12em;
+  /* override the parent's font-size — we want viewport-driven sizing
+     for the lines so they always fit on one line each. */
+  font-size: inherit;
+}
+.hero-h1-2line .line {
+  display: block;
+  white-space: nowrap;
+  /* The longer of the two lines: "But everyone can make one." ≈ 26 chars.
+     With ~0.5em per char in this serif weight, we need ~13em wide font slot.
+     So target font-size ≈ container-width / 13.
+     Use cqw (container query width) if available, else fall back to vw. */
+  font-size: clamp(16px, 7.2cqw, 44px);
+}
+@supports not (container-type: inline-size) {
+  .hero-h1-2line .line {
+    font-size: clamp(16px, 7vw, 44px);
+  }
+}
+.hero-left {
+  /* Establish a container so the lines size relative to the left column,
+     not the whole viewport. */
+  container-type: inline-size;
+}
 .hero h1 .gold {
   background: linear-gradient(180deg, var(--gold-bright), var(--gold) 50%, var(--gold-deep));
   -webkit-background-clip: text;
@@ -1762,10 +1794,9 @@ body.ritual-locked { overflow: hidden; }
 <!-- ============== HERO ============== -->
 <header class="hero" id="top">
   <div class="hero-left">
-    <h1 class="fade-up d1 notranslate" translate="no">
-      Not everyone can be<br/>
-      <span class="gold">king</span>.<br/>
-      But everyone can<br/>make <span class="gold">one</span>.
+    <h1 class="fade-up d1 notranslate hero-h1-2line" translate="no">
+      <span class="line">Not everyone can be <span class="gold">king</span>.</span>
+      <span class="line">But everyone can make <span class="gold">one</span>.</span>
       <span class="small">— this week, only this week —</span>
     </h1>
     <div class="hero-cta fade-up d3">
