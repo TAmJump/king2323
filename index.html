@@ -40,10 +40,10 @@
 .hero-left { position: relative; z-index: 2; }
 .hero-eyebrow { margin-bottom: 32px; }
 .hero h1 {
-  font-size: clamp(48px, 7.6vw, 110px);
+  font-size: clamp(40px, 5.4vw, 84px);
   font-weight: 800;
   letter-spacing: 0.02em;
-  line-height: 0.95;
+  line-height: 1.0;
   margin-bottom: 32px;
   color: var(--bone);
 }
@@ -1483,6 +1483,241 @@
   .live-pool-sep { display: none; }
   .live-pool-arrow { width: 100%; text-align: center; }
 }
+
+/* ============== RITUAL SHEET (kakkoii overlay) ============== */
+.ritual-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: rgba(15, 14, 12, 0);
+  backdrop-filter: blur(0px);
+  -webkit-backdrop-filter: blur(0px);
+  pointer-events: none;
+  opacity: 0;
+  transition: background 0.6s cubic-bezier(0.2, 0.8, 0.2, 1),
+              backdrop-filter 0.6s cubic-bezier(0.2, 0.8, 0.2, 1),
+              opacity 0.4s;
+}
+.ritual-overlay.open {
+  pointer-events: auto;
+  opacity: 1;
+  background: rgba(15, 14, 12, 0.6);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+}
+.ritual-sheet {
+  width: 100%;
+  max-width: 720px;
+  max-height: 92vh;
+  background: linear-gradient(180deg, #FBF8F0 0%, #F2EBDA 100%);
+  border-top: 3px solid var(--gold);
+  border-radius: 24px 24px 0 0;
+  box-shadow: 0 -24px 80px rgba(0, 0, 0, 0.4),
+              inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  transform: translateY(100%);
+  transition: transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1);
+  overflow-y: auto;
+  position: relative;
+  scrollbar-width: thin;
+}
+.ritual-overlay.open .ritual-sheet { transform: translateY(0); }
+
+.ritual-sheet::before {
+  content: '';
+  position: absolute;
+  top: 12px; left: 50%;
+  transform: translateX(-50%);
+  width: 48px; height: 4px;
+  background: var(--line);
+  border-radius: 4px;
+}
+
+.ritual-close {
+  position: absolute;
+  top: 24px; right: 24px;
+  width: 40px; height: 40px;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--ink);
+  font-size: 18px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.2s, color 0.2s;
+  z-index: 5;
+}
+.ritual-close:hover { border-color: var(--gold); color: var(--gold); }
+
+.ritual-body { padding: 56px 36px 40px; }
+.ritual-eyebrow {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.35em;
+  color: var(--gold-deep);
+  text-transform: uppercase;
+  text-align: center;
+  margin-bottom: 18px;
+}
+.ritual-title {
+  font-family: var(--f-display);
+  font-size: clamp(28px, 5vw, 42px);
+  font-weight: 700;
+  color: var(--ink);
+  text-align: center;
+  line-height: 1.15;
+  letter-spacing: 0.01em;
+  margin-bottom: 8px;
+}
+.ritual-title em {
+  font-family: var(--f-editorial);
+  font-style: italic;
+  font-weight: 500;
+  background: linear-gradient(180deg, var(--gold-bright), var(--gold) 50%, var(--gold-deep));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.ritual-subtitle {
+  font-family: var(--f-jp);
+  font-size: 14px;
+  color: var(--ash);
+  text-align: center;
+  margin-bottom: 32px;
+  letter-spacing: 0.05em;
+}
+.ritual-divider {
+  width: 80px;
+  height: 1px;
+  margin: 28px auto;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+.ritual-content {
+  font-family: var(--f-body);
+  font-size: 15px;
+  color: var(--ink-2);
+  line-height: 1.75;
+  max-width: 580px;
+  margin: 0 auto;
+}
+.ritual-content p { margin-bottom: 14px; }
+.ritual-content p:last-child { margin-bottom: 0; }
+.ritual-content .jp {
+  font-family: var(--f-jp);
+  color: var(--ash);
+  font-size: 13px;
+  margin-top: 4px;
+}
+.ritual-content strong {
+  color: var(--gold-deep);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+.ritual-content .accent {
+  font-family: var(--f-display);
+  font-size: clamp(20px, 3vw, 26px);
+  color: var(--ink);
+  text-align: center;
+  margin: 24px 0;
+  letter-spacing: 0.04em;
+  font-weight: 600;
+}
+.ritual-content .accent em {
+  font-family: var(--f-editorial);
+  font-style: italic;
+  font-weight: 500;
+  color: var(--gold);
+}
+.ritual-list {
+  list-style: none;
+  margin: 24px 0;
+  padding: 0;
+}
+.ritual-list li {
+  position: relative;
+  padding: 10px 0 10px 28px;
+  border-bottom: 1px dashed var(--line);
+  font-size: 14px;
+  color: var(--ink-2);
+}
+.ritual-list li::before {
+  content: '✦';
+  position: absolute;
+  left: 6px;
+  top: 12px;
+  color: var(--gold);
+  font-size: 10px;
+}
+.ritual-list li:last-child { border-bottom: none; }
+
+.ritual-cta {
+  margin: 32px 0 8px;
+  text-align: center;
+}
+.ritual-cta .btn-primary {
+  display: inline-block;
+  padding: 16px 36px;
+  font-size: 12px;
+  letter-spacing: 0.25em;
+}
+.ritual-note {
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  color: var(--dust);
+  text-align: center;
+  text-transform: uppercase;
+  margin-top: 16px;
+}
+.ritual-mini-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin: 24px 0;
+}
+.ritual-mini {
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid var(--line);
+  padding: 18px 16px;
+  border-radius: 6px;
+  text-align: center;
+}
+.ritual-mini .k {
+  font-family: var(--f-mono);
+  font-size: 9px;
+  letter-spacing: 0.3em;
+  color: var(--gold-deep);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.ritual-mini .v {
+  font-family: var(--f-display);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--ink);
+}
+.ritual-mini .v em {
+  font-family: var(--f-editorial);
+  font-style: italic;
+  font-weight: 500;
+  color: var(--gold);
+}
+
+body.ritual-locked { overflow: hidden; }
+
+@media (max-width: 640px) {
+  .ritual-sheet { max-height: 88vh; border-radius: 20px 20px 0 0; }
+  .ritual-body { padding: 48px 22px 32px; }
+  .ritual-title { font-size: 26px; }
+  .ritual-content { font-size: 14px; }
+  .ritual-content .accent { font-size: 18px; }
+  .ritual-close { top: 20px; right: 20px; width: 36px; height: 36px; }
+  .ritual-mini-grid { grid-template-columns: 1fr; gap: 12px; }
+}
 </style>
 </head>
 <body>
@@ -1525,18 +1760,14 @@
 <!-- ============== HERO ============== -->
 <header class="hero" id="top">
   <div class="hero-left">
-    <div class="eyebrow hero-eyebrow fade-up">Global Ritual Support Platform · v1.0</div>
     <h1 class="fade-up d1 notranslate" translate="no">
       Not everyone can be<br/>
       <span class="gold">king</span>.<br/>
       But everyone can<br/>make <span class="gold">one</span>.
       <span class="small">— this week, only this week —</span>
     </h1>
-    <p class="hero-tag fade-up d2">To be chosen, you must choose.</p>
-    <p class="hero-tag-jp fade-up d2">Not everyone can be king. But everyone can make one.</p>
     <div class="hero-cta fade-up d3">
-      <a href="#apply" class="btn btn-primary">Take 100 Coin · ¥100</a>
-      <a href="#why" class="btn btn-ghost">Why 23:23?</a>
+      <button type="button" class="btn btn-primary" data-ritual-open="coin">100 Coin · ¥100</button>
     </div>
   </div>
 
@@ -2340,6 +2571,249 @@
     <span>Not a lottery · Not an investment · Not a wager · Coin is a voice, never cash</span>
   </div>
 </footer>
+
+<!-- ============== RITUAL OVERLAY (kakkoii) ============== -->
+<div class="ritual-overlay" id="ritualOverlay" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="ritual-sheet" role="document">
+    <button class="ritual-close" type="button" aria-label="Close" id="ritualClose">✕</button>
+    <div class="ritual-body" id="ritualBody"><!-- content injected by JS --></div>
+  </div>
+</div>
+
+<!-- ============== RITUAL CONTENT TEMPLATES ============== -->
+<template id="ritual-coin">
+  <div class="ritual-eyebrow">— The Offering —</div>
+  <h2 class="ritual-title">100 Coin <em>· ¥100</em></h2>
+  <p class="ritual-subtitle">100円。100コイン。10票。一週間。</p>
+  <div class="ritual-divider"></div>
+  <div class="ritual-content">
+    <p class="accent">One Coin is <em>one vote</em>.<br/>Never cash.</p>
+    <p>¥100 を支払うと、KINGMAKER に <strong>100 Coin</strong> が刻まれる。これは資産ではない。換金もできない。譲れない。残らない。<strong>毎週の儀式に投じる声</strong>、それだけ。</p>
+    <p class="jp">100 Coin で、その週のThe Three(3候補)に最大 <strong>10票</strong> まで投じられる。残った Coin は次週に持ち越される。</p>
+
+    <div class="ritual-mini-grid">
+      <div class="ritual-mini"><div class="k">Coin</div><div class="v">100</div></div>
+      <div class="ritual-mini"><div class="k">Price</div><div class="v">¥ 100</div></div>
+      <div class="ritual-mini"><div class="k">Votes / Bell</div><div class="v"><em>up to 10</em></div></div>
+      <div class="ritual-mini"><div class="k">Refund</div><div class="v">—</div></div>
+    </div>
+
+    <ul class="ritual-list">
+      <li>1 Coin = 1 Vote. 換金不可・譲渡不可・払戻不可。</li>
+      <li>自分のMissionへの投票は禁止(無効化されます)。</li>
+      <li>未使用 Coin の有効期限: 取得後12ヶ月。</li>
+      <li>決済は Square 経由。クレジット / Apple Pay / Google Pay 対応。</li>
+    </ul>
+
+    <div class="ritual-cta">
+      <a href="https://square.link/u/bc9p0BET" target="_blank" rel="noopener" class="btn btn-primary">⌘ Proceed to Square · 決済へ</a>
+      <div class="ritual-note">— Webhook 結線テスト中 · Sandbox環境 —</div>
+    </div>
+  </div>
+</template>
+
+<template id="ritual-why">
+  <div class="ritual-eyebrow">— Chapter I · Why 23:23 —</div>
+  <h2 class="ritual-title">Why <em>23:23</em>?</h2>
+  <p class="ritual-subtitle">なぜ23:23なのか。</p>
+  <div class="ritual-divider"></div>
+  <div class="ritual-content">
+    <p class="accent">23時23分。<em>一日の終わり、王が交代する刻。</em></p>
+    <p>23:23 は、一日が終わる直前。世界中の誰もが「もう寝るか」と思う、その<strong>境界の瞬間</strong>。KINGMAKER の Bell はこの時刻にだけ開く。一週間のうち、たった5分。</p>
+    <p class="jp">金曜 23:23 JST に Bell が開き、月曜 23:23 JST に閉じる。世界中、各国の現地時間で同期。</p>
+    <p>この時間に意味があるのではない。<strong>時間に意味を与える儀式</strong>がここにある。</p>
+  </div>
+</template>
+
+<template id="ritual-bell">
+  <div class="ritual-eyebrow">— Chapter II · The Bell —</div>
+  <h2 class="ritual-title">The <em>Bell</em></h2>
+  <p class="ritual-subtitle">鐘が鳴る、その瞬間にだけ。</p>
+  <div class="ritual-divider"></div>
+  <div class="ritual-content">
+    <p class="accent">毎週、<em>金曜 23:23</em> に開く。</p>
+    <p>Bell が開いた瞬間、その週の <strong>The Three</strong>(3候補)が現れる。投票は <strong>月曜 23:23</strong> に閉じる。3日間、世界中が投票し、ひとりの <strong>King</strong> が確定する。</p>
+    <p class="jp">Bell の開閉は各国の現地金曜23:23に同期。JP=東京、US=西海岸、IN=コルカタ、KR=ソウル…</p>
+    <ul class="ritual-list">
+      <li><strong>Bell Open</strong>: 金曜 23:23(各国Local)</li>
+      <li><strong>Vote Close</strong>: 月曜 23:23(各国Local)</li>
+      <li><strong>King Crowned</strong>: 月曜 23:30 直後</li>
+      <li><strong>Royal Proof Due</strong>: 戴冠から30日以内</li>
+    </ul>
+  </div>
+</template>
+
+<template id="ritual-three">
+  <div class="ritual-eyebrow">— Chapter III · The Three —</div>
+  <h2 class="ritual-title">The <em>Three</em></h2>
+  <p class="ritual-subtitle">3候補。運営は選ばない。世界が選ぶ。</p>
+  <div class="ritual-divider"></div>
+  <div class="ritual-content">
+    <p class="accent">運営は <em>The Three</em> を選ばない。</p>
+    <p>Bell が開く直前、世界の公開数字 — <strong>Bitcoin 価格 / Nikkei 225 終値 / S&P 500 終値 / 応募者数</strong> — が SHA-256 で混ぜられ、その結果から3人が機械的に導出される。</p>
+    <p class="jp">運営の意志は一切介入しない。誰でも /verify ページで結果を再計算できる。</p>
+    <div class="ritual-cta">
+      <a href="verify.html" class="btn btn-primary">⌘ /verify を開く</a>
+      <div class="ritual-note">— Not trusted. Verified. —</div>
+    </div>
+  </div>
+</template>
+
+<template id="ritual-money">
+  <div class="ritual-eyebrow">— Chapter IV · The Money —</div>
+  <h2 class="ritual-title">The <em>Money</em></h2>
+  <p class="ritual-subtitle">100円のうち、60円がKingのもとへ。</p>
+  <div class="ritual-divider"></div>
+  <div class="ritual-content">
+    <p class="accent">¥100 のうち、<em>¥60 が Grant</em> に。</p>
+    <p>100円の決済は分割される。<strong>60% = Grant Fund</strong>(Kingへの援助金プール)、<strong>30% = 運営</strong>、<strong>10% = 決済手数料</strong>。Fund は常時公開される。</p>
+    <div class="ritual-mini-grid">
+      <div class="ritual-mini"><div class="k">Grant Fund</div><div class="v"><em>60%</em></div></div>
+      <div class="ritual-mini"><div class="k">Operations</div><div class="v">30%</div></div>
+      <div class="ritual-mini"><div class="k">Processing</div><div class="v">10%</div></div>
+      <div class="ritual-mini"><div class="k">Coin → Cash</div><div class="v">—</div></div>
+    </div>
+    <div class="ritual-cta">
+      <a href="money.html" class="btn btn-primary">⌘ Money Logic を読む</a>
+    </div>
+  </div>
+</template>
+
+<template id="ritual-duty">
+  <div class="ritual-eyebrow">— Chapter V · Royal Duty —</div>
+  <h2 class="ritual-title">Royal <em>Duty</em></h2>
+  <p class="ritual-subtitle">王冠には重みがある。</p>
+  <div class="ritual-divider"></div>
+  <div class="ritual-content">
+    <p class="accent"><em>The Crown</em> has weight.</p>
+    <p>Kingとして確定したら、それで終わりではない。<strong>30日以内に「Mission を達成した証明」</strong>を提出する。借金返済なら完済証明、開業なら開業届と店舗写真、旅なら現地写真。</p>
+    <p class="jp">人を晒すのではない。<strong>結果を晒す</strong>。提出されなければ Crown は剥奪され、次順位の候補に承継される。</p>
+    <ul class="ritual-list">
+      <li>Mission Truth Agreement への署名(応募時必須)</li>
+      <li>Grant受領から30日以内に Proof 提出</li>
+      <li>提出物の真偽が問われた場合の調査受諾</li>
+      <li>虚偽発覚時の返還義務 + 永久利用停止</li>
+    </ul>
+  </div>
+</template>
+
+<template id="ritual-verify">
+  <div class="ritual-eyebrow">— Chapter VI · Verify —</div>
+  <h2 class="ritual-title">Not trusted. <em>Verified.</em></h2>
+  <p class="ritual-subtitle">信じるな。検証しろ。</p>
+  <div class="ritual-divider"></div>
+  <div class="ritual-content">
+    <p class="accent">Don't trust us. <em>Compute it yourself.</em></p>
+    <p>The Three の選定も、King の確定も、すべて <strong>公開された数式 + 公開された Seed</strong> から導かれる。誰でも、自分のブラウザの中で、SHA-256 を再計算して<strong>運営の結果と一致するか確かめられる</strong>。</p>
+    <p class="jp">運営が嘘をついていたら、計算結果はあなたのブラウザの中で食い違う。</p>
+    <div class="ritual-cta">
+      <a href="verify.html" class="btn btn-primary">⌘ /verify · Compute Yourself</a>
+    </div>
+  </div>
+</template>
+
+<template id="ritual-doctrine">
+  <div class="ritual-eyebrow">— Chapter VII · Doctrine —</div>
+  <h2 class="ritual-title">The <em>Doctrine</em></h2>
+  <p class="ritual-subtitle">5つの掟。</p>
+  <div class="ritual-divider"></div>
+  <div class="ritual-content">
+    <p class="accent">5 Laws. <em>No exceptions.</em></p>
+    <ul class="ritual-list">
+      <li><strong>I.</strong> Coin is a voice, never cash. — Coinは声であり、金ではない。</li>
+      <li><strong>II.</strong> Never choose yourself. — 自分に投票してはならない。</li>
+      <li><strong>III.</strong> The Three are derived, not chosen. — The Three は選ばれず、導かれる。</li>
+      <li><strong>IV.</strong> The Crown has weight. — 王冠には重みがある。</li>
+      <li><strong>V.</strong> Expose the result, not the person. — 人を晒すのではなく、結果を晒す。</li>
+    </ul>
+  </div>
+</template>
+
+<template id="ritual-stories">
+  <div class="ritual-eyebrow">— Chapter VIII · Stories —</div>
+  <h2 class="ritual-title">Past <em>Kings</em></h2>
+  <p class="ritual-subtitle">これまで世界が選んだ王。</p>
+  <div class="ritual-divider"></div>
+  <div class="ritual-content">
+    <p class="accent">Every cycle leaves <em>a mark</em>.</p>
+    <p>Cycle 46 で確定した King は、借金完済を Mission とした 38歳の男性だった。Grant ¥1.2M。30日後、完済証明が提出され、Crown は <strong>Verified</strong> となった。</p>
+    <p>Cycle 45 では、Mission に対する Proof が提出されず、Crown は剥奪。次順位の候補に承継された。</p>
+    <p class="jp">過去全サイクルの記録は /verify で公開されている。</p>
+    <div class="ritual-cta">
+      <a href="verify.html#history" class="btn btn-primary">⌘ 過去サイクルを見る</a>
+    </div>
+  </div>
+</template>
+
+<!-- ============== RITUAL OVERLAY JS ============== -->
+<script>
+(function () {
+  const overlay = document.getElementById('ritualOverlay');
+  const body = document.getElementById('ritualBody');
+  const closeBtn = document.getElementById('ritualClose');
+  if (!overlay || !body) return;
+
+  function open(key) {
+    const tpl = document.getElementById('ritual-' + key);
+    if (!tpl) { console.warn('ritual template missing:', key); return; }
+    body.innerHTML = '';
+    body.appendChild(tpl.content.cloneNode(true));
+    body.scrollTop = 0;
+    overlay.classList.add('open');
+    overlay.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('ritual-locked');
+  }
+  function close() {
+    overlay.classList.remove('open');
+    overlay.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('ritual-locked');
+  }
+
+  // open buttons
+  document.querySelectorAll('[data-ritual-open]').forEach(el => {
+    el.addEventListener('click', (e) => {
+      e.preventDefault();
+      open(el.getAttribute('data-ritual-open'));
+    });
+  });
+
+  // hamburger nav items → open ritual (no page jump)
+  const navMap = {
+    '#why': 'why',
+    '#bell': 'bell',
+    '#three': 'three',
+    '#duty': 'duty',
+    '#laws': 'doctrine',
+    '#stories': 'stories',
+    '#apply': 'coin'
+  };
+  document.querySelectorAll('.nav-menu a').forEach(a => {
+    const href = a.getAttribute('href');
+    if (navMap[href]) {
+      a.addEventListener('click', (e) => {
+        e.preventDefault();
+        const navMenu = document.querySelector('.nav-menu');
+        const navToggle = document.querySelector('.nav-toggle');
+        if (navMenu && navToggle) {
+          navMenu.classList.remove('open');
+          navToggle.classList.remove('open');
+          navToggle.setAttribute('aria-expanded', 'false');
+          document.body.style.overflow = '';
+        }
+        // small delay so menu closes visibly first
+        setTimeout(() => open(navMap[href]), 80);
+      });
+    }
+  });
+
+  // close
+  closeBtn.addEventListener('click', close);
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) close(); });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && overlay.classList.contains('open')) close();
+  });
+})();
+</script>
 
 <script src="js/i18n.js"></script>
 <script src="js/main.js"></script>
