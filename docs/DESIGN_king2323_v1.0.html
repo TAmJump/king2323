@@ -1,0 +1,1818 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<title>KINGMAKER 23:23 — 設計書・引き継ぎ書 v1.0</title>
+<style>
+:root {
+  --paper: #FAF7F0;
+  --paper-2: #F2EBDA;
+  --ink: #0F0E0C;
+  --ink-2: #2A251D;
+  --line: #C9BC9A;
+  --gold: #B8862D;
+  --gold-deep: #7A5A18;
+  --crimson: #8B1A1A;
+  --jade: #1F4D3A;
+  --code-bg: #1E1B16;
+  --code-ink: #E8DCB5;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Hiragino Mincho ProN', 'Yu Mincho', 'Noto Serif JP', serif;
+  background: var(--paper);
+  color: var(--ink);
+  line-height: 1.7;
+  padding: 60px 8vw;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+h1 {
+  font-size: 36px;
+  border-bottom: 3px solid var(--gold);
+  padding-bottom: 12px;
+  margin-bottom: 8px;
+  letter-spacing: 0.04em;
+}
+h1 .sub {
+  display: block;
+  font-size: 14px;
+  color: var(--gold-deep);
+  letter-spacing: 0.3em;
+  margin-top: 8px;
+  font-weight: normal;
+}
+h2 {
+  font-size: 24px;
+  color: var(--gold-deep);
+  margin: 48px 0 12px;
+  padding: 6px 14px;
+  background: var(--paper-2);
+  border-left: 6px solid var(--gold);
+  letter-spacing: 0.06em;
+}
+h3 {
+  font-size: 18px;
+  color: var(--ink);
+  margin: 28px 0 10px;
+  padding-bottom: 4px;
+  border-bottom: 1px dashed var(--line);
+}
+h4 {
+  font-size: 15px;
+  color: var(--gold-deep);
+  margin: 20px 0 8px;
+  letter-spacing: 0.05em;
+}
+p { margin: 8px 0; }
+ul, ol { margin: 10px 0 10px 28px; }
+li { margin: 4px 0; }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 14px 0;
+  font-size: 14px;
+}
+th {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 10px 12px;
+  text-align: left;
+  letter-spacing: 0.04em;
+  font-weight: normal;
+}
+td {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--line);
+  vertical-align: top;
+}
+tr:nth-child(even) td { background: var(--paper-2); }
+code {
+  font-family: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
+  background: var(--paper-2);
+  color: var(--crimson);
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 0.92em;
+}
+pre {
+  background: var(--code-bg);
+  color: var(--code-ink);
+  padding: 14px 18px;
+  border-radius: 4px;
+  overflow-x: auto;
+  font-family: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
+  font-size: 13px;
+  line-height: 1.5;
+  margin: 12px 0;
+  border-left: 4px solid var(--gold);
+}
+pre code { background: transparent; color: inherit; padding: 0; }
+blockquote {
+  border-left: 4px solid var(--gold);
+  background: var(--paper-2);
+  padding: 12px 18px;
+  margin: 12px 0;
+  font-style: italic;
+}
+.warning {
+  background: #FFF4E6;
+  border: 2px solid var(--crimson);
+  padding: 14px 18px;
+  margin: 16px 0;
+  border-radius: 4px;
+}
+.warning::before {
+  content: '⚠ ';
+  font-weight: bold;
+  color: var(--crimson);
+}
+.success {
+  background: #F0F8E8;
+  border: 2px solid var(--jade);
+  padding: 14px 18px;
+  margin: 16px 0;
+  border-radius: 4px;
+}
+.success::before {
+  content: '✓ ';
+  font-weight: bold;
+  color: var(--jade);
+}
+.toc {
+  background: var(--paper-2);
+  border: 1px solid var(--line);
+  padding: 24px 32px;
+  margin: 30px 0 50px;
+  border-radius: 4px;
+}
+.toc h2 {
+  background: transparent;
+  border: none;
+  padding: 0 0 12px 0;
+  margin: 0 0 14px 0;
+  border-bottom: 2px solid var(--gold);
+  color: var(--gold-deep);
+}
+.toc ol { margin-left: 22px; }
+.toc li { margin: 6px 0; }
+.toc a { color: var(--ink); text-decoration: none; }
+.toc a:hover { color: var(--gold-deep); text-decoration: underline; }
+.meta {
+  font-size: 12px;
+  color: var(--gold-deep);
+  letter-spacing: 0.2em;
+  margin: 12px 0 30px;
+  text-transform: uppercase;
+}
+.divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  margin: 50px 0;
+}
+.kbd {
+  display: inline-block;
+  background: var(--ink);
+  color: var(--paper);
+  padding: 2px 8px;
+  border-radius: 3px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85em;
+}
+.principle {
+  background: linear-gradient(180deg, #FFF9E0, var(--paper-2));
+  border: 2px solid var(--gold);
+  padding: 18px 24px;
+  margin: 18px 0;
+  border-radius: 4px;
+}
+.principle::before {
+  content: '★ 絶対原則';
+  display: block;
+  font-weight: bold;
+  color: var(--gold-deep);
+  margin-bottom: 6px;
+  letter-spacing: 0.1em;
+  font-size: 13px;
+}
+</style>
+</head>
+<body>
+
+<h1>
+KINGMAKER 23:23 — 設計書・引き継ぎ書
+<span class="sub">DESIGN & HANDOVER · v1.0 · 2026-05-11</span>
+</h1>
+<div class="meta">REPO TAmJump/king2323 · LIVE https://king2323.tamjump.com · STATUS LIVE</div>
+
+<div class="toc">
+<h2>目次</h2>
+<ol>
+<li><a href="#s0">§0  本ドキュメントの目的</a></li>
+<li><a href="#s1">§1  プロジェクト概要</a></li>
+<li><a href="#s2">§2  プロダクト仕様 v1.0(マスター)</a></li>
+<li><a href="#s3">★ §3  絶対原則(Claude/User役割分担)</a></li>
+<li><a href="#s4">§4  認証情報 & 環境(PAT / Account / Domain)</a></li>
+<li><a href="#s5">§5  リポジトリ構成</a></li>
+<li><a href="#s6">§6  全ファイル詳細</a></li>
+<li><a href="#s7">§7  デザインシステム(色・タイポ・グリッド)</a></li>
+<li><a href="#s8">§8  ロゴ進化史(v1.0→v3最終版)</a></li>
+<li><a href="#s9">§9  テーマ反転(黒→白)の経緯と完全仕様</a></li>
+<li><a href="#s10">§10  i18n(多言語化)実装の完全記録</a></li>
+<li><a href="#s11">§11  CSP(Content Security Policy)設定</a></li>
+<li><a href="#s12">§12  デプロイフロー(GitHub Pages + Cloudflare DNS)</a></li>
+<li><a href="#s13">§13  全コミット履歴と意図</a></li>
+<li><a href="#s14">§14  既知の問題・未着手項目</a></li>
+<li><a href="#s15">§15  次フェーズの作業項目</a></li>
+<li><a href="#s16">§16  運用上の罠リスト</a></li>
+<li><a href="#s17">§17  次セッション開始時のチェックリスト</a></li>
+</ol>
+</div>
+
+<div class="divider"></div>
+
+<h2 id="s0">§0  本ドキュメントの目的</h2>
+
+<p>本ドキュメントは「<strong>KINGMAKER 23:23</strong>」プロジェクトの完全な設計書・引き継ぎ書である。</p>
+
+<p>同様の役割を果たす過去ドキュメント <code>DESIGN_yaruze_v4.1</code>(2026-05-08)と同じ思想で作成されている。すなわち:</p>
+
+<ul>
+<li>次のセッションで作業を引き継ぐ Claude が、本書を読むだけで100%の文脈を得られる</li>
+<li>同じ説明をユーザーから2度させない</li>
+<li>過去の判断・試行錯誤・誤りも含めて全部残す(端折らない)</li>
+<li>運用プロトコルの原則は本書を上位として扱う</li>
+</ul>
+
+<div class="principle">
+本書の §3「絶対原則」と §4「認証情報」は、次セッション開始時に必ず最初に読むこと。それ以外の節は必要に応じて参照する。
+</div>
+
+<div class="divider"></div>
+
+<h2 id="s1">§1  プロジェクト概要</h2>
+
+<h3>1.1 サービス名</h3>
+<p><strong>KINGMAKER 23:23</strong>(キングメーカー トゥエンティスリー トゥエンティスリー)</p>
+
+<h3>1.2 タグライン</h3>
+<table>
+<tr><th>言語</th><th>タグライン</th></tr>
+<tr><td>EN</td><td>To be chosen, you must choose.</td></tr>
+<tr><td>JP</td><td>選ばれたければ、まず誰かを選べ。</td></tr>
+<tr><td>EN(別)</td><td>Not everyone can be king. But everyone can make one.</td></tr>
+<tr><td>JP(別)</td><td>誰もが王になれるわけじゃない。でも、誰かを王にすることはできる。</td></tr>
+</table>
+
+<h3>1.3 サービス定義</h3>
+<p><strong>Global Ritual Support Platform</strong>(グローバル儀式支援プラットフォーム)</p>
+
+<p>世界中の個人が ¥100 で 100 Coin を購入し、毎週 10 Coin だけ使って、世界中の誰か1人の人生を押し上げる仕組み。</p>
+
+<h3>1.4 重要(法的位置づけ)</h3>
+<p>このサービスは:</p>
+<ul>
+<li>宝くじではない</li>
+<li>投資ではない</li>
+<li>ギャンブルではない</li>
+<li>マルチではない</li>
+</ul>
+
+<h3>1.5 オーナー</h3>
+<p><strong>TAmJump</strong>(個人)。同オーナー運営の既存プラットフォーム <code>yaruze</code> / <code>tyaruze</code> / <code>myaruze</code> ファミリーの4番目の兄弟サイトとして位置づけられる。</p>
+
+<h3>1.6 現在ステータス</h3>
+<div class="success">
+2026-05-10 公開済み。<br/>
+URL: <strong>https://king2323.tamjump.com</strong><br/>
+コスト: ¥0/年(無料サブドメイン運用)<br/>
+所要時間: 約2時間(設計→公開)
+</div>
+
+<div class="divider"></div>
+
+<h2 id="s2">§2  プロダクト仕様 v1.0(マスター)</h2>
+
+<p>ユーザーから第1セッション冒頭で提示された製品仕様の完全版。<strong>これは変更してはならない神聖な仕様書</strong>。</p>
+
+<h3>2.1 ブランド設計</h3>
+
+<h4>ロゴ</h4>
+<table>
+<tr><th>項目</th><th>仕様</th></tr>
+<tr><td>シンボル</td><td>King Gorilla(王冠を被ったゴリラ顔)</td></tr>
+<tr><td>条件</td><td>文字なし / 黒×金 / ゴリラ顔 / 力強い王冠 / アプリ丸アイコン対応 / 筆感あり / 威圧感 / 高級感</td></tr>
+</table>
+
+<h4>カラー</h4>
+<table>
+<tr><th>名称</th><th>HEX</th><th>用途</th></tr>
+<tr><td>Gold</td><td><code>#D4AF37</code></td><td>主色(黒テーマ時)</td></tr>
+<tr><td>Black</td><td><code>#000000</code></td><td>背景(黒テーマ時)</td></tr>
+<tr><td>White</td><td><code>#FFFFFF</code></td><td>テキスト(黒テーマ時)</td></tr>
+</table>
+
+<div class="warning">
+最終的に <strong>テーマ反転(黒→白)</strong>を実施したため、運用色はこれと異なる。詳細は §7・§9 参照。
+</div>
+
+<h4>禁止</h4>
+<ul>
+<li>カラフル</li>
+<li>グラデ多用</li>
+<li>安っぽい演出</li>
+</ul>
+
+<h4>フォント</h4>
+<p>iOS/Android標準系 + 太字 + 高級感</p>
+
+<h3>2.2 世界観</h3>
+
+<h4>毎週のリズム</h4>
+<table>
+<tr><th>時刻(JST)</th><th>イベント</th><th>コピー</th></tr>
+<tr><td>金曜 23:23</td><td>世界の鐘(投票開始)</td><td><em>The Bell is open.</em></td></tr>
+<tr><td>月曜 23:23</td><td>King発表(結果確定)</td><td><em>The world has chosen.</em></td></tr>
+</table>
+
+<h4>教義(固定・5つの法)</h4>
+<table>
+<tr><th>#</th><th>法</th></tr>
+<tr><td>Law 1</td><td>Choose before being chosen.</td></tr>
+<tr><td>Law 2</td><td>Never choose yourself.</td></tr>
+<tr><td>Law 3</td><td>Miss one week, lose one chance.</td></tr>
+<tr><td>Law 4</td><td>Every Coin changes a life.</td></tr>
+<tr><td>Law 5</td><td>The King serves the next King.</td></tr>
+</table>
+
+<h3>2.3 課金</h3>
+<table>
+<tr><th>項目</th><th>仕様</th></tr>
+<tr><td>初期課金</td><td>¥100(1回のみ・一生)</td></tr>
+<tr><td>取得Coin</td><td>100 Coin</td></tr>
+<tr><td>毎週使用</td><td>10 Coin(固定)</td></tr>
+<tr><td>使える相手</td><td>1人のみ</td></tr>
+<tr><td>自己投票</td><td>不可</td></tr>
+<tr><td>Coin性質</td><td>換金不可・譲渡不可・返金不可</td></tr>
+</table>
+
+<h3>2.4 ユーザー</h3>
+<table>
+<tr><th>項目</th><th>仕様</th></tr>
+<tr><td>対象</td><td>個人のみ</td></tr>
+<tr><td>禁止</td><td>法人・団体・政治・宗教</td></tr>
+<tr><td>年齢</td><td>18歳以上</td></tr>
+<tr><td>会員登録</td><td>Email / SMS / Country / Birthday / Nickname</td></tr>
+<tr><td>Nickname</td><td>3〜12文字 / 本名・URL・電話番号・@ 禁止</td></tr>
+<tr><td>アイコン</td><td>AI・動物・抽象 OK / 顔・子供・ナンバー・自宅 禁止</td></tr>
+</table>
+
+<h3>2.5 Mission応募</h3>
+<p>フォーマット固定:</p>
+<ul>
+<li>Nickname</li>
+<li>Country</li>
+<li>Age</li>
+<li>Mission(1行・最大50文字)</li>
+<li>Use(用途)</li>
+<li>One Line(キャッチコピー)</li>
+</ul>
+
+<p>例(ライティング):</p>
+<pre>Nickname: Ash23
+Country:  Japan
+Age:      42
+Mission:  Open my first café.
+Use:      Coffee machine.
+OneLine:  I failed twice. Not this time.</pre>
+
+<p>条件:</p>
+<ul>
+<li>写真:顔なし</li>
+<li>動画:不要</li>
+</ul>
+
+<h3>2.6 The Three</h3>
+<table>
+<tr><th>項目</th><th>仕様</th></tr>
+<tr><td>頻度</td><td>毎週</td></tr>
+<tr><td>候補者表示</td><td>3人のみ(応募が100人以上いても)</td></tr>
+<tr><td>名称</td><td>The Three</td></tr>
+<tr><td>選定</td><td>運営不可(自動シード生成)</td></tr>
+</table>
+
+<h4>ロジック条件</h4>
+<ul>
+<li>KYC済み</li>
+<li>不正なし</li>
+<li>過去7日以内に投票済み</li>
+<li>未報告なし</li>
+</ul>
+
+<h4>Seed(公開データ)</h4>
+<ul>
+<li>BTC価格</li>
+<li>日経終値</li>
+<li>応募者数</li>
+</ul>
+
+<p>これらから <strong>Hash 生成</strong>。Verify ページ必須。</p>
+
+<h3>2.7 投票</h3>
+<table>
+<tr><th>項目</th><th>仕様</th></tr>
+<tr><td>時刻</td><td>金曜 23:23</td></tr>
+<tr><td>時間</td><td>5分間(23:23 〜 23:28)</td></tr>
+<tr><td>表示</td><td>The Three(A / B / C)</td></tr>
+<tr><td>選択</td><td>1人のみ</td></tr>
+<tr><td>使用Coin</td><td>10 Coin</td></tr>
+<tr><td>投票後</td><td>"Qualification unlocked" を表示</td></tr>
+</table>
+
+<h3>2.8 結果</h3>
+<p>月曜 23:23 → <strong>THE WORLD HAS CHOSEN</strong> 表示</p>
+<table>
+<tr><th>順位</th><th>称号</th></tr>
+<tr><td>#1</td><td>King</td></tr>
+<tr><td>#2</td><td>Crown</td></tr>
+<tr><td>#3</td><td>Crown</td></tr>
+</table>
+
+<h3>2.9 透明性 — Verifyページ</h3>
+<p>URL: <code>/verify</code></p>
+<p>表示項目:</p>
+<ul>
+<li>Week</li>
+<li>Pool</li>
+<li>Excluded</li>
+<li>Seed</li>
+<li>Hash</li>
+<li>Vote Count</li>
+</ul>
+<p>文言: <em>KINGMAKER cannot choose The Three.</em></p>
+
+<h3>2.10 Grant(助成金)</h3>
+<table>
+<tr><th>Tier</th><th>Coin数</th><th>Grant額</th></tr>
+<tr><td>Bronze</td><td>10,000 Coin</td><td>¥100,000</td></tr>
+<tr><td>Silver</td><td>100,000 Coin</td><td>¥1,000,000</td></tr>
+<tr><td>Gold</td><td>1,000,000 Coin</td><td>¥10,000,000</td></tr>
+<tr><td>Royal</td><td>10,000,000 Coin</td><td>Manual Review</td></tr>
+</table>
+<p><strong>Bellは換金しない。Grantのみ。</strong></p>
+
+<h3>2.11 審査</h3>
+<p>Top1(King)に対して:</p>
+<ol>
+<li>Verification Pending</li>
+<li>KYC</li>
+<li>AML</li>
+<li>Sanctions</li>
+<li>Manual Review</li>
+</ol>
+<p>NG → 次点へ</p>
+
+<h3>2.12 Report</h3>
+<table>
+<tr><th>項目</th><th>仕様</th></tr>
+<tr><td>提出期限</td><td>7日以内</td></tr>
+<tr><td>必須</td><td>写真・レシート・コメント(100文字以上)</td></tr>
+<tr><td>カテゴリ</td><td>Travel / Family / Business / Art / Health / Other</td></tr>
+<tr><td>未提出ペナルティ</td><td>Rank Freeze / Mission Ban</td></tr>
+</table>
+
+<h3>2.13 サイト構成</h3>
+<pre>/
+about
+live
+missions
+the-three
+verify
+king
+stories
+apply
+rules
+legal
+mypage</pre>
+
+<h3>2.14 アプリ Bottom Menu</h3>
+<table>
+<tr><th>タブ</th><th>機能</th></tr>
+<tr><td>Home</td><td>カウントダウン</td></tr>
+<tr><td>Live</td><td>The Three</td></tr>
+<tr><td>Vote</td><td>投票</td></tr>
+<tr><td>Verify</td><td>透明性</td></tr>
+<tr><td>My Page</td><td>Coin / Rank / History / Qualification</td></tr>
+</table>
+
+<h3>2.15 DB(最低テーブル)</h3>
+<pre>users
+wallets
+missions
+votes
+cycles
+seeds
+hashes
+reports
+grant_reviews
+grant_payments
+audit_logs</pre>
+
+<h3>2.16 絶対禁止</h3>
+<ul>
+<li>ランダム抽選</li>
+<li>当選表現</li>
+<li>賭け</li>
+<li>配当</li>
+<li>元本</li>
+<li>Bell換金</li>
+<li>自己投票</li>
+<li>運営投票</li>
+</ul>
+
+<h3>2.17 UI最初の画面</h3>
+<ul>
+<li>黒背景</li>
+<li>金のゴリラ</li>
+<li>カウントダウン</li>
+<li><strong>23:23</strong></li>
+<li>下に一言: <em>Who will you make king?</em></li>
+</ul>
+
+<div class="warning">
+※ 後にユーザー指示により <strong>白背景</strong>にテーマ反転した。詳細 §9。<br/>
+ただし「<em>Not everyone can be king. But everyone can make one.</em>」は英語のままブランド維持(翻訳除外)。
+</div>
+
+<div class="divider"></div>
+
+<h2 id="s3">★ §3  絶対原則(Claude/User役割分担)</h2>
+
+<p>本節は yaruze の <code>DESIGN_yaruze_v4.1 §3</code> から継承された運用プロトコルである。<strong>違反するな</strong>。</p>
+
+<div class="principle">
+<strong>原則A:</strong> GitHubへのpushは Claude が PAT埋込clone で直接実行する。<br/>
+<strong>原則B:</strong> Cloudflare/外部サービスのGUI操作は ユーザー が実行する。Claudeはスクショを受け取り、クリック手順を指示するのみ。<br/>
+<strong>原則C:</strong> 端折り禁止。設計書・引き継ぎ書は全文を読んでから判断する。<br/>
+<strong>原則D:</strong> 同じ説明をユーザーから2度させない。本書を最大限活用する。
+</div>
+
+<h3>3.1 過去の失敗(本セッションでの教訓)</h3>
+
+<p>本セッション冒頭、新規Claudeは「PATが流出するから、こちらでgit pushはできない」と原則Aに反する判断をした。ユーザーから「<em>御託がうるせーよ</em>」と叱責を受け、過去の設計書 <code>やるゼ_.zip</code> を読み直して原則Aに従う運用に戻った。</p>
+
+<div class="warning">
+次セッションでも同じ過ちを繰り返すな。<br/>
+本書を読んだ Claude は、最初の git 操作要求時に PAT を使った clone を即実行すること。「セキュリティリスクが…」などの御託は不要。
+</div>
+
+<h3>3.2 タスク振り分け表</h3>
+
+<table>
+<tr><th>タスク</th><th>誰が</th><th>方法</th></tr>
+<tr><td>HTML/CSS/JS のコーディング</td><td>Claude</td><td>ローカルで /home/claude/kingmaker に作成</td></tr>
+<tr><td>git add / commit / push</td><td><strong>Claude</strong></td><td>PAT埋込URLで clone・直接push</td></tr>
+<tr><td>新規ファイル投入</td><td>Claude</td><td>git push後、自動でGitHub Pagesがビルド</td></tr>
+<tr><td>GitHub repo作成</td><td>User</td><td>GitHub Web UIで作成(private/publicは任意)</td></tr>
+<tr><td>GitHub Pages有効化</td><td>User</td><td>Settings → Pages → Source: main / root</td></tr>
+<tr><td>Cloudflare DNS設定</td><td>User</td><td>dash.cloudflare.com で Add record</td></tr>
+<tr><td>ドメイン取得</td><td>User</td><td>レジストラ管理画面・カード決済</td></tr>
+<tr><td>Cloudflare Pages デプロイ</td><td>User</td><td>dash.cloudflare.com の Pages UI</td></tr>
+<tr><td>Worker デプロイ</td><td>User</td><td>Cloudflare ダッシュボード</td></tr>
+<tr><td>環境変数・Secret 設定</td><td>User</td><td>各サービスの管理画面</td></tr>
+<tr><td>支払い・決済</td><td>User</td><td>本人のカードで決済</td></tr>
+</table>
+
+<h3>3.3 ユーザーの言語スタイル</h3>
+<ul>
+<li>直接・簡潔・命令形が多い</li>
+<li>説明過多・前置きを嫌う</li>
+<li>「<em>ねーよ</em>」「<em>なんで?</em>」「<em>御託がうるせーよ</em>」「<em>あったの?</em>」など率直</li>
+<li>action over discussion</li>
+<li>uncertain なときは案的に並べる(A案・B案・C案)を好む</li>
+</ul>
+
+<div class="divider"></div>
+
+<h2 id="s4">§4  認証情報 & 環境</h2>
+
+<h3>4.1 GitHub PAT(Personal Access Token)</h3>
+
+<div class="warning">
+本セッションで使用した PAT:<br/>
+<code>ghp_SNxD****************************oJln</code><br/>
+<br/>
+<strong>有効期限:</strong> 設計書 <code>DESIGN_yaruze_v4.1 §13</code> によると <strong>2026-05-14 or 2026-05-20</strong> に失効予定。<br/>
+<strong>失効後の対応:</strong> ユーザーが GitHub Settings → Developer settings → Personal access tokens で新規発行 → 設計書を更新 → Bitwarden 保管。
+</div>
+
+<div class="warning">
+<strong>注:</strong> このリポジトリ版の設計書では PAT を伏字 (<code>ghp_SNxD****oJln</code>) にしている。<br/>
+完全な PAT は次セッション開始時にユーザーから直接受け取るか、Bitwarden 等の安全な保管場所から取得すること。<br/>
+失効予定: <strong>2026-05-14 or 2026-05-20</strong>。
+</div>
+
+
+<h3>4.2 PAT を使った git push の手順</h3>
+
+<pre>cd /home/claude/&lt;project&gt;
+
+# remoteを PAT埋込形式で追加
+git remote add origin https://&lt;PAT&gt;@github.com/TAmJump/&lt;repo&gt;.git
+
+# あるいは clone するとき
+git clone https://&lt;PAT&gt;@github.com/TAmJump/&lt;repo&gt;.git
+
+# push
+git push origin main</pre>
+
+<p>例(本プロジェクト):</p>
+<pre>git remote add origin https://ghp_SNxD****************************oJln@github.com/TAmJump/king2323.git</pre>
+
+<h3>4.3 GitHub アカウント</h3>
+<table>
+<tr><th>項目</th><th>値</th></tr>
+<tr><td>Owner</td><td><code>TAmJump</code></td></tr>
+<tr><td>本リポジトリ</td><td><code>github.com/TAmJump/king2323</code></td></tr>
+<tr><td>Visibility</td><td>private(作成時にユーザーが選択)</td></tr>
+<tr><td>Default branch</td><td><code>main</code></td></tr>
+</table>
+
+<h3>4.4 Cloudflare アカウント</h3>
+<table>
+<tr><th>項目</th><th>値</th></tr>
+<tr><td>Account name</td><td><code>tamj_Account</code></td></tr>
+<tr><td>Account UUID</td><td><code>b9de28abfd009bbf696ceec4da62c5b8</code></td></tr>
+<tr><td>Plan</td><td>Free</td></tr>
+<tr><td>登録ドメイン</td><td><code>tamjump.com</code> のみ</td></tr>
+<tr><td>Dashboard URL</td><td><code>https://dash.cloudflare.com/b9de28abfd009bbf696ceec4da62c5b8/tamjump.com</code></td></tr>
+</table>
+
+<h3>4.5 ドメイン</h3>
+<table>
+<tr><th>項目</th><th>値</th></tr>
+<tr><td>本番URL</td><td><strong>https://king2323.tamjump.com</strong></td></tr>
+<tr><td>方式</td><td>tamjump.com のサブドメイン(無料)</td></tr>
+<tr><td>独自ドメイン候補</td><td><code>kingmaker2323.com</code>(取得保留・$10.46/年)</td></tr>
+<tr><td>判断理由</td><td>yaruze/tyaruze/myaruze と同じ無料運用パターンを継続(¥0/年)</td></tr>
+</table>
+
+<h3>4.6 既存tamjump.com 配下のサブドメイン一覧</h3>
+<p>本プロジェクトの兄弟サイト群(Cloudflare DNSにCNAMEで登録済み):</p>
+<table>
+<tr><th>サブドメイン</th><th>用途</th></tr>
+<tr><td><code>adapt.tamjump.com</code></td><td>yaruze 親プロジェクト</td></tr>
+<tr><td><code>yaruze.tamjump.com</code></td><td>やるゼ!</td></tr>
+<tr><td><code>tyaruze.tamjump.com</code></td><td>t やるゼ!(=onetouch_app)</td></tr>
+<tr><td><code>myaruze.tamjump.com</code></td><td>m やるゼ!(=medadapt)</td></tr>
+<tr><td><code>one-touch.tamjump.com</code></td><td>OneTouch</td></tr>
+<tr><td><code>tyaruze-app.tamjump.com</code></td><td>tやるゼ!アプリ</td></tr>
+<tr><td><code>app.one-touch.tamjump.com</code></td><td>OneTouchアプリ</td></tr>
+<tr><td><code>tamsic.tamjump.com</code></td><td>tamsic</td></tr>
+<tr><td><code>sitecoding.tamjump.com</code></td><td>サイトコーディング</td></tr>
+<tr><td><code>develop.tamjump.com</code></td><td>開発環境</td></tr>
+<tr><td><strong><code>king2323.tamjump.com</code></strong></td><td><strong>★本プロジェクト</strong></td></tr>
+</table>
+
+<h3>4.7 Worker / D1 DB 関連(参考・本プロジェクトでは未使用)</h3>
+<p>yaruze ファミリーの設計書 §13 より:</p>
+<table>
+<tr><th>サービス</th><th>Worker URL</th><th>D1 DB</th></tr>
+<tr><td>adapt</td><td><code>adapt-api.animalb001.workers.dev</code></td><td>adapt-db (<code>c22145ae...</code>)</td></tr>
+<tr><td>onetouch</td><td><code>onetouch-api.animalb001.workers.dev</code></td><td>onetouch-db (<code>dac0f1ec...</code>)</td></tr>
+<tr><td>medadapt</td><td><code>medadapt-api-v2.animalb001.workers.dev</code></td><td>medadapt-db (<code>f9e88ff6...</code>)</td></tr>
+</table>
+<p>※ KINGMAKER 23:23 は現時点で純粋に静的サイトのため、Worker/D1 は未使用。実装フェーズで追加検討。</p>
+
+<h3>4.8 5/19 命名統一(yaruze設計書より引き継ぎ)</h3>
+<p>yaruze ファミリーで2026-05-19に本番命名を統一する作業が予定されている:</p>
+<ul>
+<li><code>yaruze</code>(親・元 <code>adapt</code>)</li>
+<li><code>tyaruze</code>(元 <code>onetouch_app</code>)</li>
+<li><code>myaruze</code>(元 <code>medadapt</code>)</li>
+</ul>
+<p>※ 本プロジェクト <code>king2323</code> はこの命名統一の対象外。独立した4番目の兄弟。</p>
+
+<div class="divider"></div>
+
+<h2 id="s5">§5  リポジトリ構成</h2>
+
+<h3>5.1 リポジトリ</h3>
+<p><code>github.com/TAmJump/king2323</code>(private)</p>
+
+<h3>5.2 ファイル一覧(2026-05-11 03:11 時点)</h3>
+
+<pre>king2323/
+├── .git/                       # Git管理
+├── .gitignore                  # node_modules, .DS_Store等を除外
+├── .nojekyll                   # GitHub PagesのJekyll処理をスキップ
+├── CNAME                       # "king2323.tamjump.com" 1行のみ
+├── README.md                   # プロジェクト概要
+├── index.html                  # ランディングサイト(2,166行)
+├── money.html                  # Money Logic v1.0 + /fund パネル(897行)
+├── app.html                    # モバイルアプリプロトタイプ(1,348行)
+├── css/
+│   └── main.css                # 共通デザインシステム(580行)
+├── js/
+│   ├── main.js                 # カウントダウン + IntersectionObserver(103行)
+│   └── i18n.js                 # Google翻訳アダプタ(103行)
+└── assets/
+    ├── logo-128.png            # オリジナル v3 ロゴ(128px・透明化前)
+    ├── logo-256.png            # 同上(256px)
+    ├── logo-512.png            # 同上(512px)
+    ├── logo-1024.png           # 同上(1024px)
+    ├── logo-t-128.png          # 透明背景版 v1(128px・古い v1.2ロゴ)
+    ├── logo-t-256.png          # 同上(256px)
+    ├── logo-t-512.png          # 同上(512px)
+    ├── logo-t-1024.png         # 同上(1024px)
+    ├── logo-v3-128.png         # ★現用 v3 透明背景ロゴ(128px)
+    ├── logo-v3-256.png         # ★現用(256px)
+    ├── logo-v3-512.png         # ★現用(512px)・ヒーローで使用
+    └── logo-v3-1024.png        # ★現用(1024px)・大画面用</pre>
+
+<h3>5.3 ファイルサイズ</h3>
+<table>
+<tr><th>ファイル</th><th>行数</th><th>サイズ</th></tr>
+<tr><td>index.html</td><td>2,166</td><td>約72 KB</td></tr>
+<tr><td>money.html</td><td>897</td><td>約34 KB</td></tr>
+<tr><td>app.html</td><td>1,348</td><td>約40 KB</td></tr>
+<tr><td>css/main.css</td><td>580</td><td>約15 KB</td></tr>
+<tr><td>js/main.js</td><td>103</td><td>約3.6 KB</td></tr>
+<tr><td>js/i18n.js</td><td>103</td><td>約3.6 KB</td></tr>
+</table>
+
+<h3>5.4 CNAMEファイルの内容</h3>
+<p>リポジトリ直下の <code>CNAME</code> ファイル(拡張子なし):</p>
+<pre>king2323.tamjump.com</pre>
+<p>これが GitHub Pages のカスタムドメイン設定を駆動する。書き換えるとそのドメインへ即時切り替わる(過去には <code>kingmaker2323.com</code> と書かれていた)。</p>
+
+<h3>5.5 .nojekyll の存在理由</h3>
+<p>GitHub Pages はデフォルトで Jekyll(静的サイトジェネレータ)を走らせる。本プロジェクトは Jekyll を使わない純粋な静的HTMLなので、空ファイル <code>.nojekyll</code> を置いて Jekyll を無効化している。</p>
+<p>これがないと、稀に Jekyll が underscore で始まるファイルやフォルダを処理対象から除外する等の副作用が発生する。</p>
+
+<div class="divider"></div>
+
+<h2 id="s6">§6  全ファイル詳細</h2>
+
+<h3>6.1 index.html(ランディングサイト・2,166行)</h3>
+
+<h4>セクション構造</h4>
+<table>
+<tr><th>id</th><th>セクション</th><th>内容</th></tr>
+<tr><td>(nav)</td><td>ナビゲーション</td><td>KINGMAKERロゴ + メニュー7項目 + 言語ピッカー(JA/EN/KO/HI) + Begin CTA</td></tr>
+<tr><td>#top</td><td>Hero</td><td>"Not everyone can be king. But everyone can make one." + ゴリラロゴ + Friday 23:23 までのカウントダウン</td></tr>
+<tr><td>(ticker)</td><td>金のティッカー帯</td><td>8つの教義メッセージが横スクロール</td></tr>
+<tr><td>#why</td><td>Why 23:23</td><td>Chapter 0 · The Hour — なぜ23:23なのか</td></tr>
+<tr><td>#bell</td><td>The Bell</td><td>Chapter I · 金曜23:23 / 月曜23:23 の2つの鐘</td></tr>
+<tr><td>#how</td><td>¥100 → 100 Coin</td><td>3段の流れ図</td></tr>
+<tr><td>#money</td><td>Money Logic summary</td><td>Chapter II·B · 60%/40% 分配図 + Grant Tier表 + /money.html へリンク</td></tr>
+<tr><td>#laws</td><td>Five Laws</td><td>Chapter III · 5つの教義詳細</td></tr>
+<tr><td>#three</td><td>The Three</td><td>Chapter IV · Ash23/Selva/Marek_K の3候補プレビュー</td></tr>
+<tr><td>(tier)</td><td>Tier Outcomes</td><td>Chapter IV·B · KING/CROWN/LEGEND の各報酬</td></tr>
+<tr><td>#duty</td><td>Royal Duty</td><td>Chapter IV·C · "The King makes the next King." — 10 Coin 配布義務</td></tr>
+<tr><td>#verify</td><td>Verify</td><td>Chapter V · Cycle 47 + SHA-256 hash プレビュー</td></tr>
+<tr><td>#stories</td><td>Past Kings</td><td>Chapter VI · 4人の過去King(Naia_R, Hokori, Lior_T, Quiet_M)</td></tr>
+<tr><td>#rules</td><td>Edge Rules</td><td>Chapter VI·B · 12 Q&A(同票/失効/死亡/税金/不正など)</td></tr>
+<tr><td>(never)</td><td>NEVER</td><td>絶対禁止12項目(打ち消し線)</td></tr>
+<tr><td>#manifesto</td><td>Manifesto</td><td>Chapter VII · 7つの目的・closing</td></tr>
+<tr><td>(final CTA)</td><td>Whose week will you make historic?</td><td>応募CTA</td></tr>
+<tr><td>(footer)</td><td>Footer</td><td>4カラム + © + disclaimer</td></tr>
+</table>
+
+<h4>主要 inline CSS(headに埋め込み)</h4>
+<p>セクション固有のスタイルは <code>&lt;style&gt;</code> ブロック内に直接書かれている(外部CSSへの依存最小化のため)。基本的なデザイントークン(色・タイポ)のみ <code>css/main.css</code> から継承。</p>
+
+<h3>6.2 money.html(Money Logic v1.0 詳細・897行)</h3>
+
+<h4>セクション構造</h4>
+<table>
+<tr><th>id</th><th>章</th><th>内容</th></tr>
+<tr><td>(hero)</td><td>—</td><td>"Your Coin does not become cash. Your Coin becomes a voice."</td></tr>
+<tr><td>#sec0</td><td>§0</td><td>One sentence for the world</td></tr>
+<tr><td>#sec1</td><td>§1</td><td>The Coin</td></tr>
+<tr><td>#sec2</td><td>§2</td><td>The ¥100</td></tr>
+<tr><td>#sec3</td><td>§3</td><td>The Split (60/40)</td></tr>
+<tr><td>#sec4</td><td>§4</td><td>The Grant Tiers</td></tr>
+<tr><td>#sec5</td><td>§5</td><td>The Escrow</td></tr>
+<tr><td>#sec6</td><td>§6</td><td>The Cap</td></tr>
+<tr><td>#sec7</td><td>§7</td><td>The Persistence</td></tr>
+<tr><td>#sec8</td><td>§8</td><td>The Refunds</td></tr>
+<tr><td>#sec9</td><td>§9</td><td>The Audits</td></tr>
+<tr><td>#sec10</td><td>§10</td><td>The Edge Money</td></tr>
+<tr><td>#sec11</td><td>§11</td><td>One last sentence</td></tr>
+<tr><td>#fund</td><td>/fund パネル</td><td>★ライブ透明性パネル(モック)</td></tr>
+</table>
+
+<h4>/fund パネルの表示項目(モックデータ)</h4>
+<table>
+<tr><th>項目</th><th>値</th></tr>
+<tr><td>Grant Pool · this cycle · CAP</td><td>¥3,248,000</td></tr>
+<tr><td>Current Fund</td><td>¥5,872,400</td></tr>
+<tr><td>Incoming · 7d</td><td>+¥857,000 (14,290 new pass purchases × ¥60)</td></tr>
+<tr><td>Outgoing · 7d</td><td>-¥1,000,000 (Cycle 46 King · Silver tier · Hokori)</td></tr>
+<tr><td>Reserve</td><td>¥2,624,400</td></tr>
+<tr><td>Cycle Progress</td><td>67% (2D 14H 37M remaining)</td></tr>
+<tr><td>Source Hash (SHA-256)</td><td><code>7a4f9c2e8b1d6a5f3e0c9b8a7d6e5f4c3b2a1908f7e6d5c4b3a2918072f6e5d4</code></td></tr>
+</table>
+
+<h3>6.3 app.html(モバイルアプリプロトタイプ・1,348行)</h3>
+
+<h4>画面構成(5タブ)</h4>
+<table>
+<tr><th>タブ</th><th>画面ID</th><th>内容</th></tr>
+<tr><td>Home</td><td>#screen-home</td><td>キングゴリラロゴ + カウントダウン + "The Bell opens in"</td></tr>
+<tr><td>Live</td><td>#screen-live</td><td>The Three(Ash23/Selva/Marek_K)のカードリスト</td></tr>
+<tr><td>Vote</td><td>#screen-vote</td><td>投票画面(5分間限定の演出)</td></tr>
+<tr><td>Verify</td><td>#screen-verify</td><td>Cycle 47 / Seed / Hash / Pool / Excluded</td></tr>
+<tr><td>Self</td><td>#screen-self</td><td>Wallet / Rank / History / Qualification</td></tr>
+</table>
+
+<h4>UI仕様</h4>
+<ul>
+<li>iPhone Pro 風の <strong>Phone Frame</strong>(390×844 viewport)で囲む</li>
+<li>Bottom Navigation(5タブ)で画面切替</li>
+<li>JavaScript で表示画面を切り替え(SPA風)</li>
+<li><strong>ダークテーマを保持</strong>(モバイルアプリは黒背景 + 金で見栄え重視)</li>
+</ul>
+
+<div class="warning">
+app.html は意図的に <strong>黒背景</strong>のまま維持している。理由: モバイルアプリのプロトタイプは黒テーマでの没入感が重要で、テーマ反転(白)対象から除外。
+</div>
+
+<h3>6.4 css/main.css(共通デザインシステム・580行)</h3>
+
+<h4>主要 CSS 変数</h4>
+<pre>:root {
+  /* Core - 白テーマ */
+  --paper: #FAF7F0;         /* warm off-white base */
+  --paper-2: #F2EBDA;       /* secondary surface */
+  --ink: #0F0E0C;           /* near-black for text */
+  --ink-2: #2A251D;
+  --ink-3: #4A4234;
+
+  /* Backward-compat aliases */
+  --black: var(--paper);    /* 既存コードが --black 参照 → 白を返す */
+  --bone: var(--ink);       /* --bone 参照 → 黒テキストを返す */
+
+  --line: #C9BC9A;          /* warm beige line */
+  --line-2: #B5A57F;
+
+  /* Gold spectrum(白背景でも読める深め金)*/
+  --gold: #B8862D;
+  --gold-bright: #D4A547;
+  --gold-deep: #7A5A18;
+  --gold-edge: #E8C76B;
+  --gold-shadow: #4A3812;
+
+  /* Text */
+  --white: #FFFFFF;
+  --ash: #5C5240;
+  --dust: #8C8270;
+  --shadow: #B8AC95;
+
+  /* Functional */
+  --crimson: #8B1A1A;
+  --jade: #1F4D3A;
+
+  /* Fonts */
+  --f-display: 'Cinzel', 'Noto Serif JP', serif;
+  --f-editorial: 'Bodoni Moda', 'Noto Serif JP', serif;
+  --f-body: 'DM Sans', 'Noto Serif JP', system-ui, sans-serif;
+  --f-mono: 'JetBrains Mono', 'Courier New', monospace;
+  --f-jp: 'Noto Serif JP', serif;
+
+  /* Rhythm */
+  --pad: clamp(20px, 4vw, 64px);
+  --rule: 1px solid rgba(184, 134, 45, 0.25);
+  --rule-bright: 1px solid rgba(184, 134, 45, 0.55);
+}</pre>
+
+<h4>背景紙のディテール</h4>
+<p>body にはサブトル金グラデーション + ペーパーグレイン overlay(SVG filter で生成した noise)を載せている。</p>
+
+<h4>言語ごとのフォントサイズ調整</h4>
+<p>CJK + Devanagari は Latin より大きく見えるため、H1/H2 を縮小:</p>
+<pre>html[lang="ja"] h1,
+html[lang="ko"] h1,
+html[lang="hi"] h1 {
+  font-family: var(--f-jp), var(--f-display);
+  font-size: clamp(36px, 5.5vw, 76px);
+  letter-spacing: 0.01em;
+  line-height: 1.25;
+}</pre>
+
+<h4>言語ピッカー UI</h4>
+<pre>.lang-picker {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin-right: 24px;
+  padding: 4px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.6);
+}
+.lang-btn {
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  font-weight: 600;
+  padding: 4px 8px;
+  background: transparent;
+  border: none;
+  color: var(--ash);
+  cursor: pointer;
+}
+.lang-btn.active {
+  background: var(--gold);
+  color: var(--paper);
+}</pre>
+
+<h4>Google翻訳UI隠蔽</h4>
+<pre>.skiptranslate iframe.skiptranslate,
+iframe.goog-te-banner-frame,
+iframe[id=":1.container"],
+.goog-te-banner-frame {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+}
+body {
+  top: 0 !important;
+  position: static !important;
+}</pre>
+
+<h3>6.5 js/main.js(カウントダウン + UI制御・103行)</h3>
+
+<h4>主要機能</h4>
+<ul>
+<li><strong>カウントダウン:</strong> 次のFriday 23:23(JST)までの残り時間を1秒ごと更新</li>
+<li><strong>IntersectionObserver:</strong> セクションがビューポートに入ったらフェードアップアニメーション</li>
+<li><strong>スムーズスクロール:</strong> ナビメニュークリックでアンカーへ滑らかにスクロール</li>
+</ul>
+
+<h4>JST カウントダウンロジック(タイムゾーン非依存)</h4>
+<pre>function nextFridayJST() {
+  const now = new Date();
+  // 現在時刻を UTC → JST(UTC+9)に変換
+  const jstNow = new Date(now.getTime() + 9 * 3600 * 1000);
+  // JST 上で次の金曜 23:23 を求める
+  const day = jstNow.getUTCDay();   // 0=日 ... 5=金 ... 6=土
+  const daysUntilFri = (5 - day + 7) % 7 || 7;
+  const target = new Date(jstNow);
+  target.setUTCDate(jstNow.getUTCDate() + daysUntilFri);
+  target.setUTCHours(23, 23, 0, 0);
+  // JST→UTCに戻す
+  return new Date(target.getTime() - 9 * 3600 * 1000);
+}</pre>
+
+<p>これにより、訪問者がどのタイムゾーンにいても東京時刻の金曜23:23を正確にカウントダウンする。</p>
+
+<h3>6.6 js/i18n.js(多言語化アダプタ・103行)</h3>
+
+<p>詳細は §10 参照。要旨:</p>
+<ul>
+<li>Google翻訳ウィジェットの element.js を非同期ロード</li>
+<li>JA/EN/KO/HI ボタンクリックで <code>googtrans</code> Cookie を設定 → リロード</li>
+<li>親ドメイン <code>.tamjump.com</code> 全体に Cookie をセット(将来サブドメイン共有)</li>
+</ul>
+
+<div class="divider"></div>
+
+<h2 id="s7">§7  デザインシステム</h2>
+
+<h3>7.1 タイポグラフィ</h3>
+
+<table>
+<tr><th>用途</th><th>フォント</th><th>由来</th></tr>
+<tr><td>Display(H1/H2)</td><td><strong>Cinzel</strong></td><td>Roman imperial caps · 紋章感</td></tr>
+<tr><td>Editorial(本文強調)</td><td><strong>Bodoni Moda</strong></td><td>Italian editorial · 高級雑誌</td></tr>
+<tr><td>Body</td><td><strong>DM Sans</strong></td><td>Modern grotesque · 可読性</td></tr>
+<tr><td>Mono(数値・ハッシュ)</td><td><strong>JetBrains Mono</strong></td><td>Technical · 透明性表現</td></tr>
+<tr><td>Japanese fallback</td><td><strong>Noto Serif JP</strong></td><td>明朝体・全文字カバー</td></tr>
+</table>
+
+<p>すべて Google Fonts から読み込み。フォールバック: <code>'Noto Serif JP', serif</code></p>
+
+<h3>7.2 色彩(2回反転後の最終仕様)</h3>
+
+<table>
+<tr><th>変数名</th><th>HEX</th><th>用途</th></tr>
+<tr><td><code>--paper</code></td><td><code>#FAF7F0</code></td><td>ベース背景(暖かい白)</td></tr>
+<tr><td><code>--paper-2</code></td><td><code>#F2EBDA</code></td><td>セカンダリ面(カード等)</td></tr>
+<tr><td><code>--ink</code></td><td><code>#0F0E0C</code></td><td>本文テキスト(漆黒)</td></tr>
+<tr><td><code>--ink-2</code></td><td><code>#2A251D</code></td><td>サブテキスト</td></tr>
+<tr><td><code>--ink-3</code></td><td><code>#4A4234</code></td><td>更にサブテキスト</td></tr>
+<tr><td><code>--gold</code></td><td><code>#B8862D</code></td><td>主アクセント(白背景でも読める深め金)</td></tr>
+<tr><td><code>--gold-bright</code></td><td><code>#D4A547</code></td><td>ハイライト</td></tr>
+<tr><td><code>--gold-deep</code></td><td><code>#7A5A18</code></td><td>テキスト用ダーク金</td></tr>
+<tr><td><code>--gold-edge</code></td><td><code>#E8C76B</code></td><td>金エッジハイライト</td></tr>
+<tr><td><code>--line</code></td><td><code>#C9BC9A</code></td><td>区切り線(暖かいベージュ)</td></tr>
+<tr><td><code>--ash</code></td><td><code>#5C5240</code></td><td>ミュート文字</td></tr>
+<tr><td><code>--crimson</code></td><td><code>#8B1A1A</code></td><td>禁止事項表示</td></tr>
+<tr><td><code>--jade</code></td><td><code>#1F4D3A</code></td><td>成功表示</td></tr>
+</table>
+
+<h3>7.3 デザイントークン:Backward Compat Alias</h3>
+
+<p>テーマ反転の際、既存コードが <code>var(--black)</code> や <code>var(--bone)</code> を多数参照していた。書き換えコスト削減のためエイリアスを設定:</p>
+
+<pre>--black: var(--paper);    /* 元は #000、今は白を返す */
+--bone:  var(--ink);      /* 元は明るい文字色、今は黒を返す */</pre>
+
+<p>結果として既存の <code>background: var(--black)</code> は自動で白になり、 <code>color: var(--bone)</code> は黒文字になる。</p>
+
+<h3>7.4 スペーシング</h3>
+<p>すべて <code>clamp()</code> でレスポンシブ。</p>
+<pre>--pad: clamp(20px, 4vw, 64px);   /* セクション左右パディング */</pre>
+
+<h3>7.5 装飾</h3>
+<ul>
+<li><strong>ペーパーグレイン:</strong> SVG filter で生成した noise を body::before に固定配置・mix-blend-mode: multiply</li>
+<li><strong>金グラデーション:</strong> body にラジアルグラデを2層(ヒーロー左上・フッター右下)で配置</li>
+<li><strong>breathing ring:</strong> ヒーローロゴの周りに2重の金リング・slowBreathe アニメーション(4秒)</li>
+</ul>
+
+<div class="divider"></div>
+
+<h2 id="s8">§8  ロゴ進化史</h2>
+
+<h3>8.1 全イテレーション一覧</h3>
+
+<table>
+<tr><th>版</th><th>素材</th><th>処理</th><th>採用</th></tr>
+<tr><td>v1.0</td><td>自作SVG(owl-eyed)</td><td>—</td><td>初期試作・即破棄</td></tr>
+<tr><td>v1.1</td><td>ChatGPT 黒背景PNG(実体はJPEG)</td><td>そのまま</td><td>黒テーマ時に使用</td></tr>
+<tr><td>v1.2</td><td>v1.1 同素材</td><td>PILで黒→透明化(alpha threshold)</td><td>白テーマ移行時の試作</td></tr>
+<tr><td>v1.3</td><td>新ChatGPT素材(金+黒詳細・白背景)</td><td>白→bone(#FAF7F0)に置換</td><td>採用→ロゴ枠問題発生</td></tr>
+<tr><td>v1.4</td><td>v1.3 同素材</td><td>白→true PNG alpha 透明化</td><td><strong>★最終採用</strong></td></tr>
+</table>
+
+<h3>8.2 v1.3 で起きた「白い枠」問題</h3>
+
+<p>ChatGPT が生成した「.png」拡張子のファイルは中身が JPEG/RGB(透明度なし)。白背景部分を bone-white(#FAF7F0)に置換しただけでは、body のグラデーション overlay がある領域で実色がずれて「白い枠」が見えた。</p>
+
+<h3>8.3 v1.4 の解決法 — 真の PNG α透過</h3>
+
+<p>PIL での処理:</p>
+<pre>from PIL import Image
+import numpy as np
+
+src = Image.open(src_path).convert('RGB')
+arr = np.array(src.convert('RGB')).astype(np.float32)
+
+# min(R,G,B) で白さを測る
+# min > 240 → α = 0(完全透明)
+# min < 200 → α = 255(完全不透明)
+# 中間で滑らかに補間(アンチエイリアス保持)
+min_ch = arr.min(axis=2)
+alpha = np.clip((240 - min_ch) / 40 * 255, 0, 255).astype(np.uint8)
+
+rgba = np.dstack([arr.astype(np.uint8), alpha])
+out = Image.fromarray(rgba, 'RGBA')
+out.save('logo-v3.png', 'PNG')</pre>
+
+<h3>8.4 ロゴファイルの命名規則</h3>
+<table>
+<tr><th>ファイル名</th><th>状態</th></tr>
+<tr><td><code>logo-{size}.png</code></td><td>古い v1.3 オリジナル(白背景つき)・現在 HTML 参照なし</td></tr>
+<tr><td><code>logo-t-{size}.png</code></td><td>v1.2 時代の透明版・現在 HTML 参照なし</td></tr>
+<tr><td><strong><code>logo-v3-{size}.png</code></strong></td><td><strong>★ 現用最終版(真の PNG α透過 + v1.4 デザイン)</strong></td></tr>
+</table>
+
+<h3>8.5 現用ロゴの HTML 参照箇所</h3>
+<table>
+<tr><th>場所</th><th>サイズ</th></tr>
+<tr><td>favicon</td><td>logo-v3-128.png</td></tr>
+<tr><td>apple-touch-icon</td><td>logo-v3-256.png</td></tr>
+<tr><td>ナビ左上ブランドマーク</td><td>logo-v3-128.png</td></tr>
+<tr><td>ヒーロー右側大ロゴ</td><td>logo-v3-512.png</td></tr>
+<tr><td>フッターロゴ</td><td>logo-v3-128.png</td></tr>
+<tr><td>app.html ホーム画面</td><td>logo-v3-512.png</td></tr>
+</table>
+
+<h3>8.6 「中身がJPEG」問題の教訓</h3>
+<p>ChatGPT が生成した画像は <code>file</code> コマンドで実態を確認すること:</p>
+<pre>file /mnt/user-data/uploads/ChatGPT_Image_*.png
+# → JPEG image data, JFIF standard 1.01, ... となる場合が多い</pre>
+<p>このため、拡張子に騙されず、PIL/numpy で適切に α 処理する必要がある。</p>
+
+<div class="divider"></div>
+
+<h2 id="s9">§9  テーマ反転(黒→白)の経緯と完全仕様</h2>
+
+<h3>9.1 経緯</h3>
+
+<ol>
+<li><strong>初期実装:</strong> 元仕様通り「黒背景 × 金」のシネマティック高級感</li>
+<li><strong>ユーザー指示:</strong> 「ページ全体の背景を白。ロゴは黒のままでいい」</li>
+<li><strong>大規模反転実施:</strong> CSS 変数・各セクションbackground・全暗い rgba を一括書き換え</li>
+<li><strong>ロゴ周り調整:</strong> 黒い四角が浮く → 透明化 → 金+黒詳細ロゴ採用 → 真透過化</li>
+<li><strong>残った暗部除去:</strong> three-card / story / verify-panel / bell-grid 等の rgba(0,0,0,...) を白系に</li>
+<li><strong>ユーザー追加指示:</strong> 「黒背景、グレー背景は使わないで。枠線で使うならOK」 → 残ったグレーカードを全削除</li>
+</ol>
+
+<h3>9.2 反転前の元設計(参考)</h3>
+
+<pre>--black: #000000;
+--ink:   #0a0805;
+--bone:  #F5EFE0;     /* 明るい文字色 */
+--gold:  #D4AF37;     /* 明るい金 */
+body { background: var(--black); color: var(--bone); }</pre>
+
+<h3>9.3 反転後(現用)</h3>
+
+<pre>--paper:  #FAF7F0;    /* 暖白 */
+--ink:    #0F0E0C;    /* 漆黒 */
+--gold:   #B8862D;    /* 深め金(白背景でも読める)*/
+
+/* 後方互換 */
+--black:  var(--paper);   /* 白を返す */
+--bone:   var(--ink);     /* 黒を返す */
+
+body { background: var(--paper); color: var(--ink); }</pre>
+
+<h3>9.4 大規模置換の手法</h3>
+
+<p>Pythonで本文HTML内の暗色を一括書換:</p>
+<pre># 暗い rgba 背景 → 白系へ置換
+substitutions = [
+    ('background: rgba(0,0,0,0.4);', 'background: rgba(255,255,255,0.6);'),
+    ('background: rgba(0,0,0,0.5);', 'background: rgba(255,255,255,0.65);'),
+    ('background: rgba(10, 8, 5, 0.6);', 'background: rgba(255,255,255,0.65);'),
+    ('background: linear-gradient(180deg, rgba(20, 16, 10, 0.95), rgba(10, 8, 5, 0.98));',
+     'background: linear-gradient(180deg, rgba(255,255,255,0.7), rgba(242,235,218,0.5));'),
+]
+
+# 各 linear-gradient の中の var(--ink*) → var(--paper-2)
+# regex で paren-balanced parsing して置換</pre>
+
+<h3>9.5 残った暗部を白に変換した部分一覧</h3>
+<table>
+<tr><th>セレクタ</th><th>変更内容</th></tr>
+<tr><td><code>.nav</code></td><td>dark translucent → 白 translucent</td></tr>
+<tr><td><code>.card</code></td><td>dark gradient → white-cream gradient + soft shadow</td></tr>
+<tr><td><code>.three-card</code></td><td>dark gradient → white translucent</td></tr>
+<tr><td><code>.story</code></td><td>dark → 白 translucent</td></tr>
+<tr><td><code>.verify-panel</code></td><td>dark → 白 translucent</td></tr>
+<tr><td><code>.bell-grid</code></td><td>dark → 白 translucent</td></tr>
+<tr><td><code>.btn</code> 系</td><td>テキスト色 <code>var(--black)</code> → <code>var(--ink)</code> 直接指定(エイリアスとの混同回避)</td></tr>
+<tr><td><code>.fund-panel</code>(money.html)</td><td>dark + 金グラデ → 白 + 金グラデ</td></tr>
+<tr><td><code>.toc-back</code>(money.html)</td><td>dark backdrop → 白 backdrop</td></tr>
+</table>
+
+<h3>9.6 反転時に「壊すな」と指示された箇所</h3>
+<ul>
+<li>ヒーローの h1(<em>Not everyone can be king. But everyone can make one.</em>)</li>
+<li>ヒーロー右側のロゴ + breathing ring</li>
+<li>カウントダウン本体</li>
+</ul>
+<p>これらは反転後も保持されている。</p>
+
+<h3>9.7 app.html は反転対象外</h3>
+<p>app.html(モバイルアプリ)は意図的に <strong>黒テーマのまま</strong>。理由: アプリ画面プロトタイプは黒背景での没入感が重要。</p>
+
+<div class="divider"></div>
+
+<h2 id="s10">§10  i18n(多言語化)実装の完全記録</h2>
+
+<h3>10.1 当初試行:手書き辞書方式(失敗・破棄)</h3>
+
+<p>各ボタンクリックで JSON 辞書を引き直す方式を試作。<code>data-i18n="hero.h1"</code> 等の属性を全要素に振って、JS の dictionary から取り出す。</p>
+
+<h4>破棄理由</h4>
+<ul>
+<li>翻訳対象が 134+ フレーズあり、4言語分の辞書を手書きするのに3-4時間かかる</li>
+<li>本文(Edge Rules 12個・Stories 4人・Manifesto 7項目等)まで網羅すると更に膨大</li>
+<li>ユーザーから「何かを咬ませて翻訳できるようにできないの?」</li>
+</ul>
+
+<h3>10.2 採用方式:Google翻訳ウィジェット(A案)</h3>
+
+<p>ユーザーが <strong>A案(Google翻訳・2分実装・無料・100+言語対応)</strong>を選択。理由:</p>
+<ul>
+<li>Edge Rules / Stories / Money 本文すべて自動翻訳</li>
+<li>追加コストゼロ・API依存ゼロ</li>
+<li>機械翻訳臭はあるが、ブランド重要箇所は <code>translate="no"</code> で除外可能</li>
+</ul>
+
+<h3>10.3 実装の試行錯誤</h3>
+
+<table>
+<tr><th>版</th><th>方式</th><th>結果</th></tr>
+<tr><td>v1</td><td>setTimeout polling で <code>.goog-te-combo</code> 待機</td><td>combo 出現せず</td></tr>
+<tr><td>v2</td><td>onerror ハンドラ + console.log 追加</td><td>typeof google === 'object' は OK だが combo は null</td></tr>
+<tr><td>v3</td><td>MutationObserver で combo を監視</td><td>同じく出現せず</td></tr>
+<tr><td>v4</td><td>★ Cookie + reload 方式に転換</td><td>★ 成功</td></tr>
+</table>
+
+<h3>10.4 失敗の根本原因</h3>
+
+<p>DevTools で <code>document.querySelector('#google_translate_element').innerHTML</code> を実行したところ、Google が挿入したのは:</p>
+
+<pre>&lt;div class="skiptranslate goog-te-gadget"&gt;
+  &lt;div class="goog-te-gadget-simple"&gt;
+    &lt;img ...&gt;
+    &lt;span&gt;言語を選択&lt;/span&gt;
+    ▼
+  &lt;/div&gt;
+&lt;/div&gt;</pre>
+
+<p>つまり <code>InlineLayout.SIMPLE</code> は<strong>もはや &lt;select&gt; を作らない</strong>。新しい UI ではカスタム anchor ドロップダウンに置き換わっており、 <code>.goog-te-combo</code> セレクタが永久に null を返す。</p>
+
+<h3>10.5 解決策:Cookie + reload</h3>
+
+<p>Google の <code>googtrans</code> cookie を直接セットしてリロードする方式。Google翻訳エンジンはページ読み込み時にcookieを読み、自動で全文翻訳する:</p>
+
+<pre>function setGoogTransCookie(lang) {
+  const host = window.location.hostname;
+  const parts = host.split('.');
+  const parentDomain = parts.length > 1
+    ? '.' + parts.slice(-2).join('.')   // ".tamjump.com"
+    : host;
+
+  const value = lang === 'en' ? '' : `/auto/${lang}`;
+  const expires = new Date();
+  expires.setFullYear(expires.getFullYear() + 1);
+
+  // 現在ドメインと親ドメイン両方にセット
+  document.cookie = `googtrans=${value};path=/;expires=${expires.toUTCString()}`;
+  document.cookie = `googtrans=${value};domain=${parentDomain};path=/;expires=${expires.toUTCString()}`;
+}
+
+function applyLang(lang) {
+  setGoogTransCookie(lang);
+  setTimeout(() => window.location.reload(), 100);
+}</pre>
+
+<h3>10.6 親ドメイン .tamjump.com への cookie 設定の意義</h3>
+<p>cookie を <code>.tamjump.com</code> 全体にセットすることで、将来 yaruze/myaruze/tyaruze 等の他サブドメインに同じscriptを入れた場合、<strong>言語設定がドメイン間で自動共有</strong>される。</p>
+
+<h3>10.7 翻訳から除外するブランド要素</h3>
+
+<p>以下に <code>translate="no"</code> + <code>class="notranslate"</code> を付与:</p>
+
+<table>
+<tr><th>場所</th><th>理由</th></tr>
+<tr><td>ヒーロー h1</td><td>"Not everyone can be king. But everyone can make one." はブランドコピー</td></tr>
+<tr><td>言語ピッカー全体</td><td>HI ボタンが「こんにちは」に翻訳された不具合への対策</td></tr>
+<tr><td>各 lang-btn 個別</td><td>二重保険</td></tr>
+<tr><td><code>.nav-brand</code></td><td>KINGMAKER ロゴ・23:23 glyph は固有名詞</td></tr>
+<tr><td><code>.nav-menu</code></td><td>ナビメニュー(Bell / Money / The Three 等)は英語のまま</td></tr>
+<tr><td><code>#countdown</code></td><td>DAYS / HRS / MIN / SEC ラベルは英語維持</td></tr>
+</table>
+
+<h3>10.8 サポート言語</h3>
+<p>JA(日本語)/ EN(英語)/ KO(韓国語)/ HI(ヒンディー語)の4言語。<code>includedLanguages: 'ja,en,ko,hi'</code> で設定。</p>
+
+<h3>10.9 翻訳の挙動</h3>
+<ol>
+<li>ユーザーがJAボタンをクリック</li>
+<li>JS が <code>googtrans=/auto/ja</code> Cookie をセット</li>
+<li>ページが自動リロード(100ms遅延)</li>
+<li>Google翻訳が cookie を読み、ページ全文を日本語化(2-3秒)</li>
+<li>ヒーロー h1 等 <code>translate="no"</code> 要素は英語のまま</li>
+<li>言語ピッカーの該当ボタンが金色アクティブに</li>
+</ol>
+
+<h3>10.10 Google翻訳UIの隠蔽</h3>
+
+<p>Google翻訳は画面上部に「日本語に翻訳されました [原文を表示]」というバナーを自動表示する。これを CSS で完全に隠す:</p>
+
+<pre>iframe.skiptranslate,
+iframe.goog-te-banner-frame,
+iframe[id=":1.container"],
+.goog-te-banner-frame {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+}
+
+/* Google は body に top offset を入れる → 打ち消し */
+body {
+  top: 0 !important;
+  position: static !important;
+}
+
+/* 翻訳テキストへの黄色ハイライト除去 */
+font[style*="background-color"],
+.goog-text-highlight {
+  background-color: transparent !important;
+  box-shadow: none !important;
+}</pre>
+
+<div class="warning">
+新版の Google 翻訳が UI を更新するとクラス名が変わる可能性がある。バナーが復活したら DevTools で current class名を取得して上記 CSS を追記すること。
+</div>
+
+<h3>10.11 #google_translate_element の配置</h3>
+
+<p>Google が初期化する隠し要素。<code>display:none</code> だと初期化を拒否されるため、<strong>画面内の見えない位置</strong>に配置:</p>
+
+<pre>&lt;div id="google_translate_element"
+     style="position:fixed;
+            bottom:0;
+            right:0;
+            width:1px;
+            height:1px;
+            opacity:0;
+            pointer-events:none;
+            overflow:hidden;
+            z-index:-1;"&gt;
+&lt;/div&gt;</pre>
+
+<div class="success">
+<code>position:fixed</code> + <code>opacity:0</code> + 1px の極小サイズで、ユーザーには見えないが Google には「DOM上に存在する」と認識される。<code>display:none</code> や <code>left:-9999px</code> はNG。
+</div>
+
+<div class="divider"></div>
+
+<h2 id="s11">§11  CSP(Content Security Policy)設定</h2>
+
+<h3>11.1 必要だった理由</h3>
+
+<p>Google翻訳実装初期、ブラウザの DevTools「Issues」に 35件のCSPブロックエラーが出ていた。Cloudflare 経由でアクセスすると同社が**デフォルトの厳格なCSP**を返すため、<code>translate.google.com</code> 等への外部接続が全て遮断されていた。</p>
+
+<h3>11.2 解決策:HTMLメタタグでCSPを明示</h3>
+
+<p><code>&lt;head&gt;</code> 内に <code>Content-Security-Policy</code> メタタグを追加。Cloudflare の HTTPヘッダー方式より<strong>メタタグの方が後勝ち</strong>になるケースが多い:</p>
+
+<pre>&lt;meta http-equiv="Content-Security-Policy" content="
+  default-src 'self' 'unsafe-inline' 'unsafe-eval'
+              https: data: blob:;
+  script-src 'self' 'unsafe-inline' 'unsafe-eval'
+             https://translate.google.com
+             https://translate.googleapis.com
+             https://translate-pa.googleapis.com
+             https://*.google.com
+             https://*.gstatic.com
+             https://static.cloudflareinsights.com;
+  script-src-elem 'self' 'unsafe-inline'
+                  https://translate.google.com
+                  https://translate.googleapis.com
+                  https://translate-pa.googleapis.com
+                  https://*.google.com
+                  https://*.gstatic.com
+                  https://static.cloudflareinsights.com;
+  style-src 'self' 'unsafe-inline'
+            https://fonts.googleapis.com
+            https://*.gstatic.com
+            https://www.gstatic.com;
+  style-src-elem 'self' 'unsafe-inline'
+                 https://fonts.googleapis.com
+                 https://*.gstatic.com
+                 https://www.gstatic.com;
+  font-src 'self' https://fonts.gstatic.com data:;
+  img-src 'self' data: https: blob:;
+  connect-src 'self'
+              https://translate.googleapis.com
+              https://translate-pa.googleapis.com
+              https://*.google.com
+              https://*.gstatic.com
+              https://static.cloudflareinsights.com;
+  frame-src https://*.google.com;
+" /&gt;</pre>
+
+<h3>11.3 Google翻訳で必要なドメイン一覧</h3>
+
+<table>
+<tr><th>ドメイン</th><th>役割</th><th>追加し忘れて困った</th></tr>
+<tr><td><code>translate.google.com</code></td><td>element.js(本体スクリプト)</td><td>—</td></tr>
+<tr><td><code>translate.googleapis.com</code></td><td>翻訳API実行</td><td>script-src に追加忘れ</td></tr>
+<tr><td><code>translate-pa.googleapis.com</code></td><td>言語リスト Personalization API</td><td>★ 完全に抜けていた</td></tr>
+<tr><td><code>*.gstatic.com</code></td><td>フォント・CSS</td><td>—</td></tr>
+<tr><td><code>*.google.com</code></td><td>その他Google系</td><td>—</td></tr>
+<tr><td><code>static.cloudflareinsights.com</code></td><td>Cloudflare自身のbeacon</td><td>Cloudflare proxiedだと自動注入</td></tr>
+</table>
+
+<h3>11.4 script-src vs script-src-elem の違い</h3>
+
+<p>新しい Chrome では <code>script-src-elem</code> 指令(<code>&lt;script&gt;</code> 要素専用)が定義されていなければ <code>script-src</code> にフォールバックする。<strong>明示的に両方書く</strong>のが安全。</p>
+
+<h3>11.5 適用ファイル</h3>
+<p>本CSPメタタグは <code>index.html</code> と <code>money.html</code> の両方の <code>&lt;head&gt;</code> に挿入されている。<code>app.html</code> はGoogle翻訳を使わないため未適用。</p>
+
+<div class="divider"></div>
+
+<h2 id="s12">§12  デプロイフロー(GitHub Pages + Cloudflare DNS)</h2>
+
+<h3>12.1 アーキテクチャ</h3>
+
+<pre>     [ User Browser ]
+            │
+            ▼
+   king2323.tamjump.com
+            │
+            ▼
+   ┌─────────────────────┐
+   │  Cloudflare DNS     │  CNAME king2323 → tamjump.github.io (Proxied)
+   │  (tamjump.com zone) │  Universal SSL 自動有効
+   └─────────────────────┘
+            │
+            ▼
+   ┌─────────────────────┐
+   │  GitHub Pages       │  Source: main branch / root
+   │  (tamjump.github.io)│  CNAME ファイルで king2323.tamjump.com を認識
+   └─────────────────────┘
+            │
+            ▼
+   ┌─────────────────────┐
+   │  TAmJump/king2323   │  private repo
+   │   (GitHub repo)     │  push のみ Claude (PAT埋込clone)
+   └─────────────────────┘
+            │
+            ▲ git push origin main
+            │
+   ┌─────────────────────┐
+   │  /home/claude/      │  Claude のローカル作業領域
+   │     kingmaker/      │
+   └─────────────────────┘</pre>
+
+<h3>12.2 デプロイ手順(完全版)</h3>
+
+<h4>初回セットアップ(完了済み・参考)</h4>
+
+<ol>
+<li><strong>User:</strong> GitHub Web UI で <code>TAmJump/king2323</code> リポを作成(private)</li>
+<li><strong>Claude:</strong> ローカル <code>/home/claude/kingmaker</code> でファイル作成</li>
+<li><strong>Claude:</strong> git init / add / commit / remote追加(PAT埋込)/ force push
+<pre>git init -q
+git config --global user.name "Claude (TAmJump bot)"
+git config --global user.email "claude@anthropic.local"
+git branch -M main
+git add .
+git commit -m "Initial: KINGMAKER 23:23 v1.0"
+git remote add origin https://&lt;PAT&gt;@github.com/TAmJump/king2323.git
+git push -u origin main --force   # 初期 push のみ force(repo作成時の Initial commit 上書き)</pre>
+</li>
+<li><strong>Claude:</strong> リポ直下に <code>CNAME</code> ファイル(<code>king2323.tamjump.com</code> 1行)を作成・push</li>
+<li><strong>Claude:</strong> <code>.nojekyll</code> 空ファイルを作成・push</li>
+<li><strong>User:</strong> GitHub Settings → Pages
+<ul>
+<li>Source: <strong>Deploy from a branch</strong></li>
+<li>Branch: <code>main</code> / <code>/ (root)</code></li>
+<li>Custom domain: <code>king2323.tamjump.com</code></li>
+<li>Save</li>
+</ul>
+</li>
+<li><strong>User:</strong> Cloudflare DNS で1行追加
+<ul>
+<li>Type: <code>CNAME</code></li>
+<li>Name: <code>king2323</code></li>
+<li>Content: <code>tamjump.github.io</code></li>
+<li>Proxy: <strong>Proxied</strong>(オレンジ雲)</li>
+<li>TTL: Auto</li>
+</ul>
+</li>
+<li>数分待つ → GitHub Pages「DNS Check Successful」(緑)</li>
+<li>Universal SSL 自動発行(Cloudflare 経由)</li>
+<li><code>https://king2323.tamjump.com</code> でアクセス可能</li>
+</ol>
+
+<h4>日常の更新サイクル(セッションごと)</h4>
+
+<ol>
+<li>Claude がローカルでファイル編集</li>
+<li><code>git add -A && git commit -m "..." && git push origin main</code></li>
+<li>GitHub Pages が自動ビルド(30秒〜2分)</li>
+<li><code>https://king2323.tamjump.com</code> に反映</li>
+</ol>
+
+<h3>12.3 キャッシュバスター運用</h3>
+
+<p>新しい変更を即時確認するため、URLに <code>?v={数字}</code> を付ける。Claude は毎回違う数字を提示:</p>
+
+<pre>https://king2323.tamjump.com/?v=33
+https://king2323.tamjump.com/?v=200
+https://king2323.tamjump.com/?v=999</pre>
+
+<h3>12.4 キャッシュ階層</h3>
+
+<table>
+<tr><th>階層</th><th>パージ方法</th></tr>
+<tr><td>ブラウザキャッシュ</td><td>Ctrl+Shift+R(強制リロード)/ シークレットウィンドウ</td></tr>
+<tr><td>Cloudflare Edge</td><td>Cloudflare ダッシュボード → Caching → Configuration → Purge Everything</td></tr>
+<tr><td>GitHub Pages CDN</td><td>最大10分待つ(自動)</td></tr>
+</table>
+
+<h3>12.5 動作確認コマンド</h3>
+
+<p>Claude のサンドボックスからは <code>tamjump.com</code> への直接アクセスが制限されている(allowlist外)。動作確認は <strong>ユーザーのブラウザ</strong> で実施。</p>
+
+<p>ユーザー側コマンドライン(参考):</p>
+<pre>dig king2323.tamjump.com +short
+# 期待: Cloudflareの IP(104.x.x.x など)
+
+curl -I https://king2323.tamjump.com
+# 期待: HTTP/2 200</pre>
+
+<h3>12.6 ロールバック手順</h3>
+
+<p>万一新コミットでサイトが壊れた場合:</p>
+<pre>cd /home/claude/kingmaker
+git log --oneline | head -10        # 戻したいコミットを確認
+git revert &lt;commit-hash&gt;            # 逆コミット作成
+git push origin main</pre>
+
+<p>または強制リセット(履歴破壊・推奨しない):</p>
+<pre>git reset --hard &lt;commit-hash&gt;
+git push origin main --force</pre>
+
+<div class="divider"></div>
+
+<h2 id="s13">§13  全コミット履歴と意図</h2>
+
+<p>2026-05-10 〜 2026-05-11 のすべてのコミット(古い順):</p>
+
+<table>
+<tr><th>#</th><th>ハッシュ</th><th>コミットメッセージ</th><th>意図</th></tr>
+<tr><td>1</td><td><code>4fd19d6</code></td><td>Initial: KINGMAKER 23:23 v1.0</td><td>初回push・全ファイル一括投入</td></tr>
+<tr><td>2</td><td><code>44f92f4</code></td><td>Add CNAME for kingmaker2323.com + update README</td><td>独自ドメイン取得を想定しCNAMEを <code>kingmaker2323.com</code> に設定</td></tr>
+<tr><td>3</td><td><code>09ff560</code></td><td>Switch domain: kingmaker2323.com → king2323.tamjump.com</td><td>ユーザー判断で無料サブドメインに切り替え</td></tr>
+<tr><td>4</td><td><code>a798452</code></td><td>Add .nojekyll: skip Jekyll processing (pure static)</td><td>GitHub Pages のビルドトリガー兼Jekyll無効化</td></tr>
+<tr><td>5</td><td><code>dc89062</code></td><td>Logo: black-bg → white circular medallion</td><td>ロゴの黒い四角を白円メダル化(後に撤回)</td></tr>
+<tr><td>6</td><td><code>705e271</code></td><td>Theme inversion: dark → light (white paper + black ink)</td><td>★ 大規模テーマ反転(黒→白)</td></tr>
+<tr><td>7</td><td><code>03b9ff7</code></td><td>Logo: black-bg → transparent (PNG alpha threshold)</td><td>v1.2 ロゴ透明化処理</td></tr>
+<tr><td>8</td><td><code>de74dea</code></td><td>Logo: refined v2 with negative-space eyes</td><td>v2 抜きの目デザイン</td></tr>
+<tr><td>9</td><td><code>4b4bb52</code></td><td>Logo v3: gold + black detailed gorilla, white-bg → transparent</td><td>v3 金+黒詳細ロゴへ移行</td></tr>
+<tr><td>10</td><td><code>3c1c353</code></td><td>Logo v3 deploy: white pixels → bone-white for exact bg match</td><td>白部分をboneに置換(枠問題発生)</td></tr>
+<tr><td>11</td><td><code>7ab0390</code></td><td>Add 4-language support (ja/en/ko/hi) + remove all dark backgrounds</td><td>★ 1回目の i18n(辞書方式)+ 残った暗部除去</td></tr>
+<tr><td>12</td><td><code>4104b22</code></td><td>Logo v3: bone-matched bg → true PNG alpha transparency</td><td>★ ロゴ枠問題を真透過で解決</td></tr>
+<tr><td>13</td><td><code>8cb00b5</code></td><td>Logo v3 → v4: new gold-only design with alpha transparency</td><td>新ロゴ素材で再生成(後にユーザー判断でv3に戻る)</td></tr>
+<tr><td>14</td><td><code>5f11cc3</code></td><td>Logo: gold+black detailed v3 with true PNG alpha transparency</td><td>v3 金+黒詳細・真透過版確定</td></tr>
+<tr><td>15</td><td><code>02e9ef4</code></td><td>i18n: switch to Google Translate widget (100+ languages auto)</td><td>★ 辞書方式破棄 → Google翻訳A案へ転換</td></tr>
+<tr><td>16</td><td><code>c588f00</code></td><td>i18n: robust Google Translate init with retries + console logs</td><td>i18n.js を堅牢化(retries / pendingLang queue / logs)</td></tr>
+<tr><td>17</td><td><code>26238f8</code></td><td>Fix CSP blocking Google Translate</td><td>★ CSPメタタグでGoogle翻訳domains許可</td></tr>
+<tr><td>18</td><td><code>910b59f</code></td><td>CSP: add missing translate-pa.googleapis.com and script-src-elem</td><td>残った2件のCSP違反(supportedLanguages API + CF beacon)を解消</td></tr>
+<tr><td>19</td><td><code>7d8ee76</code></td><td>i18n: stop CSS from killing the .goog-te-combo select element</td><td>過剰なCSS隠蔽が combo を不可視化していた → 修正(後に効果なし判明)</td></tr>
+<tr><td>20</td><td><code>fe5f7f4</code></td><td>i18n v3: MutationObserver-based combo detection</td><td>polling → MutationObserver(根本解決にならず)</td></tr>
+<tr><td>21</td><td><code>4e8a454</code></td><td>i18n v4: cookie-based language switching (no .goog-te-combo needed)</td><td>★ Cookie方式に転換 → 翻訳成功</td></tr>
+<tr><td>22</td><td><code>a08102d</code></td><td>i18n polish: hide Google banner + protect brand elements</td><td>Googleバナー隠蔽 + ブランド要素notranslate設定</td></tr>
+</table>
+
+<p>22コミット・所要時間 約14時間(2026-05-10 13:24 〜 2026-05-11 03:11)</p>
+
+<div class="divider"></div>
+
+<h2 id="s14">§14  既知の問題・未着手項目</h2>
+
+<h3>14.1 既知の問題</h3>
+
+<h4>14.1.1 (修正済み)Hero h1 が翻訳時に縦長になる</h4>
+<p>JA/KO 切替時にCinzelの英語想定サイズで日本語が表示されると改行が崩れて縦長になっていた問題。<br/>
+<strong>対処済み:</strong> <code>html[lang="ja"] h1</code> 等で Noto Serif JP + 縮小サイズ指定。ただし現在は翻訳から除外(<code>translate="no"</code>)しているため、Heroだけは英語維持。</p>
+
+<h4>14.1.2 ロゴで「中身がJPEG」の罠</h4>
+<p>ChatGPTが <code>.png</code> 拡張子で出力するファイルは中身が JPEG/RGB(透明度なし)のことがある。必ず <code>file</code> コマンドで実態確認 + PIL で α 処理が必要。</p>
+
+<h4>14.1.3 Google翻訳の InlineLayout.SIMPLE が select を作らない</h4>
+<p><strong>対処済み:</strong> Cookie + reload 方式に移行。詳細 §10.4-§10.5。<br/>
+ただしGoogle 側UI更新で挙動が変わる可能性あり。バナー復活時は §10.10 のCSSを更新。</p>
+
+<h4>14.1.4 ナビメニューの一部翻訳されない問題</h4>
+<p>nav-menu 全体に <code>notranslate</code> を付けたため、ユーザーが「メニューも日本語にしたい」と思った場合は再考が必要。現在は意図的に英語維持。</p>
+
+<h4>14.1.5 Quirks Mode 警告</h4>
+<p>DevToolsのIssuesに1件「Page layout may be unexpected due to Quirks Mode」が出ているが、これはHTML5の <code>&lt;!DOCTYPE html&gt;</code> がちゃんと一行目にあれば誤検出。翻訳とは無関係で実害なし。</p>
+
+<h3>14.2 未着手項目(モック → 実装フェーズ)</h3>
+
+<h4>14.2.1 バックエンド実装</h4>
+<p>現在は純粋な静的サイト。実機能(投票/Coin購入/応募/Verify)は未実装。Cloudflare Workers + D1 DB で実装する場合の参考:</p>
+<ul>
+<li>Worker: <code>kingmaker-api.animalb001.workers.dev</code>(命名案)</li>
+<li>D1 DB: <code>kingmaker-db</code>(命名案)</li>
+</ul>
+
+<h4>14.2.2 DB スキーマ実装</h4>
+<p>製品仕様 §2.15 で定義された11テーブルの実装が必要:</p>
+<pre>users, wallets, missions, votes, cycles,
+seeds, hashes, reports, grant_reviews,
+grant_payments, audit_logs</pre>
+
+<h4>14.2.3 Seed生成と Hash 公開ロジック</h4>
+<p>製品仕様 §2.6 で定義された「BTC価格 / 日経終値 / 応募者数 → SHA-256 ハッシュ生成」のサーバーサイド実装。</p>
+
+<h4>14.2.4 KYC/AML 連携</h4>
+<p>King確定後の本人確認・反マネロン審査の外部サービス連携。日本での運用なら以下を検討:</p>
+<ul>
+<li>TRUSTDOCK</li>
+<li>e-KYC各社</li>
+</ul>
+
+<h4>14.2.5 決済プロバイダ連携</h4>
+<p>¥100 1回課金の実装。日本+海外個人をカバーする必要があるため:</p>
+<ul>
+<li>Stripe(海外個人もOK)</li>
+<li>Square(国内主体)</li>
+<li>PayPay/LINEPayは要検討</li>
+</ul>
+
+<h4>14.2.6 PWA / App Store 申請</h4>
+<p>app.html を実機ネイティブ化する場合の選択肢:</p>
+<ul>
+<li><strong>TWA</strong>(Trusted Web Activity / Android): yaruzeで実績あり</li>
+<li><strong>Capacitor</strong>: iOS + Android 両対応</li>
+<li><strong>純 PWA</strong>: ホーム画面追加のみ・App Store 経由なし</li>
+</ul>
+
+<h4>14.2.7 法的位置づけの確認</h4>
+<p>「宝くじではない/投資ではない/ギャンブルではない/マルチではない」を法律的に担保する必要がある。日本の場合:</p>
+<ul>
+<li>賭博罪(刑法185条)対策: 偶然性ではなく明示的な「贈与」と位置づけ</li>
+<li>資金決済法: Coin が前払式支払手段に該当するか確認</li>
+<li>景表法: 「King 確定」の表現が当選表現にならないよう</li>
+</ul>
+<p><strong>必ず法律事務所のレビューを受けること。</strong> Claudeは法律家ではない。</p>
+
+<div class="divider"></div>
+
+<h2 id="s15">§15  次フェーズの作業項目</h2>
+
+<h3>15.1 短期(1-2週間)</h3>
+
+<table>
+<tr><th>優先度</th><th>項目</th><th>担当</th></tr>
+<tr><td>★高</td><td>PAT更新(5/14 or 5/20 失効)</td><td>User</td></tr>
+<tr><td>★高</td><td>本書を読んだフィードバック・追加要望</td><td>User</td></tr>
+<tr><td>中</td><td>翻訳の品質確認(JA/KO/HI 全文を一読)</td><td>User</td></tr>
+<tr><td>中</td><td>モバイル実機での表示確認(iPhone/Android)</td><td>User</td></tr>
+<tr><td>中</td><td>SEO メタ強化(OGP / Twitter Card / JSON-LD)</td><td>Claude</td></tr>
+<tr><td>低</td><td>app.html の白テーマ化(統一感)or 維持判断</td><td>User決定</td></tr>
+</table>
+
+<h3>15.2 中期(1ヶ月)</h3>
+
+<table>
+<tr><th>項目</th><th>備考</th></tr>
+<tr><td>応募フォーム実装</td><td>静的→Worker経由でD1へ保存</td></tr>
+<tr><td>カウントダウン本物化</td><td>サーバー時刻同期</td></tr>
+<tr><td>The Three の自動選定ロジック</td><td>BTC/日経/応募者数のシード→ハッシュ→3名抽出</td></tr>
+<tr><td>Verify ページの動的化</td><td>毎週 cycle ごとに seed/hash を公開</td></tr>
+<tr><td>法律レビュー</td><td>顧問弁護士へ依頼</td></tr>
+</table>
+
+<h3>15.3 長期(3ヶ月以降)</h3>
+
+<table>
+<tr><th>項目</th><th>備考</th></tr>
+<tr><td>独自ドメイン取得</td><td>kingmaker2323.com or king23.com 等</td></tr>
+<tr><td>決済プロバイダ連携</td><td>Stripe / Square どちらか確定</td></tr>
+<tr><td>KYC連携</td><td>King 確定後の本人確認</td></tr>
+<tr><td>Grant 払い出しフロー</td><td>Bronze / Silver / Gold / Royal</td></tr>
+<tr><td>iOS/Android アプリ申請</td><td>TWA or Capacitor</td></tr>
+<tr><td>多言語の手書きオーバーライド</td><td>Hero以外の重要文も手書き化(ハイブリッド方式)</td></tr>
+</table>
+
+<div class="divider"></div>
+
+<h2 id="s16">§16  運用上の罠リスト</h2>
+
+<p>本セッションで実際に踏んだ罠の記録。<strong>次セッションで同じ罠を踏むな</strong>。</p>
+
+<h3>罠 #1: PAT を「使えない」と判断する</h3>
+<p>新規Claudeが「セキュリティリスクがある」と git push を拒否しがち。<strong>本書 §3 に従い、PAT埋込clone は標準運用</strong>。御託は不要。</p>
+
+<h3>罠 #2: GitHub repo の初回push時にフォルダ構造が消える</h3>
+<p>User が Web UI で先にファイルをアップロードしていた場合、フォルダ構造がフラット化される(<code>assets/logo-128.png</code> が <code>logo-128.png</code> に)。<strong>force push でリポを上書き</strong>すれば直る。</p>
+
+<pre>git push -u origin main --force</pre>
+
+<h3>罠 #3: GitHub Pages の Source 設定が「GitHub Actions」になっている</h3>
+<p>デフォルトでは Actions モード。これだと workflow が走らずビルドされない。<strong>必ず「Deploy from a branch」+ main / root</strong>に変える。</p>
+
+<h3>罠 #4: ChatGPT 出力 .png が実際は JPEG</h3>
+<p>透明度がない。<code>file</code> コマンドで確認 → PIL で α threshold 処理。</p>
+
+<h3>罠 #5: <code>display:none</code> で Google翻訳が初期化拒否</h3>
+<p><code>#google_translate_element</code> を <code>display:none</code> や <code>left:-9999px</code> にすると初期化失敗。<strong>画面内に opacity:0 で配置</strong>。</p>
+
+<h3>罠 #6: Google翻訳の <code>.goog-te-combo</code> が新UIで存在しない</h3>
+<p><code>InlineLayout.SIMPLE</code> は select を作らない。<strong>Cookie方式に移行</strong>。</p>
+
+<h3>罠 #7: CSP で <code>translate-pa.googleapis.com</code> を忘れる</h3>
+<p>Google翻訳は3つのドメイン(translate.google.com / translate.googleapis.com / translate-pa.googleapis.com)を使う。全部CSPに追加すること。</p>
+
+<h3>罠 #8: <code>script-src-elem</code> 指令を書かないと一部ブラウザで失敗</h3>
+<p>Chrome は <code>script-src</code> にフォールバックするが、<strong>明示的に両方書く</strong>方が安全。</p>
+
+<h3>罠 #9: CSS <code>.goog-te-gadget span { display:none }</code> が select の親を隠す</h3>
+<p>Google翻訳UIを隠したいなら、<strong>banner-frame と tooltip だけに絞る</strong>。gadget 全体は触らない。</p>
+
+<h3>罠 #10: 翻訳されたくない箇所は <code>translate="no"</code> + <code>class="notranslate"</code> 両方</h3>
+<p>片方だけだとブラウザ・Google両方では効かないことがある。<strong>両方つける</strong>。</p>
+
+<h3>罠 #11: ブラウザキャッシュが頑固</h3>
+<p>同じファイル名のロゴを更新しても古いものが見える。<strong>新規ファイル名(logo-v3-*.png 等)で push</strong>するか、URL に <code>?v={数字}</code> を毎回違うもので付ける。</p>
+
+<h3>罠 #12: Cloudflare Proxy 経由で CSP が上書きされる</h3>
+<p>Cloudflare はデフォルトで CSP ヘッダーを返す場合がある。<strong>HTMLのmetaタグで明示的にCSPを定義</strong>すると上書きできる(メタ後勝ち)。</p>
+
+<h3>罠 #13: ロゴの「白い枠」問題</h3>
+<p>白背景のロゴをページ背景色に置換しただけでは、body のグラデーション overlay 領域で色がずれて枠が見える。<strong>真の PNG α透過</strong>でないと完全には消えない。</p>
+
+<h3>罠 #14: SVG filter の noise overlay が translate UI と干渉</h3>
+<p>body::before の noise が Google翻訳の隠し iframe と重なる場合がある。<code>z-index:1000</code> に固定して翻訳UIより上にしておく。</p>
+
+<h3>罠 #15: Playwright スクリーンショットでフェードアニメ未完成</h3>
+<p>サンドボックスでローカル確認する際、fadeUp の opacity:0 で空に見えることがある。スクショ前に <code>document.querySelectorAll('.fade-up').forEach(el => el.style.opacity = '1')</code> で強制表示。</p>
+
+<h3>罠 #16: ユーザー指示「壊すな」と言われた箇所を守る</h3>
+<p>「これは壊すなよ」と言われたら、その後の修正で絶対に触らない。ヒーローの h1 + countdown + ロゴはこれに該当。</p>
+
+<h3>罠 #17: サンドボックスから tamjump.com へのアクセス不可</h3>
+<p>Claude のサンドボックスは allowlist 制で、<code>tamjump.com</code> は許可されていない。動作確認はユーザーのブラウザでスクショ依頼。</p>
+
+<div class="divider"></div>
+
+<h2 id="s17">§17  次セッション開始時のチェックリスト</h2>
+
+<div class="principle">
+本書を読んだ Claude が、最初にやるべきこと。順番に。
+</div>
+
+<h3>17.1 開始時の確認</h3>
+
+<ol>
+<li>✅ <strong>§3 絶対原則</strong>を読む(Claude/User役割分担)</li>
+<li>✅ <strong>§4.1 PAT</strong>がまだ有効か確認(5/14 or 5/20 失効予定)</li>
+<li>✅ ユーザーから新PATを受け取っていたら、本書を更新</li>
+<li>✅ <strong>§16 罠リスト17件</strong>に目を通す</li>
+<li>✅ ユーザーの直近要求を聞く</li>
+</ol>
+
+<h3>17.2 git 作業開始時</h3>
+
+<ol>
+<li>✅ <code>cd /home/claude/kingmaker</code></li>
+<li>✅ <code>git status</code> で現状確認</li>
+<li>✅ <code>git remote -v</code> で PAT埋込URLになっているか確認</li>
+<li>✅ なければ:
+<pre>git remote add origin https://&lt;PAT&gt;@github.com/TAmJump/king2323.git</pre>
+</li>
+<li>✅ 最新を pull(他のセッションで変更された可能性):
+<pre>git pull origin main</pre>
+</li>
+</ol>
+
+<h3>17.3 ファイル編集前の確認</h3>
+
+<ol>
+<li>✅ どのファイルを触るか確認(<code>index.html</code> / <code>money.html</code> / <code>app.html</code> / <code>css/main.css</code> / <code>js/i18n.js</code> / <code>js/main.js</code>)</li>
+<li>✅ 触るセクションが「壊すな」リストに入っていないか(<strong>Hero h1 / countdown / ヒーローロゴ</strong>)</li>
+<li>✅ 暗い背景(rgba(0,0,0,...) など)を追加していないか確認(白テーマ原則)</li>
+<li>✅ <code>--black</code> や <code>--bone</code> エイリアスを使う場合、エイリアスの定義を覚えているか</li>
+</ol>
+
+<h3>17.4 push 前の確認</h3>
+
+<ol>
+<li>✅ <code>git status</code> で意図したファイルだけが変更されているか</li>
+<li>✅ <code>git diff</code> で変更内容を最終確認</li>
+<li>✅ commit message は具体的に書く(後の §13 履歴で読める粒度で)</li>
+<li>✅ <code>git push origin main</code></li>
+</ol>
+
+<h3>17.5 デプロイ確認</h3>
+
+<ol>
+<li>✅ ユーザーに <code>https://king2323.tamjump.com/?v={新しい数字}</code> でアクセス依頼</li>
+<li>✅ 反映に1-2分かかる旨を伝える</li>
+<li>✅ キャッシュ問題が出たら <code>Ctrl+Shift+R</code> or シークレットウィンドウを案内</li>
+<li>✅ DevToolsで確認が必要なら、見るべきタブを具体的に指示(Console / Network / Issues)</li>
+</ol>
+
+<h3>17.6 ユーザーが「画面を見せて」と言ったら</h3>
+
+<ol>
+<li>✅ Playwright でローカルレンダリング → スクショ確認</li>
+<li>✅ fade-up は強制 opacity:1 で表示</li>
+<li>✅ サンドボックスからは本番 tamjump.com にアクセスできないので、ローカル <code>python3 -m http.server</code> + Playwright で代替</li>
+</ol>
+
+<h3>17.7 終了時</h3>
+
+<ol>
+<li>✅ 未完了タスクがあれば <strong>§15 次フェーズ作業項目</strong>に追記</li>
+<li>✅ 新しい知見・罠があれば <strong>§16 罠リスト</strong>に追記</li>
+<li>✅ commit 履歴を <strong>§13</strong>に追記</li>
+<li>✅ ユーザーに本書の URL/path を再提示(Bitwarden等の場所に保管されているはず)</li>
+</ol>
+
+<div class="divider"></div>
+
+<h2 style="border-left:none; background:transparent; color:var(--ink); margin-top:80px; text-align:center; padding:30px;">
+— 設計書 終 —
+</h2>
+
+<div style="text-align:center; font-family: 'Cinzel', serif; font-size: 16px; letter-spacing: 0.3em; color: var(--gold-deep); margin: 40px 0;">
+KINGMAKER 23:23<br/>
+<span style="font-size:12px; letter-spacing:0.15em;">To be chosen, you must choose.</span>
+</div>
+
+<div style="text-align:center; font-size:11px; color: var(--ash); margin-top: 40px; letter-spacing:0.2em;">
+DESIGN_king2323_v1.0 · 2026-05-11 · TAmJump<br/>
+Repo: github.com/TAmJump/king2323 · Live: king2323.tamjump.com
+</div>
+
+</body>
+</html>
