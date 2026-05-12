@@ -1,6 +1,6 @@
 /* ============================================================
    KINGMAKER 23:23 — Google Translate (cookie-driven, 108 languages)
-   Version: v20260512e  (printed to console at load for debugging)
+   Version: v20260512f  (printed to console at load for debugging)
    ============================================================ */
 
 (function () {
@@ -11,7 +11,7 @@
   // If a user reports a translation bug, ask them to share the console
   // output — if this line is missing or shows an older version, they
   // are hitting a stale cache (CF / browser disk).
-  console.log('%c[i18n] v20260512e loaded · cookie:', 'color:#b8862d;font-weight:bold',
+  console.log('%c[i18n] v20260512f loaded · cookie:', 'color:#b8862d;font-weight:bold',
               document.cookie || '(none)');
 
   // Full Google Translate language list (108 languages)
@@ -352,10 +352,126 @@
     console.log('[i18n] marked', count, 'elements with lang="ja"');
   }
 
+  // ============================================================
+  // DETERMINISTIC TRANSLATIONS (Google-free)
+  // ============================================================
+  // For every translatable element on the page that carries
+  // data-i18n-html="key", look up I18N_CONTENT[key][lang] and swap
+  // its innerHTML. Original markup is cached as data-i18n-original
+  // for clean restoration on language switch back to a non-mapped
+  // language.
+  //
+  // Covers: JP and EN explicitly. Other languages fall back to the
+  // original markup (English) and rely on Google Translate to do
+  // EN → target. JP and EN are guaranteed to render correctly
+  // regardless of Google's availability.
+  //
+  // TO ADD A NEW TRANSLATION: just add an entry below. No HTML edits
+  // needed beyond the one-time data-i18n-html attribute on the element.
+  const I18N_CONTENT = {
+
+    // --- HERO TICKER (one-line ritual phrases) ---
+    // The ticker repeats these in a marquee; we translate each phrase once.
+    'ticker.bell_open':    { ja: 'Bellが開いている。' },
+    'ticker.bell_window':  { ja: '金曜 23:23 ─ 23:28 · 5分間' },
+    'ticker.choose':       { ja: '選ばれる前に、選べ。' },
+    'ticker.bell_right':   { ja: 'Bellは資格。換金されない。' },
+    'ticker.never_lose':   { ja: 'Bellは失われない。' },
+    'ticker.three_trials': { ja: '3つの試練。一つの王冠。' },
+    'ticker.grant_not_prize': { ja: 'Grantは賞金ではない。' },
+    'ticker.questions_world': { ja: '問題は、世界によって明かされる。' },
+
+    // --- WHY 23:23 (THE EDGE) — user's screenshot section ---
+    'why.eyebrow':         { ja: '第0章 · その時刻' },
+    'why.headline':        {
+      ja: '23:23は、<span class="gold-italic">昨日の自分</span>と、<br/>'
+        + '<span class="gold-italic">王になる自分</span>の境界。'
+    },
+    // The existing .edge-headline-jp element is already Japanese.
+    // We translate it to English here for EN/other pickers.
+    'why.subtitle_jp':     {
+      en: 'The edge between who you were yesterday, and the king you become.'
+    },
+    'why.text_1':          {
+      ja: '一日の最後の時刻。世界はもうすぐ眠る。もうすぐ終わる。<em>もうすぐ</em>。'
+    },
+    'why.text_2':          {
+      ja: '真夜中が閉じる、その一分前。明日に選ばれる前に、私たちが選ぶ一分。'
+    },
+    'why.foot':            {
+      ja: '他の時刻はない。他の分はない。<span class="gold">23:23, JST</span> ─ 週に二度、世界が脈打つ。'
+    },
+
+    // --- BELL RITUAL (Two Bells / One Week) ---
+    'bell.eyebrow':        { ja: '第I章 · 儀式' },
+    'bell.headline':       { ja: '二つのBell。<br/>一つの週。' },
+    'bell.lede':           {
+      ja: '世界は、週に二度立ち止まる。最初のBellで、選択が始まる。'
+        + '二度目で、世界は選び終えている。途中は、ない。'
+    },
+    'bell.friday_msg':     { ja: 'Bellが開く。' },
+    'bell.friday_sub':     { ja: '5分間。3人の名前。一つの選択。' },
+    'bell.monday_msg':     { ja: '世界は選び終えた。' },
+    'bell.monday_sub':     { ja: '一人の王。二つの王冠。他は、来週へ。' },
+
+    // --- STORIES (past kings) ---
+    'stories.eyebrow':     { ja: '第VIII章 · 物語' },
+    'stories.headline':    { ja: 'これまでの<em>王</em>たち。' },
+    'stories.lede':        { ja: '月曜の23:23ごとに、玉座は移る。これまで玉座に就いた者たち。' },
+
+    // --- COUNTDOWN LABELS ---
+    'countdown.label':     { ja: '─ 次のBellまで ─' },
+    'countdown.days':      { ja: '日' },
+    'countdown.hrs':       { ja: '時間' },
+    'countdown.min':       { ja: '分' },
+    'countdown.sec':       { ja: '秒' },
+
+    // --- RITUAL MODAL: ritual-why (Why 23:23?) ---
+    'ritual.why.title':    { ja: 'なぜ<em>23:23</em>なのか?' },
+    'ritual.why.subtitle': { en: 'The hour the king is replaced.' },
+    'ritual.why.accent':   {
+      ja: '23時23分。<em>一日の終わり、王が交代する刻。</em>',
+      en: '23:23. <em>The edge of the day. The hour the king is replaced.</em>'
+    },
+    'ritual.why.p1':       {
+      en: '23:23 is the threshold — the minute just before a day ends, when '
+        + 'everyone in the world is thinking "time to sleep." That '
+        + '<strong>edge moment</strong>. KINGMAKER\'s Bell opens only at '
+        + 'this hour. Five minutes a week. No more.'
+    },
+    'ritual.why.p2':       {
+      en: 'The Bell opens at <strong>23:23 JST on Friday</strong> and closes '
+        + 'at <strong>23:23 JST on Monday</strong>. Each country observes '
+        + 'it at the same instant — synchronized to the same point on the '
+        + 'globe\'s clock.'
+    },
+    'ritual.why.p3':       {
+      en: 'The hour itself doesn\'t carry meaning. '
+        + '<strong>The ritual gives the hour its meaning</strong>.'
+    }
+  };
+
+  function applyContentTranslations(lang) {
+    document.querySelectorAll('[data-i18n-html]').forEach(el => {
+      const key = el.getAttribute('data-i18n-html');
+      const entry = I18N_CONTENT[key];
+      if (!entry) return;
+      // Cache the very first rendered HTML so we can restore on lang switch.
+      if (!el.dataset.i18nOriginal) el.dataset.i18nOriginal = el.innerHTML;
+      const translated = entry[lang];
+      el.innerHTML = (translated !== undefined) ? translated : el.dataset.i18nOriginal;
+    });
+  }
+
+  // Expose for ritual modal: when a modal opens, freshly-cloned data-i18n-html
+  // elements need translation re-applied (they're new DOM).
+  window.__i18nApply = applyContentTranslations;
+
   function init() {
     markJpElements();
     document.querySelectorAll('.lang-picker').forEach(buildDropdown);
     applyMenuTranslations(getCurrentLang());
+    applyContentTranslations(getCurrentLang());
   }
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
