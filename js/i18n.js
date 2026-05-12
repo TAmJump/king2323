@@ -1,6 +1,6 @@
 /* ============================================================
    KINGMAKER 23:23 — Google Translate (cookie-driven, 108 languages)
-   Version: v20260512j  (printed to console at load for debugging)
+   Version: v20260512k  (printed to console at load for debugging)
    ============================================================ */
 
 (function () {
@@ -11,7 +11,7 @@
   // If a user reports a translation bug, ask them to share the console
   // output — if this line is missing or shows an older version, they
   // are hitting a stale cache (CF / browser disk).
-  console.log('%c[i18n] v20260512j loaded · cookie:', 'color:#b8862d;font-weight:bold',
+  console.log('%c[i18n] v20260512k loaded · cookie:', 'color:#b8862d;font-weight:bold',
               document.cookie || '(none)');
 
   // Full Google Translate language list (108 languages).
@@ -782,6 +782,25 @@
     'ritual.stories.titles_jp': { en: 'Titles cannot be sold. Cannot be transferred. Cannot be cashed.\nThey simply remain in the memory of the world.' },
     'ritual.stories.cta':       { en: '⌘ See past cycles' },
   };
+
+  // ============================================================
+  // FOOTER LEGAL LINKS (shared across index/money/verify)
+  // ============================================================
+  // The links carry bilingual labels in markup (e.g. "利用規約 / Terms").
+  // For EN picker we show English only; for JA picker, Japanese only.
+  // For other languages we show the English label (Google may translate).
+  // 特定商取引法表記 (Specified Commercial Transactions Act Notice) is a
+  // Japanese legal requirement. The link itself goes to a Japanese-language
+  // legal page on tamjump.com, but the label is translated for non-JP viewers.
+  const FOOTER_LINKS = {
+    'footer.terms':    { ja: '利用規約',          en: 'Terms' },
+    'footer.privacy':  { ja: 'プライバシー',     en: 'Privacy' },
+    'footer.commerce': { ja: '特定商取引法表記', en: 'Commercial Transactions Notice (JP)' },
+    'footer.operator': { ja: '運営 · TAmJ ↗',    en: 'Operator · TAmJ ↗' }
+  };
+
+  // Merge into the main I18N_CONTENT dictionary
+  Object.assign(I18N_CONTENT, FOOTER_LINKS);
 
   function applyContentTranslations(lang) {
     // Set the global display-lang attribute. CSS uses this to hide
