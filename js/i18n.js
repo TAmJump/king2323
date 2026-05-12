@@ -1,6 +1,6 @@
 /* ============================================================
    KINGMAKER 23:23 — Google Translate (cookie-driven, 108 languages)
-   Version: v20260512h  (printed to console at load for debugging)
+   Version: v20260512i  (printed to console at load for debugging)
    ============================================================ */
 
 (function () {
@@ -11,7 +11,7 @@
   // If a user reports a translation bug, ask them to share the console
   // output — if this line is missing or shows an older version, they
   // are hitting a stale cache (CF / browser disk).
-  console.log('%c[i18n] v20260512h loaded · cookie:', 'color:#b8862d;font-weight:bold',
+  console.log('%c[i18n] v20260512i loaded · cookie:', 'color:#b8862d;font-weight:bold',
               document.cookie || '(none)');
 
   // Full Google Translate language list (108 languages).
@@ -653,7 +653,134 @@
     'ritual.why.p3':       {
       en: 'The hour itself doesn\'t carry meaning. '
         + '<strong>The ritual gives the hour its meaning</strong>.'
-    }
+    },
+
+    // --- RITUAL MODAL: ritual-coin (The Offering, ¥100 = 100 Bell) ---
+    'ritual.coin.subtitle': { en: '¥100 = 100 Bell. A participation right that lives forever.' },
+    'ritual.coin.p1':       { en: 'When you offer ¥100, <strong>100 Bell</strong> is etched into KINGMAKER. Bell is a <strong>Participation Right</strong>. Not legal tender, not crypto, not a prepaid instrument. It is not cashable, not transferable, not measurable as value.' },
+    'ritual.coin.p2':       { en: 'To enter THE TRIAL each week, you ring <strong>10 Bell</strong>. Pass all three rounds and your <strong>King candidacy</strong> is unlocked. Get one wrong and <strong>Bell does not decrease</strong> — you only lose "this week\'s chance." Ring again next week.' },
+    'ritual.coin.li1':      { en: '<strong>Bell = Participation Right.</strong> Not cashable, not transferable, no asset value.' },
+    'ritual.coin.li2':      { en: 'Each week, ring 10 Bell at THE TRIAL (Bell rings but stays with you).' },
+    'ritual.coin.li3':      { en: 'Failure does not consume Bell. You only lose <strong>this week\'s King candidacy</strong>.' },
+    'ritual.coin.li4':      { en: 'Pass all three rounds → Qualification Unlocked → proceed to CROWN SLOT.' },
+    'ritual.coin.li5':      { en: 'Unused Bell expiry: 12 months from acquisition. Payments via Square.' },
+    'ritual.coin.accent2':  { en: '¥100 lives <em>forever</em>.' },
+    'ritual.coin.cta':      { en: '⌘ Proceed to Square · Offer ¥100' },
+    'ritual.coin.note':     { en: '— Webhook integration in test · Sandbox environment —' },
+
+    // --- RITUAL MODAL: ritual-bell (THE BELL — qualification not money) ---
+    'ritual.bell.subtitle': { en: 'Bell is a Right. Never cash.' },
+    'ritual.bell.accent_jp': { en: 'You never lose your Bell. You only lose this week\'s chance.' },
+    'ritual.bell.is1':      { en: 'A <strong>Participation Right</strong> inside KINGMAKER.' },
+    'ritual.bell.is2':      { en: 'The unit of right to enter THE TRIAL each week.' },
+    'ritual.bell.is3':      { en: 'The key that unlocks King candidacy.' },
+    'ritual.bell.is4':      { en: 'A "ringing instrument" for the ritual — no monetary value.' },
+    'ritual.bell.isnot1':   { en: 'Not legal tender.' },
+    'ritual.bell.isnot2':   { en: 'Not crypto-currency (Payment Services Act §2-14).' },
+    'ritual.bell.isnot3':   { en: 'Not a prepaid payment instrument (Payment Services Act §3).' },
+    'ritual.bell.isnot4':   { en: 'Not a security or investment product (FIEA).' },
+    'ritual.bell.isnot5':   { en: 'Not points, miles, or rewards.' },
+    'ritual.bell.flow_p':   { en: '<strong>There is no Wallet.</strong> You cannot accumulate a balance and cannot get a refund. Each week, only at the moment of participation, you offer ¥100 via Square Card-on-File to ring the Bell.' },
+    'ritual.bell.flow_head': { en: '— How the Bell rings —' },
+    'ritual.bell.flow_li1': { en: 'Friday 23:23 → notification <em>"The Bell is calling."</em>' },
+    'ritual.bell.flow_li2': { en: 'Tap <strong>ENTER THE BELL</strong> → Square charges ¥100 → THE TRIAL begins.' },
+    'ritual.bell.flow_li3': { en: 'Weeks you skip: complete stillness — no auto-charge, no balance held.' },
+    'ritual.bell.flow_li4': { en: 'Failure does not consume Bell. Next week, you can ring again.' },
+    'ritual.bell.closing':  { en: 'This is not "stake money." This is "the act of ringing the bell."' },
+    'ritual.bell.cta':      { en: '⌘ See what THE TRIAL is' },
+
+    // --- RITUAL MODAL: ritual-three (CROWN SLOT) ---
+    'ritual.three.subtitle': { en: 'The final ritual. The moment the world\'s fingers stop on the same number.' },
+    'ritual.three.p1':       { en: 'Only those who survived Round 1 and Round 2 earn the right to stand in Round 3 — <strong>CROWN SLOT</strong>. A slot of 00–99 spins on screen. You tap once to stop it.' },
+    'ritual.three.p2':       { en: 'Every finger in the world stops the slot at the same instant. The number most people stopped on becomes that week\'s <strong>Crown Number</strong>.' },
+    'ritual.three.p3':       { en: 'From the applicants who landed on that number, the <strong>King is determined</strong> by a public Seed (SHA-256 of BTC · Nikkei · S&P · applicant count). This is not a selection — it is determination by <strong>world consensus + public formula</strong>.' },
+    'ritual.three.closing':  { en: 'Even if a hundred million offer, <br/><em>only the survivors stand</em>.<br/>And of those who stand, only <em>one</em> becomes King.' },
+
+    // --- RITUAL MODAL: ritual-money (Money flow, Grant Fund 60/30/10) ---
+    'ritual.money.subtitle':    { en: 'The flow of ¥100, and the Grant Fund.' },
+    'ritual.money.accent1':     { en: 'Of every ¥100, <em>¥60 goes to the Grant Fund</em>.' },
+    'ritual.money.p1':          { en: 'Each ¥100 payment is split. <strong>60% = Grant Fund</strong> (the public grant pool), <strong>30% = operations</strong>, <strong>10% = payment processing</strong>. Fund balance is published at all times at <code style="background:rgba(184,134,45,0.12); padding:2px 6px; font-family:var(--f-mono);">/fund</code>.' },
+    'ritual.money.accent2_jp':  { en: 'Bell only unlocks qualification. A qualified Mission may receive a grant from the Fund.' },
+    'ritual.money.p2':          { en: 'Grant is <strong>not a prize</strong>. Those who survive THE TRIAL and are determined at CROWN SLOT first undergo <strong>KYC, AML, and Mission Truth review</strong>. Only Missions that pass all checks receive a <strong>grant</strong> from the Grant Fund.' },
+    'ritual.money.li1':         { en: 'Bell never becomes cash.' },
+    'ritual.money.li2':         { en: 'Bell only unlocks qualification.' },
+    'ritual.money.li3':         { en: 'Failed applicants\' Bell is never transferred to other users.' },
+    'ritual.money.li4':         { en: 'Grant is a reviewed-and-proven "grant" — never a dividend or winnings.' },
+    'ritual.money.li5':         { en: 'If proof of Mission completion is not submitted, Grant is revoked and inherited by the next-ranked candidate.' },
+    'ritual.money.cta':         { en: '⌘ Read the Money Logic' },
+
+    // --- RITUAL MODAL: ritual-duty (Royal Duty — The Crown has weight) ---
+    'ritual.duty.subtitle': { en: 'The Crown has weight.' },
+    'ritual.duty.p1':       { en: 'Becoming King is not the end. You submit <strong>proof of Mission completion within 30 days</strong>. If Mission was debt repayment: completion record. Opening a shop: business registration + store photos. A journey: photos from the destination.' },
+    'ritual.duty.p2':       { en: 'We do not expose the person. <strong>We expose the result.</strong> If proof is not submitted, the Crown is revoked and inherited by the next-ranked candidate.' },
+    'ritual.duty.li1':      { en: 'Signature on the Mission Truth Agreement (required at application).' },
+    'ritual.duty.li2':      { en: 'Submit Proof within 30 days of receiving the Grant.' },
+    'ritual.duty.li3':      { en: 'Accept investigation if the truth of the submission is questioned.' },
+    'ritual.duty.li4':      { en: 'Obligation to return + permanent ban if falsehood is discovered.' },
+
+    // --- RITUAL MODAL: ritual-verify (Not trusted. Verified.) ---
+    'ritual.verify.subtitle': { en: 'Don\'t trust. Verify.' },
+    'ritual.verify.p1':       { en: 'King determination, CROWN SLOT final pick — everything is derived from <strong>public formulas + public Seed</strong>. Anyone, in their own browser, can re-compute SHA-256 and <strong>confirm it matches the operator\'s result</strong>.' },
+    'ritual.verify.accent2':  { en: 'The operator <em>does not know the questions</em> either.' },
+    'ritual.verify.p2':       { en: 'No one at KINGMAKER — not operator, not engineer — knows the THE TRIAL questions in advance. A <strong>100,000-question Question Bank</strong> is public, and each week the Seed (BTC · Nikkei · S&P · applicant count · seconds) runs through SHA-256 to mechanically pick the 3 question IDs.' },
+    'ritual.verify.tagline_jp': { en: 'Questions are not created. They are revealed by the world.' },
+
+    // --- RITUAL MODAL: ritual-doctrine (The 5 Laws) ---
+    'ritual.doctrine.subtitle': { en: 'The Five Laws.' },
+    'ritual.doctrine.l1': { en: '<strong>I.</strong> Bell is a Right, never cash.' },
+    'ritual.doctrine.l2': { en: '<strong>II.</strong> You never lose your Bell. You only lose this week\'s chance.' },
+    'ritual.doctrine.l3': { en: '<strong>III.</strong> Grant is not a prize — it is a grant after review and proof.' },
+    'ritual.doctrine.l4': { en: '<strong>IV.</strong> The Crown has weight.' },
+    'ritual.doctrine.l5': { en: '<strong>V.</strong> Expose the result, not the person.' },
+
+    // --- RITUAL MODAL: ritual-trial (5 minutes, 3 trials, one Crown) ---
+    'ritual.trial.subtitle': { en: 'The world\'s 5-minute simultaneous ritual.' },
+    'ritual.trial.p1':       { en: 'Even if 100 million apply, no one can read every Mission in five minutes. So KINGMAKER does not let anyone choose. <strong>The whole world stands on the same problem at the same instant.</strong> That is THE TRIAL.' },
+    'ritual.trial.r1':       { en: 'Math · Memory · Logic.<br/>Example: <code style="background:rgba(184,134,45,0.12); padding:2px 6px; font-family:var(--f-mono);">17 + 28 − 6 × 2</code> · permutations · ratios.<br/>10–20 seconds. Multiple choice. Correct → next.' },
+    'ritual.trial.r2':       { en: 'World culture · flags · currencies · elements · official names behind acronyms.<br/>Example: "What does KTX stand for?" "What\'s the capital of Mexico?" "What does NASA stand for?"<br/>— No advantage to Japanese speakers, no advantage to English speakers.' },
+    'ritual.trial.r3':       { en: 'A slot from 00 to 99. You <strong>tap once</strong> to stop it. Among the numbers the world\'s fingers landed on, the most-frequent value becomes the <strong>Crown Number</strong>. From applicants who hit that number, the King is determined by public Seed.' },
+    'ritual.trial.rule_jp':  { en: 'You never lose your Bell. You only lose this week\'s chance.' },
+    'ritual.trial.p2':       { en: 'Ring 10 Bell to enter. If you fail, Bell does not decrease. You can ring again next week. Those who pass all three rounds earn <strong>Qualification Unlocked</strong> status and proceed to CROWN SLOT.' },
+    'ritual.trial.li1':      { en: 'Question Bank: 100,000 questions. Even the operator does not know the contents in advance.' },
+    'ritual.trial.li2':      { en: 'Question IDs: mechanically derived from each week\'s Seed via SHA-256.' },
+    'ritual.trial.li3':      { en: 'Genre rotates weekly: Math / Memory / Logic / Language / Culture / Science.' },
+    'ritual.trial.li4':      { en: 'Repeat of the same question: designed cooldown of weeks-to-months.' },
+    'ritual.trial.standing': { en: 'Each time you pass all three rounds, a mark is etched on your <strong>Standing</strong>. Streaks are recorded as titles. The titles have no monetary value — but they show your "standing" in the world.' },
+    'ritual.trial.cta':      { en: '⌘ How questions are chosen' },
+
+    // --- RITUAL MODAL: ritual-resonance (Bell never becomes cash) ---
+    'ritual.resonance.subtitle':    { en: 'Bell is a Participation Right, not money.' },
+    'ritual.resonance.accent_jp':   { en: 'Bell unlocks qualification. Nothing more.' },
+    'ritual.resonance.p1':          { en: 'KINGMAKER is <strong>not gambling</strong>. Not an investment product. Not a raffle. When you offer ¥100 here, you receive <strong>the right to stand in a 5-minute world-simultaneous ritual</strong>. It is not an asset, cannot be transferred, and never returns as cash.' },
+    'ritual.resonance.f1':          { en: '1. You <strong>offer ¥100</strong>.' },
+    'ritual.resonance.f2':          { en: '2. <strong>100 Bell</strong> is etched in. Participation right.' },
+    'ritual.resonance.f3':          { en: '3. Each week, ring 10 Bell to enter THE TRIAL.' },
+    'ritual.resonance.f4':          { en: '4. Failure does not <strong>decrease</strong> Bell. <strong>Next week, ring again</strong>.' },
+    'ritual.resonance.f5':          { en: '5. Pass 3 rounds → Qualification Unlocked.' },
+    'ritual.resonance.f6':          { en: '6. CROWN SLOT → King determined.' },
+    'ritual.resonance.f7':          { en: '7. King undergoes <strong>KYC, AML, Mission Truth</strong> review.' },
+    'ritual.resonance.f8':          { en: '8. For passing Missions, operator pays a <strong>grant from the Grant Fund</strong>.' },
+    'ritual.resonance.f9':          { en: '9. Submit <strong>Royal Proof</strong> within 30 days.' },
+    'ritual.resonance.not1':        { en: 'Not legal tender.' },
+    'ritual.resonance.not2':        { en: 'Not crypto.' },
+    'ritual.resonance.not3':        { en: 'Not a prepaid payment instrument (Payment Services Act §3).' },
+    'ritual.resonance.not4':        { en: 'Not a security or investment (FIEA).' },
+    'ritual.resonance.not5':        { en: 'Not points, miles, or rewards.' },
+    'ritual.resonance.not6':        { en: 'Not winnings, dividends, or prize money.' },
+    'ritual.resonance.not7':        { en: 'Not transferable to other users.' },
+    'ritual.resonance.is1':         { en: 'A Participation Right inside KINGMAKER.' },
+    'ritual.resonance.is2':         { en: 'The unit of right to enter THE TRIAL each week.' },
+    'ritual.resonance.is3':         { en: 'For Mission applicants: <strong>the key to unlock King candidacy</strong>.' },
+    'ritual.resonance.is4':         { en: 'A "ringing instrument" needed for the ritual — no monetary value.' },
+
+    // --- RITUAL MODAL: ritual-stories (Past Kings, Standing) ---
+    'ritual.stories.subtitle':  { en: 'Past Kings the world has determined, and their Standing.' },
+    'ritual.stories.p1':        { en: 'The King determined at Cycle 46 was a 38-year-old man whose Mission was paying off debt. Grant ¥1.2M. 30 days later, proof of full repayment was submitted, and his Standing became <strong>Verified</strong>.' },
+    'ritual.stories.p2':        { en: 'At Cycle 45, proof for the Mission was not submitted. The Crown was revoked and inherited by the next-ranked applicant.' },
+    'ritual.stories.note':      { en: 'Records of all past cycles are published at /verify.' },
+    'ritual.stories.standing':  { en: 'As your weeks of surviving THE TRIAL accumulate, titles are etched onto your <strong>Standing</strong>. <strong>No monetary value.</strong> Only your "position" in the world. Nothing more.' },
+    'ritual.stories.titles_jp': { en: 'Titles cannot be sold. Cannot be transferred. Cannot be cashed.\nThey simply remain in the memory of the world.' },
+    'ritual.stories.cta':       { en: '⌘ See past cycles' },
   };
 
   function applyContentTranslations(lang) {
