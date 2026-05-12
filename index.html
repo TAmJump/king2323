@@ -3012,12 +3012,14 @@ body.ritual-locked { overflow: hidden; }
     document.body.classList.remove('ritual-locked');
   }
 
-  // open buttons
-  document.querySelectorAll('[data-ritual-open]').forEach(el => {
-    el.addEventListener('click', (e) => {
-      e.preventDefault();
-      open(el.getAttribute('data-ritual-open'));
-    });
+  // open buttons — use document-level delegation so [data-ritual-open]
+  // elements inside cloned <template> content also work (the static
+  // querySelectorAll-on-init approach missed them).
+  document.addEventListener('click', (e) => {
+    const el = e.target.closest('[data-ritual-open]');
+    if (!el) return;
+    e.preventDefault();
+    open(el.getAttribute('data-ritual-open'));
   });
 
   // hamburger nav items → open ritual (no page jump)
