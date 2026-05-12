@@ -2,8 +2,11 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8" />
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' https: data: blob:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://translate.google.com https://translate.googleapis.com https://translate-pa.googleapis.com https://*.google.com https://*.gstatic.com https://static.cloudflareinsights.com; script-src-elem 'self' 'unsafe-inline' https://translate.google.com https://translate.googleapis.com https://translate-pa.googleapis.com https://*.google.com https://*.gstatic.com https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://*.gstatic.com https://www.gstatic.com; style-src-elem 'self' 'unsafe-inline' https://fonts.googleapis.com https://*.gstatic.com https://www.gstatic.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https: blob:; connect-src 'self' https://translate.googleapis.com https://translate-pa.googleapis.com https://*.google.com https://*.gstatic.com https://static.cloudflareinsights.com; frame-src https://*.google.com;" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' https: data: blob:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://translate.google.com https://translate.googleapis.com https://translate-pa.googleapis.com https://*.google.com https://*.gstatic.com https://static.cloudflareinsights.com; script-src-elem 'self' 'unsafe-inline' https://translate.google.com https://translate.googleapis.com https://translate-pa.googleapis.com https://*.google.com https://*.gstatic.com https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://*.gstatic.com https://www.gstatic.com; style-src-elem 'self' 'unsafe-inline' https://fonts.googleapis.com https://*.gstatic.com https://www.gstatic.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https: blob:; connect-src 'self' https://translate.googleapis.com https://translate-pa.googleapis.com https://*.google.com https://*.gstatic.com https://static.cloudflareinsights.com; frame-src https://*.google.com https://*.googleapis.com;" />
 <title>KINGMAKER 23:23 — To be chosen, you must choose.</title>
 <meta name="description" content="KINGMAKER 23:23 — Global ritual platform. ¥100 = 100 Bell (participation right, never cash). Every Friday 23:23–23:28, the world takes a 5-minute trial. One King is chosen. Grant is not a prize." />
 <link rel="icon" type="image/png" href="assets/logo-v3-128.png" />
@@ -1517,10 +1520,25 @@
 }
 
 /* ============== RITUAL SHEET (kakkoii overlay) ============== */
-/* Source divs that hold modal body content. Kept in live DOM so
-   Google Translate's MutationObserver picks them up on language
-   switch, but never visible in normal page flow. */
-.ritual-source { display: none !important; }
+/* Source divs that hold modal body content.
+   IMPORTANT: We cannot use `display:none` here.  Google Translate's
+   MutationObserver scans the render tree, NOT the DOM tree — elements
+   with display:none are skipped, so their text never gets translated.
+   Instead we position them far off-screen.  They remain "rendered" by
+   the browser (so Google sees them and translates) but are invisible
+   to the user and inert to pointer/keyboard events. */
+.ritual-source {
+  position: absolute !important;
+  left: -100000px !important;
+  top: 0 !important;
+  width: 1px !important;
+  height: 1px !important;
+  overflow: hidden !important;
+  pointer-events: none !important;
+  opacity: 0 !important;
+  /* Note: we deliberately avoid `visibility:hidden` and `display:none`;
+     either would make Google Translate skip the content. */
+}
 
 .ritual-overlay {
   position: fixed;
@@ -2622,7 +2640,7 @@ body.ritual-locked { overflow: hidden; }
 </div>
 
 <!-- ============== RITUAL CONTENT TEMPLATES ============== -->
-<div class="ritual-source" id="ritual-coin" hidden>
+<div class="ritual-source" id="ritual-coin">
   <div class="ritual-eyebrow">— The Offering —</div>
   <h2 class="ritual-title">100 <em>Bell</em></h2>
   <p class="ritual-subtitle">100円 = 100 Bell。一生残る、参加資格。</p>
@@ -2659,7 +2677,7 @@ body.ritual-locked { overflow: hidden; }
   </div>
 </div>
 
-<div class="ritual-source" id="ritual-why" hidden>
+<div class="ritual-source" id="ritual-why">
   <div class="ritual-eyebrow">— Chapter I · Why 23:23 —</div>
   <h2 class="ritual-title">Why <em>23:23</em>?</h2>
   <p class="ritual-subtitle">なぜ23:23なのか。</p>
@@ -2672,7 +2690,24 @@ body.ritual-locked { overflow: hidden; }
   </div>
 </div>
 
-<div class="ritual-source" id="ritual-bell" hidden>
+<!-- English canonical for ritual-why. Used when picker is set to EN
+     (i18n.js open() routes to ritual-{key}-en when present).  This
+     decouples English from Google Translate so English is guaranteed
+     to work regardless of widget / CSP / network status. -->
+<div class="ritual-source" id="ritual-why-en">
+  <div class="ritual-eyebrow">— Chapter I · Why 23:23 —</div>
+  <h2 class="ritual-title">Why <em>23:23</em>?</h2>
+  <p class="ritual-subtitle">The hour the king is replaced.</p>
+  <div class="ritual-divider"></div>
+  <div class="ritual-content">
+    <p class="accent">23:23. <em>The edge of the day. The hour the king is replaced.</em></p>
+    <p>23:23 is the threshold — the minute just before a day ends, when everyone in the world is thinking "time to sleep." That <strong>edge moment</strong>. KINGMAKER's Bell opens only at this hour. Five minutes a week. No more.</p>
+    <p>The Bell opens at <strong>23:23 JST on Friday</strong> and closes at <strong>23:23 JST on Monday</strong>. Each country observes it at the same instant — synchronized to the same point on the globe's clock.</p>
+    <p>The hour itself doesn't carry meaning. <strong>The ritual gives the hour its meaning</strong>.</p>
+  </div>
+</div>
+
+<div class="ritual-source" id="ritual-bell">
   <div class="ritual-eyebrow">— Chapter II · The Bell —</div>
   <h2 class="ritual-title">THE <em>BELL</em></h2>
   <p class="ritual-subtitle">Bellは資格であり、金ではない。</p>
@@ -2723,7 +2758,7 @@ body.ritual-locked { overflow: hidden; }
   </div>
 </div>
 
-<div class="ritual-source" id="ritual-three" hidden>
+<div class="ritual-source" id="ritual-three">
   <div class="ritual-eyebrow">— Chapter III · The Crown Slot —</div>
   <h2 class="ritual-title">CROWN <em>SLOT</em></h2>
   <p class="ritual-subtitle">最終の儀式。世界中の指が、同じ数字に止まるとき。</p>
@@ -2753,7 +2788,7 @@ body.ritual-locked { overflow: hidden; }
   </div>
 </div>
 
-<div class="ritual-source" id="ritual-money" hidden>
+<div class="ritual-source" id="ritual-money">
   <div class="ritual-eyebrow">— Chapter IV · The Money —</div>
   <h2 class="ritual-title">The <em>Money</em></h2>
   <p class="ritual-subtitle">100円の流れと、Grant Fund。</p>
@@ -2790,7 +2825,7 @@ body.ritual-locked { overflow: hidden; }
   </div>
 </div>
 
-<div class="ritual-source" id="ritual-duty" hidden>
+<div class="ritual-source" id="ritual-duty">
   <div class="ritual-eyebrow">— Chapter V · Royal Duty —</div>
   <h2 class="ritual-title">Royal <em>Duty</em></h2>
   <p class="ritual-subtitle">王冠には重みがある。</p>
@@ -2808,7 +2843,7 @@ body.ritual-locked { overflow: hidden; }
   </div>
 </div>
 
-<div class="ritual-source" id="ritual-verify" hidden>
+<div class="ritual-source" id="ritual-verify">
   <div class="ritual-eyebrow">— Chapter VI · Verify —</div>
   <h2 class="ritual-title">Not trusted. <em>Verified.</em></h2>
   <p class="ritual-subtitle">信じるな。検証しろ。</p>
@@ -2838,7 +2873,7 @@ body.ritual-locked { overflow: hidden; }
   </div>
 </div>
 
-<div class="ritual-source" id="ritual-doctrine" hidden>
+<div class="ritual-source" id="ritual-doctrine">
   <div class="ritual-eyebrow">— Chapter VII · Doctrine —</div>
   <h2 class="ritual-title">The <em>Doctrine</em></h2>
   <p class="ritual-subtitle">5つの掟。</p>
@@ -2855,7 +2890,7 @@ body.ritual-locked { overflow: hidden; }
   </div>
 </div>
 
-<div class="ritual-source" id="ritual-trial" hidden>
+<div class="ritual-source" id="ritual-trial">
   <div class="ritual-eyebrow">— Chapter II½ · The Trial —</div>
   <h2 class="ritual-title">THE <em>TRIAL</em></h2>
   <p class="ritual-subtitle">5分間の世界同時儀式。</p>
@@ -2909,7 +2944,7 @@ body.ritual-locked { overflow: hidden; }
   </div>
 </div>
 
-<div class="ritual-source" id="ritual-resonance" hidden>
+<div class="ritual-source" id="ritual-resonance">
   <div class="ritual-eyebrow">— The Nature of Bell —</div>
   <h2 class="ritual-title">Bell never <em>becomes cash</em>.</h2>
   <p class="ritual-subtitle">Bellは、参加資格であり、金銭ではない。</p>
@@ -2962,7 +2997,7 @@ body.ritual-locked { overflow: hidden; }
   </div>
 </div>
 
-<div class="ritual-source" id="ritual-stories" hidden>
+<div class="ritual-source" id="ritual-stories">
   <div class="ritual-eyebrow">— Chapter VIII · Stories —</div>
   <h2 class="ritual-title">Past <em>Kings</em></h2>
   <p class="ritual-subtitle">これまで世界が確定した王と、Standing。</p>
@@ -3001,20 +3036,36 @@ body.ritual-locked { overflow: hidden; }
   const closeBtn = document.getElementById('ritualClose');
   if (!overlay || !body) return;
 
+  // Read current target language from googtrans cookie.
+  // Cookie format (set by js/i18n.js): /ja/<target>.  No cookie = 'ja'.
+  function currentTargetLang() {
+    const m = document.cookie.match(/googtrans=\/[a-z\-]+\/([a-z\-A-Z]+)/);
+    return m ? m[1] : 'ja';
+  }
+
   function open(key) {
-    const src = document.getElementById('ritual-' + key);
-    if (!src) { console.warn('ritual source missing:', key); return; }
-    // Copy innerHTML (not cloneNode) so that Google Translate's
-    // already-translated text nodes flow into the modal body.
-    // Source div has hidden attribute + .ritual-source class so it
-    // never appears in normal page flow, but it IS in live DOM, so
-    // the MutationObserver of Google Translate translates it as the
-    // user switches languages.
+    // If picker is set to English AND a canonical ritual-<key>-en exists,
+    // use that.  English thereby NEVER depends on Google Translate —
+    // guaranteed to work regardless of widget / CSP / network status.
+    // For all other target languages, use the JP source div, which is
+    // positioned off-screen so Google Translate's MutationObserver can
+    // process it (the page reload after picker change causes Google to
+    // translate ja → <target> on the off-screen content).
+    const lang = currentTargetLang();
+    let src = null;
+    if (lang === 'en') {
+      src = document.getElementById('ritual-' + key + '-en');
+    }
+    if (!src) {
+      src = document.getElementById('ritual-' + key);
+    }
+    if (!src) { console.warn('[ritual] source missing:', key, 'lang:', lang); return; }
     body.innerHTML = src.innerHTML;
     body.scrollTop = 0;
     overlay.classList.add('open');
     overlay.setAttribute('aria-hidden', 'false');
     document.body.classList.add('ritual-locked');
+    console.log('[ritual] opened', key, 'using', src.id, '(target lang:', lang + ')');
   }
   function close() {
     overlay.classList.remove('open');
@@ -3072,7 +3123,7 @@ body.ritual-locked { overflow: hidden; }
 })();
 </script>
 
-<script src="js/i18n.js?v=20260512c"></script>
-<script src="js/main.js?v=20260512c"></script>
+<script src="js/i18n.js?v=20260512d"></script>
+<script src="js/main.js?v=20260512d"></script>
 </body>
 </html>

@@ -1,9 +1,18 @@
 /* ============================================================
    KINGMAKER 23:23 — Google Translate (cookie-driven, 108 languages)
+   Version: v20260512d  (printed to console at load for debugging)
    ============================================================ */
 
 (function () {
   'use strict';
+
+  // Diagnostic banner so the operator can verify in DevTools console
+  // that the current build is being served (not an old cached copy).
+  // If a user reports a translation bug, ask them to share the console
+  // output — if this line is missing or shows an older version, they
+  // are hitting a stale cache (CF / browser disk).
+  console.log('%c[i18n] v20260512d loaded · cookie:', 'color:#b8862d;font-weight:bold',
+              document.cookie || '(none)');
 
   // Full Google Translate language list (108 languages)
   // [code, English name, Native name]
