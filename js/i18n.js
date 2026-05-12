@@ -137,11 +137,32 @@
   document.head.appendChild(s);
 
   // ---- Cookie management ----
+  //
+  // CRITICAL: The page content (modal bodies, paragraphs, list items) is
+  // authored primarily in JAPANESE.  Earlier cookie format `/auto/<target>`
+  // told Google Translate to auto-detect source.  With <html lang="en">
+  // declared (now changed to ja), Google decided "source is en" and refused to translate the
+  // Japanese body when target=ko/zh/hi/etc — leaving every non-Japanese
+  // language stuck on Japanese.
+  //
+  // Fix: explicitly set source=ja so Google translates ja → target for
+  // ALL non-Japanese targets (including English).  When user picks
+  // Japanese, clear the cookie so the original markup shows untranslated.
+  //
+  // Notes:
+  //   - <html lang> changed from "en" to "ja" in same commit (the page is
+  //     primarily Japanese-authored). Google honors the cookie source
+  //     override regardless of <html lang>, but having them aligned is
+  //     correct for SEO and accessibility.
+  //   - Brand vocabulary (Hero h1, Bell, Crown Slot etc.) carries
+  //     class="notranslate" — Google won't touch them.  Safe.
+  //   - Default lang is now 'ja' (no cookie = native Japanese view).
   function setGoogTransCookie(lang) {
     const host = window.location.hostname;
     const parts = host.split('.');
     const parentDomain = parts.length > 1 ? '.' + parts.slice(-2).join('.') : host;
-    const value = lang === 'en' ? '' : `/auto/${lang}`;
+    // Japanese = no translation (clear cookie). Anything else = force ja→target.
+    const value = lang === 'ja' ? '' : `/ja/${lang}`;
     const expires = new Date();
     expires.setFullYear(expires.getFullYear() + 1);
     const expiresStr = expires.toUTCString();
@@ -150,8 +171,10 @@
   }
 
   function getCurrentLang() {
+    // Cookie format is now /ja/<target>; capture <target>.
+    // No cookie = native Japanese (source language).
     const m = document.cookie.match(/googtrans=\/[a-z\-]+\/([a-z\-A-Z]+)/);
-    return m ? m[1] : 'en';
+    return m ? m[1] : 'ja';
   }
 
   function applyLang(lang) {
