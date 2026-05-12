@@ -1,6 +1,6 @@
 /* ============================================================
    KINGMAKER 23:23 — Google Translate (cookie-driven, 108 languages)
-   Version: v20260512g  (printed to console at load for debugging)
+   Version: v20260512h  (printed to console at load for debugging)
    ============================================================ */
 
 (function () {
@@ -11,28 +11,36 @@
   // If a user reports a translation bug, ask them to share the console
   // output — if this line is missing or shows an older version, they
   // are hitting a stale cache (CF / browser disk).
-  console.log('%c[i18n] v20260512g loaded · cookie:', 'color:#b8862d;font-weight:bold',
+  console.log('%c[i18n] v20260512h loaded · cookie:', 'color:#b8862d;font-weight:bold',
               document.cookie || '(none)');
 
-  // Full Google Translate language list (108 languages)
+  // Full Google Translate language list (108 languages).
+  // First 10 entries = TIER 1 priority (per TAmJ translation design):
+  //   English, Japanese, Spanish, Hindi, Korean, Vietnamese,
+  //   Portuguese, Indonesian, Thai, French.
+  // These cover US, Japan, India, Korea, Vietnam, Mexico, Brazil,
+  // Southeast Asia. The dropdown UI surfaces them at top with a
+  // visual separator before the rest.
   // [code, English name, Native name]
   const LANGS = [
-    ['en', 'English', 'English'],
-    ['ja', 'Japanese', '日本語'],
-    ['ko', 'Korean', '한국어'],
+    // === TIER 1 (10 priority languages) ===
+    ['en',    'English',     'English'],
+    ['ja',    'Japanese',    '日本語'],
+    ['es',    'Spanish',     'Español'],
+    ['hi',    'Hindi',       'हिन्दी'],
+    ['ko',    'Korean',      '한국어'],
+    ['vi',    'Vietnamese',  'Tiếng Việt'],
+    ['pt',    'Portuguese',  'Português'],
+    ['id',    'Indonesian',  'Bahasa Indonesia'],
+    ['th',    'Thai',        'ไทย'],
+    ['fr',    'French',      'Français'],
+    // === TIER 2 (the rest, alphabetical by English name) ===
     ['zh-CN', 'Chinese (Simplified)', '简体中文'],
     ['zh-TW', 'Chinese (Traditional)', '繁體中文'],
-    ['hi', 'Hindi', 'हिन्दी'],
-    ['es', 'Spanish', 'Español'],
-    ['fr', 'French', 'Français'],
-    ['de', 'German', 'Deutsch'],
-    ['it', 'Italian', 'Italiano'],
-    ['pt', 'Portuguese', 'Português'],
-    ['ru', 'Russian', 'Русский'],
-    ['ar', 'Arabic', 'العربية'],
-    ['id', 'Indonesian', 'Bahasa Indonesia'],
-    ['vi', 'Vietnamese', 'Tiếng Việt'],
-    ['th', 'Thai', 'ไทย'],
+    ['de',    'German',      'Deutsch'],
+    ['it',    'Italian',     'Italiano'],
+    ['ru',    'Russian',     'Русский'],
+    ['ar',    'Arabic',      'العربية'],
     ['tr', 'Turkish', 'Türkçe'],
     ['nl', 'Dutch', 'Nederlands'],
     ['pl', 'Polish', 'Polski'],
@@ -206,9 +214,77 @@
     return m ? m[1] : 'en';
   }
 
+  // ---- localStorage persistence + browser language auto-detect ----
+  // Per TAmJ translation design §4:
+  //   1. Browser language is read on first visit
+  //   2. If supported (in LANGS), auto-set picker to that language
+  //   3. Otherwise default to English
+  //   4. User's explicit picker choice is saved to localStorage,
+  //      and always wins over browser-language autodetect on reload.
+  const LS_KEY = 'kingmaker.lang';
+
+  function persistLang(lang) {
+    try { localStorage.setItem(LS_KEY, lang); } catch (e) {}
+  }
+  function readPersistedLang() {
+    try { return localStorage.getItem(LS_KEY); } catch (e) { return null; }
+  }
+  function detectBrowserLang() {
+    // navigator.language returns e.g. 'ja', 'en-US', 'zh-CN'.
+    // We try exact match first, then primary subtag.
+    const codes = LANGS.map(l => l[0]);
+    const langs = (navigator.languages && navigator.languages.length)
+                  ? navigator.languages : [navigator.language || 'en'];
+    for (const l of langs) {
+      if (codes.includes(l)) return l;
+      const primary = l.split('-')[0];
+      if (codes.includes(primary)) return primary;
+    }
+    return 'en';
+  }
+
   function applyLang(lang) {
+    persistLang(lang);
     setGoogTransCookie(lang);
     setTimeout(() => window.location.reload(), 100);
+  }
+
+  // On first-ever page load, sync cookie with persisted/browser
+  // language. If user has visited before, persisted choice wins.
+  // Otherwise, auto-detect from navigator.language.
+  function bootstrapLang() {
+    const fromCookie = getCurrentLang();
+    const persisted = readPersistedLang();
+
+    // Case A: explicit cookie present (user picked something this
+    // session or recently). Sync persisted to match cookie so
+    // localStorage stays current.
+    if (document.cookie.includes('googtrans=/')) {
+      persistLang(fromCookie);
+      return fromCookie;
+    }
+
+    // Case B: cookie cleared but persisted exists → re-apply.
+    if (persisted && LANGS.some(l => l[0] === persisted)) {
+      if (persisted !== 'en') {
+        setGoogTransCookie(persisted);
+        // Reload so Google Translate widget picks up the cookie.
+        setTimeout(() => window.location.reload(), 50);
+        return persisted;
+      }
+      return 'en';
+    }
+
+    // Case C: first-ever visit. Detect browser language.
+    const detected = detectBrowserLang();
+    if (detected && detected !== 'en') {
+      persistLang(detected);
+      setGoogTransCookie(detected);
+      setTimeout(() => window.location.reload(), 50);
+      return detected;
+    }
+    persistLang('en');
+    return 'en';
   }
 
   // ---- Dropdown UI builder ----
@@ -255,11 +331,23 @@
       const q = (filter || '').toLowerCase().trim();
       listEl.innerHTML = '';
       let count = 0;
-      LANGS.forEach(([code, name, native]) => {
+      const TIER1_COUNT = 10;  // First 10 in LANGS are TAmJ priority
+      let separatorShown = false;
+      LANGS.forEach(([code, name, native], idx) => {
         const hit = !q || code.toLowerCase().includes(q) ||
                     name.toLowerCase().includes(q) ||
                     native.toLowerCase().includes(q);
         if (!hit) return;
+        // Insert a visual separator between TIER 1 and the rest, but
+        // only when not filtering (filter shows a flat list).
+        if (!q && idx === TIER1_COUNT && !separatorShown) {
+          const sep = document.createElement('div');
+          sep.className = 'lang-tier-separator notranslate';
+          sep.setAttribute('translate', 'no');
+          sep.textContent = '— More languages —';
+          listEl.appendChild(sep);
+          separatorShown = true;
+        }
         count++;
         const opt = document.createElement('button');
         opt.type = 'button';
@@ -305,7 +393,65 @@
 
   // ---- Init ----
 
-  // Menu translation dictionary — general vocabulary only.
+  // ============================================================
+  // BRAND LOCK (never translated, in any language, ever)
+  // ============================================================
+  // Per TAmJ translation design:
+  //   "翻訳していい部分" / "Never Translate" lists.
+  //
+  // The page already uses class="notranslate" translate="no" on
+  // brand-locked elements. This helper applies the same protection
+  // to elements that match a list of brand-vocabulary classes —
+  // safety net so future additions of brand elements don't need
+  // to remember the notranslate/translate=no boilerplate.
+  //
+  // Brand-locked content:
+  //   - "KINGMAKER 23:23" / "KINGMAKER" wordmark
+  //   - "THE BELL" / "THE TRIAL" / "THE THREE" / "THE KING"
+  //   - "GRANT" / "CROWN"
+  //   - Brand copy: "No Bell. No Crown." / "To be chosen, you must choose."
+  //   - Hard numerics: 23:23, 100, 5 Minutes
+  //   - Price: "¥100 / $0.69" composite (.price-fixed)
+  //   - Hero h1 (already has notranslate)
+  //   - Countdown digits
+  //   - Language picker UI elements (already protected)
+  //
+  // Selectors marked here are ALL guaranteed never to be translated
+  // by Google Translate (via .notranslate class + translate="no"
+  // attribute), AND never to be touched by our bilingual swap or
+  // data-i18n-html dictionary (those check for .brand-lock and skip).
+  function markBrandLock() {
+    // CSS class marker. Add to any element that should be brand-locked.
+    document.querySelectorAll('.brand-lock').forEach(el => {
+      el.classList.add('notranslate');
+      el.setAttribute('translate', 'no');
+    });
+  }
+
+  // ============================================================
+  // LEGAL DISCLAIMER (for Legal pages: Terms, Privacy, etc.)
+  // ============================================================
+  // Per TAmJ translation design §7. Available globally for any
+  // Legal page in tamjump.com to render at the top of localized
+  // legal content. Site uses bilingual official model:
+  //   English + Japanese = official governing text
+  //   Other languages    = reference translations only
+  window.KINGMAKER_LEGAL_DISCLAIMER = {
+    en: 'English and Japanese are the official governing texts. ' +
+        'Other languages are reference translations.',
+    ja: '英語版および日本語版を正式本文とし、他言語版は参考訳として提供されます。',
+    // Reference translations for the disclaimer itself in TIER 1 languages
+    es: 'Los textos oficiales son inglés y japonés. Otros idiomas son traducciones de referencia.',
+    hi: 'अंग्रेज़ी और जापानी आधिकारिक पाठ हैं। अन्य भाषाएँ केवल संदर्भ अनुवाद हैं।',
+    ko: '영어와 일본어가 공식 본문입니다. 다른 언어는 참고 번역입니다.',
+    vi: 'Tiếng Anh và tiếng Nhật là văn bản chính thức. Các ngôn ngữ khác là bản dịch tham khảo.',
+    pt: 'Os textos oficiais são em inglês e japonês. Outros idiomas são traduções de referência.',
+    id: 'Bahasa Inggris dan Jepang adalah teks resmi. Bahasa lain hanya terjemahan referensi.',
+    th: 'ภาษาอังกฤษและภาษาญี่ปุ่นเป็นข้อความทางการ ภาษาอื่นๆ เป็นคำแปลอ้างอิงเท่านั้น',
+    fr: 'Les textes officiels sont en anglais et japonais. Les autres langues sont des traductions de référence.'
+  };
+
+
   // Brand vocabulary (Bell, Bell Nature, Crown Slot, Royal Duty, THE TRIAL, 23:23)
   // is marked translate="no" in the HTML and is NEVER translated.
   // Languages not in this table fall back to English (the original markup).
@@ -535,11 +681,25 @@
   };
 
   function init() {
+    // Step 1: Bootstrap language (cookie / localStorage / browser detect).
+    // If this fires a reload (because we just set a cookie), the rest
+    // of init() will re-run on the fresh page load with the cookie set.
+    bootstrapLang();
+
+    // Step 2: Brand lock protection — must run BEFORE other passes so
+    // they can check `.brand-lock` and skip those elements.
+    markBrandLock();
+
+    // Step 3: Mark JP-text elements with lang="ja" attr (helps Google
+    // Translate's per-element auto-detection for non-EN-non-JA targets).
     markJpElements();
+
+    // Step 4: Build dropdowns + apply menu & content translations.
     document.querySelectorAll('.lang-picker').forEach(buildDropdown);
-    applyMenuTranslations(getCurrentLang());
-    applyBilingualSwap(getCurrentLang());
-    applyContentTranslations(getCurrentLang());
+    const lang = getCurrentLang();
+    applyMenuTranslations(lang);
+    applyBilingualSwap(lang);
+    applyContentTranslations(lang);
   }
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);

@@ -695,6 +695,64 @@ body.lang-panel-open { overflow: hidden; }
   font-size: 12px;
   letter-spacing: 0.15em;
 }
+/* Visual separator in lang dropdown between TIER 1 (10 priority
+   languages per TAmJ translation design) and the rest. */
+.lang-tier-separator {
+  padding: 14px 22px 8px;
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: 0.25em;
+  color: var(--dust);
+  border-top: 1px solid var(--line);
+  margin-top: 6px;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+/* ============================================================
+   PRICE DISPLAY (brand-locked, never translated, never localized)
+   ============================================================
+   Per TAmJ translation design: ALL prices are shown as JPY + USD
+   composite in the form "¥100 / $0.69". No local currency
+   conversion (avoids "my country pays more / less" perception
+   that destroys the ¥100 equality vow).
+
+   USD value is updated via a single FX poll endpoint (TBD by
+   backend) and injected by JS into elements with .price-usd-value.
+   The base JPY amount is hardcoded in markup.
+
+   Example markup:
+     <span class="price-fixed brand-lock notranslate" translate="no">
+       <span class="price-jpy">¥100</span>
+       <span class="price-sep"> / </span>
+       <span class="price-usd">$<span class="price-usd-value">0.69</span></span>
+     </span>
+*/
+.price-fixed {
+  font-family: var(--f-mono);
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+.price-fixed .price-jpy {
+  font-weight: 700;
+  color: var(--gold-deep);
+}
+.price-fixed .price-sep {
+  color: var(--ash);
+  opacity: 0.7;
+}
+.price-fixed .price-usd {
+  color: var(--ash);
+  font-size: 0.88em;
+}
+.price-fx-note {
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  color: var(--dust);
+  text-transform: uppercase;
+  margin-top: 4px;
+}
 
 @media (max-width: 768px) {
   .lang-trigger { padding: 7px 10px; min-width: 64px; }
