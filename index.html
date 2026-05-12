@@ -1771,18 +1771,22 @@ body.ritual-locked { overflow: hidden; }
 </nav>
 
 <!-- Fullscreen drawer — sibling of .nav, NOT inside it (avoids backdrop-filter containing-block trap) -->
+<!-- Menu items:
+     - Brand vocabulary (Bell, Bell Nature, Crown Slot, Royal Duty, THE TRIAL, 23:23): translate="no" — never translated
+     - General vocabulary (Money, Verify, Doctrine, Stories, Begin): data-i18n key — translated via i18n.js dictionary
+-->
 <ul class="nav-menu">
-  <li><a href="#why">23:23</a></li>
-  <li><a href="#trial">THE TRIAL</a></li>
-  <li><a href="#bell">Bell</a></li>
-  <li><a href="#resonance">Bell Nature</a></li>
-  <li><a href="money.html">Money</a></li>
-  <li><a href="verify.html">Verify</a></li>
-  <li><a href="#three">Crown Slot</a></li>
-  <li><a href="#duty">Royal Duty</a></li>
-  <li><a href="#laws">Doctrine</a></li>
-  <li><a href="#stories">Stories</a></li>
-  <li class="nav-menu-cta"><a href="#apply">Begin</a></li>
+  <li><a href="#why" class="notranslate" translate="no">23:23</a></li>
+  <li><a href="#trial" class="notranslate" translate="no">THE TRIAL</a></li>
+  <li><a href="#bell" class="notranslate" translate="no">Bell</a></li>
+  <li><a href="#resonance" class="notranslate" translate="no">Bell Nature</a></li>
+  <li><a href="money.html" data-i18n="menu.money">Money</a></li>
+  <li><a href="verify.html" data-i18n="menu.verify">Verify</a></li>
+  <li><a href="#three" class="notranslate" translate="no">Crown Slot</a></li>
+  <li><a href="#duty" class="notranslate" translate="no">Royal Duty</a></li>
+  <li><a href="#laws" data-i18n="menu.doctrine">Doctrine</a></li>
+  <li><a href="#stories" data-i18n="menu.stories">Stories</a></li>
+  <li class="nav-menu-cta"><a href="#apply" data-i18n="menu.begin">Begin</a></li>
 </ul>
 
 <!-- ============== HERO ============== -->
@@ -2665,38 +2669,52 @@ body.ritual-locked { overflow: hidden; }
 
 <template id="ritual-bell">
   <div class="ritual-eyebrow">— Chapter II · The Bell —</div>
-  <h2 class="ritual-title">THE <em>TRIAL</em></h2>
-  <p class="ritual-subtitle">5分間。3問。世界同時の儀式。</p>
+  <h2 class="ritual-title">THE <em>BELL</em></h2>
+  <p class="ritual-subtitle">Bellは資格であり、金ではない。</p>
   <div class="ritual-divider"></div>
   <div class="ritual-content">
-    <p class="accent">5 minutes. <em>3 trials.</em><br/>One world. One Crown.</p>
-    <p>毎週 <strong>金曜 23:23</strong>(各国Local)、Bell が鳴る。100円を捧げた者は誰でも <strong>5分間の儀式</strong>に立てる。1億人が応募しても、5分で全員のMissionを読む者はいない。だから KINGMAKER は誰かに3人を「選ばせない」。<strong>世界全員が同じ瞬間に挑む</strong>。</p>
+    <p class="accent">You never lose your <em>Bell</em>.<br/>You only lose your <em>chance</em>.</p>
+    <p class="jp" style="text-align:center;">Bellは失わない。失うのは、今週の資格だけ。</p>
 
     <div class="ritual-divider"></div>
 
-    <h3 style="font-family: var(--f-display); font-size: 16px; letter-spacing: 0.2em; color: var(--gold-deep); text-transform: uppercase; margin: 24px 0 12px; text-align: center;">Round 1 · THE MIND</h3>
-    <p class="jp" style="text-align:center;">10〜20秒。4択。フラッシュ暗算 / 順列 / 比率…</p>
-    <p>例: <code style="background:rgba(184,134,45,0.12); padding:2px 8px; font-family:var(--f-mono);">17 + 28 − 6 × 2 = ?</code> 正解で次へ。不正解は<strong>その週の資格を失う</strong>(Bell は残る)。</p>
+    <h3 style="font-family: var(--f-display); font-size: 14px; letter-spacing: 0.25em; color: var(--gold-deep); text-transform: uppercase; margin: 28px 0 10px;">Bell IS</h3>
+    <ul class="ritual-list">
+      <li>KINGMAKER 内の <strong>Participation Right(参加資格)</strong></li>
+      <li>毎週の THE TRIAL に挑む権利の単位</li>
+      <li>King 候補資格を解放するための鍵</li>
+      <li>金銭価値を持たない、儀式に必要な「鳴り物」</li>
+    </ul>
 
-    <h3 style="font-family: var(--f-display); font-size: 16px; letter-spacing: 0.2em; color: var(--gold-deep); text-transform: uppercase; margin: 32px 0 12px; text-align: center;">Round 2 · THE INSTINCT</h3>
-    <p class="jp" style="text-align:center;">10〜20秒。世界文化 / 図形 / 記憶 / 国旗 / 通貨 / 元素…</p>
-    <p>例: 「KTX は何の略か?」「インドの通貨は?」「メキシコの首都は?」<br/>— 日本人有利も、英語圏有利も、ない。</p>
+    <h3 style="font-family: var(--f-display); font-size: 14px; letter-spacing: 0.25em; color: var(--gold-deep); text-transform: uppercase; margin: 28px 0 10px;">Bell IS NOT</h3>
+    <ul class="ritual-list">
+      <li>法定通貨ではない</li>
+      <li>暗号資産ではない(資金決済法 第2条第14項)</li>
+      <li>前払式支払手段ではない(資金決済法 第3条)</li>
+      <li>有価証券・投資商品ではない(金商法)</li>
+      <li>ポイント・マイレージ・リワードではない</li>
+    </ul>
 
-    <h3 style="font-family: var(--f-display); font-size: 16px; letter-spacing: 0.2em; color: var(--gold-deep); text-transform: uppercase; margin: 32px 0 12px; text-align: center;">Round 3 · THE CROWN</h3>
-    <p class="jp" style="text-align:center;">スロットを止める。00〜99。世界の最頻値が王の元へ近づく。</p>
-    <p>2問突破した者全員が同時にタップ。世界中の指が止まった数字のうち、<strong>最頻値</strong>がその週の Crown Number。同じ数字に止めた応募者の中から、公開Seedで<strong>1人が King として確定する</strong>。</p>
+    <div class="ritual-divider"></div>
+
+    <h3 style="font-family: var(--f-display); font-size: 14px; letter-spacing: 0.25em; color: var(--gold-deep); text-transform: uppercase; margin: 28px 0 10px; text-align:center;">— Bell の鳴り方 —</h3>
+    <p><strong>Wallet は無い。</strong>残高を貯めることも、払い戻しを受けることもできない。毎週、参加するそのときだけ、¥100 を Square Card-on-File 経由で捧げて Bell を鳴らす。</p>
+
+    <ul class="ritual-list">
+      <li>金曜 23:23 → 通知 <em>"The Bell is calling. / 鐘が呼んでいる。"</em></li>
+      <li><strong>ENTER THE BELL</strong> を押す → Square Charge ¥100 → THE TRIAL 開始</li>
+      <li>未参加週は完全静止 — 自動課金なし、保有なし</li>
+      <li>失敗しても Bell は減らない。来週、また鳴らせる。</li>
+    </ul>
 
     <div class="ritual-divider"></div>
 
     <p class="accent">Qualification, <em>not money</em>.</p>
-    <p class="jp" style="text-align:center;">失敗しても、お金は失わない。失うのは、その週の<strong>King候補資格</strong>だけ。</p>
+    <p style="text-align:center;">これは「賭け金」ではない。これは「鐘を鳴らす行為」だ。</p>
 
-    <ul class="ritual-list">
-      <li>Bell Open: 金曜 23:23(各国Local)</li>
-      <li>Bell Close: 金曜 23:28</li>
-      <li>King Confirmed: 直後、自動公開</li>
-      <li>Royal Proof Due: 戴冠から30日以内</li>
-    </ul>
+    <div class="ritual-cta">
+      <a href="#" data-ritual-open="trial" class="btn btn-primary">⌘ THE TRIAL の中身を見る</a>
+    </div>
   </div>
 </template>
 
@@ -3042,7 +3060,7 @@ body.ritual-locked { overflow: hidden; }
 })();
 </script>
 
-<script src="js/i18n.js?v=20260512a"></script>
-<script src="js/main.js?v=20260512a"></script>
+<script src="js/i18n.js?v=20260512b"></script>
+<script src="js/main.js?v=20260512b"></script>
 </body>
 </html>

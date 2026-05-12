@@ -252,8 +252,36 @@
   }
 
   // ---- Init ----
+
+  // Menu translation dictionary — general vocabulary only.
+  // Brand vocabulary (Bell, Bell Nature, Crown Slot, Royal Duty, THE TRIAL, 23:23)
+  // is marked translate="no" in the HTML and is NEVER translated.
+  // Languages not in this table fall back to English (the original markup).
+  // To adjust wording, edit values here — no other code change needed.
+  const MENU_TRANSLATIONS = {
+    'menu.money':    { ja:'Money(資金論)', ko:'자금론', 'zh-CN':'资金论', 'zh-TW':'資金論', hi:'धन का तर्क', es:'Lógica del Dinero', fr:"Logique de l'Argent", de:'Geldlogik', pt:'Lógica do Dinheiro', ru:'Логика денег', ar:'منطق المال', id:'Logika Uang', vi:'Lý luận tiền tệ', th:'ตรรกะของเงิน', tr:'Para Mantığı' },
+    'menu.verify':   { ja:'検証', ko:'검증', 'zh-CN':'验证', 'zh-TW':'驗證', hi:'सत्यापन', es:'Verificar', fr:'Vérifier', de:'Überprüfen', pt:'Verificar', ru:'Проверить', ar:'تحقق', id:'Verifikasi', vi:'Xác minh', th:'ตรวจสอบ', tr:'Doğrula' },
+    'menu.doctrine': { ja:'教義', ko:'교의', 'zh-CN':'教义', 'zh-TW':'教義', hi:'सिद्धांत', es:'Doctrina', fr:'Doctrine', de:'Doktrin', pt:'Doutrina', ru:'Доктрина', ar:'عقيدة', id:'Doktrin', vi:'Học thuyết', th:'หลักคำสอน', tr:'Doktrin' },
+    'menu.stories':  { ja:'物語', ko:'이야기', 'zh-CN':'故事', 'zh-TW':'故事', hi:'कहानियाँ', es:'Historias', fr:'Histoires', de:'Geschichten', pt:'Histórias', ru:'Истории', ar:'قصص', id:'Cerita', vi:'Câu chuyện', th:'เรื่องราว', tr:'Hikayeler' },
+    'menu.begin':    { ja:'始める', ko:'시작', 'zh-CN':'开始', 'zh-TW':'開始', hi:'शुरू करें', es:'Comenzar', fr:'Commencer', de:'Beginnen', pt:'Começar', ru:'Начать', ar:'ابدأ', id:'Mulai', vi:'Bắt đầu', th:'เริ่ม', tr:'Başla' }
+  };
+
+  function applyMenuTranslations(lang) {
+    // English (or any language not in the dictionary) → keep original markup.
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      const dict = MENU_TRANSLATIONS[key];
+      if (!dict) return;
+      // Reset to original first (for back-to-EN switching)
+      if (!el.dataset.i18nOriginal) el.dataset.i18nOriginal = el.textContent;
+      const translated = dict[lang];
+      el.textContent = translated || el.dataset.i18nOriginal;
+    });
+  }
+
   function init() {
     document.querySelectorAll('.lang-picker').forEach(buildDropdown);
+    applyMenuTranslations(getCurrentLang());
   }
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
