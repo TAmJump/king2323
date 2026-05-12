@@ -1,6 +1,6 @@
 /* ============================================================
    KINGMAKER 23:23 — Google Translate (cookie-driven, 108 languages)
-   Version: v20260512f  (printed to console at load for debugging)
+   Version: v20260512g  (printed to console at load for debugging)
    ============================================================ */
 
 (function () {
@@ -11,7 +11,7 @@
   // If a user reports a translation bug, ask them to share the console
   // output — if this line is missing or shows an older version, they
   // are hitting a stale cache (CF / browser disk).
-  console.log('%c[i18n] v20260512f loaded · cookie:', 'color:#b8862d;font-weight:bold',
+  console.log('%c[i18n] v20260512g loaded · cookie:', 'color:#b8862d;font-weight:bold',
               document.cookie || '(none)');
 
   // Full Google Translate language list (108 languages)
@@ -353,6 +353,44 @@
   }
 
   // ============================================================
+  // BILINGUAL PAIR SWAP (uses existing markup, no new translations)
+  // ============================================================
+  // The page is authored with bilingual pairs: an English element
+  // followed by a JP-class sibling carrying the Japanese version.
+  // CSS hides the JP siblings on the visible page (always).
+  //
+  // applyBilingualSwap copies the JP sibling's innerHTML into the
+  // EN element when picker is JA, and restores the original EN
+  // innerHTML otherwise. Uses existing markup — no new JP writing
+  // needed for these elements.
+  const BILINGUAL_PAIRS = [
+    // [English-element selector, Japanese-element selector]
+    ['.edge-headline',  '.edge-headline-jp'],
+    ['.rule-q',         '.rule-q-jp'],
+    // Add more as discovered.
+  ];
+
+  function applyBilingualSwap(lang) {
+    BILINGUAL_PAIRS.forEach(([enSel, jpSel]) => {
+      document.querySelectorAll(enSel).forEach(enEl => {
+        // Find the JP counterpart: next sibling, or any sibling in
+        // the same parent container.
+        let jpEl = null;
+        if (enEl.nextElementSibling && enEl.nextElementSibling.matches(jpSel)) {
+          jpEl = enEl.nextElementSibling;
+        }
+        if (!jpEl && enEl.parentElement) {
+          jpEl = enEl.parentElement.querySelector(jpSel);
+        }
+        if (!jpEl) return;
+        if (!enEl.dataset.originalEn) enEl.dataset.originalEn = enEl.innerHTML;
+        if (!jpEl.dataset.originalJp) jpEl.dataset.originalJp = jpEl.innerHTML;
+        enEl.innerHTML = (lang === 'ja') ? jpEl.dataset.originalJp : enEl.dataset.originalEn;
+      });
+    });
+  }
+
+  // ============================================================
   // DETERMINISTIC TRANSLATIONS (Google-free)
   // ============================================================
   // For every translatable element on the page that carries
@@ -419,6 +457,27 @@
     'stories.headline':    { ja: 'これまでの<em>王</em>たち。' },
     'stories.lede':        { ja: '月曜の23:23ごとに、玉座は移る。これまで玉座に就いた者たち。' },
 
+    // --- RULES / EDGE FAQ section (image 2 — 12 Q&A cards) ---
+    // The .rule-q (English question) auto-swaps with adjacent .rule-q-jp
+    // via applyBilingualSwap. Only the .rule-a answers need explicit
+    // JP translation since they have no JP sibling in the markup.
+    'rules.eyebrow':       { ja: '第VI章 · エッジ・ルール' },
+    'rules.headline':      { ja: '誰もが訊く<br/>問い。' },
+    'rules.lede':           { ja: '答えのない儀式は、法たり得ない。12の境界事例 ─ 起きる前に、公の場で答える。' },
+
+    'rules.a01':  { ja: '<strong>回答 · 同点処理</strong>先着順ではない。応募者プールが最大の国の支持率で同点を解決し、ライブ公開Seedで再ハッシュ。人手の編集なし。私的サイコロなし。' },
+    'rules.a02':  { ja: '<strong>回答 · 永続</strong>Bellは失効しない。プラットフォームは最も小さな声 ─ 最初の100円しか払えない人 ─ を守る。その声は残り続ける。' },
+    'rules.a03':  { ja: '<strong>回答 · 消滅</strong>Bellは声であり、残高ではない。自発的な離脱時、残りのBellは消滅する。払戻なし、譲渡なし。声は沈黙する。' },
+    'rules.a04':  { ja: '<strong>回答 · 遺言の王</strong>事前に指定された家族または遺産執行人が候補資格を継承する。Missionは生き続ける。肉体が消えたから玉座が消える、ということはない。' },
+    'rules.a05':  { ja: '<strong>回答 · 王の負担</strong>Kingは居住国での自己申告に責任を負う。運営はその40%に対する売上税を支払う。国際送金手数料はGrantから差し引かれる。' },
+    'rules.a06':  { ja: '<strong>回答 · デバイス指紋</strong>SMS認証 + 暗号デバイス指紋 + 行動シグナル。同じ世帯、同じオフィス、同じVPN ─ すべて、投票が数えられる前に再認証のフラグが立つ。' },
+    'rules.a07':  { ja: '<strong>回答 · Bell上限 + 異常検知</strong>Bellごとの投票数にIPあたり上限。クラスターパターン、地理的外れ値、タイミングのスパイクに対する統計的異常検知。フラグ付き Bell は人手監査まで保留。' },
+    'rules.a08':  { ja: '<strong>回答 · エスクロー</strong>Grant Fund は法的に分離されたエスクロー口座にあり、第三者の受託者が管理する。運営の死亡・病気・破産は、そこにある一円にも触れることができない。' },
+    'rules.a09':  { ja: '<strong>回答 · 週次レスキュー切符</strong>4週間の投票履歴が確認できる参加者に、月一の無料応募を許可。儀式は、払える人だけのものではない。' },
+    'rules.a10': { ja: '<strong>回答 · AI OCR + 人手監査</strong>すべての領収書はOCRで改ざんチェックされ、ベンダー記録と照合された後、人手の監査員がレビュー。虚偽報告はGrant剥奪と永久利用停止。' },
+    'rules.a11': { ja: '<strong>回答 · ロールオーバー</strong>Grantは Fund に戻る。Pool は次サイクルに向けて大きくなる。何もシステムから出ない。何も失われない。Bellはまた鳴る。' },
+    'rules.a12': { ja: '<strong>回答 · 境界</strong>23:23 は、終わる日と、まだ始まっていない日との境界。あなただった人と、あなたがなる人との境界。真夜中は閉じる。23:23 は選ぶ。' },
+
     // --- COUNTDOWN LABELS ---
     'countdown.label':     { ja: '─ 次のBellまで ─' },
     'countdown.days':      { ja: '日' },
@@ -452,6 +511,11 @@
   };
 
   function applyContentTranslations(lang) {
+    // Set the global display-lang attribute. CSS uses this to hide
+    // .jp / *-jp / [lang="ja"] elements when the picker is not JA.
+    // Single source of truth for display-language CSS rules.
+    document.documentElement.setAttribute('data-display-lang', lang);
+
     document.querySelectorAll('[data-i18n-html]').forEach(el => {
       const key = el.getAttribute('data-i18n-html');
       const entry = I18N_CONTENT[key];
@@ -465,12 +529,16 @@
 
   // Expose for ritual modal: when a modal opens, freshly-cloned data-i18n-html
   // elements need translation re-applied (they're new DOM).
-  window.__i18nApply = applyContentTranslations;
+  window.__i18nApply = function(lang) {
+    applyBilingualSwap(lang);
+    applyContentTranslations(lang);
+  };
 
   function init() {
     markJpElements();
     document.querySelectorAll('.lang-picker').forEach(buildDropdown);
     applyMenuTranslations(getCurrentLang());
+    applyBilingualSwap(getCurrentLang());
     applyContentTranslations(getCurrentLang());
   }
   if (document.readyState === 'loading') {

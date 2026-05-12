@@ -1773,6 +1773,33 @@ body.ritual-locked { overflow: hidden; }
   .ritual-close { top: 20px; right: 20px; width: 36px; height: 36px; }
   .ritual-mini-grid { grid-template-columns: 1fr; gap: 12px; }
 }
+
+/* ============================================================
+   LANGUAGE-AWARE DISPLAY (Google-free, deterministic)
+   ============================================================
+   The page is authored bilingually: most translatable strings have
+   an English element followed by a JP-class sibling (.jp / *-jp).
+
+   STRATEGY:
+   - JP subtitle elements are HIDDEN ALWAYS on the visible page.
+     They remain in DOM as the JA-translation SOURCE — js/i18n.js
+     reads their innerHTML and injects it into the EN sibling when
+     picker is JA via applyBilingualSwap().
+   - Inside .ritual-source divs the JP elements ARE the canonical
+     content (those modal bodies are positioned off-screen). The
+     selectors below scope the hide rule to visible page regions only
+     by requiring section/header ancestry. */
+.edge-headline-jp,
+.rule-q-jp,
+.duty-jp,
+.tier-jp,
+.purpose-jp,
+.manifesto-jp,
+.money-statement-jp,
+section .jp:not(.ritual-source *),
+header.hero .jp {
+  display: none !important;
+}
 </style>
 </head>
 <body>
@@ -2385,9 +2412,9 @@ body.ritual-locked { overflow: hidden; }
 <section id="rules" class="edge-rules">
   <div class="container">
     <div class="section-head">
-      <div class="eyebrow">Chapter VI · Edge Rules</div>
-      <h2>The questions<br/>everyone asks.</h2>
-      <p class="lede">A ritual without answers cannot be law. Twelve edge cases — answered before they happen, in the open.</p>
+      <div class="eyebrow" data-i18n-html="rules.eyebrow">Chapter VI · Edge Rules</div>
+      <h2 data-i18n-html="rules.headline">The questions<br/>everyone asks.</h2>
+      <p class="lede" data-i18n-html="rules.lede">A ritual without answers cannot be law. Twelve edge cases — answered before they happen, in the open.</p>
     </div>
 
     <div class="rules-grid">
@@ -2395,84 +2422,84 @@ body.ritual-locked { overflow: hidden; }
         <div class="rule-num">— Q · 01 —</div>
         <div class="rule-q">What if two candidates tie?</div>
         <div class="rule-q-jp">同率の場合、どうする？</div>
-        <p class="rule-a"><strong>Answer · Tie Break</strong>Not first-come. Tie resolved by support rate from the country with the largest applicant pool, then re-hashed against a public seed published live. No human edit. No private dice.</p>
+        <p class="rule-a" data-i18n-html="rules.a01"><strong>Answer · Tie Break</strong>Not first-come. Tie resolved by support rate from the country with the largest applicant pool, then re-hashed against a public seed published live. No human edit. No private dice.</p>
       </div>
 
       <div class="rule-card">
         <div class="rule-num">— Q · 02 —</div>
         <div class="rule-q">When does my Coin expire?</div>
         <div class="rule-q-jp">Coinの期限は？</div>
-        <p class="rule-a"><strong>Answer · Permanent</strong>Coin never expires. The platform protects the smallest voice — the person who can only ever afford the first ¥100. Their voice persists.</p>
+        <p class="rule-a" data-i18n-html="rules.a02"><strong>Answer · Permanent</strong>Coin never expires. The platform protects the smallest voice — the person who can only ever afford the first ¥100. Their voice persists.</p>
       </div>
 
       <div class="rule-card">
         <div class="rule-num">— Q · 03 —</div>
         <div class="rule-q">If I leave, what happens to my Coin?</div>
         <div class="rule-q-jp">途中退会したら？</div>
-        <p class="rule-a"><strong>Answer · Forfeit</strong>Coin is voice, not balance. On voluntary departure, remaining Coin is extinguished. No refund, no transfer. The voice goes silent.</p>
+        <p class="rule-a" data-i18n-html="rules.a03"><strong>Answer · Forfeit</strong>Coin is voice, not balance. On voluntary departure, remaining Coin is extinguished. No refund, no transfer. The voice goes silent.</p>
       </div>
 
       <div class="rule-card">
         <div class="rule-num">— Q · 04 —</div>
         <div class="rule-q">If a candidate dies after applying?</div>
         <div class="rule-q-jp">応募後の死亡は？</div>
-        <p class="rule-a"><strong>Answer · Legacy King</strong>A pre-named family member or estate executor inherits the candidacy. The Mission lives. The throne does not vanish because a body did.</p>
+        <p class="rule-a" data-i18n-html="rules.a04"><strong>Answer · Legacy King</strong>A pre-named family member or estate executor inherits the candidacy. The Mission lives. The throne does not vanish because a body did.</p>
       </div>
 
       <div class="rule-card">
         <div class="rule-num">— Q · 05 —</div>
         <div class="rule-q">Who pays the tax on the Grant?</div>
         <div class="rule-q-jp">国ごとの税金は？</div>
-        <p class="rule-a"><strong>Answer · King's Burden</strong>The King is responsible for self-reporting in their country of residence. Operator pays revenue tax on its 40%. International transfer fees are deducted from the Grant.</p>
+        <p class="rule-a" data-i18n-html="rules.a05"><strong>Answer · King's Burden</strong>The King is responsible for self-reporting in their country of residence. Operator pays revenue tax on its 40%. International transfer fees are deducted from the Grant.</p>
       </div>
 
       <div class="rule-card">
         <div class="rule-num">— Q · 06 —</div>
         <div class="rule-q">How do you stop fake accounts?</div>
         <div class="rule-q-jp">不正投票対策は？</div>
-        <p class="rule-a"><strong>Answer · Device Fingerprint</strong>SMS verification + cryptographic device fingerprint + behavioral signal. Same household, same office, same VPN — all flagged for re-verification before any vote counts.</p>
+        <p class="rule-a" data-i18n-html="rules.a06"><strong>Answer · Device Fingerprint</strong>SMS verification + cryptographic device fingerprint + behavioral signal. Same household, same office, same VPN — all flagged for re-verification before any vote counts.</p>
       </div>
 
       <div class="rule-card">
         <div class="rule-num">— Q · 07 —</div>
         <div class="rule-q">What about organized self-promotion?</div>
         <div class="rule-q-jp">自演・組織票は？</div>
-        <p class="rule-a"><strong>Answer · Bell Cap + Anomaly Detection</strong>Per-IP cap on votes per Bell. Statistical anomaly detection on cluster patterns, geographic outliers, timing spikes. Flagged Coin is held until human audit.</p>
+        <p class="rule-a" data-i18n-html="rules.a07"><strong>Answer · Bell Cap + Anomaly Detection</strong>Per-IP cap on votes per Bell. Statistical anomaly detection on cluster patterns, geographic outliers, timing spikes. Flagged Coin is held until human audit.</p>
       </div>
 
       <div class="rule-card">
         <div class="rule-num">— Q · 08 —</div>
         <div class="rule-q">If the operator dies, what happens to the Fund?</div>
         <div class="rule-q-jp">運営が死んだら？</div>
-        <p class="rule-a"><strong>Answer · Escrow</strong>The Grant Fund sits in a legally separated escrow account, governed by a third-party trustee. Operator death, illness, or insolvency cannot touch a single yen of it.</p>
+        <p class="rule-a" data-i18n-html="rules.a08"><strong>Answer · Escrow</strong>The Grant Fund sits in a legally separated escrow account, governed by a third-party trustee. Operator death, illness, or insolvency cannot touch a single yen of it.</p>
       </div>
 
       <div class="rule-card">
         <div class="rule-num">— Q · 09 —</div>
         <div class="rule-q">What if I cannot afford even ¥100?</div>
         <div class="rule-q-jp">100円も払えない人は？</div>
-        <p class="rule-a"><strong>Answer · Weekly Rescue Ticket</strong>One free entry per month, granted to participants with a verified four-week voting history. The ritual is for everyone, not only those who can pay.</p>
+        <p class="rule-a" data-i18n-html="rules.a09"><strong>Answer · Weekly Rescue Ticket</strong>One free entry per month, granted to participants with a verified four-week voting history. The ritual is for everyone, not only those who can pay.</p>
       </div>
 
       <div class="rule-card">
         <div class="rule-num">— Q · 10 —</div>
         <div class="rule-q">What if a King fakes the receipts?</div>
         <div class="rule-q-jp">領収書偽造は？</div>
-        <p class="rule-a"><strong>Answer · AI OCR + Human Audit</strong>All receipts are scanned by OCR for tampering, cross-referenced with vendor records, then reviewed by a human auditor. False reporting forfeits the Grant and bans the participant for life.</p>
+        <p class="rule-a" data-i18n-html="rules.a10"><strong>Answer · AI OCR + Human Audit</strong>All receipts are scanned by OCR for tampering, cross-referenced with vendor records, then reviewed by a human auditor. False reporting forfeits the Grant and bans the participant for life.</p>
       </div>
 
       <div class="rule-card">
         <div class="rule-num">— Q · 11 —</div>
         <div class="rule-q">If the King declines the Grant?</div>
         <div class="rule-q-jp">Kingが辞退したら？</div>
-        <p class="rule-a"><strong>Answer · Roll Over</strong>The Grant returns to the Fund. The Pool grows for the following cycle. Nothing leaves the system. Nothing is lost. The Bell rings again.</p>
+        <p class="rule-a" data-i18n-html="rules.a11"><strong>Answer · Roll Over</strong>The Grant returns to the Fund. The Pool grows for the following cycle. Nothing leaves the system. Nothing is lost. The Bell rings again.</p>
       </div>
 
       <div class="rule-card">
         <div class="rule-num">— Q · 12 —</div>
         <div class="rule-q">Why 23:23 and not 00:00?</div>
         <div class="rule-q-jp">なぜ23:23？</div>
-        <p class="rule-a"><strong>Answer · The Edge</strong>23:23 is the edge between the day that ends and the day that has not begun. Between who you were and who you become. Midnight closes. 23:23 chooses.</p>
+        <p class="rule-a" data-i18n-html="rules.a12"><strong>Answer · The Edge</strong>23:23 is the edge between the day that ends and the day that has not begun. Between who you were and who you become. Midnight closes. 23:23 chooses.</p>
       </div>
     </div>
   </div>
@@ -3109,7 +3136,7 @@ body.ritual-locked { overflow: hidden; }
 })();
 </script>
 
-<script src="js/i18n.js?v=20260512f"></script>
-<script src="js/main.js?v=20260512f"></script>
+<script src="js/i18n.js?v=20260512g"></script>
+<script src="js/main.js?v=20260512g"></script>
 </body>
 </html>
