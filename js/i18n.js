@@ -1,6 +1,6 @@
 /* ============================================================
    KINGMAKER 23:23 — Google Translate (cookie-driven, 108 languages)
-   Version: v20260512d  (printed to console at load for debugging)
+   Version: v20260512e  (printed to console at load for debugging)
    ============================================================ */
 
 (function () {
@@ -11,7 +11,7 @@
   // If a user reports a translation bug, ask them to share the console
   // output — if this line is missing or shows an older version, they
   // are hitting a stale cache (CF / browser disk).
-  console.log('%c[i18n] v20260512d loaded · cookie:', 'color:#b8862d;font-weight:bold',
+  console.log('%c[i18n] v20260512e loaded · cookie:', 'color:#b8862d;font-weight:bold',
               document.cookie || '(none)');
 
   // Full Google Translate language list (108 languages)
@@ -147,43 +147,63 @@
 
   // ---- Cookie management ----
   //
-  // CRITICAL: The page content (modal bodies, paragraphs, list items) is
-  // authored primarily in JAPANESE.  Earlier cookie format `/auto/<target>`
-  // told Google Translate to auto-detect source.  With <html lang="en">
-  // declared (now changed to ja), Google decided "source is en" and refused to translate the
-  // Japanese body when target=ko/zh/hi/etc — leaving every non-Japanese
-  // language stuck on Japanese.
+  // ARCHITECTURE (after multiple iterations — this is the correct one):
   //
-  // Fix: explicitly set source=ja so Google translates ja → target for
-  // ALL non-Japanese targets (including English).  When user picks
-  // Japanese, clear the cookie so the original markup shows untranslated.
+  // The page is authored BILINGUALLY by design (per v1.1 "Weight of the
+  // Crown"): English headlines / brand-eyebrows / titles alongside
+  // Japanese subtitles and paragraphs.  Neither language is canonical;
+  // both coexist intentionally.
   //
-  // Notes:
-  //   - <html lang> changed from "en" to "ja" in same commit (the page is
-  //     primarily Japanese-authored). Google honors the cookie source
-  //     override regardless of <html lang>, but having them aligned is
-  //     correct for SEO and accessibility.
-  //   - Brand vocabulary (Hero h1, Bell, Crown Slot etc.) carries
-  //     class="notranslate" — Google won't touch them.  Safe.
-  //   - Default lang is now 'ja' (no cookie = native Japanese view).
+  // Therefore the cookie format must be /auto/<target>, NOT /ja/<target>
+  // or /en/<target>.  /auto/ tells Google Translate to detect the source
+  // language PER TEXT NODE (and per lang attribute), so:
+  //
+  //   target = ja  →  EN elements get translated to JA; JA elements stay
+  //   target = en  →  JA elements get translated to EN; EN elements stay
+  //   target = ko  →  both EN and JA elements get translated to KO
+  //   target = any →  result is uniform in target language
+  //
+  // For Google's auto-detection to be reliable, JP-text elements should
+  // carry lang="ja" explicitly.  This is done by markJpElements() at
+  // page load — it adds lang="ja" to .jp and *-jp classes (the
+  // existing markup convention for Japanese subtitles).
+  //
+  // The cookie is set for EVERY picker selection including 'en' — there
+  // is NO "clear cookie" case in normal user flow.  Default lang is 'en'
+  // (matches <html lang="en">; the page header / brand chrome is English).
   function setGoogTransCookie(lang) {
     const host = window.location.hostname;
     const parts = host.split('.');
     const parentDomain = parts.length > 1 ? '.' + parts.slice(-2).join('.') : host;
-    // Japanese = no translation (clear cookie). Anything else = force ja→target.
-    const value = lang === 'ja' ? '' : `/ja/${lang}`;
+
+    // Cookie hygiene: explicitly DELETE any stale googtrans cookies on
+    // all path/domain combinations we might have written previously.
+    // Without this, the browser ends up with duplicate googtrans cookies
+    // (e.g. googtrans=; googtrans=/ja/en) which confuses the widget.
+    const epoch = 'Thu, 01 Jan 1970 00:00:00 GMT';
+    document.cookie = `googtrans=; path=/; expires=${epoch}`;
+    document.cookie = `googtrans=; path=/; domain=${parentDomain}; expires=${epoch}`;
+    document.cookie = `googtrans=; path=/; domain=${host}; expires=${epoch}`;
+    document.cookie = `googtrans=; path=/; domain=.${host}; expires=${epoch}`;
+
+    if (!lang) return;
+
+    // Set the new cookie for /auto/<target>. /auto/ engages per-element
+    // source detection. Both path-only and parent-domain cookies are
+    // written so the widget reads it regardless of subdomain context.
+    const value = `/auto/${lang}`;
     const expires = new Date();
     expires.setFullYear(expires.getFullYear() + 1);
     const expiresStr = expires.toUTCString();
-    document.cookie = `googtrans=${value};path=/;expires=${expiresStr}`;
-    document.cookie = `googtrans=${value};domain=${parentDomain};path=/;expires=${expiresStr}`;
+    document.cookie = `googtrans=${value}; path=/; expires=${expiresStr}`;
+    document.cookie = `googtrans=${value}; path=/; domain=${parentDomain}; expires=${expiresStr}`;
   }
 
   function getCurrentLang() {
-    // Cookie format is now /ja/<target>; capture <target>.
-    // No cookie = native Japanese (source language).
+    // Cookie format: /<src-or-auto>/<target>. Capture target.
+    // No cookie = default language = 'en' (matches <html lang="en">).
     const m = document.cookie.match(/googtrans=\/[a-z\-]+\/([a-z\-A-Z]+)/);
-    return m ? m[1] : 'ja';
+    return m ? m[1] : 'en';
   }
 
   function applyLang(lang) {
@@ -311,7 +331,29 @@
     });
   }
 
+  // Mark every Japanese-text element with lang="ja" so Google Translate's
+  // per-element auto-detection (cookie /auto/<target>) routes them
+  // through ja → target translation regardless of surrounding markup.
+  // The page uses these existing classes to denote Japanese text:
+  //   .jp                 (most JP subtitles in modals + page sections)
+  //   .edge-headline-jp   (the why-edge section JP subtitle)
+  //   .rule-q-jp          (rule Q&A JP subtitle)
+  //   .purpose-jp         (manifesto purpose JP subtitle)
+  // Idempotent: respects pre-existing lang attribute if author set one.
+  function markJpElements() {
+    const sel = '.jp, .edge-headline-jp, .rule-q-jp, .purpose-jp, [class*="-jp"]';
+    let count = 0;
+    document.querySelectorAll(sel).forEach(el => {
+      if (!el.hasAttribute('lang')) {
+        el.setAttribute('lang', 'ja');
+        count++;
+      }
+    });
+    console.log('[i18n] marked', count, 'elements with lang="ja"');
+  }
+
   function init() {
+    markJpElements();
     document.querySelectorAll('.lang-picker').forEach(buildDropdown);
     applyMenuTranslations(getCurrentLang());
   }
