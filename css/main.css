@@ -1356,32 +1356,40 @@ html:not([data-display-lang="ja"]) .entry-page .entry-note.jp {
   content: none !important;
 }
 
-/* v20260514ai+aj+al+am — Crown-jewel variant, ruby edition.
-   The play button sits in the cream-coloured triangular gap at the
-   base of the crown — between the spike bases, directly above the
-   gorilla's forehead — and reads as a real set ruby (deep red core
-   with a top-left highlight via radial-gradient, thin gold rim,
-   slow ruby breath). */
+/* v20260514ai+aj+al+am+an — Crown-jewel variant, ruby edition.
+   Sits at the very top of the gold crown band (kisses it from above)
+   in the cream gap between the spike bases. Three stacked radial
+   gradients give a real cut-stone read: a small white-pink specular
+   catchlight upper-left, a warmer mid-tone, and a deep ruby body
+   with the bottom-right darker so the stone has weight. Gold setting
+   echoes the crown. */
 .gorilla-play-button {
   position: absolute;
-  top: 36%;
+  top: 38%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 36px;
-  height: 36px;
+  width: 54px;
+  height: 54px;
   border-radius: 50%;
-  background: radial-gradient(circle at 33% 28%,
-                              #C42E3E 0%,
-                              #8B1A26 55%,
-                              #5A0F18 100%);
-  border: 1px solid rgba(184, 134, 45, 0.9);   /* --gold thin rim */
+  background:
+    radial-gradient(ellipse 26% 20% at 32% 22%,
+                    rgba(255, 220, 215, 0.70) 0%,
+                    rgba(255, 220, 215, 0) 70%),
+    radial-gradient(circle at 32% 28%,
+                    rgba(220, 80, 92, 0.75) 0%,
+                    rgba(220, 80, 92, 0) 52%),
+    radial-gradient(circle at 50% 58%,
+                    #B72839 0%,
+                    #7E1424 55%,
+                    #3D0810 100%);
+  border: 1.5px solid rgba(184, 134, 45, 0.92);  /* --gold setting */
   display: flex;
   align-items: center;
   justify-content: center;
   pointer-events: none;
   z-index: 8;
-  box-shadow: 0 0 0 4px rgba(184, 50, 60, 0.10),
-              0 4px 12px rgba(0, 0, 0, 0.45);
+  box-shadow: 0 0 0 5px rgba(184, 50, 60, 0.12),
+              0 5px 14px rgba(0, 0, 0, 0.45);
   animation: gorillaPulse 4.2s ease-in-out infinite;
   transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
               box-shadow 0.4s,
@@ -1390,44 +1398,44 @@ html:not([data-display-lang="ja"]) .entry-page .entry-note.jp {
 }
 .gorilla-play-button-glyph {
   color: rgba(245, 228, 180, 0.96);  /* warm cream — high contrast on ruby */
-  font-size: 12px;
+  font-size: 18px;
   line-height: 1;
-  transform: translateX(1.5px);  /* optical centering for ▶ */
-  text-shadow: 0 1px 2px rgba(60, 10, 15, 0.45);
+  transform: translateX(2.5px);  /* optical centering for ▶ */
+  text-shadow: 0 1px 2px rgba(60, 10, 15, 0.55);
   font-family: Arial, sans-serif;
   font-weight: 500;
 }
 .gorilla-frame-clickable:hover .gorilla-play-button,
 .gorilla-frame-clickable:focus-visible .gorilla-play-button {
-  transform: translate(-50%, -50%) scale(1.12);
+  transform: translate(-50%, -50%) scale(1.10);
   border-color: rgba(212, 168, 80, 1);
-  filter: saturate(1.15) brightness(1.06);
-  box-shadow: 0 0 0 6px rgba(184, 50, 60, 0.20),
-              0 0 18px rgba(196, 46, 62, 0.45),
-              0 6px 16px rgba(0, 0, 0, 0.5);
+  filter: saturate(1.18) brightness(1.06);
+  box-shadow: 0 0 0 8px rgba(184, 50, 60, 0.22),
+              0 0 22px rgba(196, 46, 62, 0.50),
+              0 7px 18px rgba(0, 0, 0, 0.5);
 }
 @keyframes gorillaPulse {
   0%, 100% {
-    box-shadow: 0 0 0 4px rgba(184, 50, 60, 0.10),
-                0 4px 12px rgba(0, 0, 0, 0.45);
+    box-shadow: 0 0 0 5px rgba(184, 50, 60, 0.12),
+                0 5px 14px rgba(0, 0, 0, 0.45);
   }
   50% {
-    box-shadow: 0 0 0 9px rgba(184, 50, 60, 0.05),
-                0 0 14px rgba(196, 46, 62, 0.22),
-                0 4px 12px rgba(0, 0, 0, 0.45);
+    box-shadow: 0 0 0 11px rgba(184, 50, 60, 0.06),
+                0 0 18px rgba(196, 46, 62, 0.28),
+                0 5px 14px rgba(0, 0, 0, 0.45);
   }
 }
 
 /* Mobile — gem-sized */
 @media (max-width: 640px) {
   .gorilla-play-button {
-    width: 28px;
-    height: 28px;
-    top: 36%;
+    width: 42px;
+    height: 42px;
+    top: 38%;
   }
   .gorilla-play-button-glyph {
-    font-size: 10px;
-    transform: translateX(1px);
+    font-size: 15px;
+    transform: translateX(2px);
   }
 }
 
