@@ -428,7 +428,7 @@ Country:${country}
    We will verify your Square payment record against this Entry.
 
 2. 照合 OK の Entry は Founding Bell サイクル(Bell rings: 2026-05-22 (Fri)
-   23:23 JST / The Three announced: 2026-05-24 (Sun) 00:00 JST)
+   23:23 JST / The Three announced: 2026-05-23 (Sat) 23:23 JST)
    の検証対象となります。
    Verified entries are eligible for the Founding Bell cycle.
 
