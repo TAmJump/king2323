@@ -1242,3 +1242,15 @@ html:not([data-display-lang="ja"]) .entry-page .entry-note.jp {
 .legal-footer-meta .meta-line {
   display: block;
 }
+
+/* v20260514i: corp 行用スタイル */
+.legal-footer-nav-corporate {
+  margin-top: 16px;
+  font-size: 11px;
+  opacity: 0.85;
+}
+.legal-footer-nav-corporate .corp-label {
+  color: var(--dust);
+  font-weight: 600;
+  margin-right: 12px;
+}
