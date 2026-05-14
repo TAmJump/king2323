@@ -1356,14 +1356,15 @@ html:not([data-display-lang="ja"]) .entry-page .entry-note.jp {
   content: none !important;
 }
 
-/* v20260514ai — Crown-jewel variant.
-   The play button sits low on the frame like an amulet at the gorilla's
-   chest, just below the crown that's already part of the King Gorilla
-   emblem. Deep ink fill + thin gold rim + slow gold breath, replacing
-   the previous loud red-crimson disc. */
+/* v20260514ai+aj — Crown-jewel variant.
+   The play button sits inside the central spike of the crown that is
+   already part of the King Gorilla emblem — the △ at the top-centre —
+   so it reads as the crown's set gem rather than a CTA. Deep ink fill
+   + thin gold rim + slow gold breath, replacing the previous loud
+   red-crimson disc. */
 .gorilla-play-button {
   position: absolute;
-  top: 76%;
+  top: 20%;
   left: 50%;
   transform: translate(-50%, -50%);
   width: 36px;
@@ -1414,12 +1415,12 @@ html:not([data-display-lang="ja"]) .entry-page .entry-note.jp {
   }
 }
 
-/* Mobile — gem-sized, nudged a touch lower */
+/* Mobile — gem-sized */
 @media (max-width: 640px) {
   .gorilla-play-button {
     width: 28px;
     height: 28px;
-    top: 78%;
+    top: 20%;
   }
   .gorilla-play-button-glyph {
     font-size: 10px;
