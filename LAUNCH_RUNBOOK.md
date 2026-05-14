@@ -1,5 +1,5 @@
 # LAUNCH RUNBOOK · KINGMAKER 23:23 · Founding Bell
-## 2026-05-15 (金) 23:23 JST
+## 2026-05-22 (金) 23:23 JST — Bell rings (Founding Bell Cycle 1)
 
 このドキュメント一本を順番に上から下までやれば公開できる、を目指したチェックリスト。所要時間は全部で **約2時間** 想定(慣れていれば1時間)。
 

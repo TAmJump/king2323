@@ -133,7 +133,7 @@ em { color:#d4af37; font-style:italic; }
 
 ---
 
-## launch 時刻(5/15 23:23 JST)の作業順序
+## launch 時刻(5/22 23:23 JST - Bell rings)の作業順序
 
 1. **WAF を最後にデプロイする**(launch の 30 分前くらいまでは無防備でいい、site 単体だと負荷は来ない)
 2. WAF 有効化後、上記 #1 #2 で動作確認
