@@ -732,20 +732,21 @@
 }
 .never-eyebrow {
   font-family: var(--f-display);
-  font-size: 11px;
-  letter-spacing: 0.42em;
+  font-size: 13px;
+  letter-spacing: 0.36em;
   color: var(--crimson);
   text-transform: uppercase;
-  margin-bottom: 32px;
+  margin-bottom: 36px;
   display: inline-flex;
   align-items: center;
-  gap: 14px;
+  gap: 16px;
+  font-weight: 600;
 }
 .never-eyebrow::before, .never-eyebrow::after {
-  content: ''; width: 28px; height: 1px; background: var(--crimson);
+  content: ''; width: 36px; height: 1px; background: var(--crimson);
 }
 .never-grid {
-  max-width: 960px;
+  max-width: 1040px;
   margin: 0 auto;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -755,19 +756,37 @@
 }
 .never-cell {
   background: var(--black);
-  padding: 24px 12px;
+  padding: 30px 18px;
   font-family: var(--f-display);
-  font-size: 12px;
-  letter-spacing: 0.22em;
+  font-size: 15px;
+  letter-spacing: 0.18em;
   color: var(--ash);
   text-transform: uppercase;
   position: relative;
   text-decoration: line-through;
   text-decoration-color: var(--crimson);
-  text-decoration-thickness: 2px;
+  text-decoration-thickness: 1.5px;
+  line-height: 1.4;
 }
-.never-cell.major { color: var(--bone); }
-@media (max-width: 700px) { .never-grid { grid-template-columns: repeat(2, 1fr); } }
+.never-cell.major {
+  color: var(--bone);
+  font-size: 16px;
+  font-weight: 600;
+}
+.never .closing-note {
+  margin-top: 40px;
+  font-family: var(--f-editorial);
+  font-style: italic;
+  color: var(--ash);
+  font-size: 17px;
+  line-height: 1.6;
+}
+@media (max-width: 700px) {
+  .never-grid { grid-template-columns: repeat(2, 1fr); }
+  .never-cell { font-size: 14px; padding: 26px 12px; }
+  .never-cell.major { font-size: 15px; }
+  .never .closing-note { font-size: 15px; }
+}
 
 /* ============== FINAL CTA ============== */
 .final-cta {
@@ -3532,7 +3551,7 @@ html:not([data-display-lang="ja"]) span[style*="--f-jp"]:not(.notranslate) {
     <div class="never-cell">Vote Selling</div>
     <div class="never-cell">Receipt Forgery</div>
   </div>
-  <p style="margin-top: 32px; font-family: var(--f-editorial); font-style: italic; color: var(--ash); font-size: 14px;">
+  <p class="closing-note">
     KINGMAKER 23:23 is a ritual of giving. It is none of the above.
   </p>
 </section>
