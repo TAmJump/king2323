@@ -1196,3 +1196,49 @@ html[data-display-lang="ja"] .entry-page .entry-note:not(.jp) {
 html:not([data-display-lang="ja"]) .entry-page .entry-note.jp {
   display: none;
 }
+
+/* === v20260514h: Legal/Entry pages unified footer === */
+.legal-footer {
+  border-top: var(--rule);
+  padding: 48px var(--pad) 40px;
+  margin-top: 96px;
+  text-align: center;
+}
+.legal-footer-nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 8px 14px;
+  font-size: 12px;
+  margin-bottom: 24px;
+  font-family: var(--f-mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.legal-footer-nav a {
+  color: var(--gold);
+  text-decoration: none;
+  transition: color 0.25s;
+  border-bottom: 1px solid transparent;
+  padding-bottom: 2px;
+}
+.legal-footer-nav a:hover {
+  color: var(--gold);
+  border-bottom-color: var(--gold);
+}
+.legal-footer-nav .sep {
+  color: var(--dust);
+  font-size: 10px;
+}
+.legal-footer-meta {
+  font-family: var(--f-mono);
+  font-size: 10px;
+  color: var(--dust);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  line-height: 1.8;
+}
+.legal-footer-meta .meta-line {
+  display: block;
+}
