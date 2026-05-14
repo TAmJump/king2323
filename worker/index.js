@@ -432,13 +432,16 @@ Country:${country}
    の検証対象となります。
    Verified entries are eligible for the Founding Bell cycle.
 
-3. 選出は公開された方法で行いますが、選出だけでは Grant の権利は
-   発生しません。Grant 支給には本人確認 (KYC)・Mission 確認・
-   AML 審査・法令適合性審査・Grant Fund 残高確認を経た場合に限り、
-   運営者の判断により行われます。
-   Selection alone does not entitle a participant to a Grant.
-   Grant disbursement requires KYC, Mission verification, AML review,
-   legal compliance review, and Grant Fund availability.
+3. 選出は公開された方法で行いますが、選出だけでは Mission Fund 配分の権利は
+   発生しません。Mission Fund の配分には本人確認 (KYC)・Mission 確認・
+   AML 審査・法令適合性審査・Mission Fund 残高確認を経た場合に限り、
+   運営者の判断により行われ、Mission の制作・実行・記録のために
+   運営が運用します(個人への現金譲渡ではありません)。
+   Selection alone does not entitle a participant to Mission Fund
+   allocation. Mission Fund allocation requires KYC, Mission verification,
+   AML review, legal compliance review, and Mission Fund availability;
+   allocated funds are operated by the Operator to produce, execute,
+   and document the King's Mission (not transferred as personal income).
 
 【Bell Entry について / About Bell Entry】
 Bell Entry は参加記録です。通貨・暗号資産・前払式支払手段・有価証券・
