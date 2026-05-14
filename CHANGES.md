@@ -144,3 +144,137 @@ This is the launch-eligible drop. Tonight's flow:
 22:00  最終目視 + SNS下書き準備
 23:23  鐘が鳴る
 ```
+---
+
+# KINGMAKER 23:23 — Launch-Eve Polish (v20260514v → v20260514y)
+
+The four commits below ship together as the final pre-launch quality
+pass. None of them changes the brand or the ritual; all of them harden
+the surface that visitors actually touch when they arrive via SNS,
+search, or a stray link.
+
+## v20260514v · Payment flow unified through the coin ritual modal
+
+Three problems, one fix.
+
+**Problem 1.** The `#apply` section CTA went directly to `entry.html`,
+bypassing the Square checkout step. The `entry.html` form requires a
+Square receipt ID, so submission would have failed in the backend —
+but the UX was confusing: visitors landed on a payment-already-done
+form without having paid.
+
+**Problem 2.** `money.html` had no path back to the Founding Bell.
+A reader could absorb the entire Money Logic v1.0 essay and find no
+CTA to act on it. Every other page funnels to the bell; money.html
+silently terminated.
+
+**Problem 3.** Visitors arriving with `#apply` in the URL (from
+external links, the footer, or the new money.html CTA) landed on
+the page but had to scroll to find the button. One extra step in the
+payment funnel costs conversions.
+
+**Fix.**
+- `#apply` section CTA → `<button data-ritual-open="coin">` instead
+  of a direct link. The button now opens the ritual modal that
+  explains Bell semantics (`participation right · not currency ·
+  not transferable`) before the visitor proceeds to Square. This
+  is both better UX and stronger legal positioning — the visitor
+  cannot reach payment without seeing the Bell-is-not-money copy.
+- `money.html` gets a new `§ 12 · Now your voice` section at the
+  bottom, with a "Ring the Founding Bell" CTA that links to
+  `index.html#apply`. Brand-locked wording (no i18n key churn).
+- `index.html` auto-opens the coin modal when the URL hash is
+  `#apply` on load, then strips the hash via `history.replaceState`
+  so browser-back doesn't re-trigger it.
+- Side-fix: `verify.html` got an `id="history"` on the History
+  section, repairing the broken `index.html → verify.html#history`
+  link in the Stories ritual.
+
+## v20260514w · Open Graph + Twitter Card meta tags on all 7 pages
+
+Before this commit, sharing any KINGMAKER URL on X/Twitter, LINE,
+Slack, Discord, Facebook, or LinkedIn produced a bare-URL preview
+with no image, no title, no description. For a platform whose
+entire launch strategy is bell-rung-at-23:23-share-everywhere, that
+was a critical hole.
+
+Each page now ships:
+- `og:type`, `og:site_name`, `og:title`, `og:description`, `og:url`
+- `og:image` = `assets/logo-v3-1024.png` (gold gorilla on cream,
+  1024×1024, renders as `summary_large_image` on Twitter)
+- `og:image:alt` for screen readers
+- `og:locale` = `ja_JP`, alternate `en_US`
+- `twitter:card` = `summary_large_image`, plus twitter:title /
+  description / image
+- `<link rel="canonical">` per page (prevents duplicate-content
+  indexing if reached via `tamjump.github.io` or other hosts)
+
+Title/description copy is per-page, drawn from each page's existing
+`<title>` and `<meta name="description">`, so OGP previews match
+search-result snippets.
+
+## v20260514x · robots.txt, sitemap.xml, branded 404.html
+
+**robots.txt** — explicit crawler policy at the root.
+- `Allow: /` for all UAs.
+- `Disallow: /entry.html` — the form is gated by Square receipt and
+  shouldn't surface in search results; visitors who land on it from
+  Google would be confused and unable to complete entry.
+- `Disallow: /api/`, `Disallow: /worker/` — internal endpoints.
+- Declares the sitemap location.
+
+**sitemap.xml** — 6 public URLs (index, money, verify, app, rules,
+risk) with launch-day lastmod (`2026-05-15`), changefreq, and
+priority weights. Index = 1.0; money = 0.9; verify = 0.8; app = 0.7;
+legal pages = 0.5.
+
+**404.html** — KINGMAKER-themed not-found page. GitHub Pages auto-
+serves `/404.html` for any unmatched path on the site, so this
+replaces the stock white "404: There isn't a GitHub Pages site
+here" with a brand-consistent parchment-and-gold page:
+- Font stack: Cinzel + Noto Serif JP (same as the rest of the site)
+- Copy: `That path is not in the ledger.` / `そのページは、台帳に記録されていない。`
+  — keeps the public-ledger theme even in error states.
+- Two CTAs: `Return to KINGMAKER` (/) and `/verify — see the ledger`
+  (verify.html).
+- `<meta name="robots" content="noindex">` — never indexed.
+
+## v20260514y · Mobile theme-color + preconnect hints
+
+**theme-color** matches the parchment background, so on iOS Safari
+and Android Chrome the browser chrome (address bar, status bar)
+blends into the hero instead of clashing. Two variants:
+- `#f8f4eb` for `prefers-color-scheme: light`
+- `#1a1612` for `prefers-color-scheme: dark`
+
+Plus `<meta name="color-scheme" content="light">` to declare
+document intent and avoid dark-mode auto-invert quirks on some
+browsers.
+
+**preconnect / dns-prefetch** for critical third-party origins:
+- `fonts.googleapis.com` + `fonts.gstatic.com` (Cinzel, Noto Serif
+  JP — both used in the hero, so TLS warmup before the parser hits
+  the @import saves ~100-200ms LCP on cold mobile loads)
+- `translate.googleapis.com` + `translate-pa.googleapis.com`
+  (Google Translate widget, loads on every page for the 10-lang
+  picker)
+
+## Net effect of the four commits
+
+| Surface           | Before                    | After                                   |
+|-------------------|---------------------------|-----------------------------------------|
+| #apply CTA flow   | Skipped Square            | Forced through coin modal → Square      |
+| money.html → bell | Dead-end                  | § 12 CTA → index.html#apply             |
+| #apply auto-modal | Manual scroll + click     | Modal opens on page load                |
+| verify#history    | Broken anchor             | Resolves to History section             |
+| SNS share preview | Bare URL                  | Gold gorilla emblem + per-page title    |
+| Search crawl      | No policy, no sitemap     | robots.txt + sitemap.xml                |
+| 404 page          | GitHub default white page | Brand-consistent parchment + ledger copy |
+| Mobile chrome     | Browser-default gray      | Parchment cream, blends into hero       |
+| Cold-load latency | First-byte fonts at parse | Preconnect at HTML head parse           |
+
+Pre-launch work that remains owner-side: Cloudflare WAF JP-only
+rule (Step 3 of LAUNCH_RUNBOOK — legally most important), Worker
+sanity test (Step 2.5), Square checkout link verification, ¥100
+test purchase (Step 5), final visual pass on mobile (Step 6).
+
