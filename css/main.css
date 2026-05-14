@@ -1345,81 +1345,65 @@ html:not([data-display-lang="ja"]) .entry-page .entry-note.jp {
   text-transform: uppercase;
 }
 
-/* Always-visible play button — prominent so users notice it.
-   Sits center-bottom of the gorilla frame at default opacity, scales+glows on hover. */
-.gorilla-frame-clickable::after {
-  content: '';
+/* Always-visible play button — real DOM element (.gorilla-play-button)
+   to avoid conflicts with inline .gorilla-frame::before/::after rings. */
+.gorilla-play-button {
   position: absolute;
-  bottom: 8%;
+  bottom: -10px;
   left: 50%;
-  transform: translateX(-50%);
-  width: 76px;
-  height: 76px;
+  transform: translate(-50%, 0);
+  width: 84px;
+  height: 84px;
   border-radius: 50%;
-  background: rgba(15, 14, 12, 0.85);
-  border: 2px solid var(--gold);
-  pointer-events: none;
-  z-index: 4;
-  opacity: 1;
-  box-shadow: 0 0 24px rgba(212, 175, 55, 0.45),
-              0 8px 24px rgba(0, 0, 0, 0.35),
-              inset 0 0 14px rgba(212, 175, 55, 0.18);
-  animation: gorillaPulse 2.2s ease-in-out infinite;
-  transition: transform 0.3s, box-shadow 0.3s, opacity 0.3s;
-}
-.gorilla-frame-clickable::before {
-  content: '▶';
-  position: absolute;
-  bottom: 8%;
-  left: 50%;
-  transform: translate(-42%, 0);
-  width: 76px;
-  height: 76px;
+  background: rgba(15, 14, 12, 0.92);
+  border: 2.5px solid var(--gold);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 26px;
-  color: var(--gold);
-  z-index: 5;
   pointer-events: none;
-  opacity: 1;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
-  transition: transform 0.3s, opacity 0.3s;
+  z-index: 8;
+  box-shadow: 0 0 32px rgba(212, 175, 55, 0.55),
+              0 12px 28px rgba(0, 0, 0, 0.4),
+              inset 0 0 16px rgba(212, 175, 55, 0.22);
+  animation: gorillaPulse 2.2s ease-in-out infinite;
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 0.3s;
 }
-.gorilla-frame-clickable:hover::after,
-.gorilla-frame-clickable:focus-visible::after {
-  transform: translateX(-50%) scale(1.12);
-  box-shadow: 0 0 40px rgba(212, 175, 55, 0.7),
-              0 12px 32px rgba(0, 0, 0, 0.45),
-              inset 0 0 18px rgba(212, 175, 55, 0.25);
+.gorilla-play-button-glyph {
+  color: var(--gold);
+  font-size: 30px;
+  line-height: 1;
+  transform: translateX(3px);
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
+  font-family: Arial, sans-serif;
 }
-.gorilla-frame-clickable:hover::before,
-.gorilla-frame-clickable:focus-visible::before {
-  transform: translate(-42%, 0) scale(1.12);
+.gorilla-frame-clickable:hover .gorilla-play-button,
+.gorilla-frame-clickable:focus-visible .gorilla-play-button {
+  transform: translate(-50%, 0) scale(1.12);
+  box-shadow: 0 0 48px rgba(212, 175, 55, 0.85),
+              0 16px 36px rgba(0, 0, 0, 0.5),
+              inset 0 0 20px rgba(212, 175, 55, 0.3);
 }
 @keyframes gorillaPulse {
-  0%, 100% { box-shadow: 0 0 24px rgba(212, 175, 55, 0.45),
-                        0 8px 24px rgba(0, 0, 0, 0.35),
-                        inset 0 0 14px rgba(212, 175, 55, 0.18),
-                        0 0 0 0 rgba(212, 175, 55, 0.55); }
-  50%      { box-shadow: 0 0 24px rgba(212, 175, 55, 0.45),
-                        0 8px 24px rgba(0, 0, 0, 0.35),
-                        inset 0 0 14px rgba(212, 175, 55, 0.18),
-                        0 0 0 14px rgba(212, 175, 55, 0); }
+  0%, 100% { box-shadow: 0 0 32px rgba(212, 175, 55, 0.55),
+                        0 12px 28px rgba(0, 0, 0, 0.4),
+                        inset 0 0 16px rgba(212, 175, 55, 0.22),
+                        0 0 0 0 rgba(212, 175, 55, 0.6); }
+  50%      { box-shadow: 0 0 32px rgba(212, 175, 55, 0.55),
+                        0 12px 28px rgba(0, 0, 0, 0.4),
+                        inset 0 0 16px rgba(212, 175, 55, 0.22),
+                        0 0 0 16px rgba(212, 175, 55, 0); }
 }
 
-/* Mobile: keep button comfortably tappable */
+/* Mobile */
 @media (max-width: 640px) {
-  .gorilla-frame-clickable::after {
-    width: 64px;
-    height: 64px;
-    bottom: 6%;
+  .gorilla-play-button {
+    width: 70px;
+    height: 70px;
+    bottom: -6px;
   }
-  .gorilla-frame-clickable::before {
-    width: 64px;
-    height: 64px;
-    bottom: 6%;
-    font-size: 22px;
+  .gorilla-play-button-glyph {
+    font-size: 24px;
   }
 }
 

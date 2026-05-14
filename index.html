@@ -2655,6 +2655,11 @@ html:not([data-display-lang="ja"]) span[style*="--f-jp"]:not(.notranslate) {
           <span class="lang-en">TAP TO WATCH</span><span class="lang-ja">タップで再生</span>
         </div>
       </div>
+      <!-- Always-visible play button (real DOM, not pseudo-element, to avoid
+           conflicts with inline .gorilla-frame::before/::after rings) -->
+      <div class="gorilla-play-button" aria-hidden="true">
+        <span class="gorilla-play-button-glyph">▶</span>
+      </div>
     </div>
     <!-- Scroll-down indicator -->
     <a href="#hero-content" class="hero-scroll-hint notranslate" translate="no" aria-label="Scroll to enter">
