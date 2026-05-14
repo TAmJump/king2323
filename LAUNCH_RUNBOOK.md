@@ -10,19 +10,19 @@
 ## 全体フロー
 
 ```
-[17:00]  Step 0  zipを展開してリポジトリ更新 (15分)
-[17:30]  Step 1  commerce.html の placeholder 埋め (5分)
-[17:35]  Step 2  Formspree アカウント作成 + ID差し替え (15分)
-[17:50]  Step 3  Cloudflare WAF で日本IP限定ルール (20分)
-[18:30]  Step 4  Square商品作成 (25分)
-[19:00]  Step 5  ¥100テスト購入 (10分)
-[19:10]  Step 6  全ページ目視確認 (30分)
-[19:40]  Step 7  push & デプロイ確認 (15分)
+[17:00]  Step 0  zipを展開してリポジトリ更新 (15分)   ← Claudeが既にpush済みの場合は skip
+[17:00]  ~~Step 1~~  特商法 placeholder 埋め  ← 不要(commerce.htmlは削除済、tamjump.comに集約)
+[17:00]  Step 2  Formspree アカウント作成 + ID差し替え (15分)
+[17:15]  Step 3  Cloudflare WAF で日本IP限定ルール (20分)   ← 最重要
+[17:35]  Step 4  Square商品作成 (25分)
+[18:00]  Step 5  ¥100テスト購入 (10分)
+[18:10]  Step 6  全ページ目視確認 (30分)
+[18:40]  Step 7  push & デプロイ確認 (15分)   ← Claude が随時 push してる場合は skip
 [22:00]  Step 8  最終確認とSNS下書き (60分余裕)
 [23:23]  ✦      鐘が鳴る
 ```
 
-時間がない場合は **Step 0 → 3 → 4 → 5 → 7** が最低ライン。Step 2 (Formspree) は応募フォームが死ぬだけで決済自体は通るので、最悪後追いでも可。
+時間がない場合は **Step 3 → 4 → 5** が最低ライン(WAF / Square / テスト)。Step 2 (Formspree) は応募フォームが死ぬだけで決済自体は通るので、最悪後追いでも可。
 
 ---
 
@@ -88,20 +88,20 @@ ls docs/ 2>&1
 
 ---
 
-## Step 1 · 特商法 placeholder 埋め ⏱ 5分
+## ~~Step 1 · 特商法 placeholder 埋め~~  ⛔ DEPRECATED
 
-```bash
-python3 scripts/fill_commerce.py
-```
+このステップは**不要**になりました。
 
-対話的に4項目訊かれます。必須は **運営責任者氏名** のみ。他は Enter で「請求時開示」のままにしてOK(個人で運営する場合、住所と電話を出すのはおすすめしません)。
+設計変更により、特商法表記は **tamjump.com/commerce.html**(コーポレートサイト)に集約。
+king2323/commerce.html は **削除済み**(v20260514i)。
 
-期待する確認:
+tamjump.com 側には:
+- 販売事業者:タムジ株式会社
+- 運営責任者:代表取締役 大下 甚
+- 所在地:東京都中央区東日本橋3-3-17 Re-Know4B
+- メール:info@tamjump.com
 
-```bash
-grep -A1 '運営責任者' commerce.html
-# 期待: <tr><th>運営責任者</th><td>[あなたの氏名]</td></tr>
-```
+が既に記載済み。Founding Bell 用の補足(商品名・価格 ¥100・性質・提供開始)も別途追記済(commit 657351d on TAmJump/TAmj)。
 
 ---
 
