@@ -2618,38 +2618,10 @@ html:not([data-display-lang="ja"]) span[style*="--f-jp"]:not(.notranslate) {
   </div>
 </div>
 
-<!-- ============== HERO ============== -->
-<header class="hero" id="top">
-  <div class="hero-left">
-    <h1 class="fade-up d1 notranslate hero-h1-2line" translate="no">
-      <span class="line">Not everyone can be <span class="gold">king</span>.</span>
-      <span class="line">But everyone can make <span class="gold">one</span>.</span>
-      <span class="small">— this week, only this week —</span>
-    </h1>
-    <div class="hero-cta fade-up d3">
-      <button type="button" class="btn btn-primary km-cta" data-ritual-open="coin" data-cta="founding">
-        <span class="km-cta-default">
-          <span class="brand-lock notranslate" translate="no">100 Bell</span>
-          ·
-          <span class="price-fixed brand-lock notranslate" translate="no">
-            <span class="price-usd" data-jpy="100">$0.63</span>
-          </span>
-        </span>
-        <span class="km-cta-open notranslate" translate="no">
-          <span class="km-cta-open-arrow">→</span>
-          <span class="km-cta-open-text">ENTER THE 5 MINUTES</span>
-        </span>
-      </button>
-    </div>
-    <p class="fade-up d4 notranslate" translate="no" style="font-family: var(--f-editorial); font-style: italic; font-size: clamp(14px, 1.4vw, 17px); color: var(--gold-deep); margin-top: 20px; letter-spacing: 0.02em; line-height: 1.5;">
-      You never lose your <em style="font-weight:600;">Bell</em>.<br/>
-      You only lose your <em style="font-weight:600;">chance</em>.
-      <span style="display:block; font-family: var(--f-jp); font-style: normal; font-size: 0.78em; color: var(--ash); margin-top: 6px; letter-spacing: 0.05em;">— Bellは失われない。失うのは、今週の資格だけ。</span>
-    </p>
-  </div>
-
-  <div class="hero-right fade-up d2">
-    <div class="gorilla-frame gorilla-frame-clickable" id="gorillaFrame" role="button" tabindex="0" aria-label="Play KINGMAKER 23:23 short film">
+<!-- ============== HERO — STAGE 1: FULL-SCREEN GORILLA ============== -->
+<header class="hero hero-v2" id="top">
+  <div class="hero-stage hero-stage-gorilla">
+    <div class="gorilla-frame gorilla-frame-clickable gorilla-frame-fullscreen" id="gorillaFrame" role="button" tabindex="0" aria-label="Play KINGMAKER 23:23 short film">
       <span class="breath-ring breath-ring-1" aria-hidden="true"></span>
       <span class="breath-ring breath-ring-2" aria-hidden="true"></span>
       <span class="breath-ring breath-ring-3" aria-hidden="true"></span>
@@ -2670,21 +2642,65 @@ html:not([data-display-lang="ja"]) span[style*="--f-jp"]:not(.notranslate) {
         </div>
       </div>
     </div>
-    <div class="countdown notranslate" id="countdown" translate="no">
-      <div class="countdown-label">— The Bell opens in —</div>
-      <div class="countdown-time tabular">
-        <div class="countdown-unit"><span class="num" id="cd-d">02</span><span class="lab">Days</span></div>
-        <span class="colon">·</span>
-        <div class="countdown-unit"><span class="num" id="cd-h">14</span><span class="lab">Hrs</span></div>
-        <span class="colon">·</span>
-        <div class="countdown-unit"><span class="num" id="cd-m">37</span><span class="lab">Min</span></div>
-        <span class="colon">·</span>
-        <div class="countdown-unit"><span class="num" id="cd-s">52</span><span class="lab">Sec</span></div>
-      </div>
-      <div class="countdown-target brand-lock" id="cd-target">Friday · 23:23 JST</div>
-    </div>
+    <!-- Scroll-down indicator -->
+    <a href="#hero-content" class="hero-scroll-hint notranslate" translate="no" aria-label="Scroll to enter">
+      <span class="hero-scroll-line"></span>
+      <span class="hero-scroll-label">scroll</span>
+      <svg class="hero-scroll-chevron" width="16" height="12" viewBox="0 0 16 12" fill="none" aria-hidden="true">
+        <path d="M2 2 L8 9 L14 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </a>
   </div>
 </header>
+
+<!-- ============== HERO — STAGE 2: TITLE + CTA + COUNTDOWN ============== -->
+<section class="hero-content" id="hero-content">
+  <div class="hero-content-inner">
+    <div class="hero-left hero-left-v2">
+      <h1 class="fade-up d1 notranslate hero-h1-2line" translate="no">
+        <span class="line">Not everyone can be <span class="gold">king</span>.</span>
+        <span class="line">But everyone can make <span class="gold">one</span>.</span>
+        <span class="small">— this week, only this week —</span>
+      </h1>
+      <div class="hero-cta fade-up d3">
+        <button type="button" class="btn btn-primary km-cta" data-ritual-open="coin" data-cta="founding">
+          <span class="km-cta-default">
+            <span class="brand-lock notranslate" translate="no">100 Bell</span>
+            ·
+            <span class="price-fixed brand-lock notranslate" translate="no">
+              <span class="price-usd" data-jpy="100">$0.63</span>
+            </span>
+          </span>
+          <span class="km-cta-open notranslate" translate="no">
+            <span class="km-cta-open-arrow">→</span>
+            <span class="km-cta-open-text">ENTER THE 5 MINUTES</span>
+          </span>
+        </button>
+      </div>
+      <p class="fade-up d4 notranslate" translate="no" style="font-family: var(--f-editorial); font-style: italic; font-size: clamp(14px, 1.4vw, 17px); color: var(--gold-deep); margin-top: 20px; letter-spacing: 0.02em; line-height: 1.5;">
+        You never lose your <em style="font-weight:600;">Bell</em>.<br/>
+        You only lose your <em style="font-weight:600;">chance</em>.
+        <span style="display:block; font-family: var(--f-jp); font-style: normal; font-size: 0.78em; color: var(--ash); margin-top: 6px; letter-spacing: 0.05em;">— Bellは失われない。失うのは、今週の資格だけ。</span>
+      </p>
+    </div>
+
+    <div class="hero-right hero-right-v2 fade-up d2">
+      <div class="countdown notranslate" id="countdown" translate="no">
+        <div class="countdown-label">— The Bell opens in —</div>
+        <div class="countdown-time tabular">
+          <div class="countdown-unit"><span class="num" id="cd-d">02</span><span class="lab">Days</span></div>
+          <span class="colon">·</span>
+          <div class="countdown-unit"><span class="num" id="cd-h">14</span><span class="lab">Hrs</span></div>
+          <span class="colon">·</span>
+          <div class="countdown-unit"><span class="num" id="cd-m">37</span><span class="lab">Min</span></div>
+          <span class="colon">·</span>
+          <div class="countdown-unit"><span class="num" id="cd-s">52</span><span class="lab">Sec</span></div>
+        </div>
+        <div class="countdown-target brand-lock" id="cd-target">Friday · 23:23 JST</div>
+      </div>
+    </div>
+  </div>
+</section>
 
 <!-- ============== TICKER ============== -->
 <div class="ticker" aria-hidden="true">
@@ -4231,6 +4247,23 @@ html:not([data-display-lang="ja"]) span[style*="--f-jp"]:not(.notranslate) {
 
   // Auto-close when video ends
   video.addEventListener('ended', close);
+})();
+</script>
+
+<script>
+/* Hero scroll hint: fade out once user scrolls past hero stage */
+(function () {
+  const hint = document.querySelector('.hero-scroll-hint');
+  if (!hint) return;
+  function onScroll() {
+    if (window.scrollY > 80) {
+      hint.classList.add('scrolled');
+    } else {
+      hint.classList.remove('scrolled');
+    }
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
 })();
 </script>
 
