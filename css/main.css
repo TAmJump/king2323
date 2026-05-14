@@ -1163,3 +1163,36 @@ font[style*="background-color"],
   background-color: transparent !important;
   box-shadow: none !important;
 }
+
+/* === v20260514f: Bilingual display switch for legal/entry pages === */
+/* 日本語ピッカー時: 英語 <p> 非表示、.jp 表示 */
+html[data-display-lang="ja"] .legal-page p:not(.jp),
+html[data-display-lang="ja"] .entry-page p:not(.jp),
+html[data-display-lang="ja"] .legal-page label:not(.jp):not(.lang-ja),
+html[data-display-lang="ja"] .entry-page label:not(.jp):not(.lang-ja) {
+  display: none;
+}
+/* 日本語以外: 日本語 <p class="jp"> と日本語見出し非表示 */
+html:not([data-display-lang="ja"]) .legal-page p.jp,
+html:not([data-display-lang="ja"]) .entry-page p.jp,
+html:not([data-display-lang="ja"]) .legal-page label.jp,
+html:not([data-display-lang="ja"]) .entry-page label.jp,
+html:not([data-display-lang="ja"]) .lang-ja {
+  display: none;
+}
+/* 日本語時: 英語見出し/ラベルを非表示 */
+html[data-display-lang="ja"] .lang-en {
+  display: none;
+}
+/* 日本語見出しのフォント */
+.lang-ja {
+  font-family: var(--f-jp, "Noto Serif JP", serif);
+}
+
+/* entry-note div も同様の切替 */
+html[data-display-lang="ja"] .entry-page .entry-note:not(.jp) {
+  display: none;
+}
+html:not([data-display-lang="ja"]) .entry-page .entry-note.jp {
+  display: none;
+}
