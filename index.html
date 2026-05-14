@@ -4262,6 +4262,115 @@ html:not([data-display-lang="ja"]) span[style*="--f-jp"]:not(.notranslate) {
 })();
 </script>
 
+<!-- ============== POSTER LIGHTBOX (myth + legend) ============== -->
+<div class="km-lightbox" id="kmLightbox" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Poster lightbox">
+  <button type="button" class="km-lightbox-close" id="kmLightboxClose" aria-label="Close">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M6 6 L18 18 M6 18 L18 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+  </button>
+  <button type="button" class="km-lightbox-nav km-lightbox-prev" id="kmLightboxPrev" aria-label="Previous">
+    <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+      <path d="M18 6 L8 14 L18 22" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </button>
+  <button type="button" class="km-lightbox-nav km-lightbox-next" id="kmLightboxNext" aria-label="Next">
+    <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+      <path d="M10 6 L20 14 L10 22" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </button>
+  <figure class="km-lightbox-figure">
+    <img class="km-lightbox-img" id="kmLightboxImg" src="" alt="">
+    <figcaption class="km-lightbox-caption" id="kmLightboxCaption"></figcaption>
+  </figure>
+</div>
+
+<script>
+/* Lightbox for myth (4 posters) + legend (7 posters) */
+(function () {
+  const lb       = document.getElementById('kmLightbox');
+  const lbImg    = document.getElementById('kmLightboxImg');
+  const lbCap    = document.getElementById('kmLightboxCaption');
+  const lbClose  = document.getElementById('kmLightboxClose');
+  const lbPrev   = document.getElementById('kmLightboxPrev');
+  const lbNext   = document.getElementById('kmLightboxNext');
+
+  if (!lb) return;
+
+  // Collect all triggers: every img inside .myth-frame and .legend-card
+  const sources = [];
+  document.querySelectorAll('.myth-frame img, .legend-card img').forEach(function (img) {
+    sources.push({
+      el: img,
+      src: img.getAttribute('src'),
+      alt: img.getAttribute('alt') || ''
+    });
+  });
+
+  let current = 0;
+
+  function show(i) {
+    if (i < 0) i = sources.length - 1;
+    if (i >= sources.length) i = 0;
+    current = i;
+    const s = sources[i];
+    lbImg.src = s.src;
+    lbImg.alt = s.alt;
+    lbCap.textContent = s.alt;
+  }
+
+  function open(i) {
+    show(i);
+    lb.classList.add('open');
+    lb.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function close() {
+    lb.classList.remove('open');
+    lb.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    // Free img src after a tick so the close animation is clean
+    setTimeout(function () { if (!lb.classList.contains('open')) lbImg.src = ''; }, 350);
+  }
+
+  // Wire up triggers
+  sources.forEach(function (s, i) {
+    // Make the img (and its parent if it's a button) clickable
+    s.el.style.cursor = 'zoom-in';
+    const trigger = s.el.closest('button') || s.el.closest('.myth-frame') || s.el;
+    if (trigger.tagName !== 'BUTTON') {
+      trigger.setAttribute('role', 'button');
+      trigger.setAttribute('tabindex', '0');
+    }
+    trigger.addEventListener('click', function (e) {
+      e.preventDefault();
+      open(i);
+    });
+    trigger.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        open(i);
+      }
+    });
+  });
+
+  // Controls
+  lbClose.addEventListener('click', close);
+  lbPrev.addEventListener('click', function () { show(current - 1); });
+  lbNext.addEventListener('click', function () { show(current + 1); });
+  lb.addEventListener('click', function (e) {
+    if (e.target === lb) close();
+  });
+  document.addEventListener('keydown', function (e) {
+    if (!lb.classList.contains('open')) return;
+    if (e.key === 'Escape')     close();
+    if (e.key === 'ArrowLeft')  show(current - 1);
+    if (e.key === 'ArrowRight') show(current + 1);
+  });
+})();
+</script>
+
 <!-- ============== AMBIENT ANTHEM (corner toggle, off by default) ============== -->
 <audio id="km-anthem" preload="none" loop>
   <source src="audio/anthem.mp3" type="audio/mpeg">
