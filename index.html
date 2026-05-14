@@ -3633,7 +3633,10 @@ html:not([data-display-lang="ja"]) span[style*="--f-jp"]:not(.notranslate) {
   </p>
   <p class="answer">— You have until Friday · 23:23 —</p>
   <div class="actions">
-    <a href="entry.html" class="btn btn-primary">Founding Bell Entry</a>
+    <button type="button" class="btn btn-primary km-cta" data-ritual-open="coin" data-cta="founding-final">
+      <span class="brand-lock notranslate" translate="no">Founding Bell Entry</span>
+      <span class="brand-lock notranslate" translate="no" style="display:block; font-size:11px; letter-spacing:0.2em; opacity:0.85; margin-top:4px;">100 Bell · ¥100</span>
+    </button>
     <a href="app.html" class="btn btn-ghost">Open the App</a>
   </div>
 </section>
@@ -4174,6 +4177,20 @@ html:not([data-display-lang="ja"]) span[style*="--f-jp"]:not(.notranslate) {
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && overlay.classList.contains('open')) close();
   });
+
+  // auto-open coin ritual when arriving with #apply hash
+  // (e.g. from money.html "Ring the Founding Bell" CTA, or external links).
+  // Wait one tick so the page can render first, and clean the URL so
+  // a browser-back doesn't re-trigger it.
+  if (window.location.hash === '#apply') {
+    setTimeout(() => {
+      open('coin');
+      // strip the hash without reloading
+      if (history.replaceState) {
+        history.replaceState(null, '', window.location.pathname + window.location.search);
+      }
+    }, 400);
+  }
 })();
 </script>
 
