@@ -383,12 +383,13 @@
 html:not([data-display-lang="ja"]) .lede-jp,
 html:not([data-display-lang="ja"]) .chapter-title-jp,
 html:not([data-display-lang="ja"]) .step-jp,
-html:not([data-display-lang="ja"]) .verify-statement-jp,
-/* Safety net: catches any inline-styled JP element that uses --f-jp font
-   variable without a dedicated class. Found this 2026-05-12 in verify.html
-   closing section (the 王は運営が選ぶのではない paragraph). */
+html:not([data-display-lang="ja"]) .verify-statement-jp {
+  display: none !important;
+}
+/* SAFETY NET (v1.3): catch orphan inline-style JP elements */
 html:not([data-display-lang="ja"]) p[style*="--f-jp"],
-html:not([data-display-lang="ja"]) div[style*="--f-jp"]:not(.notranslate) {
+html:not([data-display-lang="ja"]) div[style*="--f-jp"]:not(.notranslate),
+html:not([data-display-lang="ja"]) span[style*="--f-jp"]:not(.notranslate) {
   display: none !important;
 }
 
@@ -436,7 +437,7 @@ html:not([data-display-lang="ja"]) div[style*="--f-jp"]:not(.notranslate) {
     <p class="lede">"Don't trust us. Compute it yourself."</p>
     <p class="lede-jp">信じるな。検証しろ。</p>
     <p class="lede-en">
-      Most lotteries say "we don't cheat" — and ask you to take their word for it. KINGMAKER does not ask for your trust. The Three are derived from public market data through a public formula, and your browser can recompute the answer right here. Locally. No server call. If our number disagrees with yours, we lose.
+      Most lotteries say "we don't cheat" — and ask you to take their word for it. KINGMAKER's intent is the opposite. Once a public cycle records real entries and the Seed window closes, The Three will be derived from public market data through a public formula. Your browser will be able to recompute the answer locally. This page shows the verification method planned for public cycles.
     </p>
   </header>
 
@@ -548,7 +549,7 @@ h_high % pool = <span class="v" id="step6-three">…</span>  <span class="c">→
   <section class="vy-section">
     <h2>Verify Yourself.</h2>
     <p class="vy-lede">
-      Press the button. Your browser will recompute the SHA-256 and the picks for Cycle 47 — locally, no server call. If the result disagrees with the table above, KINGMAKER has lied. There is no way for us to forge this.
+      Press the button to see how the verification will work once real cycle data is published. For the Founding Bell opening, the actual data, public Seed, and applicant Hashes will be published after entries close. Once published, the same recompute will produce a verifiable result.
     </p>
     <button id="vy-btn" class="vy-btn">⌘ Compute The Three</button>
     <div id="vy-output" class="vy-output">
@@ -594,7 +595,7 @@ h_high % pool = <span class="v" id="step6-three">…</span>  <span class="c">→
   <section class="verify-closing">
     <h2>The Crown is not chosen by the host.<br/>It is <em style="font-family: var(--f-editorial); font-style: italic; color: var(--gold);">derived</em>.</h2>
     <p>From the world's open numbers. Through a single public formula. Anyone can recompute. Anyone can audit. We could not cheat if we wanted to — and we don't have to.</p>
-    <p class="verify-statement-jp" style="font-family: var(--f-jp); color: var(--dust); font-size: 14px;">王は運営が選ぶのではない。世界の公開数字から、ひとつの公式で、誰にでも導出できる。</p>
+    <p style="font-family: var(--f-jp); color: var(--dust); font-size: 14px;">王は運営が選ぶのではない。世界の公開数字から、ひとつの公式で、誰にでも導出できる。</p>
 
     <div class="verify-statement notranslate" translate="no">Not trusted. <em>Verified.</em></div>
     <div class="verify-statement-jp">信じるな。検証しろ。</div>
@@ -608,10 +609,12 @@ h_high % pool = <span class="v" id="step6-three">…</span>  <span class="c">→
   <div style="font-family: var(--f-display); font-size: 16px; letter-spacing: 0.3em; color: var(--gold-deep); margin-bottom: 8px;">KINGMAKER 23:23</div>
   <div style="font-family: var(--f-mono); font-size: 11px; color: var(--dust); letter-spacing: 0.15em; margin-bottom: 28px;">/verify · Provably Fair · v1.0</div>
   <div style="font-family: var(--f-mono); font-size: 11px; color: var(--ash); letter-spacing: 0.14em; line-height: 2.2;">
-    <a href="https://tamjump.com/terms" rel="noopener" target="_blank" style="color: var(--ash); margin: 0 8px;" data-i18n-html="footer.terms">利用規約 / Terms</a> ·
-    <a href="https://tamjump.com/privacy" rel="noopener" target="_blank" style="color: var(--ash); margin: 0 8px;" data-i18n-html="footer.privacy">プライバシー / Privacy</a> ·
-    <a href="https://tamjump.com/commerce" rel="noopener" target="_blank" style="color: var(--ash); margin: 0 8px;" data-i18n-html="footer.commerce">特定商取引法表記</a> ·
-    <a href="https://tamjump.com/" rel="noopener" target="_blank" style="color: var(--ash); margin: 0 8px;" data-i18n-html="footer.operator">Operator · TAmJ ↗</a>
+    <a href="terms.html" rel="noopener" target="_blank" style="color: var(--ash); margin: 0 8px;">利用規約 / Terms</a> ·
+    <a href="privacy.html" rel="noopener" target="_blank" style="color: var(--ash); margin: 0 8px;">プライバシー / Privacy</a> ·
+    <a href="commerce.html" rel="noopener" target="_blank" style="color: var(--ash); margin: 0 8px;">特定商取引法表記</a> ·
+    <a href="rules.html" rel="noopener" target="_blank" style="color: var(--ash); margin: 0 8px;">Rules</a> ·
+    <a href="risk.html" rel="noopener" target="_blank" style="color: var(--ash); margin: 0 8px;">Important Notices</a> ·
+    <a href="https://tamjump.com/" rel="noopener" target="_blank" style="color: var(--ash); margin: 0 8px;">Operator · TAmJ ↗</a>
   </div>
   <div style="font-family: var(--f-mono); font-size: 10px; color: var(--dust); letter-spacing: 0.18em; margin-top: 24px;">
     © 2026 · KINGMAKER 23:23 · Operated by TAmJ · Tokyo, Japan
@@ -712,14 +715,15 @@ h_high % pool = <span class="v" id="step6-three">…</span>  <span class="c">→
       <div class="vy-row"><span class="vk">h_low % pool</span><span class="vv pick">${rr.one} &nbsp;→&nbsp; Candidate #${rr.one}</span></div>
       <div class="vy-row"><span class="vk">h_mid % pool</span><span class="vv pick">${rr.two} &nbsp;→&nbsp; Candidate #${rr.two}</span></div>
       <div class="vy-row"><span class="vk">h_high % pool</span><span class="vv pick">${rr.three} &nbsp;→&nbsp; Candidate #${rr.three}</span></div>
-      <div class="vy-final">✓ Verified locally. No server call. The Three match the table above.</div>
+      <div class="vy-final">✓ Method demonstrated. Once a real cycle closes, the same recompute will produce a verifiable Three from real entries.</div>
     `;
     btn.disabled = false;
     btn.textContent = '↻ Recompute';
   });
 })();
 </script>
-<script src="js/i18n.js?v=20260512k"></script>
-<script src="js/main.js?v=20260512k"></script>
+<script src="js/i18n.js?v=20260514d"></script>
+<script src="js/fx.js?v=20260514d"></script>
+<script src="js/main.js?v=20260514d"></script>
 </body>
 </html>

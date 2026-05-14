@@ -1,0 +1,6 @@
+{
+  "USD_JPY": 157.60,
+  "source": "exchangerate-api.com",
+  "updated": "2026-05-13",
+  "note": "Daily refresh via .github/workflows/fx-update.yml. Fallback in fx.js if file is unreachable or stale."
+}

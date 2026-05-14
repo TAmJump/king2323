@@ -223,50 +223,366 @@ a:hover { color: var(--gold); }
   margin-left: 6px;
   opacity: 0.7;
 }
-/* Nav menu — hamburger drawer at ALL viewport sizes (desktop + mobile unified) */
+/* ============================================================
+   NAV MENU — Chirashi (flyer) layout (v20260514c)
+   Full-screen drawer: left column = sectioned index of the site,
+   right column = poster art panel. Newspaper/zine typography.
+   ============================================================ */
 .nav-menu {
-  display: flex !important;
+  display: block !important;
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
-  gap: 0;
-  background: rgba(250, 247, 240, 0.97);
+  background: var(--paper);
+  background-image:
+    radial-gradient(ellipse 80% 60% at 30% 20%, rgba(184,134,45,0.06), transparent 70%),
+    radial-gradient(ellipse 60% 80% at 70% 80%, rgba(184,134,45,0.04), transparent 70%);
   backdrop-filter: blur(10px) saturate(140%);
   -webkit-backdrop-filter: blur(10px) saturate(140%);
-  padding: 96px 24px 40px;
   transform: translateY(-100%);
-  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition: transform 0.55s cubic-bezier(0.2, 0.8, 0.2, 1);
   z-index: 90;
   overflow-y: auto;
+  overflow-x: hidden;
+  padding: 0;
   margin: 0;
   list-style: none;
 }
 .nav-menu.open { transform: translateY(0); }
-.nav-menu li { width: 100%; max-width: 360px; text-align: center; list-style: none; }
-.nav-menu li.nav-menu-cta { display: block; margin-top: 28px; }
-.nav-menu a {
+
+/* Top stripe — chirashi header bar */
+.nav-stripe {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 72px var(--pad) 28px;
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: 0.42em;
+  color: var(--gold);
+  text-transform: uppercase;
+  border-bottom: 1px solid rgba(184, 134, 45, 0.18);
+  position: relative;
+}
+.nav-stripe-dot {
+  width: 6px; height: 6px;
+  background: var(--gold);
+  border-radius: 50%;
+}
+
+/* Two-column chirashi grid */
+.nav-grid {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 48px var(--pad) 80px;
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 64px;
+  align-items: start;
+}
+@media (max-width: 900px) {
+  .nav-grid {
+    grid-template-columns: 1fr;
+    gap: 48px;
+    padding: 36px var(--pad) 64px;
+  }
+}
+
+/* Section blocks (LEFT) */
+.nav-col-main {
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+}
+.nav-block { padding: 0; }
+.nav-block-meta {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  margin-bottom: 14px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(184, 134, 45, 0.22);
+}
+.nav-block-num {
+  font-family: var(--f-display);
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--gold-deep);
+  letter-spacing: -0.01em;
+  line-height: 1;
+}
+.nav-block-where {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.32em;
+  color: var(--dust);
+  text-transform: uppercase;
+}
+
+/* List rows — newspaper style */
+.nav-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+.nav-list li {
+  width: auto;
+  max-width: none;
+  text-align: left;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.nav-list a {
+  display: grid;
+  grid-template-columns: 48px 1fr auto;
+  gap: 16px;
+  align-items: baseline;
+  padding: 14px 8px;
+  border: 0;
+  border-bottom: 1px dashed rgba(184, 134, 45, 0.14);
+  text-decoration: none;
+  transition: all 0.25s ease;
+  letter-spacing: normal;
+  font-family: inherit;
+  font-size: inherit;
+}
+.nav-list a:hover {
+  background: rgba(184, 134, 45, 0.04);
+  padding-left: 18px;
+  border-bottom-color: var(--gold);
+}
+.nav-list a .num {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.25em;
+  color: var(--gold);
+  font-weight: 600;
+}
+.nav-list a .t {
+  font-family: var(--f-display);
+  font-size: clamp(20px, 2.4vw, 30px);
+  color: var(--ink);
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  line-height: 1.1;
+}
+.nav-list a .jp {
+  font-family: var(--f-jp);
+  font-size: 12px;
+  color: var(--dust);
+  letter-spacing: 0.04em;
+  text-align: right;
+  line-height: 1.4;
+}
+@media (max-width: 600px) {
+  .nav-list a { grid-template-columns: 32px 1fr; }
+  .nav-list a .jp { grid-column: 1 / -1; text-align: left; padding-left: 48px; margin-top: 4px; }
+}
+
+/* Primary CTA — Ring the Bell */
+.nav-cta-row {
+  margin-top: 28px;
+}
+.nav-cta-primary {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 16px;
+  padding: 24px 28px;
+  background: linear-gradient(135deg, var(--gold-bright), var(--gold-deep));
+  color: var(--black);
+  text-decoration: none;
+  border: none;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 20px rgba(184, 134, 45, 0.18);
+}
+.nav-cta-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 32px rgba(184, 134, 45, 0.32);
+}
+.nav-cta-primary::after {
+  content: '';
+  position: absolute;
+  top: 0; right: 0; width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+  transform: translateX(-100%);
+  transition: transform 0.6s ease;
+}
+.nav-cta-primary:hover::after { transform: translateX(100%); }
+.nav-cta-primary .nav-cta-label {
+  display: block;
+  font-family: var(--f-mono);
+  font-size: 9px;
+  letter-spacing: 0.35em;
+  color: rgba(8, 7, 6, 0.7);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.nav-cta-primary .nav-cta-text {
   display: block;
   font-family: var(--f-display);
-  font-size: 17px;
-  padding: 18px 0;
-  border-bottom: 1px solid var(--line);
-  letter-spacing: 0.18em;
-  color: var(--ink);
-  transition: color 0.3s;
+  font-size: clamp(22px, 3vw, 32px);
+  font-weight: 700;
+  letter-spacing: -0.005em;
 }
-.nav-menu a:hover { color: var(--gold); }
-.nav-menu a.active { color: var(--gold); }
-.nav-menu li.nav-menu-cta a {
-  background: var(--gold);
-  color: var(--paper);
-  padding: 16px 36px;
-  border: none;
-  display: inline-block;
-  width: auto;
+.nav-cta-primary .nav-cta-arrow {
+  font-family: var(--f-display);
+  font-size: 32px;
+  color: var(--black);
+  font-weight: 300;
+  transition: transform 0.3s ease;
+}
+.nav-cta-primary:hover .nav-cta-arrow { transform: translateX(6px); }
+
+/* Foot links — small legal nav */
+.nav-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+  margin-top: 20px;
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  color: var(--ash);
+  text-transform: uppercase;
+}
+.nav-foot a {
+  color: var(--ash);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  padding-bottom: 1px;
+  transition: all 0.2s ease;
+}
+.nav-foot a:hover {
+  color: var(--gold);
+  border-bottom-color: var(--gold);
+}
+.nav-foot span {
+  color: var(--dust);
+  opacity: 0.5;
+}
+
+/* RIGHT column: chirashi mini-poster */
+.nav-col-art {
+  position: sticky;
+  top: 100px;
+}
+@media (max-width: 900px) {
+  .nav-col-art { position: relative; top: auto; }
+}
+.nav-poster {
+  background: var(--black);
+  color: var(--bone);
+  padding: 32px 28px 28px;
+  border: 1px solid rgba(184, 134, 45, 0.3);
+  position: relative;
+  box-shadow:
+    0 1px 0 var(--gold),
+    0 20px 60px rgba(0, 0, 0, 0.4);
+}
+.nav-poster::before, .nav-poster::after {
+  content: '';
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border: 1px solid var(--gold);
+  pointer-events: none;
+}
+.nav-poster::before { top: 8px; left: 8px; border-right: none; border-bottom: none; }
+.nav-poster::after  { bottom: 8px; right: 8px; border-left: none; border-top: none; }
+
+.nav-poster-top {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--f-mono);
+  font-size: 9px;
+  letter-spacing: 0.28em;
+  color: var(--gold);
+  text-transform: uppercase;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(184, 134, 45, 0.3);
+}
+.nav-poster-big {
+  font-family: var(--f-display);
+  font-size: clamp(60px, 8vw, 92px);
+  font-weight: 800;
+  color: var(--gold-bright);
+  text-align: center;
+  line-height: 1;
+  margin: 24px 0 4px;
+  letter-spacing: -0.02em;
+}
+.nav-poster-big .colon { color: var(--gold-deep); margin: 0 -0.08em; }
+.nav-poster-sub {
+  font-family: var(--f-display);
+  font-size: clamp(20px, 2.5vw, 28px);
+  font-weight: 700;
+  color: var(--bone);
+  text-align: center;
+  letter-spacing: 0.02em;
+  line-height: 1.05;
+  margin-bottom: 22px;
+}
+.nav-poster-line {
+  width: 60%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  margin: 0 auto 18px;
+}
+.nav-poster-text {
+  font-family: var(--f-editorial);
   font-size: 13px;
+  line-height: 1.7;
+  color: var(--ash);
+  text-align: center;
+  margin-bottom: 22px;
 }
+.nav-poster-text em {
+  color: var(--gold-bright);
+  font-style: italic;
+  font-weight: 500;
+}
+.nav-poster-text span {
+  display: block;
+  margin-top: 6px;
+  color: var(--bone);
+  font-style: italic;
+}
+.nav-poster-quote {
+  font-family: var(--f-editorial);
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--gold-deep);
+  text-align: center;
+  font-style: italic;
+  padding: 14px 0;
+  border-top: 1px solid rgba(184, 134, 45, 0.2);
+  border-bottom: 1px solid rgba(184, 134, 45, 0.2);
+  margin-bottom: 16px;
+}
+.nav-poster-quote em {
+  color: var(--gold-bright);
+  font-style: italic;
+}
+.nav-poster-foot {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--f-mono);
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  color: var(--dust);
+  text-transform: uppercase;
+}
+
+/* Old element resets — neutralize legacy classes */
+.nav-menu li { width: auto; max-width: none; text-align: left; list-style: none; }
+.nav-menu li.nav-menu-cta { display: none; }   /* CTA replaced by .nav-cta-primary */
 
 /* Begin button next to lang picker — hidden at all sizes (Begin lives inside hamburger drawer) */
 .nav-cta { display: none; }
@@ -712,20 +1028,18 @@ body.lang-panel-open { overflow: hidden; }
 /* ============================================================
    PRICE DISPLAY (brand-locked, never translated, never localized)
    ============================================================
-   Per TAmJ translation design: ALL prices are shown as JPY + USD
-   composite in the form "¥100 / $0.69". No local currency
-   conversion (avoids "my country pays more / less" perception
-   that destroys the ¥100 equality vow).
-
-   USD value is updated via a single FX poll endpoint (TBD by
-   backend) and injected by JS into elements with .price-usd-value.
-   The base JPY amount is hardcoded in markup.
+   Per TAmJ display contract (v20260513):
+     - JPY is the source of truth (data-jpy attr = JPY amount).
+     - USD is computed at render time from /js/fx.json and shown PRIMARY.
+     - JPY is shown SECONDARY beneath the USD value.
+     - All price elements carry .notranslate so the i18n layer
+       leaves them alone — these are never translated.
 
    Example markup:
      <span class="price-fixed brand-lock notranslate" translate="no">
-       <span class="price-jpy">¥100</span>
-       <span class="price-sep"> / </span>
-       <span class="price-usd">$<span class="price-usd-value">0.69</span></span>
+       <span class="price-usd"     data-jpy="100">$0.63</span>
+       <span class="price-sep"> · </span>
+       <span class="price-jpy-sub" data-jpy="100">¥100</span>
      </span>
 */
 .price-fixed {
@@ -733,17 +1047,26 @@ body.lang-panel-open { overflow: hidden; }
   letter-spacing: 0.05em;
   white-space: nowrap;
 }
-.price-fixed .price-jpy {
+.price-fixed .price-usd {
   font-weight: 700;
   color: var(--gold-deep);
 }
 .price-fixed .price-sep {
   color: var(--ash);
-  opacity: 0.7;
+  opacity: 0.6;
+  margin: 0 0.2em;
 }
-.price-fixed .price-usd {
+.price-fixed .price-jpy-sub {
   color: var(--ash);
-  font-size: 0.88em;
+  font-size: 0.82em;
+  opacity: 0.85;
+}
+/* Back-compat: keep .price-jpy as a synonym for the secondary slot in
+   case any future caller forgets the -sub modifier. */
+.price-fixed .price-jpy {
+  color: var(--ash);
+  font-size: 0.82em;
+  opacity: 0.85;
 }
 .price-fx-note {
   font-family: var(--f-mono);

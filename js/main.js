@@ -1,57 +1,137 @@
 /* ============================================================
-   KINGMAKER 23:23 — Main JS
-   Countdown to Friday 23:23 JST. Smooth nav highlight.
+   KINGMAKER 23:23 — Main JS  (v20260514d)
+   Countdown becomes a ritual: pulses last 60s, flashes at 0,
+   5-minute "Bell open" window, then resets to next Friday.
    ============================================================ */
 
 (function () {
   'use strict';
 
-  // ---------- Countdown to next Friday 23:23 (JST = UTC+9) ----------
-  function getNextBell() {
-    // Build the target time in JST regardless of viewer's TZ.
-    // JST = UTC + 9. Find the next Friday at 23:23 JST.
-    const nowUtc = new Date();
-    // Convert "now" into JST as a Date object whose UTC fields represent JST wall clock
+  // ---------- Time arithmetic (JST = UTC+9) ----------
+  // Returns the JST-anchored next-Friday-23:23 boundary that the page
+  // should be counting toward AS WELL AS whether the bell is currently
+  // ringing (a 5-minute window after 23:23 JST every Friday).
+  function getBellState() {
+    const nowMs = Date.now();
     const jstOffsetMs = 9 * 60 * 60 * 1000;
-    const nowJst = new Date(nowUtc.getTime() + jstOffsetMs);
+    const nowJst = new Date(nowMs + jstOffsetMs);
+    const dow = nowJst.getUTCDay();
 
-    // We want next Friday in JST. JS getUTCDay() on nowJst gives JST weekday (since fields are JST-wall in UTC slots).
-    const dow = nowJst.getUTCDay(); // 0=Sun ... 5=Fri
-    let daysUntilFri = (5 - dow + 7) % 7;
-
-    const target = new Date(Date.UTC(
+    // Most recent Friday 23:23 JST (could be past or future this week)
+    const daysSinceFri = (dow - 5 + 7) % 7;
+    const thisFri = new Date(Date.UTC(
       nowJst.getUTCFullYear(),
       nowJst.getUTCMonth(),
-      nowJst.getUTCDate() + daysUntilFri,
+      nowJst.getUTCDate() - daysSinceFri,
       23, 23, 0, 0
     ));
-    // target represents JST wall clock packed in UTC slots → real UTC = target - jstOffset
-    let targetUtcMs = target.getTime() - jstOffsetMs;
+    const thisFriUtcMs = thisFri.getTime() - jstOffsetMs;
 
-    // If we've passed this Friday's 23:23 JST, jump 7 days
-    if (targetUtcMs <= nowUtc.getTime()) {
-      targetUtcMs += 7 * 24 * 60 * 60 * 1000;
+    // Window: 23:23 → 23:28 JST (5 minutes after the bell)
+    const windowEndMs = thisFriUtcMs + 5 * 60 * 1000;
+
+    if (nowMs >= thisFriUtcMs && nowMs < windowEndMs) {
+      // Bell is currently ringing.
+      return {
+        phase: 'bell_open',
+        nextBellMs: thisFriUtcMs,
+        windowEndMs: windowEndMs,
+        msInWindow: nowMs - thisFriUtcMs,
+        msUntilClose: windowEndMs - nowMs
+      };
     }
-    return targetUtcMs;
+
+    // Bell not ringing — count down to next Friday.
+    let nextFriUtcMs;
+    if (nowMs >= windowEndMs) {
+      // Window closed earlier; next bell is 7 days after this one.
+      nextFriUtcMs = thisFriUtcMs + 7 * 24 * 60 * 60 * 1000;
+    } else {
+      // Still before this week's bell.
+      nextFriUtcMs = thisFriUtcMs;
+    }
+
+    return {
+      phase: 'waiting',
+      nextBellMs: nextFriUtcMs,
+      msUntilBell: nextFriUtcMs - nowMs
+    };
   }
 
   function pad(n) { return String(n).padStart(2, '0'); }
 
-  function tick() {
-    const targetMs = getNextBell();
-    const diff = targetMs - Date.now();
-    if (diff <= 0) {
-      document.querySelectorAll('#cd-d,#cd-h,#cd-m,#cd-s').forEach(el => el.textContent = '00');
-      const target = document.getElementById('cd-target');
-      if (target) target.textContent = 'The Bell is open.';
+  // Document-level state used to toggle ritual visuals.
+  let currentPhase = null;
+  function setPhase(phase) {
+    if (phase === currentPhase) return;
+    currentPhase = phase;
+    document.documentElement.dataset.bellPhase = phase;
+  }
+
+  // Detect "60-second pulse" and "5-second strike" sub-phases.
+  let isPulsing = false;
+  let hasStruck = false;
+
+  function applyVisuals(state) {
+    if (state.phase === 'bell_open') {
+      setPhase('open');
+      isPulsing = false;
+      // Strike flash fires once at the very top of the window.
+      if (!hasStruck && state.msInWindow < 1500) {
+        hasStruck = true;
+        const flash = document.getElementById('bell-strike-flash');
+        if (flash) {
+          flash.classList.add('strike');
+          setTimeout(() => flash.classList.remove('strike'), 2200);
+        }
+      }
       return;
     }
+
+    // Waiting phase
+    hasStruck = false;
+    const remain = state.msUntilBell;
+    if (remain <= 60000) {
+      setPhase('last_minute');
+      isPulsing = true;
+    } else {
+      setPhase('far');
+      isPulsing = false;
+    }
+  }
+
+  function renderCountdown(state) {
+    const countdownLabel = document.getElementById('cd-target');
+    const countdownBox   = document.getElementById('countdown');
+    const ctaButtons     = document.querySelectorAll('[data-cta="founding"]');
+
+    if (state.phase === 'bell_open') {
+      // Show "BELL IS OPEN" + minutes:seconds remaining in window.
+      const remain = Math.max(0, Math.floor(state.msUntilClose / 1000));
+      const mm = Math.floor(remain / 60);
+      const ss = remain % 60;
+      // Repurpose D/H to dashes, M/S to live minutes/seconds-in-window
+      const set = (id, v) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = v;
+      };
+      set('cd-d', '0');
+      set('cd-h', '0');
+      set('cd-m', pad(mm));
+      set('cd-s', pad(ss));
+      if (countdownLabel) {
+        countdownLabel.textContent = '— THE BELL IS OPEN · ' + pad(mm) + ':' + pad(ss) + ' remaining —';
+      }
+      ctaButtons.forEach(b => b.dataset.bellOpen = '1');
+      return;
+    }
+
+    const diff = state.msUntilBell;
     const s = Math.floor(diff / 1000);
     const days = Math.floor(s / 86400);
-    const hrs = Math.floor((s % 86400) / 3600);
+    const hrs  = Math.floor((s % 86400) / 3600);
     const mins = Math.floor((s % 3600) / 60);
     const secs = s % 60;
-
     const set = (id, v) => {
       const el = document.getElementById(id);
       if (el) el.textContent = pad(v);
@@ -60,6 +140,16 @@
     set('cd-h', hrs);
     set('cd-m', mins);
     set('cd-s', secs);
+    if (countdownLabel) {
+      countdownLabel.textContent = 'Friday · 23:23 JST';
+    }
+    ctaButtons.forEach(b => { delete b.dataset.bellOpen; });
+  }
+
+  function tick() {
+    const state = getBellState();
+    applyVisuals(state);
+    renderCountdown(state);
   }
 
   tick();
@@ -129,101 +219,169 @@
     return targetUtcMs;
   }
 
-  function fmtYen(n) {
-    return '¥ ' + Math.round(n).toLocaleString('en-US');
+  // Embedded fallback used when /api/cycle.json is unreachable.
+  // Keep this in sync with the file periodically so offline / 404
+  // visits still see a sensible state.
+  const FALLBACK_CYCLE = {
+    schema: 1,
+    cycle: 0,
+    phase: 'pre-launch',
+    baseline: {
+      grant_fund_jpy:       0,
+      patron_7d_jpy:        0,
+      inflow_7d_jpy:        0,
+      outflow_7d_jpy:       0,
+      cycle_cap_jpy:        0
+    },
+    rate_jpy_per_sec: { members: 0, patrons: 0 }
+  };
+
+  // Public state: window.__live.{cycle,baseline,rate_jpy_per_sec,updated}
+  window.__live = FALLBACK_CYCLE;
+
+  // Helper: write a JPY amount to every [data-live-jpy="<key>"] element.
+  // fx.js then formats USD vs JPY based on the element's class.
+  function setLiveAmount(key, jpyValue, prefix) {
+    document.querySelectorAll('[data-live-jpy="' + key + '"]').forEach(el => {
+      el.dataset.jpy = String(Math.round(jpyValue));
+      if (prefix !== undefined) el.dataset.fxPrefix = prefix;
+    });
   }
-  function fmtYenSigned(n, sign) {
-    return sign + ' ¥ ' + Math.round(Math.abs(n)).toLocaleString('en-US');
+  // Helper: write the cycle number to every [data-live-cycle] element.
+  function setLiveCycle(n) {
+    document.querySelectorAll('[data-live-cycle]').forEach(el => {
+      el.textContent = String(n);
+    });
   }
 
   const fundEls = {
-    cycleCap:           document.getElementById('fund-cycle-cap'),
-    total:              document.getElementById('fund-current-total'),
-    inflow:             document.getElementById('fund-inflow'),
-    patron:             document.getElementById('fund-patron'),
-    outflow:            document.getElementById('fund-outflow'),
-    reserve:            document.getElementById('fund-reserve'),
     tick:               document.getElementById('fund-tick'),
     label:              document.getElementById('fund-update-label'),
+    heroLabel:          document.getElementById('hero-live-label'),
     cycleProgressLabel: document.getElementById('fund-cycle-progress-label'),
-    cycleProgressFill:  document.getElementById('fund-cycle-fill-bar'),
-    heroLive:           document.getElementById('hero-live-pool'),
-    heroLivePatron:     document.getElementById('hero-live-patron')
+    cycleProgressFill:  document.getElementById('fund-cycle-fill-bar')
   };
-  const hasFundUI = Object.values(fundEls).some(Boolean);
+  const hasFundUI = document.querySelector('[data-live-jpy]')
+                  || Object.values(fundEls).some(Boolean);
+
+  let lastUpdateMs = Date.now();
+
+  function updateFund() {
+    if (!hasFundUI) return;
+    const live = window.__live || FALLBACK_CYCLE;
+    const base = live.baseline || FALLBACK_CYCLE.baseline;
+    const rate = live.rate_jpy_per_sec || FALLBACK_CYCLE.rate_jpy_per_sec;
+
+    // PRE-LAUNCH MODE
+    // When the operator declares phase="pre-launch" (cycle.json),
+    // freeze every numeric slot at the baseline (typically zero) and
+    // replace the status label with a launch-anticipation message.
+    // No simulator math runs; no fabricated activity shown.
+    if (live.phase === 'pre-launch') {
+      setLiveAmount('grant_fund_jpy', base.grant_fund_jpy);
+      setLiveAmount('patron_7d_jpy',  base.patron_7d_jpy,  '+');
+      setLiveAmount('inflow_7d_jpy',  base.inflow_7d_jpy,  '+');
+      setLiveAmount('outflow_7d_jpy', base.outflow_7d_jpy, '−');
+      setLiveAmount('cycle_cap_jpy',  base.cycle_cap_jpy);
+      setLiveAmount('reserve_jpy',    0);
+      if (window.__fxApply) window.__fxApply();
+      if (fundEls.cycleProgressFill) fundEls.cycleProgressFill.style.width = '0%';
+      if (fundEls.cycleProgressLabel) fundEls.cycleProgressLabel.textContent = 'Cycle 1 · Awaiting first ring';
+      lastUpdateMs = Date.now();
+      return;
+    }
+
+    const cycleStartMs = getCycleStartMs();
+    const elapsedSec = Math.max(0, (Date.now() - cycleStartMs) / 1000);
+    const cycleSec = 3 * 24 * 3600;  // Friday 23:23 → Monday 23:23 JST
+
+    // 微小ノイズで人間っぽさ
+    const memNoise = 0.85 + 0.15 * (Math.sin(elapsedSec / 11) * 0.5 + 0.5);
+    const patNoise = 0.7  + 0.3  * (Math.sin(elapsedSec / 17 + 1.3) * 0.5 + 0.5);
+    const memberAdd = rate.members * elapsedSec * memNoise;
+    const patronAdd = rate.patrons * elapsedSec * patNoise;
+
+    const grantFund = base.grant_fund_jpy + memberAdd + patronAdd;
+    const patron7d  = base.patron_7d_jpy  + patronAdd;
+    const inflow7d  = base.inflow_7d_jpy  + memberAdd + patronAdd;
+    const cycleCap  = Math.min(base.cycle_cap_jpy + memberAdd * 0.55 + patronAdd, 6000000);
+    const reserve   = Math.max(0, grantFund - cycleCap);
+
+    // Push values to every matching slot. fx.js handles USD/JPY rendering.
+    setLiveAmount('grant_fund_jpy', grantFund);
+    setLiveAmount('patron_7d_jpy',  patron7d,   '+');
+    setLiveAmount('inflow_7d_jpy',  inflow7d,   '+');
+    setLiveAmount('outflow_7d_jpy', base.outflow_7d_jpy, '−');
+    setLiveAmount('cycle_cap_jpy',  cycleCap);
+    setLiveAmount('reserve_jpy',    reserve);
+
+    // Trigger USD/JPY formatting on the freshly-updated data-jpy values.
+    if (window.__fxApply) window.__fxApply();
+
+    // Cycle progress bar (independent of fx)
+    const progressPct = Math.min(100, (elapsedSec / cycleSec) * 100);
+    if (fundEls.cycleProgressFill) {
+      fundEls.cycleProgressFill.style.width = progressPct.toFixed(2) + '%';
+    }
+    if (fundEls.cycleProgressLabel) {
+      const remain = Math.max(0, cycleSec - elapsedSec);
+      const d = Math.floor(remain / 86400);
+      const h = Math.floor((remain % 86400) / 3600);
+      const m = Math.floor((remain % 3600) / 60);
+      fundEls.cycleProgressLabel.textContent = progressPct.toFixed(0) + '% · ' + d + 'd ' + h + 'h ' + m + 'm';
+    }
+
+    lastUpdateMs = Date.now();
+  }
+
+  // "Updated Xs ago" label updates every second; numbers tick every 10s.
+  function updateLabel() {
+    const live = window.__live || FALLBACK_CYCLE;
+    const cycle = live.cycle || FALLBACK_CYCLE.cycle;
+    if (live.phase === 'pre-launch') {
+      const preMsg = '— Cycle 1 · Awaiting first ring · Friday 23:23 JST —';
+      if (fundEls.label)     fundEls.label.textContent     = preMsg;
+      if (fundEls.heroLabel) fundEls.heroLabel.textContent = preMsg;
+      return;
+    }
+    const ago = Math.floor((Date.now() - lastUpdateMs) / 1000);
+    let txt;
+    if (ago < 3)         txt = 'just now';
+    else if (ago < 60)   txt = ago + 's ago';
+    else if (ago < 3600) txt = Math.floor(ago / 60) + 'm ago';
+    else                 txt = 'a while ago';
+    const liveMsg = '— Live · Cycle ' + cycle + ' · Updated ' + txt + ' —';
+    if (fundEls.label)     fundEls.label.textContent     = liveMsg;
+    if (fundEls.heroLabel) fundEls.heroLabel.textContent = '— Live · Cycle ' + cycle + ' · Grant Fund —';
+  }
+
+  function fetchLiveState() {
+    if (!hasFundUI) return;
+    fetch('/api/cycle.json?cb=' + Date.now().toString().slice(0, 8))
+      .then(r => r.ok ? r.json() : Promise.reject('not ok'))
+      .then(data => {
+        if (!data || !data.baseline) throw new Error('bad payload');
+        window.__live = data;
+        setLiveCycle(data.cycle);
+        updateFund();
+        updateLabel();
+        console.log('%c[live] v20260514d · Cycle ' + data.cycle
+                    + ' · baseline ¥' + data.baseline.grant_fund_jpy.toLocaleString()
+                    + ' · updated ' + data.updated,
+                    'color:#b8862d;font-weight:bold');
+      })
+      .catch(err => {
+        // Fall back to embedded values — UI still renders.
+        setLiveCycle(FALLBACK_CYCLE.cycle);
+        updateFund();
+        updateLabel();
+        console.warn('[live] cycle.json unavailable, using fallback', err);
+      });
+  }
 
   if (hasFundUI) {
-    let lastUpdateMs = Date.now();
-
-    function updateFund() {
-      const cycleStartMs = getCycleStartMs();
-      const elapsedSec = Math.max(0, (Date.now() - cycleStartMs) / 1000);
-      const cycleSec = 3 * 24 * 3600;  // Friday 23:23 → Monday 23:23 JST
-
-      // 基準値(cycle 47 想定の見え方)
-      const baseTotal      = 5872400;
-      const baseInflow7d   = 857400;
-      const basePatron7d   = 124800;
-      const baseOutflow7d  = 1000000;
-      const baseCycleCap   = 3248000;
-
-      // 流入速度 (¥/sec)
-      const memberPerSec = 1.42;
-      const patronPerSec = 0.38;
-
-      // 微小ノイズで人間っぽさ
-      const memNoise = 0.85 + 0.15 * (Math.sin(elapsedSec / 11) * 0.5 + 0.5);
-      const patNoise = 0.7  + 0.3  * (Math.sin(elapsedSec / 17 + 1.3) * 0.5 + 0.5);
-      const memberAdd = memberPerSec * elapsedSec * memNoise;
-      const patronAdd = patronPerSec * elapsedSec * patNoise;
-
-      const total     = baseTotal + memberAdd + patronAdd;
-      const cycleCap  = Math.min(baseCycleCap + memberAdd * 0.55 + patronAdd, 6000000);
-      const inflow7d  = baseInflow7d + memberAdd;
-      const patron7d  = basePatron7d + patronAdd;
-      const reserve   = Math.max(0, total - cycleCap);
-
-      if (fundEls.total)    fundEls.total.textContent    = fmtYen(total);
-      if (fundEls.cycleCap) fundEls.cycleCap.textContent = fmtYen(cycleCap);
-      if (fundEls.inflow)   fundEls.inflow.textContent   = fmtYenSigned(inflow7d, '+');
-      if (fundEls.patron)   fundEls.patron.textContent   = fmtYenSigned(patron7d, '+');
-      if (fundEls.outflow)  fundEls.outflow.textContent  = fmtYenSigned(baseOutflow7d, '−');
-      if (fundEls.reserve)  fundEls.reserve.textContent  = fmtYen(reserve);
-      if (fundEls.heroLive) fundEls.heroLive.textContent = fmtYen(total);
-      if (fundEls.heroLivePatron) fundEls.heroLivePatron.textContent = fmtYenSigned(patron7d, '+');
-
-      const progressPct = Math.min(100, (elapsedSec / cycleSec) * 100);
-      if (fundEls.cycleProgressFill) {
-        fundEls.cycleProgressFill.style.width = progressPct.toFixed(2) + '%';
-      }
-      if (fundEls.cycleProgressLabel) {
-        const remain = Math.max(0, cycleSec - elapsedSec);
-        const d = Math.floor(remain / 86400);
-        const h = Math.floor((remain % 86400) / 3600);
-        const m = Math.floor((remain % 3600) / 60);
-        fundEls.cycleProgressLabel.textContent = progressPct.toFixed(0) + '% · ' + d + 'd ' + h + 'h ' + m + 'm';
-      }
-
-      lastUpdateMs = Date.now();
-    }
-
-    // 「Updated Xs ago」ラベルだけ毎秒更新(数字は動かさない・チカチカしない)
-    function updateLabel() {
-      if (!fundEls.label) return;
-      const ago = Math.floor((Date.now() - lastUpdateMs) / 1000);
-      let txt;
-      if (ago < 3)        txt = 'just now';
-      else if (ago < 60)  txt = ago + 's ago';
-      else if (ago < 3600) txt = Math.floor(ago / 60) + 'm ago';
-      else                txt = 'a while ago';
-      fundEls.label.textContent = '— Live · Cycle 47 · Updated ' + txt + ' —';
-    }
-
-    updateFund();
-    updateLabel();
-    // 数字は10秒ごと(見てて鬱陶しくない頻度)
+    fetchLiveState();
     setInterval(updateFund, 10000);
-    // ラベルだけは毎秒更新(経過時間表示)
     setInterval(updateLabel, 1000);
   }
 

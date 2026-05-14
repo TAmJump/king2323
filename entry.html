@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en" data-display-lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Founding Bell Entry · KINGMAKER 23:23</title>
+<meta name="description" content="Mission Entry form for KINGMAKER 23:23 Founding Bell.">
+<link rel="stylesheet" href="css/main.css" />
+<style>
+  .entry-page { max-width: 760px; margin: 0 auto; padding: 64px var(--pad) 120px; }
+  .entry-page h1 { font-family: var(--f-display); font-size: clamp(32px, 4.5vw, 52px); color: var(--bone); margin-bottom: 8px; letter-spacing: -0.01em; }
+  .entry-page .entry-sub { font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.3em; color: var(--gold); text-transform: uppercase; margin-bottom: 32px; }
+  .entry-page .entry-intro { color: var(--ash); line-height: 1.85; font-size: 15px; margin-bottom: 48px; }
+  .entry-page .entry-intro.jp { font-family: var(--f-jp); font-size: 13px; color: var(--dust); }
+  .entry-page form { display: flex; flex-direction: column; gap: 24px; }
+  .entry-page label { display: flex; flex-direction: column; font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.2em; color: var(--gold-deep); text-transform: uppercase; gap: 8px; }
+  .entry-page label .hint { font-family: var(--f-jp); font-size: 11px; color: var(--dust); text-transform: none; letter-spacing: 0.05em; margin-top: 2px; }
+  .entry-page input[type=text],
+  .entry-page input[type=email],
+  .entry-page input[type=url],
+  .entry-page textarea {
+    background: var(--paper-2);
+    border: 1px solid var(--line);
+    color: var(--bone);
+    font-family: var(--f-serif);
+    font-size: 15px;
+    padding: 14px 16px;
+    line-height: 1.5;
+    transition: border-color 0.2s ease;
+  }
+  .entry-page input:focus, .entry-page textarea:focus {
+    outline: none;
+    border-color: var(--gold);
+  }
+  .entry-page textarea {
+    min-height: 140px;
+    resize: vertical;
+    font-family: inherit;
+  }
+  .entry-page .agree-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-family: var(--f-serif);
+    font-size: 13px;
+    color: var(--ash);
+    text-transform: none;
+    letter-spacing: 0.01em;
+    line-height: 1.7;
+  }
+  .entry-page .agree-row input[type=checkbox] { margin-top: 4px; }
+  .entry-page .agree-row a { color: var(--gold); }
+  .entry-page button[type=submit] {
+    margin-top: 16px;
+    padding: 16px 32px;
+    background: linear-gradient(180deg, var(--gold-bright), var(--gold-deep));
+    color: var(--black);
+    font-family: var(--f-display);
+    font-size: 14px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.15s ease;
+  }
+  .entry-page button[type=submit]:hover { transform: translateY(-1px); }
+  .entry-page .entry-note { margin-top: 40px; padding: 18px 22px; background: var(--paper-2); border-left: 2px solid var(--gold); font-size: 13px; color: var(--ash); line-height: 1.8; }
+  .entry-page .entry-note.jp { font-family: var(--f-jp); font-size: 12px; color: var(--dust); }
+  .entry-page .legal-back { display: inline-block; margin-top: 56px; font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.3em; color: var(--gold); text-decoration: none; border-bottom: 1px solid var(--gold-deep); padding-bottom: 4px; }
+</style>
+</head>
+<body>
+
+<header class="site-header notranslate" translate="no" style="display:flex; justify-content:space-between; align-items:center; padding:18px 24px; border-bottom:1px solid var(--line);">
+  <a href="index.html" class="brand-link" style="display:flex; align-items:center; gap:10px; text-decoration:none;">
+    <span class="brand-mark" style="font-size:18px; color:var(--gold);">♛</span>
+    <span class="brand-name" style="font-family:var(--f-display); font-size:14px; letter-spacing:0.18em; color:var(--ink);">KINGMAKER</span>
+    <span class="brand-time" style="font-family:var(--f-mono); font-size:11px; letter-spacing:0.18em; color:var(--gold);">23:23</span>
+  </a>
+  <div class="lang-picker notranslate" translate="no"></div>
+  <div id="google_translate_element" style="position:fixed;bottom:0;right:0;width:1px;height:1px;opacity:0;pointer-events:none;overflow:hidden;z-index:-1;"></div>
+</header>
+
+<main class="entry-page notranslate" translate="no">
+  <h1>Founding Bell Entry</h1>
+  <p class="entry-sub">— Mission Submission · Cycle 1 —</p>
+
+  <p class="entry-intro">
+    Thank you for ringing the Founding Bell. To complete your Mission Entry, submit the form below with the email address you used at Square and your Square receipt identifier. Your Mission text and the receipt will be matched. Mismatched entries cannot be processed.
+  </p>
+  <p class="entry-intro jp">
+    Founding Bell へのご参加ありがとうございます。Square 決済時に使用したメールアドレスと、Square 領収書の情報をご入力ください。Mission 内容と決済記録を照合します。照合できない場合、Mission Entry は処理できません。
+  </p>
+
+  <!--
+    BEFORE GOING LIVE:
+    Replace action="https://formspree.io/f/REPLACE_WITH_YOUR_FORMSPREE_ID"
+    with your real Formspree form endpoint (or Google Form action).
+    Formspree free tier supports up to 50 submissions/month — fine for opening cycle.
+  -->
+  <form action="https://formspree.io/f/REPLACE_WITH_YOUR_FORMSPREE_ID" method="POST">
+
+    <label>
+      Email used for Square payment
+      <span class="hint">Square 決済時に使用したメールアドレス</span>
+      <input type="email" name="payment_email" required autocomplete="email" placeholder="you@example.com">
+    </label>
+
+    <label>
+      Square Receipt ID or payment date/time (JST)
+      <span class="hint">Square 領収書 ID、または決済日時(JST)</span>
+      <input type="text" name="receipt_id" required placeholder="e.g. 2026-05-15 23:24 JST">
+    </label>
+
+    <label>
+      Mission name
+      <span class="hint">Mission 名(短く、一行で)</span>
+      <input type="text" name="mission_name" required maxlength="80" placeholder="What you want to do, in one line">
+    </label>
+
+    <label>
+      Country
+      <span class="hint">所在国</span>
+      <input type="text" name="country" required placeholder="Japan">
+    </label>
+
+    <label>
+      Mission summary
+      <span class="hint">Mission の内容(具体的に。Grant を何にどう使うか)</span>
+      <textarea name="mission_summary" required maxlength="600" placeholder="Describe your Mission. What will you do, for whom, and why does it need to happen?"></textarea>
+    </label>
+
+    <label>
+      Optional — your website or SNS
+      <span class="hint">任意 — Web サイトまたは SNS</span>
+      <input type="url" name="sns" placeholder="https://...">
+    </label>
+
+    <label class="agree-row">
+      <input type="checkbox" name="agree_rules" required>
+      <span>
+        I have read and agree to the <a href="terms.html">Terms</a>, <a href="rules.html">Founding Bell Rules</a>, and <a href="risk.html">Important Notices</a>. I understand that Bell Entry has no cash value and that Grant payment is subject to review and is not guaranteed.
+      </span>
+    </label>
+
+    <button type="submit">Submit Mission Entry</button>
+  </form>
+
+  <div class="entry-note">
+    Bell Entry is a participation record. It is not currency, not crypto, not stored value, not investment product, and not exchangeable for cash. Grant disbursement requires identity verification, Mission verification, AML review, legal review, and Grant Fund availability. Selection or appearance on any list does not entitle a participant to a Grant.
+  </div>
+  <div class="entry-note jp">
+    Bell Entry は参加記録です。通貨・暗号資産・前払式支払手段・投資商品ではなく、換金できません。Grant 支給は本人確認・Mission 確認・AML 審査・法令確認・Grant Fund 残高確認を経た場合に限り、運営者の判断で行われます。選出・公開一覧への掲載自体は Grant の権利を意味しません。
+  </div>
+
+  <a href="index.html" class="legal-back">← KINGMAKER</a>
+</main>
+
+<script src="js/i18n.js?v=20260514d"></script>
+</body>
+</html>

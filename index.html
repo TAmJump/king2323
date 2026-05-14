@@ -1431,6 +1431,52 @@
   .edge-divider { display: none; }
 }
 
+/* ============== OPENING NOTICE (Founding Bell) ============== */
+.opening-notice {
+  padding: 56px var(--pad);
+  background: linear-gradient(180deg, rgba(184,134,45,0.10), rgba(15,14,12,0.05));
+  border-top: 1px solid rgba(184,134,45,0.30);
+  border-bottom: 1px solid rgba(184,134,45,0.30);
+}
+.opening-notice .notice-inner {
+  max-width: 980px;
+  margin: 0 auto;
+  text-align: center;
+}
+.opening-notice .notice-kicker {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.35em;
+  color: var(--gold);
+  margin-bottom: 16px;
+  text-transform: uppercase;
+}
+.opening-notice h2 {
+  font-family: var(--f-display);
+  font-size: clamp(28px, 4vw, 50px);
+  color: var(--bone);
+  margin-bottom: 22px;
+  letter-spacing: -0.01em;
+}
+.opening-notice p {
+  color: var(--ash);
+  line-height: 1.85;
+  font-size: 15px;
+  max-width: 760px;
+  margin: 0 auto;
+}
+.opening-notice p.jp {
+  margin-top: 16px;
+  font-family: var(--f-jp);
+  font-size: 13px;
+  color: var(--dust);
+  opacity: 0.92;
+}
+.opening-notice strong {
+  color: var(--gold-deep);
+  font-weight: 600;
+}
+
 /* ============== LIVE POOL ribbon (Hero下) ============== */
 .live-pool-ribbon {
   background: var(--paper-2);
@@ -1492,6 +1538,14 @@
   font-weight: 600;
   color: var(--gold);
   letter-spacing: 0.02em;
+}
+.live-pool-amount-jpy,
+.live-pool-patron-jpy {
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--ash);
+  margin-top: 1px;
 }
 .live-pool-sep {
   width: 1px;
@@ -1797,12 +1851,7 @@ body.ritual-locked { overflow: hidden; }
 .manifesto-jp,
 .money-statement-jp,
 section .jp:not(.ritual-source *),
-header.hero .jp,
-/* Safety net: catches any inline-styled JP element using --f-jp font
-   variable without a dedicated class. Added 2026-05-12 after finding
-   such an element in verify.html closing section. */
-section p[style*="--f-jp"],
-section div[style*="--f-jp"]:not(.notranslate) {
+header.hero .jp {
   display: none !important;
 }
 /* Inside ritual modal source / live modal body, .jp subtitles are
@@ -1814,9 +1863,630 @@ html:not([data-display-lang="ja"]) .ritual-source .jp,
 html:not([data-display-lang="ja"]) #ritualBody .jp {
   display: none !important;
 }
+/* SAFETY NET (v1.3): catch orphan elements that use inline
+   `font-family: var(--f-jp)` instead of a JP-class. Without this,
+   any forgotten class-less JP element survives all hide rules above.
+   Authors should always prefer a dedicated class; this is the net. */
+html:not([data-display-lang="ja"]) p[style*="--f-jp"],
+html:not([data-display-lang="ja"]) div[style*="--f-jp"]:not(.notranslate),
+html:not([data-display-lang="ja"]) span[style*="--f-jp"]:not(.notranslate) {
+  display: none !important;
+}
+/* ============================================================
+   MYTH SECTION · LEGENDS · AUDIO TOGGLE · HERO VIDEO
+   (v20260514b)
+   ============================================================ */
+
+/* Hero video — replace static image, same frame */
+.gorilla-frame .hero-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: inherit;
+  background: var(--black);
+}
+
+/* ============== THE 23 ENIGMA · MYTH ============== */
+.myth-section {
+  background: var(--black);
+  padding: 100px 0 120px;
+  position: relative;
+  overflow: hidden;
+}
+.myth-section::before {
+  /* Faint giant "23:23" backdrop */
+  content: '23:23';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: var(--f-display);
+  font-size: clamp(280px, 40vw, 720px);
+  color: rgba(184, 134, 45, 0.025);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  pointer-events: none;
+  user-select: none;
+  white-space: nowrap;
+  z-index: 0;
+}
+.myth-intro {
+  max-width: 880px;
+  margin: 0 auto 72px;
+  padding: 0 var(--pad);
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+.myth-headline {
+  font-family: var(--f-display);
+  font-size: clamp(40px, 6.5vw, 84px);
+  color: var(--bone);
+  line-height: 1.04;
+  margin: 18px 0 28px;
+  letter-spacing: -0.02em;
+}
+.myth-headline .num {
+  color: var(--gold-bright);
+  font-style: normal;
+  letter-spacing: 0.01em;
+}
+.myth-headline em {
+  font-style: italic;
+  font-family: var(--f-editorial);
+  color: var(--gold-deep);
+  font-weight: 400;
+}
+.myth-lede {
+  color: var(--ash);
+  font-size: clamp(15px, 1.5vw, 18px);
+  line-height: 1.85;
+  max-width: 620px;
+  margin: 0 auto;
+}
+.myth-lede strong {
+  color: var(--gold);
+  font-weight: 500;
+}
+
+.myth-strip {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 var(--pad);
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 28px;
+  position: relative;
+  z-index: 1;
+}
+@media (max-width: 1100px) { .myth-strip { grid-template-columns: repeat(2, 1fr); gap: 40px; } }
+@media (max-width: 640px)  { .myth-strip { grid-template-columns: 1fr; gap: 52px; } }
+
+.myth-panel {
+  position: relative;
+  transition: transform 0.4s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.myth-panel:hover { transform: translateY(-6px); }
+
+.myth-frame {
+  position: relative;
+  background: var(--paper);
+  border: 1px solid rgba(184, 134, 45, 0.18);
+  overflow: hidden;
+  box-shadow:
+    0 1px 0 rgba(184, 134, 45, 0.10),
+    0 20px 60px rgba(0, 0, 0, 0.55);
+  aspect-ratio: 2 / 3;
+}
+.myth-frame::before, .myth-frame::after {
+  content: '';
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border: 1px solid var(--gold);
+  pointer-events: none;
+  z-index: 2;
+}
+.myth-frame::before { top: 6px; left: 6px; border-right: none; border-bottom: none; }
+.myth-frame::after  { bottom: 6px; right: 6px; border-left: none; border-top: none; }
+
+.myth-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.6s ease;
+}
+.myth-panel:hover .myth-frame img { transform: scale(1.03); }
+
+.myth-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-top: 14px;
+  padding: 0 4px;
+}
+.myth-tag {
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  color: var(--gold);
+  text-transform: uppercase;
+}
+.myth-title-en {
+  font-family: var(--f-editorial);
+  font-style: italic;
+  font-size: 13px;
+  color: var(--ash);
+}
+
+.myth-quote {
+  text-align: center;
+  margin: 80px auto 0;
+  padding: 0 var(--pad);
+  font-family: var(--f-editorial);
+  font-size: clamp(22px, 2.8vw, 36px);
+  color: var(--gold-deep);
+  line-height: 1.5;
+  font-style: italic;
+  position: relative;
+  z-index: 1;
+  max-width: 760px;
+}
+.myth-quote em {
+  color: var(--gold-bright);
+  font-style: italic;
+}
+.myth-q-mark {
+  font-family: var(--f-display);
+  font-size: 2em;
+  color: var(--gold);
+  opacity: 0.4;
+  line-height: 0;
+  display: inline-block;
+  transform: translateY(0.3em);
+  margin-right: 0.1em;
+}
+.myth-q-mark.right { margin-right: 0; margin-left: 0.1em; }
+
+/* ============== LEGENDS OF THE WORLD ============== */
+.legends-section {
+  background: linear-gradient(180deg, var(--paper) 0%, var(--paper-2) 100%);
+  padding: 100px 0 120px;
+  position: relative;
+}
+.legends-section .section-head {
+  text-align: center;
+  margin-bottom: 64px;
+}
+.legends-headline {
+  font-family: var(--f-display);
+  font-size: clamp(36px, 5vw, 64px);
+  color: var(--ink);
+  line-height: 1.1;
+  margin: 18px 0 22px;
+  letter-spacing: -0.015em;
+}
+.legends-headline em {
+  font-family: var(--f-editorial);
+  font-style: italic;
+  color: var(--gold-deep);
+  font-weight: 400;
+}
+.legends-lede {
+  color: var(--ash);
+  font-size: 15px;
+  line-height: 1.85;
+  max-width: 600px;
+  margin: 0 auto;
+}
+.legends-lede em {
+  font-family: var(--f-editorial);
+  font-style: italic;
+  color: var(--gold);
+}
+
+.legends-grid {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 var(--pad);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+@media (max-width: 980px) { .legends-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 560px) { .legends-grid { grid-template-columns: 1fr; } }
+
+.legend-card {
+  appearance: none;
+  -webkit-appearance: none;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  position: relative;
+  display: block;
+  transition: transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1);
+  outline-offset: 4px;
+}
+.legend-card.wide { grid-column: span 1; }
+@media (min-width: 981px) {
+  .legend-card.wide { grid-column: span 1; }
+  /* the 7th card wraps naturally onto its own row; center it */
+  .legends-grid > .legend-card:nth-child(7) {
+    grid-column: 2 / 3;
+  }
+}
+
+.legend-card img {
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  display: block;
+  background: var(--black);
+  border: 1px solid rgba(184, 134, 45, 0.20);
+  box-shadow:
+    0 1px 0 rgba(184, 134, 45, 0.08),
+    0 14px 38px rgba(0, 0, 0, 0.18);
+  transition: box-shadow 0.35s ease, transform 0.5s ease;
+}
+.legend-card:hover { transform: translateY(-4px); }
+.legend-card:hover img {
+  box-shadow:
+    0 1px 0 var(--gold),
+    0 22px 50px rgba(0, 0, 0, 0.28);
+}
+
+.legend-cap {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 12px;
+  align-items: baseline;
+  padding: 14px 6px 0;
+}
+.legend-num {
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  color: var(--gold);
+  font-weight: 600;
+}
+.legend-where {
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: 0.25em;
+  color: var(--dust);
+  text-transform: uppercase;
+}
+.legend-name {
+  font-family: var(--f-editorial);
+  font-style: italic;
+  font-size: 14px;
+  color: var(--ink);
+  text-align: right;
+}
+
+.legends-foot {
+  text-align: center;
+  margin-top: 72px;
+  font-family: var(--f-editorial);
+  font-style: italic;
+  font-size: clamp(17px, 2vw, 22px);
+  color: var(--gold-deep);
+  line-height: 1.6;
+}
+.legends-foot em { color: var(--ink); }
+.legends-foot-sub {
+  display: block;
+  margin-top: 16px;
+  font-family: var(--f-mono);
+  font-style: normal;
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  color: var(--dust);
+  text-transform: uppercase;
+}
+
+/* ============== LEGEND LIGHTBOX ============== */
+.legend-lightbox {
+  position: fixed;
+  inset: 0;
+  background: rgba(8, 7, 6, 0.95);
+  z-index: 9000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+.legend-lightbox.open { opacity: 1; visibility: visible; }
+.legend-lightbox img {
+  max-width: min(85vw, 720px);
+  max-height: 90vh;
+  width: auto;
+  height: auto;
+  border: 1px solid rgba(184, 134, 45, 0.5);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.7);
+  display: block;
+}
+.legend-lightbox-close {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  width: 44px;
+  height: 44px;
+  border: 1px solid rgba(184, 134, 45, 0.4);
+  background: rgba(8, 7, 6, 0.7);
+  color: var(--gold);
+  font-size: 28px;
+  cursor: pointer;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  transition: all 0.2s ease;
+  font-family: var(--f-display);
+}
+.legend-lightbox-close:hover {
+  background: var(--gold);
+  color: var(--black);
+  transform: scale(1.05);
+}
+
+/* ============== AMBIENT AUDIO TOGGLE (corner) ============== */
+.km-audio-toggle {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 800;
+  background: rgba(8, 7, 6, 0.85);
+  border: 1px solid rgba(184, 134, 45, 0.45);
+  color: var(--gold);
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  padding: 12px 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-radius: 999px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: all 0.25s ease;
+  text-transform: uppercase;
+}
+.km-audio-toggle:hover {
+  background: rgba(8, 7, 6, 0.95);
+  border-color: var(--gold);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.45);
+}
+.km-audio-icon {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 14px;
+}
+.km-audio-icon .km-audio-bar {
+  width: 2px;
+  background: var(--gold);
+  border-radius: 1px;
+  height: 30%;
+  transition: height 0.2s ease;
+}
+.km-audio-toggle[data-state="on"] .km-audio-bar { animation: km-eq 1.2s ease-in-out infinite; }
+.km-audio-toggle[data-state="on"] .km-audio-bar:nth-child(1) { animation-delay: -0.4s; }
+.km-audio-toggle[data-state="on"] .km-audio-bar:nth-child(2) { animation-delay: -0.8s; }
+.km-audio-toggle[data-state="on"] .km-audio-bar:nth-child(3) { animation-delay: -0.2s; }
+.km-audio-toggle[data-state="on"] .km-audio-bar:nth-child(4) { animation-delay: -0.6s; }
+@keyframes km-eq {
+  0%, 100% { height: 25%; }
+  50%      { height: 95%; }
+}
+.km-audio-toggle[data-state="off"] .km-audio-bar:nth-child(1) { height: 30%; }
+.km-audio-toggle[data-state="off"] .km-audio-bar:nth-child(2) { height: 55%; }
+.km-audio-toggle[data-state="off"] .km-audio-bar:nth-child(3) { height: 35%; }
+.km-audio-toggle[data-state="off"] .km-audio-bar:nth-child(4) { height: 45%; }
+@media (max-width: 560px) {
+  .km-audio-toggle { bottom: 16px; right: 16px; padding: 10px 14px; font-size: 9px; }
+  .km-audio-toggle .km-audio-label { display: none; }
+}
+
+/* ============================================================
+   THE RITUAL — ritual visuals tied to bell phase (v20260514d)
+   Driven by document.documentElement.dataset.bellPhase set by main.js
+   States: far (default) | last_minute | open
+   ============================================================ */
+
+/* ---------- Breath rings around the gorilla frame ---------- */
+.gorilla-frame { position: relative; }
+.breath-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid rgba(184, 134, 45, 0.55);
+  pointer-events: none;
+  opacity: 0;
+  inset: 0;
+  z-index: 1;
+  animation: km-breath 5.6s ease-out infinite;
+}
+.breath-ring-2 { animation-delay: 1.9s; }
+.breath-ring-3 { animation-delay: 3.7s; }
+@keyframes km-breath {
+  0%   { transform: scale(0.92); opacity: 0; border-color: rgba(184,134,45,0.7); }
+  20%  { opacity: 0.7; }
+  100% { transform: scale(1.42); opacity: 0; border-color: rgba(184,134,45,0); }
+}
+/* During last-minute phase, breath accelerates and intensifies */
+[data-bell-phase="last_minute"] .breath-ring   { animation-duration: 1.8s; border-color: rgba(212, 175, 55, 0.85); }
+[data-bell-phase="last_minute"] .breath-ring-2 { animation-delay: 0.6s; }
+[data-bell-phase="last_minute"] .breath-ring-3 { animation-delay: 1.2s; }
+/* During open phase, rings dilate huge and slow */
+[data-bell-phase="open"] .breath-ring   { animation-duration: 3.2s; border-color: rgba(255, 215, 100, 0.85); }
+[data-bell-phase="open"] .breath-ring-2 { animation-delay: 1.06s; }
+[data-bell-phase="open"] .breath-ring-3 { animation-delay: 2.13s; }
+@media (prefers-reduced-motion: reduce) {
+  .breath-ring { animation: none; opacity: 0.18; }
+}
+
+/* ---------- Last-minute pulse (the whole page subtly breathes) ---------- */
+[data-bell-phase="last_minute"] body {
+  animation: km-page-pulse 1.2s ease-in-out infinite;
+}
+@keyframes km-page-pulse {
+  0%, 100% { background: var(--paper); }
+  50%      { background: #fbf3df; }   /* warmer cream, ~0.35 hue tint */
+}
+[data-bell-phase="last_minute"] .countdown-time .num {
+  color: var(--gold-bright);
+  text-shadow: 0 0 18px rgba(212, 175, 55, 0.45);
+  animation: km-num-pulse 1s ease-in-out infinite;
+}
+@keyframes km-num-pulse {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.04); }
+}
+[data-bell-phase="last_minute"] #cd-target {
+  color: var(--gold-bright);
+  letter-spacing: 0.18em;
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-bell-phase="last_minute"] body { animation: none; }
+  [data-bell-phase="last_minute"] .countdown-time .num { animation: none; }
+}
+
+/* ---------- BELL STRIKE flash (fires at 23:23 sharp) ---------- */
+.bell-strike-flash {
+  position: fixed;
+  inset: 0;
+  z-index: 9500;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(212, 175, 55, 0.92) 0%,
+    rgba(184, 134, 45, 0.8) 30%,
+    rgba(15, 14, 12, 0.95) 80%
+  );
+}
+.bell-strike-flash.strike {
+  animation: km-bell-strike 2.2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+@keyframes km-bell-strike {
+  0%   { opacity: 0;   transform: scale(0.85); }
+  10%  { opacity: 1;   transform: scale(1.02); }   /* flash */
+  18%  { opacity: 0.9; transform: scale(1); }      /* settle */
+  78%  { opacity: 0.9; transform: scale(1); }      /* hold message */
+  100% { opacity: 0;   transform: scale(1.04); }   /* fade out */
+}
+.bell-strike-text {
+  text-align: center;
+  font-family: var(--f-display);
+  color: var(--black);
+  text-shadow: 0 2px 12px rgba(255, 215, 100, 0.6);
+  user-select: none;
+}
+.bell-strike-line-1, .bell-strike-line-2 {
+  display: block;
+  font-size: clamp(64px, 12vw, 180px);
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+}
+.bell-strike-line-2 {
+  color: var(--black);
+  font-style: italic;
+  font-family: var(--f-editorial);
+  font-weight: 700;
+}
+.bell-strike-sub {
+  display: block;
+  margin-top: 24px;
+  font-family: var(--f-mono);
+  font-size: clamp(11px, 1.2vw, 14px);
+  letter-spacing: 0.4em;
+  color: var(--black);
+  font-style: normal;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+/* ---------- CTA swap: default ↔ "ENTER THE 5 MINUTES" ---------- */
+.km-cta { position: relative; overflow: hidden; }
+.km-cta-default,
+.km-cta-open {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  transition: opacity 0.35s ease, transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.km-cta-default { opacity: 1; transform: translateY(0); }
+.km-cta-open {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, calc(-50% + 14px));
+  opacity: 0;
+  white-space: nowrap;
+  font-family: var(--f-display);
+  font-weight: 700;
+  letter-spacing: 0.18em;
+}
+.km-cta-open-arrow { font-size: 1.3em; }
+.km-cta[data-bell-open="1"] .km-cta-default {
+  opacity: 0;
+  transform: translateY(-14px);
+}
+.km-cta[data-bell-open="1"] .km-cta-open {
+  opacity: 1;
+  transform: translate(-50%, -50%);
+}
+/* CTA itself pulses during open window */
+[data-bell-phase="open"] .km-cta {
+  animation: km-cta-pulse 1.4s ease-in-out infinite;
+}
+@keyframes km-cta-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.6); }
+  50%      { box-shadow: 0 0 0 14px rgba(212, 175, 55, 0); }
+}
+
+/* ---------- Open-phase global tone (page gets warmer) ---------- */
+[data-bell-phase="open"] body {
+  background: linear-gradient(180deg, #fff3d2 0%, var(--paper) 60%);
+}
+[data-bell-phase="open"] .countdown-time .num {
+  color: var(--gold-bright);
+  text-shadow: 0 0 24px rgba(255, 215, 100, 0.6);
+}
+[data-bell-phase="open"] #cd-target {
+  color: var(--gold-bright);
+  font-weight: 700;
+  letter-spacing: 0.16em;
+}
+
 </style>
 </head>
 <body>
+
+<!-- ============== BELL STRIKE FLASH ============== -->
+<!-- Fires once at 23:23 JST every Friday, plus when bell phase enters open. -->
+<div id="bell-strike-flash" class="bell-strike-flash notranslate" translate="no" aria-hidden="true">
+  <div class="bell-strike-text">
+    <span class="bell-strike-line-1">THE BELL</span>
+    <span class="bell-strike-line-2">IS OPEN.</span>
+    <span class="bell-strike-sub">— 23:23 · 五分間の儀式 · FIVE MINUTES —</span>
+  </div>
+</div>
 
 <!-- ============== NAV ============== -->
 <nav class="nav">
@@ -1834,24 +2504,117 @@ html:not([data-display-lang="ja"]) #ritualBody .jp {
   </button>
 </nav>
 
-<!-- Fullscreen drawer — sibling of .nav, NOT inside it (avoids backdrop-filter containing-block trap) -->
-<!-- Menu items:
-     - Brand vocabulary (Bell, Bell Nature, Crown Slot, Royal Duty, THE TRIAL, 23:23): translate="no" — never translated
-     - General vocabulary (Money, Verify, Doctrine, Stories, Begin): data-i18n key — translated via i18n.js dictionary
--->
-<ul class="nav-menu">
-  <li><a href="#why" class="notranslate" translate="no">23:23</a></li>
-  <li><a href="#trial" class="notranslate" translate="no">THE TRIAL</a></li>
-  <li><a href="#bell" class="notranslate" translate="no">Bell</a></li>
-  <li><a href="#resonance" class="notranslate" translate="no">Bell Nature</a></li>
-  <li><a href="money.html" data-i18n="menu.money">Money</a></li>
-  <li><a href="verify.html" data-i18n="menu.verify">Verify</a></li>
-  <li><a href="#three" class="notranslate" translate="no">Crown Slot</a></li>
-  <li><a href="#duty" class="notranslate" translate="no">Royal Duty</a></li>
-  <li><a href="#laws" data-i18n="menu.doctrine">Doctrine</a></li>
-  <li><a href="#stories" data-i18n="menu.stories">Stories</a></li>
-  <li class="nav-menu-cta"><a href="#apply" data-i18n="menu.begin">Begin</a></li>
-</ul>
+<!-- Fullscreen drawer — chirashi (flyer) layout. Each section is a chapter entry. -->
+<div class="nav-menu" role="navigation" aria-label="Site sections">
+  <!-- Top bar: bell stripe + close hint -->
+  <div class="nav-stripe notranslate" translate="no">
+    <span class="nav-stripe-dot"></span>
+    <span class="nav-stripe-text">— KINGMAKER 23:23 · INDEX OF THE BELL —</span>
+    <span class="nav-stripe-dot"></span>
+  </div>
+
+  <div class="nav-grid">
+    <!-- LEFT column: section lists, chirashi style -->
+    <div class="nav-col nav-col-main">
+
+      <div class="nav-block">
+        <div class="nav-block-meta notranslate" translate="no">
+          <span class="nav-block-num">§ 01</span>
+          <span class="nav-block-where">The Hour</span>
+        </div>
+        <ul class="nav-list">
+          <li><a href="#why" class="notranslate" translate="no"><span class="num">01</span><span class="t">23:23</span><span class="jp">— その時刻について。</span></a></li>
+          <li><a href="#myth" class="notranslate" translate="no"><span class="num">02</span><span class="t">The 23 Enigma</span><span class="jp">— 23と23の、間に開く5分間。</span></a></li>
+        </ul>
+      </div>
+
+      <div class="nav-block">
+        <div class="nav-block-meta notranslate" translate="no">
+          <span class="nav-block-num">§ 02</span>
+          <span class="nav-block-where">The Ritual</span>
+        </div>
+        <ul class="nav-list">
+          <li><a href="#trial" class="notranslate" translate="no"><span class="num">03</span><span class="t">THE TRIAL</span><span class="jp">— 3つの試練。</span></a></li>
+          <li><a href="#bell" class="notranslate" translate="no"><span class="num">04</span><span class="t">Bell</span><span class="jp">— 鳴る権利。</span></a></li>
+          <li><a href="#resonance" class="notranslate" translate="no"><span class="num">05</span><span class="t">Bell Nature</span><span class="jp">— Bell とは何か。</span></a></li>
+          <li><a href="#three" class="notranslate" translate="no"><span class="num">06</span><span class="t">Crown Slot</span><span class="jp">— 王が確定する瞬間。</span></a></li>
+        </ul>
+      </div>
+
+      <div class="nav-block">
+        <div class="nav-block-meta notranslate" translate="no">
+          <span class="nav-block-num">§ 03</span>
+          <span class="nav-block-where">The Account</span>
+        </div>
+        <ul class="nav-list">
+          <li><a href="money.html"><span class="num">07</span><span class="t" data-i18n="menu.money">Money</span><span class="jp">— ¥100 の解体。</span></a></li>
+          <li><a href="verify.html"><span class="num">08</span><span class="t" data-i18n="menu.verify">Verify</span><span class="jp">— 検証の方法。</span></a></li>
+          <li><a href="#duty" class="notranslate" translate="no"><span class="num">09</span><span class="t">Royal Duty</span><span class="jp">— 王の義務。</span></a></li>
+          <li><a href="#laws"><span class="num">10</span><span class="t" data-i18n="menu.doctrine">Doctrine</span><span class="jp">— 教義。</span></a></li>
+        </ul>
+      </div>
+
+      <div class="nav-block">
+        <div class="nav-block-meta notranslate" translate="no">
+          <span class="nav-block-num">§ 04</span>
+          <span class="nav-block-where">The Memory</span>
+        </div>
+        <ul class="nav-list">
+          <li><a href="#stories"><span class="num">11</span><span class="t" data-i18n="menu.stories">Stories</span><span class="jp">— Mission の形。</span></a></li>
+          <li><a href="#legends" class="notranslate" translate="no"><span class="num">12</span><span class="t">Legends</span><span class="jp">— 7つの都市伝説。</span></a></li>
+        </ul>
+      </div>
+
+      <!-- CTA -->
+      <div class="nav-cta-row notranslate" translate="no">
+        <a href="entry.html" class="nav-cta-primary">
+          <span class="nav-cta-label">— Founding Bell · 23:23 JST —</span>
+          <span class="nav-cta-text">Ring the Bell</span>
+          <span class="nav-cta-arrow">→</span>
+        </a>
+      </div>
+
+      <!-- Legal pages -->
+      <div class="nav-foot notranslate" translate="no">
+        <a href="rules.html">Rules</a>
+        <span>·</span>
+        <a href="terms.html">Terms</a>
+        <span>·</span>
+        <a href="privacy.html">Privacy</a>
+        <span>·</span>
+        <a href="commerce.html">特商法</a>
+        <span>·</span>
+        <a href="risk.html">Important Notices</a>
+      </div>
+    </div>
+
+    <!-- RIGHT column: chirashi art panel -->
+    <div class="nav-col nav-col-art notranslate" translate="no">
+      <div class="nav-poster">
+        <div class="nav-poster-top">
+          <span class="nav-poster-meta">— A FILE ON 23:23 —</span>
+          <span class="nav-poster-cyc">CYCLE 1 · OPENING</span>
+        </div>
+        <div class="nav-poster-big">23<span class="colon">:</span>23</div>
+        <div class="nav-poster-sub">THE EDGE<br/>OF NIGHT.</div>
+        <div class="nav-poster-line"></div>
+        <div class="nav-poster-text">
+          <em>Father 23.</em><br/>
+          <em>Mother 23.</em><br/>
+          <span>= the activation code of humans.</span>
+        </div>
+        <div class="nav-poster-quote">
+          "Once you believe in 23,<br/>
+          <em>23 starts believing in you.</em>"
+        </div>
+        <div class="nav-poster-foot">
+          <span>KINGMAKER 23:23</span>
+          <span>king2323.tamjump.com</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- ============== HERO ============== -->
 <header class="hero" id="top">
@@ -1862,11 +2625,17 @@ html:not([data-display-lang="ja"]) #ritualBody .jp {
       <span class="small">— this week, only this week —</span>
     </h1>
     <div class="hero-cta fade-up d3">
-      <button type="button" class="btn btn-primary" data-ritual-open="coin">
-        <span class="brand-lock notranslate" translate="no">100 Bell</span>
-        ·
-        <span class="price-fixed brand-lock notranslate" translate="no">
-          <span class="price-jpy">¥100</span><span class="price-sep"> / </span><span class="price-usd">$<span class="price-usd-value" data-fx="USD-JPY-100">0.69</span></span>
+      <button type="button" class="btn btn-primary km-cta" data-ritual-open="coin" data-cta="founding">
+        <span class="km-cta-default">
+          <span class="brand-lock notranslate" translate="no">100 Bell</span>
+          ·
+          <span class="price-fixed brand-lock notranslate" translate="no">
+            <span class="price-usd" data-jpy="100">$0.63</span>
+          </span>
+        </span>
+        <span class="km-cta-open notranslate" translate="no">
+          <span class="km-cta-open-arrow">→</span>
+          <span class="km-cta-open-text">ENTER THE 5 MINUTES</span>
         </span>
       </button>
     </div>
@@ -1879,7 +2648,15 @@ html:not([data-display-lang="ja"]) #ritualBody .jp {
 
   <div class="hero-right fade-up d2">
     <div class="gorilla-frame">
-      <img src="assets/logo-v3-512.png" alt="King Gorilla" />
+      <span class="breath-ring breath-ring-1" aria-hidden="true"></span>
+      <span class="breath-ring breath-ring-2" aria-hidden="true"></span>
+      <span class="breath-ring breath-ring-3" aria-hidden="true"></span>
+      <video class="hero-video" autoplay muted loop playsinline preload="metadata"
+             poster="assets/logo-v3-512.png" aria-label="KINGMAKER 23:23">
+        <source src="video/hero.webm" type="video/webm">
+        <source src="video/hero.mp4"  type="video/mp4">
+        <img src="assets/logo-v3-512.png" alt="King Gorilla">
+      </video>
     </div>
     <div class="countdown notranslate" id="countdown" translate="no">
       <div class="countdown-label">— The Bell opens in —</div>
@@ -1900,41 +2677,129 @@ html:not([data-display-lang="ja"]) #ritualBody .jp {
 <!-- ============== TICKER ============== -->
 <div class="ticker" aria-hidden="true">
   <div class="ticker-track">
-    <span>The Bell is open.</span><span class="sep">✦</span>
-    <span class="dim">Friday 23:23 — 23:28 · 5 minutes</span><span class="sep">✦</span>
-    <span>Choose before being chosen.</span><span class="sep">✦</span>
-    <span class="dim">Bell is a Right. Never cash.</span><span class="sep">✦</span>
-    <span>You never lose your Bell.</span><span class="sep">✦</span>
-    <span class="dim">3 trials. One Crown.</span><span class="sep">✦</span>
-    <span>Grant is not a prize.</span><span class="sep">✦</span>
-    <span class="dim">Questions revealed by the world.</span><span class="sep">✦</span>
-    <span>The Bell is open.</span><span class="sep">✦</span>
-    <span class="dim">Friday 23:23 — 23:28 · 5 minutes</span><span class="sep">✦</span>
-    <span>Choose before being chosen.</span><span class="sep">✦</span>
-    <span class="dim">Bell is a Right. Never cash.</span><span class="sep">✦</span>
-    <span>You never lose your Bell.</span><span class="sep">✦</span>
-    <span class="dim">3 trials. One Crown.</span><span class="sep">✦</span>
-    <span>Grant is not a prize.</span><span class="sep">✦</span>
-    <span class="dim">Questions revealed by the world.</span><span class="sep">✦</span>
+    <span data-i18n-html="ticker.bell_open">The Bell is open.</span><span class="sep">✦</span>
+    <span class="dim" data-i18n-html="ticker.bell_window">Friday 23:23 — 23:28 · 5 minutes</span><span class="sep">✦</span>
+    <span data-i18n-html="ticker.choose">Choose before being chosen.</span><span class="sep">✦</span>
+    <span class="dim" data-i18n-html="ticker.bell_right">Bell is a Right. Never cash.</span><span class="sep">✦</span>
+    <span data-i18n-html="ticker.never_lose">You never lose your Bell.</span><span class="sep">✦</span>
+    <span class="dim" data-i18n-html="ticker.three_trials">3 trials. One Crown.</span><span class="sep">✦</span>
+    <span data-i18n-html="ticker.grant_not_prize">Grant is not a prize.</span><span class="sep">✦</span>
+    <span class="dim" data-i18n-html="ticker.questions_world">Questions revealed by the world.</span><span class="sep">✦</span>
+    <span data-i18n-html="ticker.bell_open">The Bell is open.</span><span class="sep">✦</span>
+    <span class="dim" data-i18n-html="ticker.bell_window">Friday 23:23 — 23:28 · 5 minutes</span><span class="sep">✦</span>
+    <span data-i18n-html="ticker.choose">Choose before being chosen.</span><span class="sep">✦</span>
+    <span class="dim" data-i18n-html="ticker.bell_right">Bell is a Right. Never cash.</span><span class="sep">✦</span>
+    <span data-i18n-html="ticker.never_lose">You never lose your Bell.</span><span class="sep">✦</span>
+    <span class="dim" data-i18n-html="ticker.three_trials">3 trials. One Crown.</span><span class="sep">✦</span>
+    <span data-i18n-html="ticker.grant_not_prize">Grant is not a prize.</span><span class="sep">✦</span>
+    <span class="dim" data-i18n-html="ticker.questions_world">Questions revealed by the world.</span><span class="sep">✦</span>
   </div>
 </div>
 
 <!-- ============== LIVE POOL ribbon ============== -->
-<aside class="live-pool-ribbon" aria-label="Live Grant Fund">
+<aside class="live-pool-ribbon notranslate" translate="no" aria-label="Live Grant Fund">
   <a href="money.html#fund" class="live-pool-link">
     <span class="live-pool-pulse" aria-hidden="true"></span>
     <span class="live-pool-meta">
-      <span class="live-pool-label">— Live · Cycle 47 · Grant Fund —</span>
-      <span class="live-pool-amount" id="hero-live-pool">¥ 5,872,400</span>
+      <span class="live-pool-label" id="hero-live-label">— Cycle 1 · Awaiting first ring · Friday 23:23 JST —</span>
+      <span class="live-pool-amount price-usd" id="hero-live-pool"
+            data-live-jpy="grant_fund_jpy" data-jpy="0">$0</span>
     </span>
     <span class="live-pool-sep" aria-hidden="true"></span>
     <span class="live-pool-meta">
       <span class="live-pool-label">Patron · 7d</span>
-      <span class="live-pool-patron" id="hero-live-patron">+ ¥ 124,800</span>
+      <span class="live-pool-patron price-usd" id="hero-live-patron"
+            data-live-jpy="patron_7d_jpy" data-jpy="0" data-fx-prefix="+">+$0</span>
     </span>
     <span class="live-pool-arrow">→ Open /fund</span>
   </a>
 </aside>
+
+<!-- ============== OPENING NOTICE (Founding Bell) ============== -->
+<section class="opening-notice notranslate" translate="no">
+  <div class="notice-inner">
+    <p class="notice-kicker">— OPENING NOTICE —</p>
+    <h2>Founding Bell opens at 23:23 JST.</h2>
+    <p class="en">
+      KINGMAKER 23:23 begins as the <strong>Founding Bell</strong> cycle on 2026-05-15.
+      The first cycle records participation and Mission entries.
+      Grant disbursement and full public verification begin only after eligibility review,
+      published rules, and verification records are completed.
+      Bell Entry is a participation record — not currency, not stored value, not crypto,
+      not investment product, and not exchangeable for cash.
+    </p>
+    <p class="jp">
+      KINGMAKER 23:23 は、2026年5月15日 23:23 JST に <strong>Founding Bell</strong> として開始します。
+      初回サイクルでは参加記録と Mission 登録を行い、Grant 支給と公開検証は
+      審査・公開ルール・検証記録の整備後に開始します。
+      Bell Entry は参加記録です。通貨・前払式支払手段・暗号資産・投資商品ではなく、換金できません。
+    </p>
+  </div>
+</section>
+
+<!-- ============== THE 23 ENIGMA · MYTH ============== -->
+<section id="myth" class="myth-section">
+  <div class="myth-intro">
+    <div class="eyebrow center notranslate" translate="no">— THE 23 ENIGMA · 4 PIECES —</div>
+    <h2 class="myth-headline">
+      <span class="num">23:23</span> is not a time.<br/>
+      <em>It is a code.</em>
+    </h2>
+    <p class="myth-lede">
+      Father 23. Mother 23. The number humans cannot stop seeing.
+      Read four pieces — then decide whether <strong>23:23</strong> still feels like coincidence.
+    </p>
+  </div>
+
+  <div class="myth-strip">
+    <article class="myth-panel" data-panel="01">
+      <div class="myth-frame">
+        <img src="art/myth_01_edge.webp" alt="The Edge of Night — 23:23, the coordinate where reason falls." loading="lazy" decoding="async">
+      </div>
+      <div class="myth-meta notranslate" translate="no">
+        <span class="myth-tag">01 / 04</span>
+        <span class="myth-title-en">The Edge of Night</span>
+      </div>
+    </article>
+
+    <article class="myth-panel" data-panel="02">
+      <div class="myth-frame">
+        <img src="art/myth_02_code.webp" alt="The Activation Code — Father 23 × Mother 23 = 23:23." loading="lazy" decoding="async">
+      </div>
+      <div class="myth-meta notranslate" translate="no">
+        <span class="myth-tag">02 / 04</span>
+        <span class="myth-title-en">The Activation Code</span>
+      </div>
+    </article>
+
+    <article class="myth-panel" data-panel="03">
+      <div class="myth-frame">
+        <img src="art/myth_03_enigma.webp" alt="The 23 Enigma — once you believe in 23, 23 starts believing in you." loading="lazy" decoding="async">
+      </div>
+      <div class="myth-meta notranslate" translate="no">
+        <span class="myth-tag">03 / 04</span>
+        <span class="myth-title-en">The 23 Enigma</span>
+      </div>
+    </article>
+
+    <article class="myth-panel" data-panel="04">
+      <div class="myth-frame">
+        <img src="art/myth_04_minutes.webp" alt="Five Minutes of Truth — five minutes is not a wish window. It is the smallest unit of human nature." loading="lazy" decoding="async">
+      </div>
+      <div class="myth-meta notranslate" translate="no">
+        <span class="myth-tag">04 / 04</span>
+        <span class="myth-title-en">Five Minutes of Truth</span>
+      </div>
+    </article>
+  </div>
+
+  <p class="myth-quote notranslate" translate="no">
+    <span class="myth-q-mark">"</span>
+    Once you believe in 23,<br/>
+    <em>23 starts believing in you.</em>
+    <span class="myth-q-mark right">"</span>
+  </p>
+</section>
 
 <!-- ============== WHY 23:23 (THE EDGE) ============== -->
 <section id="why" class="why-edge">
@@ -2073,17 +2938,17 @@ html:not([data-display-lang="ja"]) #ritualBody .jp {
       <div style="background: var(--paper-2); padding: 28px 20px; text-align: center;">
         <div style="font-family: var(--f-mono); font-size: 10px; color: var(--gold); letter-spacing: 0.25em; margin-bottom: 8px;">— BRONZE —</div>
         <div style="font-family: var(--f-display); font-size: 22px; font-weight: 700; color: var(--bone); margin-bottom: 6px;">10,000 Coin</div>
-        <div style="font-family: var(--f-mono); font-size: 13px; color: var(--gold-bright);">¥100,000</div>
+        <div style="font-family: var(--f-mono); font-size: 13px; color: var(--gold-bright);" class="price-usd notranslate" translate="no" data-jpy="100000">$635</div>
       </div>
       <div style="background: var(--paper-2); padding: 28px 20px; text-align: center;">
         <div style="font-family: var(--f-mono); font-size: 10px; color: var(--gold); letter-spacing: 0.25em; margin-bottom: 8px;">— SILVER —</div>
         <div style="font-family: var(--f-display); font-size: 22px; font-weight: 700; color: var(--bone); margin-bottom: 6px;">100,000 Coin</div>
-        <div style="font-family: var(--f-mono); font-size: 13px; color: var(--gold-bright);">¥1,000,000</div>
+        <div style="font-family: var(--f-mono); font-size: 13px; color: var(--gold-bright);" class="price-usd notranslate" translate="no" data-jpy="1000000">$6,345</div>
       </div>
       <div style="background: var(--paper-2); padding: 28px 20px; text-align: center;">
         <div style="font-family: var(--f-mono); font-size: 10px; color: var(--gold); letter-spacing: 0.25em; margin-bottom: 8px;">— GOLD —</div>
         <div style="font-family: var(--f-display); font-size: 22px; font-weight: 700; color: var(--bone); margin-bottom: 6px;">1,000,000 Coin</div>
-        <div style="font-family: var(--f-mono); font-size: 13px; color: var(--gold-bright);">¥10,000,000</div>
+        <div style="font-family: var(--f-mono); font-size: 13px; color: var(--gold-bright);" class="price-usd notranslate" translate="no" data-jpy="10000000">$63,452</div>
       </div>
       <div style="background: linear-gradient(180deg, rgba(212, 175, 55, 0.08), var(--paper-2)); padding: 28px 20px; text-align: center; border-left: 1px solid rgba(212, 175, 55, 0.3);">
         <div style="font-family: var(--f-mono); font-size: 10px; color: var(--gold-bright); letter-spacing: 0.25em; margin-bottom: 8px;">— ROYAL —</div>
@@ -2103,7 +2968,7 @@ html:not([data-display-lang="ja"]) #ritualBody .jp {
       </div>
       <div>
         <div style="font-family: var(--f-mono); font-size: 10px; color: var(--gold); letter-spacing: 0.25em; margin-bottom: 8px; text-transform: uppercase;">Escrow · Separated</div>
-        <p style="font-size: 13px; color: var(--ash); line-height: 1.6;">Grant Fund sits in a dedicated escrow, legally distinct from the Revenue account. Operator insolvency does not touch the Fund.</p>
+        <p style="font-size: 13px; color: var(--ash); line-height: 1.6;">For the Founding Bell opening, Grant Fund management is planned to be separated from operating revenue and held under a dedicated structure with public ledger. Until that structure and the eligibility review process are completed, Grant disbursement does not begin.</p>
       </div>
     </div>
 
@@ -2162,9 +3027,13 @@ html:not([data-display-lang="ja"]) #ritualBody .jp {
       <p class="lede">From every applicant, a public-data seed selects three. KINGMAKER cannot interfere. The seed is verifiable. The three appear at 23:23. Then disappear.</p>
     </div>
 
-    <div class="chip" style="display: flex; margin: 0 auto 32px; width: fit-content;">
+    <div class="chip notranslate" translate="no" style="display: flex; margin: 0 auto 32px; width: fit-content;">
       <span class="live-dot"></span>
-      <span>Cycle 47 · Preview</span>
+      <span>Cycle 1 · Preview · Illustrative</span>
+    </div>
+
+    <div class="three-grid-disclaimer notranslate" translate="no" style="text-align:center; font-family:var(--f-mono); font-size:10px; letter-spacing:0.28em; color:var(--ash); opacity:0.75; text-transform:uppercase; margin-bottom:32px;">
+      — These three are illustrations · Cycle 1 has not opened · No applicant has been selected —
     </div>
 
     <div class="three-grid">
@@ -2242,8 +3111,8 @@ html:not([data-display-lang="ja"]) #ritualBody .jp {
         <div class="tier-rank first">— Rank · 1st —</div>
         <div class="tier-name king-name">KING</div>
         <div class="tier-jp">王 · 助成対象</div>
-        <div class="tier-prize">Receives a Grant from the public Fund. Up to ¥10,000,000 (Gold tier).</div>
-        <p class="tier-detail">Tiered by total Coin received. Bronze · Silver · Gold · Royal — paid from the published Grant Pool of the cycle.</p>
+        <div class="tier-prize">Eligible to apply for a Grant from the public Fund. Tier is calculated by total Coin received during the cycle.</div>
+        <p class="tier-detail">Bronze · Silver · Gold · Royal — illustrative tiers. Any Grant requires identity verification, Mission review, legal review, and fund availability. Selection or tier does not guarantee payment.</p>
         <p class="tier-detail">Bound by the Royal Duty: must distribute 10 free Coins the following week.</p>
         <span class="tier-mark">T · 01</span>
       </article>
@@ -2368,67 +3237,165 @@ html:not([data-display-lang="ja"]) #ritualBody .jp {
   <div class="container">
     <div class="section-head">
       <div class="eyebrow" data-i18n-html="stories.eyebrow">Chapter VI · Stories</div>
-      <h2 data-i18n-html="stories.headline">The Throne<br/>has had names.</h2>
-      <p class="lede" data-i18n-html="stories.lede">Every Monday at 23:23, the throne moves. These are some who have held it.</p>
+      <h2 data-i18n-html="stories.headline">The shape of a Mission.</h2>
+      <p class="lede" data-i18n-html="stories.lede">Before Cycle 1 begins, the throne has no names. So here is what a Mission can be — four illustrations, written in the future tense. These are not Kings. They are the size of a Mission.</p>
+    </div>
+
+    <div class="stories-disclaimer notranslate" translate="no" style="text-align:center; font-family:var(--f-mono); font-size:11px; letter-spacing:0.25em; color:var(--ash); opacity:0.8; text-transform:uppercase; margin-bottom:48px;">
+      — Illustrative scenarios · No past cycle has occurred · No funds have been disbursed —
     </div>
 
     <div class="stories-grid">
       <article class="story">
-        <div class="story-week">— Cycle 41 · King —</div>
+        <div class="story-week">— A possible Mission —</div>
         <div class="story-king">
-          <span class="crown">♛ KING</span>
-          <span class="name">Naia_R</span>
+          <span class="crown">♛ Mission</span>
+          <span class="name">"the kiln"</span>
         </div>
-        <div class="story-mission">Bought a used kiln. Opened a free pottery class for the kids in the foster home she grew up in.</div>
+        <div class="story-mission">A ceramicist who grew up in foster care buys a used kiln. Opens a free pottery class for the next children in the same home.</div>
         <div class="story-grant">
-          <span>Cebu · 31</span>
-          <span class="amount">¥100,000</span>
+          <span>Illustrative · ~30s</span>
+          <span class="amount price-usd notranslate" translate="no" data-jpy="100000">$635</span>
         </div>
       </article>
 
       <article class="story">
-        <div class="story-week">— Cycle 38 · King —</div>
+        <div class="story-week">— A possible Mission —</div>
         <div class="story-king">
-          <span class="crown">♛ KING</span>
-          <span class="name">Hokori</span>
+          <span class="crown">♛ Mission</span>
+          <span class="name">"the workshop"</span>
         </div>
-        <div class="story-mission">Finished his father's woodblock workshop after 9 years of dust. First print run sold out in three days.</div>
+        <div class="story-mission">A son finishes his late father's woodblock workshop after nine years of dust. The first print run is dedicated to the father's hand.</div>
         <div class="story-grant">
-          <span>Kyoto · 47</span>
-          <span class="amount">¥100,000</span>
+          <span>Illustrative · ~40s</span>
+          <span class="amount price-usd notranslate" translate="no" data-jpy="100000">$635</span>
         </div>
       </article>
 
       <article class="story">
-        <div class="story-week">— Cycle 35 · King —</div>
+        <div class="story-week">— A possible Mission —</div>
         <div class="story-king">
-          <span class="crown">♛ KING</span>
-          <span class="name">Lior_T</span>
+          <span class="crown">♛ Mission</span>
+          <span class="name">"the last songs"</span>
         </div>
-        <div class="story-mission">Recorded his grandmother's last 11 songs in Yiddish, in the apartment she's about to leave.</div>
+        <div class="story-mission">A grandchild records a grandmother's last eleven songs in a dying language, in the apartment she is about to leave.</div>
         <div class="story-grant">
-          <span>Tel Aviv · 38</span>
-          <span class="amount">¥100,000</span>
+          <span>Illustrative · ~30s</span>
+          <span class="amount price-usd notranslate" translate="no" data-jpy="100000">$635</span>
         </div>
       </article>
 
       <article class="story">
-        <div class="story-week">— Cycle 32 · King —</div>
+        <div class="story-week">— A possible Mission —</div>
         <div class="story-king">
-          <span class="crown">♛ KING</span>
-          <span class="name">Quiet_M</span>
+          <span class="crown">♛ Mission</span>
+          <span class="name">"the sea, after 22 years"</span>
         </div>
-        <div class="story-mission">Took her father to the sea. He had not seen it in 22 years. They stayed three nights.</div>
+        <div class="story-mission">A daughter takes her father to the sea. He has not seen it since the fire. They stay three nights. That is the entire Mission.</div>
         <div class="story-grant">
-          <span>Lisbon · 44</span>
-          <span class="amount">¥100,000</span>
+          <span>Illustrative · ~40s</span>
+          <span class="amount price-usd notranslate" translate="no" data-jpy="100000">$635</span>
         </div>
       </article>
     </div>
+
+    <p class="stories-after-note notranslate" translate="no" style="text-align:center; font-family:var(--f-serif); font-size:14px; color:var(--ash); margin-top:32px; max-width:640px; margin-left:auto; margin-right:auto; line-height:1.7;">
+      Cycle 1 has not yet rung. When the first King is named, this section will fill with their faces and their proofs. Until then, these are the shapes a Mission can take — written so that you know what you might be voting for.
+    </p>
   </div>
 </section>
 
 <!-- ============== EDGE RULES ============== -->
+<!-- ============== LEGENDS OF THE WORLD ============== -->
+<section id="legends" class="legends-section">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow center notranslate" translate="no">— LEGENDS OF THE WORLD · 07 PIECES —</div>
+      <h2 class="legends-headline">When the bell rings,<br/><em>every culture answers differently.</em></h2>
+      <p class="legends-lede">
+        Seven superstitions the world has whispered about 23:23 — born after the bell first rang.
+        Click any to enlarge. None of them are true. <em>And yet.</em>
+      </p>
+    </div>
+
+    <div class="legends-grid">
+      <button type="button" class="legend-card" data-legend="01" aria-label="Japan · The Mirror">
+        <img src="art/legend_01_mirror.webp" alt="Japan · The Mirror" loading="lazy" decoding="async">
+        <div class="legend-cap notranslate" translate="no">
+          <span class="legend-num">01</span>
+          <span class="legend-where">Japan</span>
+          <span class="legend-name">The Mirror</span>
+        </div>
+      </button>
+
+      <button type="button" class="legend-card" data-legend="02" aria-label="United States · The Phone">
+        <img src="art/legend_02_phone.webp" alt="United States · The Phone" loading="lazy" decoding="async">
+        <div class="legend-cap notranslate" translate="no">
+          <span class="legend-num">02</span>
+          <span class="legend-where">United States</span>
+          <span class="legend-name">The Phone</span>
+        </div>
+      </button>
+
+      <button type="button" class="legend-card" data-legend="03" aria-label="India · The Gods">
+        <img src="art/legend_03_gods.webp" alt="India · The Gods" loading="lazy" decoding="async">
+        <div class="legend-cap notranslate" translate="no">
+          <span class="legend-num">03</span>
+          <span class="legend-where">India</span>
+          <span class="legend-name">The Gods</span>
+        </div>
+      </button>
+
+      <button type="button" class="legend-card" data-legend="04" aria-label="Russia · The Gun">
+        <img src="art/legend_04_gun.webp" alt="Russia · The Gun" loading="lazy" decoding="async">
+        <div class="legend-cap notranslate" translate="no">
+          <span class="legend-num">04</span>
+          <span class="legend-where">Russia</span>
+          <span class="legend-name">The Gun</span>
+        </div>
+      </button>
+
+      <button type="button" class="legend-card" data-legend="05" aria-label="Egypt · The Unborn">
+        <img src="art/legend_05_unborn.webp" alt="Egypt · The Unborn" loading="lazy" decoding="async">
+        <div class="legend-cap notranslate" translate="no">
+          <span class="legend-num">05</span>
+          <span class="legend-where">Egypt</span>
+          <span class="legend-name">The Unborn</span>
+        </div>
+      </button>
+
+      <button type="button" class="legend-card" data-legend="06" aria-label="Vatican · The Prayer">
+        <img src="art/legend_06_prayer.webp" alt="Vatican · The Prayer" loading="lazy" decoding="async">
+        <div class="legend-cap notranslate" translate="no">
+          <span class="legend-num">06</span>
+          <span class="legend-where">Vatican</span>
+          <span class="legend-name">The Prayer</span>
+        </div>
+      </button>
+
+      <button type="button" class="legend-card wide" data-legend="07" aria-label="The Internet · Don't Look">
+        <img src="art/legend_07_dontlook.webp" alt="The Internet · Don't Look" loading="lazy" decoding="async">
+        <div class="legend-cap notranslate" translate="no">
+          <span class="legend-num">07</span>
+          <span class="legend-where">The Internet</span>
+          <span class="legend-name">Don't Look.</span>
+        </div>
+      </button>
+    </div>
+
+    <p class="legends-foot notranslate" translate="no">
+      <em>"KINGMAKER is not choosing applicants.<br/>It is choosing the ones watching."</em>
+      <span class="legends-foot-sub">— anonymous, internet, year unknown</span>
+    </p>
+  </div>
+</section>
+
+<!-- ============== LEGEND LIGHTBOX ============== -->
+<div id="legend-lightbox" class="legend-lightbox notranslate" translate="no" aria-hidden="true" role="dialog">
+  <button type="button" class="legend-lightbox-close" aria-label="Close">×</button>
+  <img id="legend-lightbox-img" src="" alt="">
+</div>
+
 <section id="rules" class="edge-rules">
   <div class="container">
     <div class="section-head">
@@ -2491,7 +3458,7 @@ html:not([data-display-lang="ja"]) #ritualBody .jp {
         <div class="rule-num">— Q · 08 —</div>
         <div class="rule-q">If the operator dies, what happens to the Fund?</div>
         <div class="rule-q-jp">運営が死んだら？</div>
-        <p class="rule-a" data-i18n-html="rules.a08"><strong>Answer · Escrow</strong>The Grant Fund sits in a legally separated escrow account, governed by a third-party trustee. Operator death, illness, or insolvency cannot touch a single yen of it.</p>
+        <p class="rule-a" data-i18n-html="rules.a08"><strong>Answer · Fund Management</strong>For the Founding Bell opening, Grant Fund management is planned to be separated from operating revenue, with the dedicated structure and public ledger built out before any Grant disbursement begins. The intent is structural separation, not promotional language.</p>
       </div>
 
       <div class="rule-card">
@@ -2619,7 +3586,7 @@ html:not([data-display-lang="ja"]) #ritualBody .jp {
   </p>
   <p class="answer">— You have until Friday · 23:23 —</p>
   <div class="actions">
-    <a href="#" class="btn btn-primary">Apply for Mission</a>
+    <a href="entry.html" class="btn btn-primary">Founding Bell Entry</a>
     <a href="app.html" class="btn btn-ghost">Open the App</a>
   </div>
 </section>
@@ -2633,10 +3600,10 @@ html:not([data-display-lang="ja"]) #ritualBody .jp {
         <span>KINGMAKER</span>
         <span class="glyph brand-lock notranslate" translate="no">23:23</span>
       </a>
-      <p class="foot-tagline">Not everyone can be King.<br/>But everyone can make one.</p>
+      <p class="foot-tagline" data-i18n-html="footer.tagline">Not everyone can be King.<br/>But everyone can make one.</p>
     </div>
     <div>
-      <h5>Ritual</h5>
+      <h5 data-i18n-html="footer.h_ritual">Ritual</h5>
       <ul>
         <li><a href="#why">Why 23:23</a></li>
         <li><a href="#bell">The Bell</a></li>
@@ -2645,7 +3612,7 @@ html:not([data-display-lang="ja"]) #ritualBody .jp {
       </ul>
     </div>
     <div>
-      <h5>The Money</h5>
+      <h5 data-i18n-html="footer.h_money">The Money</h5>
       <ul>
         <li><a href="money.html">Money Logic v1.0</a></li>
         <li><a href="money.html#fund">/fund (live)</a></li>
@@ -2654,27 +3621,29 @@ html:not([data-display-lang="ja"]) #ritualBody .jp {
       </ul>
     </div>
     <div>
-      <h5>Take Part</h5>
+      <h5 data-i18n-html="footer.h_takepart">Take Part</h5>
       <ul>
-        <li><a href="#apply">Apply</a></li>
-        <li><a href="app.html">Open App</a></li>
+        <li><a href="#apply" data-i18n-html="footer.apply">Apply</a></li>
+        <li><a href="app.html" data-i18n-html="footer.open_app">Open App</a></li>
         <li><a href="#stories">Stories</a></li>
-        <li><a href="#rules">Edge Rules</a></li>
+        <li><a href="#rules" data-i18n-html="footer.edge_rules">Edge Rules</a></li>
       </ul>
     </div>
     <div>
-      <h5>Legal · Operator</h5>
+      <h5 data-i18n-html="footer.legal_h">Legal · Operator</h5>
       <ul>
-        <li><a href="https://tamjump.com/terms" rel="noopener" target="_blank" data-i18n-html="footer.terms">利用規約 / Terms</a></li>
-        <li><a href="https://tamjump.com/privacy" rel="noopener" target="_blank" data-i18n-html="footer.privacy">プライバシー / Privacy</a></li>
-        <li><a href="https://tamjump.com/commerce" rel="noopener" target="_blank" data-i18n-html="footer.commerce">特定商取引法表記</a></li>
-        <li><a href="https://tamjump.com/" rel="noopener" target="_blank">Operator · TAmJ ↗</a></li>
+        <li><a href="terms.html" rel="noopener" target="_blank" data-i18n-html="footer.terms">Terms</a></li>
+        <li><a href="privacy.html" rel="noopener" target="_blank" data-i18n-html="footer.privacy">Privacy</a></li>
+        <li><a href="commerce.html" rel="noopener" target="_blank" data-i18n-html="footer.commerce">Commercial Transactions Notice (JP)</a></li>
+        <li><a href="rules.html" rel="noopener" target="_blank">Bell Game Rules</a></li>
+        <li><a href="risk.html" rel="noopener" target="_blank">Important Notices</a></li>
+        <li><a href="https://tamjump.com/" rel="noopener" target="_blank" data-i18n-html="footer.operator">Operator · TAmJ ↗</a></li>
       </ul>
     </div>
   </div>
   <div class="foot-bottom">
-    <span>© 2026 · KINGMAKER 23:23 · Operated by TAmJ · Tokyo, Japan</span>
-    <span>Not a lottery · Not an investment · Not a wager · Bell is a Right, never cash</span>
+    <span data-i18n-html="footer.copy">© 2026 · KINGMAKER 23:23 · Operated by TAmJ · Tokyo, Japan</span>
+    <span data-i18n-html="footer.disclaimer">Not a lottery · Not an investment · Not a wager · Bell is a Right, never cash</span>
   </div>
 </footer>
 
@@ -2719,7 +3688,7 @@ html:not([data-display-lang="ja"]) #ritualBody .jp {
 
     <div class="ritual-cta">
       <a href="https://square.link/u/bc9p0BET" target="_blank" rel="noopener" class="btn btn-primary" data-i18n-html="ritual.coin.cta">⌘ Proceed to Square · 100円を捧げる</a>
-      <div class="ritual-note" data-i18n-html="ritual.coin.note">— Webhook 結線テスト中 · Sandbox環境 —</div>
+      <div class="ritual-note" data-i18n-html="ritual.coin.note">— Founding Bell entry · Payment is recorded via your Square receipt —</div>
     </div>
   </div>
 </div>
@@ -2888,7 +3857,7 @@ html:not([data-display-lang="ja"]) #ritualBody .jp {
     <div class="ritual-divider"></div>
 
     <p class="accent" data-i18n-html="ritual.verify.accent2" style="margin-top: 8px;">問題も、<em>運営は知らない</em>。</p>
-    <p data-i18n-html="ritual.verify.p2">THE TRIAL の出題は、運営も SE も事前には知らない。<strong>10万問の Question Bank</strong> が公開され、毎週の Seed(BTC・Nikkei・S&P・応募人数・秒)が SHA-256 を通って、出題する3問の ID が機械的に選ばれる。</p>
+    <p data-i18n-html="ritual.verify.p2">THE TRIAL の出題は運営が事前に決めない設計。公開予定の <strong>Question Bank</strong> が確定し、毎週の Seed(BTC・Nikkei・S&P・応募人数・秒)が SHA-256 を通って、出題する3問の ID が機械的に選ばれる。Question Bank は最初の検証対象 Trial サイクル開始前に公開される。</p>
 
     <div class="ritual-mini-grid">
       <div class="ritual-mini"><div class="k">Bank Size</div><div class="v">100,000</div></div>
@@ -2952,7 +3921,7 @@ html:not([data-display-lang="ja"]) #ritualBody .jp {
     <p data-i18n-html="ritual.trial.p2">10 Bell を鳴らして挑戦。失敗してもBellは減らない。次週、また鳴らせる。3問突破した者は <strong>Qualification Unlocked</strong> ステータスを得て、CROWN SLOT に進む。</p>
 
     <ul class="ritual-list">
-      <li data-i18n-html="ritual.trial.li1">Question Bank: 10万問。運営も内容を事前に知らない。</li>
+      <li data-i18n-html="ritual.trial.li1">Question Bank: published before the first verified Trial cycle. Operator does not author the questions selected each week.</li>
       <li data-i18n-html="ritual.trial.li2">出題ID: 毎週 Seed から SHA-256 で機械的に導出。</li>
       <li data-i18n-html="ritual.trial.li3">毎週ジャンル変動: Math / Memory / Logic / Language / Culture / Science。</li>
       <li data-i18n-html="ritual.trial.li4">同問題の再出題: 数週間〜数ヶ月のクールタイム設計。</li>
@@ -3036,10 +4005,10 @@ html:not([data-display-lang="ja"]) #ritualBody .jp {
   <p class="ritual-subtitle" data-i18n-html="ritual.stories.subtitle">これまで世界が確定した王と、Standing。</p>
   <div class="ritual-divider"></div>
   <div class="ritual-content">
-    <p class="accent brand-lock notranslate" translate="no">Every cycle leaves <em>a mark</em>.</p>
-    <p data-i18n-html="ritual.stories.p1">Cycle 46 で確定した King は、借金完済を Mission とした 38歳の男性だった。Grant ¥1.2M。30日後、完済証明が提出され、Standing は <strong>Verified</strong> となった。</p>
-    <p data-i18n-html="ritual.stories.p2">Cycle 45 では、Mission に対する Proof が提出されず、Crown は剥奪。次順位の応募者が承継された。</p>
-    <p class="jp" data-i18n-html="ritual.stories.note">過去全サイクルの記録は /verify で公開されている。</p>
+    <p class="accent brand-lock notranslate" translate="no">No name yet. <em>That is the point.</em></p>
+    <p data-i18n-html="ritual.stories.p1">No King exists yet. When Cycle 1 ends, the first name will be etched here. Mission, Grant, Royal Proof, Standing — all public, all verifiable, all permanent. <strong>We do not carry a false past.</strong></p>
+    <p data-i18n-html="ritual.stories.p2">If a Mission is not delivered, the Crown is revoked, the Grant is returned, the next-ranked inherits. This is a future fact. For now, we only wait for the first Friday 23:23.</p>
+    <p class="jp" data-i18n-html="ritual.stories.note">All records from Cycle 1 onward will be published at /verify. Before that, there are no records to publish.</p>
 
     <div class="ritual-divider"></div>
 
@@ -3156,7 +4125,93 @@ html:not([data-display-lang="ja"]) #ritualBody .jp {
 })();
 </script>
 
-<script src="js/i18n.js?v=20260512k"></script>
-<script src="js/main.js?v=20260512k"></script>
+<!-- ============== AMBIENT ANTHEM (corner toggle, off by default) ============== -->
+<audio id="km-anthem" preload="none" loop>
+  <source src="audio/anthem.mp3" type="audio/mpeg">
+</audio>
+<button type="button" id="km-audio-toggle" class="km-audio-toggle notranslate" translate="no" aria-label="Toggle ambient sound" data-state="off">
+  <span class="km-audio-icon" aria-hidden="true">
+    <span class="km-audio-bar"></span>
+    <span class="km-audio-bar"></span>
+    <span class="km-audio-bar"></span>
+    <span class="km-audio-bar"></span>
+  </span>
+  <span class="km-audio-label">SOUND ON</span>
+</button>
+
+<!-- ============== AUDIO + LEGEND LIGHTBOX LOGIC ============== -->
+<script>
+(function(){
+  'use strict';
+
+  // ----- Ambient audio -----
+  const audio  = document.getElementById('km-anthem');
+  const toggle = document.getElementById('km-audio-toggle');
+  const label  = toggle && toggle.querySelector('.km-audio-label');
+  if (audio && toggle) {
+    toggle.addEventListener('click', function(){
+      if (audio.paused) {
+        audio.volume = 0;
+        const p = audio.play();
+        if (p && p.catch) p.catch(()=>{});
+        // fade in
+        let v = 0;
+        const fade = setInterval(()=>{
+          v = Math.min(0.42, v + 0.03);
+          audio.volume = v;
+          if (v >= 0.42) clearInterval(fade);
+        }, 80);
+        toggle.dataset.state = 'on';
+        if (label) label.textContent = 'SOUND OFF';
+      } else {
+        // fade out
+        let v = audio.volume;
+        const fade = setInterval(()=>{
+          v = Math.max(0, v - 0.06);
+          audio.volume = v;
+          if (v <= 0) {
+            audio.pause();
+            clearInterval(fade);
+          }
+        }, 60);
+        toggle.dataset.state = 'off';
+        if (label) label.textContent = 'SOUND ON';
+      }
+    });
+  }
+
+  // ----- Legend lightbox -----
+  const lb  = document.getElementById('legend-lightbox');
+  const lbI = document.getElementById('legend-lightbox-img');
+  const lbX = lb && lb.querySelector('.legend-lightbox-close');
+  document.querySelectorAll('.legend-card').forEach(card => {
+    card.addEventListener('click', () => {
+      const img = card.querySelector('img');
+      if (!img) return;
+      lbI.src = img.src;
+      lbI.alt = img.alt;
+      lb.classList.add('open');
+      lb.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+    });
+  });
+  function closeLightbox(){
+    if (!lb) return;
+    lb.classList.remove('open');
+    lb.setAttribute('aria-hidden', 'true');
+    lbI.src = '';
+    document.body.style.overflow = '';
+  }
+  if (lbX) lbX.addEventListener('click', closeLightbox);
+  if (lb)  lb.addEventListener('click', (e) => { if (e.target === lb) closeLightbox(); });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && lb && lb.classList.contains('open')) closeLightbox();
+  });
+})();
+</script>
+
+<script src="js/i18n.js?v=20260514d"></script>
+<script src="js/fx.js?v=20260514d"></script>
+<script src="js/main.js?v=20260514d"></script>
 </body>
 </html>

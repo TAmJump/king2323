@@ -900,8 +900,34 @@ body {
   .tabbar { padding: 12px 4px 16px; }
 }
 </style>
+<style>
+.app-notice {
+  margin: 0;
+  padding: 14px 18px;
+  background: linear-gradient(180deg, rgba(184,134,45,0.16), rgba(15,14,12,0.10));
+  border-bottom: 1px solid rgba(184,134,45,0.40);
+  color: var(--gold);
+  font-family: var(--f-mono);
+  font-size: 11px;
+  line-height: 1.7;
+  text-align: center;
+  letter-spacing: 0.08em;
+}
+.app-notice .jp {
+  font-family: var(--f-jp, system-ui, sans-serif);
+  color: var(--ash);
+  font-size: 11px;
+  margin-top: 4px;
+  letter-spacing: 0.02em;
+}
+</style>
 </head>
 <body>
+
+<div class="app-notice notranslate" translate="no">
+  <div class="en">— Prototype interface for Founding Bell. Payment, entry, verification, and Grant review are managed via the production records (Square receipt + entry form), not this prototype. —</div>
+  <div class="jp">— Founding Bell 用のプロトタイプ画面です。決済・参加記録・検証・Grant 審査は、本プロトタイプではなく、本番記録(Square 領収書 + 申込フォーム)に基づき管理されます。 —</div>
+</div>
 
 <div class="stage">
   <div class="phone">

@@ -281,6 +281,26 @@
   text-transform: uppercase;
   margin-bottom: 32px;
 }
+.fund-current-jpy {
+  font-family: var(--f-mono);
+  font-size: 13px;
+  color: var(--ash);
+  letter-spacing: 0.08em;
+  margin-top: -4px;
+  margin-bottom: 4px;
+  font-variant-numeric: tabular-nums;
+  opacity: 0.85;
+}
+.fund-cell .v-jpy {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  color: var(--ash);
+  letter-spacing: 0.06em;
+  margin-top: -2px;
+  margin-bottom: 6px;
+  font-variant-numeric: tabular-nums;
+  opacity: 0.85;
+}
 .fund-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
@@ -480,11 +500,13 @@
 }
 html:not([data-display-lang="ja"]) .lede-jp,
 html:not([data-display-lang="ja"]) .chapter-title-jp,
-html:not([data-display-lang="ja"]) .world-statement-jp,
-/* Safety net: catches any inline-styled JP element that uses --f-jp
-   font variable without a dedicated class. */
+html:not([data-display-lang="ja"]) .world-statement-jp {
+  display: none !important;
+}
+/* SAFETY NET (v1.3): catch orphan inline-style JP elements */
 html:not([data-display-lang="ja"]) p[style*="--f-jp"],
-html:not([data-display-lang="ja"]) div[style*="--f-jp"]:not(.notranslate) {
+html:not([data-display-lang="ja"]) div[style*="--f-jp"]:not(.notranslate),
+html:not([data-display-lang="ja"]) span[style*="--f-jp"]:not(.notranslate) {
   display: none !important;
 }
 
@@ -574,11 +596,11 @@ html:not([data-display-lang="ja"]) div[style*="--f-jp"]:not(.notranslate) {
     <p>Every member begins identically. There is no premium tier, no whale path, no bundle for the wealthy. The first transaction is the same for everyone on Earth.</p>
 
     <div class="kv-table">
-      <div class="kv-row"><div class="k">Initial Purchase</div><div class="v">¥100 (one time, optional repeat)</div></div>
+      <div class="kv-row"><div class="k">Initial Purchase</div><div class="v notranslate" translate="no">¥100 (one time, optional repeat)</div></div>
       <div class="kv-row"><div class="k">Coin Granted</div><div class="v">100 Coin</div></div>
       <div class="kv-row"><div class="k">Coin Value</div><div class="v">1 Coin = 1 Vote · No cash value · Never redeemable</div></div>
       <div class="kv-row"><div class="k">Weekly Spend</div><div class="v">10 Coin per Bell (cast on one of The Three)</div></div>
-      <div class="kv-row"><div class="k">Coin Lifetime</div><div class="v"><strong>Permanent.</strong> Never expires. Even ¥100 buys ten weeks of voice — and that voice persists if held.</div></div>
+      <div class="kv-row"><div class="k">Coin Lifetime</div><div class="v notranslate" translate="no"><strong>Permanent.</strong> Never expires. Even ¥100 buys ten weeks of voice — and that voice persists if held.</div></div>
       <div class="kv-row"><div class="k">Transferability</div><div class="v">None. Coin cannot be sold, gifted, or moved between accounts.</div></div>
     </div>
 
@@ -611,7 +633,7 @@ html:not([data-display-lang="ja"]) div[style*="--f-jp"]:not(.notranslate) {
     <h2 class="chapter-title">Every ¥100 splits the same way.</h2>
     <p class="chapter-title-jp">100円の分配。固定。例外なし。</p>
 
-    <div class="flow-diagram">
+    <div class="flow-diagram notranslate" translate="no">
       <div style="display: grid; grid-template-columns: 1fr auto 2fr; gap: 32px; align-items: center;">
         <div style="text-align: center; padding: 32px 24px; border: 1px solid rgba(212, 175, 55, 0.3); background: linear-gradient(180deg, rgba(212, 175, 55, 0.04), transparent);">
           <div style="font-family: var(--f-display); font-size: 64px; font-weight: 800; background: linear-gradient(180deg, var(--gold-bright), var(--gold-deep)); -webkit-background-clip: text; background-clip: text; color: transparent; line-height: 1;">¥100</div>
@@ -642,7 +664,7 @@ html:not([data-display-lang="ja"]) div[style*="--f-jp"]:not(.notranslate) {
       </div>
       <div class="explainer">
         <h4>Grant Account (Escrow)</h4>
-        <p>Holds the 60%. Third-party trustee. Operator cannot withdraw. Disbursements only via the cycle's verified result. Operator insolvency does not touch a single yen of it.</p>
+        <p>For the Founding Bell opening, Grant Fund management is planned to be separated from operating revenue and held under a dedicated structure with public ledger. Until that structure and the eligibility review process are completed, Grant disbursement does not begin.</p>
       </div>
     </div>
   </section>
@@ -660,7 +682,7 @@ html:not([data-display-lang="ja"]) div[style*="--f-jp"]:not(.notranslate) {
     <div class="kv-table">
       <div class="kv-row">
         <div class="k">Patron gift amount</div>
-        <div class="v">Any amount · one-time or recurring · separate from ¥100 entry</div>
+        <div class="v notranslate" translate="no">Any amount · one-time or recurring · separate from ¥100 entry</div>
       </div>
       <div class="kv-row">
         <div class="k">Coin granted</div>
@@ -698,18 +720,18 @@ html:not([data-display-lang="ja"]) div[style*="--f-jp"]:not(.notranslate) {
     <h2 class="chapter-title">10,000 members. 100,000. 1 million.</h2>
     <p class="chapter-title-jp">数の話。規模で変わるのは比率ではなく、桁。</p>
 
-    <div class="kv-table">
+    <div class="kv-table notranslate" translate="no">
       <div class="kv-row">
         <div class="k">10,000 members</div>
-        <div class="v">Total ¥1,000,000 → Grant ¥600,000 · Revenue ¥400,000</div>
+        <div class="v notranslate" translate="no">Total <span class="price-usd" data-jpy="1000000">$6,345</span> → Grant <span class="price-usd" data-jpy="600000">$3,807</span> · Revenue <span class="price-usd" data-jpy="400000">$2,538</span></div>
       </div>
       <div class="kv-row">
         <div class="k">100,000 members</div>
-        <div class="v">Total ¥10,000,000 → Grant ¥6,000,000 · Revenue ¥4,000,000</div>
+        <div class="v notranslate" translate="no">Total <span class="price-usd" data-jpy="10000000">$63,452</span> → Grant <span class="price-usd" data-jpy="6000000">$38,071</span> · Revenue <span class="price-usd" data-jpy="4000000">$25,381</span></div>
       </div>
       <div class="kv-row">
         <div class="k">1,000,000 members</div>
-        <div class="v">Total ¥100,000,000 → Grant ¥60,000,000 · Revenue ¥40,000,000</div>
+        <div class="v notranslate" translate="no">Total <span class="price-usd" data-jpy="100000000">$634,518</span> → Grant <span class="price-usd" data-jpy="60000000">$380,711</span> · Revenue <span class="price-usd" data-jpy="40000000">$253,807</span></div>
       </div>
       <div class="kv-row">
         <div class="k">Per Bell, weekly</div>
@@ -728,27 +750,27 @@ html:not([data-display-lang="ja"]) div[style*="--f-jp"]:not(.notranslate) {
 
     <p>Coin received by the King is <em>not paid one-for-one</em>. Coin determines a tier; the tier determines the Grant. This decouples the act of voting from any cash equivalence and removes the incentive to game raw counts.</p>
 
-    <div class="tier-table">
+    <div class="tier-table notranslate" translate="no">
       <div class="tier-cell">
         <div class="tier-cell-name">— Bronze —</div>
         <div class="tier-cell-coin">10,000</div>
         <div class="tier-cell-coin-lab">Coin received</div>
         <div class="tier-cell-arrow">↓</div>
-        <div class="tier-cell-grant">¥100,000</div>
+        <div class="tier-cell-grant price-usd" data-jpy="100000">$635</div>
       </div>
       <div class="tier-cell">
         <div class="tier-cell-name">— Silver —</div>
         <div class="tier-cell-coin">100,000</div>
         <div class="tier-cell-coin-lab">Coin received</div>
         <div class="tier-cell-arrow">↓</div>
-        <div class="tier-cell-grant">¥1,000,000</div>
+        <div class="tier-cell-grant price-usd" data-jpy="1000000">$6,345</div>
       </div>
       <div class="tier-cell">
         <div class="tier-cell-name">— Gold —</div>
         <div class="tier-cell-coin">1,000,000</div>
         <div class="tier-cell-coin-lab">Coin received</div>
         <div class="tier-cell-arrow">↓</div>
-        <div class="tier-cell-grant">¥10,000,000</div>
+        <div class="tier-cell-grant price-usd" data-jpy="10000000">$63,452</div>
       </div>
       <div class="tier-cell royal">
         <div class="tier-cell-name">— Royal —</div>
@@ -774,10 +796,10 @@ html:not([data-display-lang="ja"]) div[style*="--f-jp"]:not(.notranslate) {
     <p>If the cycle's Grant Pool is below the King's calculated Tier, the Grant equals the Pool. <strong>Never more.</strong> The platform does not borrow, advance, or fundraise to cover a shortfall. Transparency over generosity.</p>
 
     <div class="kv-table">
-      <div class="kv-row"><div class="k">Calculated Tier</div><div class="v">e.g., Gold → ¥10,000,000</div></div>
-      <div class="kv-row"><div class="k">Cycle Pool</div><div class="v">e.g., ¥3,248,000 (insufficient)</div></div>
-      <div class="kv-row"><div class="k">Disbursed Grant</div><div class="v"><strong>¥3,248,000</strong> — equal to the Pool. Capped.</div></div>
-      <div class="kv-row"><div class="k">Public Display</div><div class="v">"This week's grant pool: ¥3,248,000" — visible at /fund before voting opens</div></div>
+      <div class="kv-row"><div class="k">Calculated Tier</div><div class="v notranslate" translate="no">e.g., Gold → <span class="price-usd" data-jpy="10000000">$63,452</span></div></div>
+      <div class="kv-row"><div class="k">Cycle Pool</div><div class="v notranslate" translate="no">e.g., <span class="price-usd" data-jpy="3248000">$20,609</span> (insufficient)</div></div>
+      <div class="kv-row"><div class="k">Disbursed Grant</div><div class="v notranslate" translate="no"><strong><span class="price-usd" data-jpy="3248000">$20,609</span></strong> — equal to the Pool. Capped.</div></div>
+      <div class="kv-row"><div class="k">Public Display</div><div class="v notranslate" translate="no">"This week's grant pool: <span class="price-usd" data-jpy="3248000">$20,609</span>" — visible at /fund before voting opens</div></div>
       <div class="kv-row"><div class="k">Shortfall Roll-over</div><div class="v">Future cycles continue contributing 60% to the same Fund</div></div>
     </div>
 
@@ -790,49 +812,55 @@ html:not([data-display-lang="ja"]) div[style*="--f-jp"]:not(.notranslate) {
     <h2 class="chapter-title">The Fund is public. Always.</h2>
     <p class="chapter-title-jp">Fundは常時公開。誰でも見られる。</p>
 
-    <p>The operator cannot quietly grow or shrink the Fund. Every flow is published in real time at <strong>/fund</strong>. Below: the live snapshot of Cycle 47.</p>
+    <p>The operator cannot quietly grow or shrink the Fund. Every flow is published in real time at <strong>/fund</strong>. Below: the live snapshot of Cycle <span data-live-cycle>1</span>. <em>(Cycle 1 has not yet rung — values shown will populate when the first Friday 23:23 JST passes.)</em></p>
 
-    <div class="fund-panel">
+    <div class="fund-panel notranslate" translate="no">
       <div class="fund-status">
         <span class="fund-pulse"></span>
-        <span class="fund-status-label" id="fund-update-label">— Live · Cycle 47 · Updated 1s ago —</span>
+        <span class="fund-status-label" id="fund-update-label">— Cycle 1 · Awaiting first ring · Friday 23:23 JST —</span>
       </div>
 
-      <div class="fund-current" id="fund-cycle-cap">¥ 3,248,000</div>
+      <div class="fund-current price-usd" id="fund-cycle-cap"
+           data-live-jpy="cycle_cap_jpy" data-jpy="0">$0</div>
       <div class="fund-current-label">— Grant Pool · this Cycle · Cap —</div>
 
       <div class="fund-grid">
         <div class="fund-cell">
           <div class="k">Current Fund</div>
-          <div class="v" id="fund-current-total">¥ 5,872,400</div>
+          <div class="v price-usd" id="fund-current-total"
+               data-live-jpy="grant_fund_jpy" data-jpy="0">$0</div>
           <div class="sub">All-time accumulation, post-disbursement</div>
         </div>
         <div class="fund-cell">
           <div class="k">Member Inflow · 7d</div>
-          <div class="v in" id="fund-inflow">+ ¥ 857,400</div>
-          <div class="sub">¥100 × Members, 60% to Fund</div>
+          <div class="v in price-usd" id="fund-inflow"
+               data-live-jpy="inflow_7d_jpy" data-jpy="0" data-fx-prefix="+">+$0</div>
+          <div class="sub">$0.63 × Members, 60% to Fund</div>
         </div>
         <div class="fund-cell">
           <div class="k">Patron Inflow · 7d</div>
-          <div class="v in" id="fund-patron">+ ¥ 124,800</div>
+          <div class="v in price-usd" id="fund-patron"
+               data-live-jpy="patron_7d_jpy" data-jpy="0" data-fx-prefix="+">+$0</div>
           <div class="sub">Direct donations · 100% to Fund · zero votes</div>
         </div>
         <div class="fund-cell">
           <div class="k">Outgoing · 7d</div>
-          <div class="v out" id="fund-outflow">− ¥ 1,000,000</div>
-          <div class="sub">Cycle 46 King · Silver tier · Hokori</div>
+          <div class="v out price-usd" id="fund-outflow"
+               data-live-jpy="outflow_7d_jpy" data-jpy="0" data-fx-prefix="−">−$0</div>
+          <div class="sub">No disbursements yet — Cycle 1 has not begun</div>
         </div>
         <div class="fund-cell">
           <div class="k">Reserve</div>
-          <div class="v" id="fund-reserve">¥ 2,624,400</div>
+          <div class="v price-usd" id="fund-reserve"
+               data-live-jpy="reserve_jpy" data-jpy="0">$0</div>
           <div class="sub">Held for cycle continuity, not yet allocated</div>
         </div>
       </div>
 
       <div class="fund-cycle-bar">
         <div class="fund-cycle-bar-label">
-          <span>Cycle 47 progress · Friday 23:23 → Monday 23:23 JST</span>
-          <span id="fund-cycle-progress-label">67% · 2d 14h 37m</span>
+          <span>Cycle <span data-live-cycle>1</span> progress · Friday 23:23 → Monday 23:23 JST</span>
+          <span id="fund-cycle-progress-label">Cycle 1 · Awaiting first ring</span>
         </div>
         <div class="fund-cycle-track">
           <div class="fund-cycle-fill" id="fund-cycle-fill-bar"></div>
@@ -841,7 +869,7 @@ html:not([data-display-lang="ja"]) div[style*="--f-jp"]:not(.notranslate) {
     </div>
 
     <p style="font-family: var(--f-mono); font-size: 12px; color: var(--dust); letter-spacing: 0.18em; text-transform: uppercase; margin-top: 24px;">
-      — Source · Escrow account hash · 7a4f9c2e8b1d6a5f...3a2918072f6e5d4 —
+      — Source · Escrow account hash · published with first disbursement —
     </p>
   </section>
 
@@ -854,9 +882,9 @@ html:not([data-display-lang="ja"]) div[style*="--f-jp"]:not(.notranslate) {
     <p>A Grant denominated in yen reaches the King in their local currency. <strong>The transfer fee is deducted from the Grant amount</strong> — the platform does not absorb it, the King absorbs it. This keeps the Fund integrity exact.</p>
 
     <div class="kv-table">
-      <div class="kv-row"><div class="k">Calculated Grant</div><div class="v">¥1,000,000 (Silver tier)</div></div>
-      <div class="kv-row"><div class="k">FX + Transfer Fee</div><div class="v">~ ¥20,000 (depends on corridor)</div></div>
-      <div class="kv-row"><div class="k">Net to King</div><div class="v"><strong>¥980,000</strong> equivalent in local currency</div></div>
+      <div class="kv-row"><div class="k">Calculated Grant</div><div class="v notranslate" translate="no"><span class="price-usd" data-jpy="1000000">$6,345</span> (Silver tier)</div></div>
+      <div class="kv-row"><div class="k">FX + Transfer Fee</div><div class="v notranslate" translate="no">~ <span class="price-usd" data-jpy="20000">$127</span> (depends on corridor)</div></div>
+      <div class="kv-row"><div class="k">Net to King</div><div class="v notranslate" translate="no"><strong><span class="price-usd" data-jpy="980000">$6,218</span></strong> equivalent in local currency</div></div>
       <div class="kv-row"><div class="k">Visibility</div><div class="v">Pre-disbursement quote shared with King for acknowledgement</div></div>
     </div>
   </section>
@@ -964,9 +992,11 @@ html:not([data-display-lang="ja"]) div[style*="--f-jp"]:not(.notranslate) {
     <div>
       <h5>Legal · Operator</h5>
       <ul>
-        <li><a href="https://tamjump.com/terms" rel="noopener" target="_blank" data-i18n-html="footer.terms">利用規約 / Terms</a></li>
-        <li><a href="https://tamjump.com/privacy" rel="noopener" target="_blank" data-i18n-html="footer.privacy">プライバシー / Privacy</a></li>
-        <li><a href="https://tamjump.com/commerce" rel="noopener" target="_blank" data-i18n-html="footer.commerce">特定商取引法表記</a></li>
+        <li><a href="terms.html" rel="noopener" target="_blank">利用規約 / Terms</a></li>
+        <li><a href="privacy.html" rel="noopener" target="_blank">プライバシー / Privacy</a></li>
+        <li><a href="commerce.html" rel="noopener" target="_blank">特定商取引法表記</a></li>
+        <li><a href="rules.html" rel="noopener" target="_blank">Bell Game Rules</a></li>
+        <li><a href="risk.html" rel="noopener" target="_blank">Important Notices</a></li>
         <li><a href="https://tamjump.com/" rel="noopener" target="_blank">Operator · TAmJ ↗</a></li>
       </ul>
     </div>
@@ -977,8 +1007,9 @@ html:not([data-display-lang="ja"]) div[style*="--f-jp"]:not(.notranslate) {
   </div>
 </footer>
 
-<script src="js/i18n.js?v=20260512k"></script>
-<script src="js/main.js?v=20260512k"></script>
+<script src="js/i18n.js?v=20260514d"></script>
+<script src="js/fx.js?v=20260514d"></script>
+<script src="js/main.js?v=20260514d"></script>
 
 </body>
 </html>
