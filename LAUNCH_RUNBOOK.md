@@ -182,11 +182,15 @@ open http://localhost:8000/entry.html
 4. 以下を入力:
 
 ```
-Rule name:    Geo restriction — JP only
+Rule name:    Geo restriction — JP only (king2323 subdomain)
 When incoming requests match:
   → "Edit expression" を押して以下を貼り付け:
   
-  (ip.geoip.country ne "JP")
+  (http.host eq "king2323.tamjump.com" and ip.geoip.country ne "JP")
+
+  ⚠️ ホスト名フィルタ (http.host eq ...) を必ず含めること。
+     これを抜くと tamjump.com 親ドメイン全体が JP-only になり、
+     他のサブドメイン (運営者所有の別サイト) を巻き込んで殺します。
 
 Then:
   Action:                   Block
@@ -468,7 +472,7 @@ https://king2323.tamjump.com
 
 - Cloudflare WAF Custom Rule を確認
 - VPN を ON にしていないか確認(自宅の VPN が海外サーバー経由になっているケース)
-- ルール式 `(ip.geoip.country ne "JP")` が正確かを確認(`!=` ではない)
+- ルール式 `(http.host eq "king2323.tamjump.com" and ip.geoip.country ne "JP")` が正確かを確認(`!=` ではない、ホスト名フィルタも忘れない)
 
 ### Square で「日本円が選べない」
 
