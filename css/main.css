@@ -1546,17 +1546,30 @@ header.hero-v2 {
   flex: 1 1 auto;
 }
 
-/* Override .gorilla-frame inline width:clamp(320px,38vw,480px) */
+/* Override .gorilla-frame inline width:clamp(320px,38vw,480px).
+   Sized conservatively so gorilla never gets clipped on common viewports. */
 .hero-v2 .gorilla-frame.gorilla-frame-fullscreen,
 .hero-stage .gorilla-frame {
   position: relative;
-  width: min(70vmin, 620px) !important;
-  height: min(70vmin, 620px) !important;
+  width: min(55vmin, 540px) !important;
+  height: min(55vmin, 540px) !important;
   aspect-ratio: 1;
-  max-width: 90vw;
-  max-height: 78vh;
+  max-width: 80vw;
+  max-height: 65vh;
   margin: 0;
   flex: 0 0 auto;
+}
+/* Static still image fills the frame; contain so nothing gets cropped */
+.hero-stage .hero-still {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  position: relative;
+  z-index: 2;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
 }
 .hero-stage .hero-video {
   width: 100%;
@@ -1657,8 +1670,10 @@ header.hero-v2 {
   }
   .hero-v2 .gorilla-frame.gorilla-frame-fullscreen,
   .hero-stage .gorilla-frame {
-    width: 82vmin !important;
-    height: 82vmin !important;
+    width: 70vmin !important;
+    height: 70vmin !important;
+    max-width: 80vw;
+    max-height: 60vh;
   }
 }
 
@@ -1666,7 +1681,8 @@ header.hero-v2 {
 @media (max-height: 700px) {
   .hero-v2 .gorilla-frame.gorilla-frame-fullscreen,
   .hero-stage .gorilla-frame {
-    width: 60vmin !important;
-    height: 60vmin !important;
+    width: 48vmin !important;
+    height: 48vmin !important;
+    max-height: 60vh;
   }
 }
