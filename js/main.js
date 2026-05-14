@@ -156,9 +156,28 @@
   setInterval(tick, 1000);
 
   // ---------- Active nav highlight on scroll ----------
+  // CRITICAL: .nav-menu contains hrefs of three kinds —
+  //   1. in-page anchors: "#why", "#bell", "#three", etc.
+  //   2. other-page links: "money.html", "verify.html", "entry.html"
+  //   3. external absolute URLs: "https://tamjump.com/terms.html" etc.
+  //
+  // Passing #2 or #3 to document.querySelector() is wrong:
+  //   - #2 returns null silently (interpreted as nonexistent tag.class).
+  //   - #3 THROWS a SyntaxError because ':' / '/' are invalid CSS selector
+  //     characters. That uncaught throw kills the entire IIFE — every
+  //     handler below this point (mobile hamburger, /fund live counter,
+  //     IntersectionObserver reveal) silently stops working.
+  //
+  // The active-nav logic only makes sense for in-page anchors anyway,
+  // so we filter to hrefs starting with '#' BEFORE querying the DOM.
   const navLinks = document.querySelectorAll('.nav-menu a');
   const sections = Array.from(navLinks)
-    .map(a => document.querySelector(a.getAttribute('href')))
+    .map(a => a.getAttribute('href'))
+    .filter(href => href && href.length > 1 && href.charAt(0) === '#')
+    .map(href => {
+      try { return document.querySelector(href); }
+      catch (_) { return null; }
+    })
     .filter(Boolean);
 
   function updateActiveNav() {
