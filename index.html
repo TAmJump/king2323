@@ -2649,7 +2649,7 @@ html:not([data-display-lang="ja"]) span[style*="--f-jp"]:not(.notranslate) {
   </div>
 
   <div class="hero-right fade-up d2">
-    <div class="gorilla-frame">
+    <div class="gorilla-frame gorilla-frame-clickable" id="gorillaFrame" role="button" tabindex="0" aria-label="Play KINGMAKER 23:23 short film">
       <span class="breath-ring breath-ring-1" aria-hidden="true"></span>
       <span class="breath-ring breath-ring-2" aria-hidden="true"></span>
       <span class="breath-ring breath-ring-3" aria-hidden="true"></span>
@@ -2659,6 +2659,16 @@ html:not([data-display-lang="ja"]) span[style*="--f-jp"]:not(.notranslate) {
         <source src="video/hero.mp4"  type="video/mp4">
         <img src="assets/logo-v3-512.png" alt="King Gorilla">
       </video>
+      <div class="gorilla-play-overlay" aria-hidden="true">
+        <div class="gorilla-play-icon">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+            <path d="M9 5 L26 16 L9 27 Z" fill="currentColor"/>
+          </svg>
+        </div>
+        <div class="gorilla-play-label">
+          <span class="lang-en">TAP TO WATCH</span><span class="lang-ja">TAP TO WATCH</span>
+        </div>
+      </div>
     </div>
     <div class="countdown notranslate" id="countdown" translate="no">
       <div class="countdown-label">— The Bell opens in —</div>
@@ -4129,6 +4139,98 @@ html:not([data-display-lang="ja"]) span[style*="--f-jp"]:not(.notranslate) {
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && overlay.classList.contains('open')) close();
   });
+})();
+</script>
+
+<!-- ============== KINGMAKER SHORT FILM MODAL ============== -->
+<div class="km-shortfilm-overlay" id="kmShortfilmOverlay" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="kmShortfilmTitle">
+  <div class="km-shortfilm-frame" id="kmShortfilmFrame">
+    <button type="button" class="km-shortfilm-close" id="kmShortfilmClose" aria-label="Close short film">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path d="M6 6 L18 18 M6 18 L18 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </button>
+    <div class="km-shortfilm-meta">
+      <span class="km-shortfilm-label">— A FILE ON 23:23 —</span>
+      <span class="km-shortfilm-title" id="kmShortfilmTitle">KINGMAKER 23:23</span>
+    </div>
+    <video class="km-shortfilm-video" id="kmShortfilmVideo" playsinline preload="none" poster="video/kingmaker_short_poster.webp">
+      <source src="video/kingmaker_short.webm" type="video/webm">
+      <source src="video/kingmaker_short.mp4"  type="video/mp4">
+    </video>
+  </div>
+</div>
+
+<script>
+/* KINGMAKER short film modal — open on gorilla-frame click, pause anthem during playback */
+(function () {
+  const trigger = document.getElementById('gorillaFrame');
+  const overlay = document.getElementById('kmShortfilmOverlay');
+  const closeBtn = document.getElementById('kmShortfilmClose');
+  const video = document.getElementById('kmShortfilmVideo');
+  const anthem = document.getElementById('km-anthem');
+  const anthemToggle = document.getElementById('km-audio-toggle');
+
+  if (!trigger || !overlay || !video) return;
+
+  let anthemWasPlaying = false;
+
+  function open() {
+    // Pause anthem if it was playing
+    if (anthem && !anthem.paused) {
+      anthemWasPlaying = true;
+      anthem.pause();
+      if (anthemToggle) anthemToggle.setAttribute('data-state', 'paused-by-film');
+    } else {
+      anthemWasPlaying = false;
+    }
+    overlay.classList.add('open');
+    overlay.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    // Start from beginning, unmuted
+    video.currentTime = 0;
+    video.muted = false;
+    video.volume = 1.0;
+    const playPromise = video.play();
+    if (playPromise && playPromise.catch) {
+      playPromise.catch(() => {
+        // Autoplay blocked — keep modal open, user can tap video to play
+      });
+    }
+  }
+
+  function close() {
+    overlay.classList.remove('open');
+    overlay.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    video.pause();
+    video.currentTime = 0;
+    // Resume anthem if it was playing before
+    if (anthemWasPlaying && anthem) {
+      anthem.play().catch(() => {});
+      if (anthemToggle) anthemToggle.setAttribute('data-state', 'on');
+    }
+    anthemWasPlaying = false;
+  }
+
+  trigger.addEventListener('click', open);
+  trigger.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      open();
+    }
+  });
+
+  closeBtn.addEventListener('click', close);
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) close();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && overlay.classList.contains('open')) close();
+  });
+
+  // Auto-close when video ends
+  video.addEventListener('ended', close);
 })();
 </script>
 
