@@ -1364,7 +1364,7 @@ html:not([data-display-lang="ja"]) .entry-page .entry-note.jp {
    red-crimson disc. */
 .gorilla-play-button {
   position: absolute;
-  top: 20%;
+  top: 30%;
   left: 50%;
   transform: translate(-50%, -50%);
   width: 36px;
@@ -1420,7 +1420,7 @@ html:not([data-display-lang="ja"]) .entry-page .entry-note.jp {
   .gorilla-play-button {
     width: 28px;
     height: 28px;
-    top: 20%;
+    top: 30%;
   }
   .gorilla-play-button-glyph {
     font-size: 10px;
