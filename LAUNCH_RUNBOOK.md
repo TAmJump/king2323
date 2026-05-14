@@ -105,61 +105,75 @@ tamjump.com 側には:
 
 ---
 
-## Step 2 · Formspree 設定 ⏱ 15分
+## Step 2 · Cloudflare Workers にエントリーAPI追加 ⏱ 15分
 
-`entry.html` の Mission 申込フォームは Formspree というサービスにメールで届く仕組み。アカウント作成からエンドポイント取得まで:
+`entry.html` の Mission 申込フォームは、TAmJ コーポレートと同じ仕組みで動かします:**既存の `tamjump-contact-api` Worker に `/entry` エンドポイントを追加**(同 Worker・同 DB・同 SES、project='kingmaker' で識別)。
 
-### 2.1 アカウント作成
+Formspree は使いません(月 50 件制限、第三者経由、運用分散のため)。
 
-1. https://formspree.io/ にアクセス
-2. 右上 **Get Started** → メアドとパスワードで登録(無料プラン: 月50送信まで)
-3. メアド確認 → ログイン
+### 2.1 改修済み Worker コードをデプロイ
 
-### 2.2 フォーム作成
+Claude が用意した `worker_v2_kingmaker.js` を Cloudflare ダッシュボードに反映:
 
-1. ダッシュボード **+ New Form**
-2. Form Name: `KINGMAKER Mission Entry`
-3. Send Email To: あなたが受信したいメアド(運営連絡用)
-4. **Create Form**
-5. 出てきた画面の上部に endpoint URL が表示される。形は:
-   ```
-   https://formspree.io/f/abcdEFGH
-   ```
-   この `https://formspree.io/f/abcdEFGH` をコピーする(末尾の8文字あたりがあなたのIDです)
+1. https://dash.cloudflare.com/ にログイン
+2. **Workers & Pages** → **`tamjump-contact-api`** を開く
+3. 右上の **「Edit code」** ボタン
+4. エディタ内で **Ctrl+A** → **Delete**(既存コード全削除)
+5. `worker_v2_kingmaker.js` の中身を全コピペ
+6. 右上の **「Deploy」** ボタン
+7. 「Success」表示を確認
 
-### 2.3 entry.html に差し込み
+**変更点:**
+- `ALLOWED_ORIGINS` に `https://king2323.tamjump.com` 追加
+- `PROJECT_CONFIG.kingmaker` 追加(prefix=KM、件名【KINGMAKER 23:23】等)
+- **新規エンドポイント `POST /entry`**(handleEntry)
+- KingMaker 用の英日 bilingual メール文面(運営宛 + 自動返信)
 
-```bash
-# プレースホルダ確認
-grep "REPLACE_WITH_YOUR_FORMSPREE_ID" entry.html
-# 期待: 1件ヒット
-```
+**既存の `/contact`(tamjump / scsgo)は完全に無変更** — 影響なし。
 
-`entry.html` をエディタで開く → `REPLACE_WITH_YOUR_FORMSPREE_ID` を実際のID(例 `abcdEFGH`)に置換 → 保存。
+### 2.2 動作確認(curl で疎通テスト)
 
-または bash で一発:
+デプロイ完了後、Claude 側で以下を実行して 200 が返ってくることを確認:
 
 ```bash
-sed -i.bak 's|REPLACE_WITH_YOUR_FORMSPREE_ID|abcdEFGH|g' entry.html
-rm entry.html.bak
-
-# 確認
-grep "formspree.io" entry.html
-# 期待: action="https://formspree.io/f/abcdEFGH" method="POST"
+curl -X POST https://tamjump-contact-api.animalb001.workers.dev/entry \
+  -H 'Content-Type: application/json' \
+  -H 'Origin: https://king2323.tamjump.com' \
+  -d '{
+    "payment_email":"test@example.com",
+    "receipt_id":"TEST-001",
+    "mission_name":"Pre-launch sanity test",
+    "country":"Japan",
+    "mission_summary":"This is a sanity test from the launch checklist.",
+    "sns":"",
+    "agree_rules":true
+  }'
 ```
 
-### 2.4 動作確認
-
-ローカルで開いて1件送信してみる(後で Step 5 で本番でも再テスト):
-
-```bash
-# ローカルサーバー起動
-python3 -m http.server 8000
-
-# 別ターミナルで
-open http://localhost:8000/entry.html
-# テスト送信 → Formspree が初回は確認メールを送ってくる → 承認
+期待する応答:
+```json
+{"success":true,"message":"Mission Entry を受け付けました / Mission Entry received","ticketNumber":"KM-20260514-0001"}
 ```
+
+加えて、`info@tamjump.com` にテストメールが届くこと、自動返信が `test@example.com` に送られたことを SES のログ等で確認。
+
+### 2.3 entry.html はすでに更新済み(v20260514j 以降)
+
+`entry.html` は `<form>` を JS の `fetch()` ベースに改修済み:
+
+- `action` 属性は無し、`id="entryForm"` の JS ハンドラが POST
+- API_URL は `https://tamjump-contact-api.animalb001.workers.dev/entry`
+- 成功時は受付番号(KM-YYYYMMDD-NNNN)表示、フォームは隠れる
+- エラー時は赤帯でエラー表示
+- 利用規約同意チェックがクライアント側でも検証
+
+### 2.4 Formspree(過去案)は廃止
+
+過去版では Formspree を予定していましたが、Workers 統一に変更しました。理由:
+- 既存(tamjump / scsgo)と運用が一致
+- 月 50 件制限なし
+- 第三者を経由しない(参加者データ・メアドが formspree.io に行かない)
+- カスタムドメイン化(`api.tamjump.com`)に乗れる
 
 ---
 
