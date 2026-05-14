@@ -1,0 +1,16 @@
+# KINGMAKER 23:23 — robots.txt
+# Operator: TAmJ (タムジ株式会社)
+
+User-agent: *
+Allow: /
+
+# Disallow the entry form from being indexed — it's gated by
+# Square receipt and we don't want it surfaced to people who
+# haven't completed payment.
+Disallow: /entry.html
+
+# Internal API endpoints
+Disallow: /api/
+Disallow: /worker/
+
+Sitemap: https://king2323.tamjump.com/sitemap.xml
