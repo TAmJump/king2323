@@ -1115,30 +1115,30 @@
     'ritual.why.p1': {
       en: '23:23 is the threshold — the minute just before a day ends, when '
         + 'everyone in the world is thinking "time to sleep." That '
-        + '<strong>edge moment</strong>. KINGMAKER\'s Bell opens only at '
-        + 'this hour. Five minutes a week. No more.',
-      ko: '23:23은 임계점 — 하루가 끝나기 직전, 세상 모두가 "잘 시간"이라고 생각하는 그 1분. 그 <strong>경계의 순간</strong>. KINGMAKER의 Bell은 이 시각에만 열린다. 주에 5분. 그뿐이다.',
-      es: '23:23 es el umbral — el minuto justo antes de que el día termine, cuando todos en el mundo piensan "es hora de dormir". Ese <strong>momento del borde</strong>. La Bell de KINGMAKER se abre solo en esta hora. Cinco minutos por semana. Nada más.',
-      hi: '23:23 दहलीज़ है — दिन ख़त्म होने से ठीक पहले का मिनट, जब दुनिया भर में लोग सोचते हैं "अब सोने का वक्त है"। वही <strong>सीमा-क्षण</strong>। KINGMAKER की Bell केवल इसी घड़ी पर खुलती है। हफ्ते में पाँच मिनट। बस।',
-      vi: '23:23 là ngưỡng — phút trước khi ngày kết thúc, khi cả thế giới nghĩ "đến giờ ngủ rồi". <strong>Khoảnh khắc ranh giới</strong> đó. Bell của KINGMAKER chỉ mở vào giờ này. Năm phút mỗi tuần. Không hơn.',
-      pt: '23:23 é o limiar — o minuto antes do dia acabar, quando todos no mundo pensam "hora de dormir". Esse <strong>momento de borda</strong>. A Bell de KINGMAKER se abre só nessa hora. Cinco minutos por semana. Nada mais.',
-      id: '23:23 adalah ambang — menit tepat sebelum hari berakhir, ketika semua orang di dunia berpikir "waktunya tidur". <strong>Saat-tepi</strong> itu. Bell KINGMAKER hanya terbuka di jam ini. Lima menit seminggu. Tak lebih.',
-      th: '23:23 คือธรณีประตู — นาทีก่อนวันจะสิ้นสุด เมื่อทุกคนในโลกคิดว่า "ถึงเวลานอน" นั่นคือ<strong>ห้วงเวลาขอบ</strong>นั้น Bell ของ KINGMAKER เปิดเพียงชั่วโมงนี้ ห้านาทีต่อสัปดาห์ ไม่มีอีก',
-      fr: '23:23 est le seuil — la minute juste avant la fin du jour, quand tout le monde pense "il est temps de dormir". Ce <strong>moment de bordure</strong>. La Bell de KINGMAKER ne s\'ouvre qu\'à cette heure. Cinq minutes par semaine. Pas plus.',
+        + '<strong>edge moment</strong>. KINGMAKER\'s Bell rings only at '
+        + 'this hour.',
+      ko: '23:23은 임계점 — 하루가 끝나기 직전, 세상 모두가 "잘 시간"이라고 생각하는 그 1분. 그 <strong>경계의 순간</strong>. KINGMAKER의 Bell은 이 시각에만 울린다.',
+      es: '23:23 es el umbral — el minuto justo antes de que el día termine, cuando todos en el mundo piensan "es hora de dormir". Ese <strong>momento del borde</strong>. La Bell de KINGMAKER suena solo en esta hora.',
+      hi: '23:23 दहलीज़ है — दिन ख़त्म होने से ठीक पहले का मिनट, जब दुनिया भर में लोग सोचते हैं "अब सोने का वक्त है"। वही <strong>सीमा-क्षण</strong>। KINGMAKER की Bell केवल इसी घड़ी पर बजती है।',
+      vi: '23:23 là ngưỡng — phút trước khi ngày kết thúc, khi cả thế giới nghĩ "đến giờ ngủ rồi". <strong>Khoảnh khắc ranh giới</strong> đó. Bell của KINGMAKER chỉ reo vào giờ này.',
+      pt: '23:23 é o limiar — o minuto antes do dia acabar, quando todos no mundo pensam "hora de dormir". Esse <strong>momento de borda</strong>. A Bell de KINGMAKER soa só nessa hora.',
+      id: '23:23 adalah ambang — menit tepat sebelum hari berakhir, ketika semua orang di dunia berpikir "waktunya tidur". <strong>Saat-tepi</strong> itu. Bell KINGMAKER hanya berbunyi di jam ini.',
+      th: '23:23 คือธรณีประตู — นาทีก่อนวันจะสิ้นสุด เมื่อทุกคนในโลกคิดว่า "ถึงเวลานอน" นั่นคือ<strong>ห้วงเวลาขอบ</strong>นั้น Bell ของ KINGMAKER ดังเพียงในชั่วโมงนี้',
+      fr: '23:23 est le seuil — la minute juste avant la fin du jour, quand tout le monde pense "il est temps de dormir". Ce <strong>moment de bordure</strong>. La Bell de KINGMAKER ne sonne qu\'à cette heure.',
     },
     'ritual.why.p2': {
-      en: 'The Bell opens at <strong>23:23 JST on Friday</strong> and closes '
-        + 'at <strong>23:23 JST on Monday</strong>. Each country observes '
-        + 'it at the same instant — synchronized to the same point on the '
-        + 'globe\'s clock.',
-      ko: 'Bell은 <strong>Friday 23:23 JST</strong>에 열려, <strong>Monday 23:23 JST</strong>에 닫힌다. 모든 나라가 동일한 순간에 — 지구 시계의 동일 지점에 — 동기화되어 이를 맞이한다.',
-      es: 'La Bell se abre el <strong>Friday 23:23 JST</strong> y se cierra el <strong>Monday 23:23 JST</strong>. Cada país lo observa en el mismo instante — sincronizado al mismo punto del reloj global.',
-      hi: 'Bell <strong>Friday 23:23 JST</strong> को खुलती है और <strong>Monday 23:23 JST</strong> को बंद होती है। हर देश इसे ठीक उसी पल देखता है — ग्लोबल घड़ी के एक ही बिंदु पर सिंक।',
-      vi: 'Bell mở vào <strong>Friday 23:23 JST</strong> và đóng vào <strong>Monday 23:23 JST</strong>. Mỗi quốc gia quan sát cùng một khoảnh khắc — đồng bộ với cùng một điểm trên đồng hồ địa cầu.',
-      pt: 'A Bell se abre na <strong>Friday 23:23 JST</strong> e se fecha na <strong>Monday 23:23 JST</strong>. Cada país a observa no mesmo instante — sincronizado ao mesmo ponto do relógio global.',
-      id: 'Bell terbuka pada <strong>Friday 23:23 JST</strong> dan tertutup pada <strong>Monday 23:23 JST</strong>. Setiap negara mengamatinya pada saat yang sama — disinkronkan ke titik yang sama pada jam dunia.',
-      th: 'Bell เปิดที่ <strong>Friday 23:23 JST</strong> และปิดที่ <strong>Monday 23:23 JST</strong> ทุกประเทศสังเกตในวินาทีเดียวกัน — ซิงค์ที่จุดเดียวกันบนนาฬิกาโลก',
-      fr: 'La Bell s\'ouvre le <strong>Friday 23:23 JST</strong> et se ferme le <strong>Monday 23:23 JST</strong>. Chaque pays l\'observe au même instant — synchronisé au même point sur l\'horloge du globe.',
+      en: 'The Bell rings at <strong>23:23 JST</strong>. The world witnesses '
+        + 'at <strong>the same instant</strong> — one point on the globe\'s '
+        + 'clock. Exact dates for each Cycle are shown in the countdown '
+        + 'at the top of every page.',
+      ko: 'Bell은 <strong>23:23 JST</strong>에만 울린다. 세계가 <strong>같은 순간</strong>에 — 지구 시계의 한 점에 — 함께 지켜본다. 각 Cycle의 정확한 일정은 페이지 상단의 카운트다운에서 확인.',
+      es: 'La Bell suena en <strong>23:23 JST</strong>. El mundo la presencia en <strong>el mismo instante</strong> — un punto en el reloj global. Las fechas exactas de cada Cycle se ven en la cuenta regresiva al inicio de cada página.',
+      hi: 'Bell <strong>23:23 JST</strong> पर बजती है। दुनिया <strong>एक ही पल</strong> देखती है — ग्लोबल घड़ी का एक बिंदु। हर Cycle की सटीक तारीखें हर पृष्ठ के शीर्ष पर काउंटडाउन में दिखाई देती हैं।',
+      vi: 'Bell reo vào <strong>23:23 JST</strong>. Thế giới chứng kiến trong <strong>cùng một khoảnh khắc</strong> — một điểm trên đồng hồ địa cầu. Ngày chính xác của mỗi Cycle hiển thị trong đồng hồ đếm ngược ở đầu mỗi trang.',
+      pt: 'A Bell soa em <strong>23:23 JST</strong>. O mundo testemunha no <strong>mesmo instante</strong> — um ponto no relógio do globo. As datas exatas de cada Cycle aparecem na contagem regressiva no topo de cada página.',
+      id: 'Bell berbunyi pada <strong>23:23 JST</strong>. Dunia menyaksikan dalam <strong>saat yang sama</strong> — satu titik pada jam dunia. Tanggal pasti setiap Cycle ditampilkan dalam hitung mundur di atas setiap halaman.',
+      th: 'Bell ดังที่ <strong>23:23 JST</strong> โลกเป็นพยานใน<strong>วินาทีเดียวกัน</strong> — จุดเดียวบนนาฬิกาโลก วันที่แน่นอนของแต่ละ Cycle แสดงในตัวนับถอยหลังที่ด้านบนของทุกหน้า',
+      fr: 'La Bell sonne à <strong>23:23 JST</strong>. Le monde en témoigne au <strong>même instant</strong> — un point sur l\'horloge du globe. Les dates exactes de chaque Cycle figurent dans le compte à rebours en haut de chaque page.',
     },
     'ritual.why.p3': {
       en: 'The hour itself doesn\'t carry meaning. '

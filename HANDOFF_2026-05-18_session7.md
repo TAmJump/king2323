@@ -128,6 +128,7 @@ session 5 最後(v20260514z)で止まっていた CHANGES.md に、session 6 後
 | `HANDOFF_2026-05-14_session5.md` | session 5 引き継ぎ | (歴史記録) |
 | **`LAUNCH_RUNBOOK.md`** | **launch 手順書(session 7 リライト)** | session 7 |
 | **`docs/SNS_LAUNCH_KIT.md`** | **SNS 投稿テンプレ集** | session 7 |
+| **`docs/GLOBAL_ROLLOUT.md`** | **世界展開戦略の議論スナップショット**(草稿、Cycle 1 後の議論用) | session 7 |
 | `docs/archived/LAUNCH_RUNBOOK_session5_5-15.md` | 旧 runbook(歴史記録、実行禁止) | session 5 |
 | `WAF_SEO_BYPASS.md` | WAF expression の決定版 | session 6 |
 | `DEPLOY_geoblock.md` | (古い WAF 文書、参照不要) | session 5 |
