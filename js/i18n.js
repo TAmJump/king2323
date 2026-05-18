@@ -332,22 +332,17 @@
       listEl.innerHTML = '';
       let count = 0;
       const TIER1_COUNT = 10;  // First 10 in LANGS are TAmJ priority
-      let separatorShown = false;
-      LANGS.forEach(([code, name, native], idx) => {
+      // v20260518n: only show TIER 1 in the picker. TIER 2 (the other
+      // 98 languages) used to be listed too, but for those languages
+      // only the Google Translate auto-translation kicks in — UI labels
+      // are NOT in the dictionary, so the user picks "Suomi" and sees
+      // mostly English. That's confusing. We hide TIER 2 until those
+      // languages get dictionary entries (POSTLAUNCH_TODO §2).
+      LANGS.slice(0, TIER1_COUNT).forEach(([code, name, native]) => {
         const hit = !q || code.toLowerCase().includes(q) ||
                     name.toLowerCase().includes(q) ||
                     native.toLowerCase().includes(q);
         if (!hit) return;
-        // Insert a visual separator between TIER 1 and the rest, but
-        // only when not filtering (filter shows a flat list).
-        if (!q && idx === TIER1_COUNT && !separatorShown) {
-          const sep = document.createElement('div');
-          sep.className = 'lang-tier-separator notranslate';
-          sep.setAttribute('translate', 'no');
-          sep.textContent = '— More languages —';
-          listEl.appendChild(sep);
-          separatorShown = true;
-        }
         count++;
         const opt = document.createElement('button');
         opt.type = 'button';
@@ -2722,16 +2717,16 @@
       fr: 'Pays',
     },
     'entry.label.mission_summary': {
-      ja: 'Mission の内容(具体的に。Grant を何にどう使うか)',
-      en: 'Mission summary (be specific — what will the Grant fund accomplish?)',
-      ko: 'Mission 내용 (구체적으로. Grant를 어디에 어떻게 사용할 것인가)',
-      es: 'Resumen de la Mission (sé específico — ¿qué logrará el Grant?)',
-      hi: 'Mission का सार (विशिष्ट रहें — Grant से क्या प्राप्त होगा?)',
-      vi: 'Tóm tắt Mission (cụ thể — Grant sẽ đạt được điều gì?)',
-      pt: 'Resumo da Mission (seja específico — o que o Grant vai realizar?)',
-      id: 'Ringkasan Mission (spesifik — apa yang akan dicapai Grant?)',
-      th: 'สรุป Mission (เจาะจง — Grant จะใช้ทำอะไรและอย่างไร)',
-      fr: 'Résumé de la Mission (soyez précis — qu\'accomplira la subvention Grant ?)',
+      ja: 'Mission の内容(20〜50文字)',
+      en: 'Mission summary (20–50 characters)',
+      ko: 'Mission 내용 (20-50자)',
+      es: 'Resumen de la Mission (20–50 caracteres)',
+      hi: 'Mission का सार (20–50 अक्षर)',
+      vi: 'Tóm tắt Mission (20–50 ký tự)',
+      pt: 'Resumo da Mission (20–50 caracteres)',
+      id: 'Ringkasan Mission (20–50 karakter)',
+      th: 'สรุป Mission (20–50 ตัวอักษร)',
+      fr: 'Résumé de la Mission (20–50 caractères)',
     },
     'entry.label.sns': {
       ja: '任意 — Web サイトまたは SNS',
@@ -2816,6 +2811,30 @@
       id: 'Email konfirmasi telah dikirim ke alamat Anda. Kami akan memverifikasi catatan pembayaran Square Anda terhadap entry ini.',
       th: 'อีเมลยืนยันถูกส่งไปยังที่อยู่ของคุณแล้ว เราจะตรวจสอบบันทึกการชำระเงิน Square ของคุณกับ entry นี้',
       fr: 'Un e-mail de confirmation a été envoyé à votre adresse. Nous vérifierons votre enregistrement de paiement Square par rapport à cette entry.',
+    },
+    'entry.prefill.notice': {
+      ja: '前回の Entry から連絡先を復元しました。Mission の内容と Square 領収書 ID は今回のものを入力してください。',
+      en: 'Restored contact details from your previous Entry. Please enter this Cycle\'s Mission content and Square receipt ID.',
+      ko: '이전 Entry에서 연락처를 복원했습니다. 이번 Cycle의 Mission 내용과 Square 영수증 ID는 다시 입력해 주십시오.',
+      es: 'Hemos restaurado tus datos de contacto de la Entry anterior. Por favor, introduce el contenido de la Mission y el ID del recibo de Square para este Cycle.',
+      hi: 'आपकी पिछली Entry से संपर्क विवरण पुनर्स्थापित किए गए हैं। कृपया इस Cycle का Mission सामग्री और Square रसीद ID दर्ज करें।',
+      vi: 'Đã khôi phục thông tin liên hệ từ Entry trước của bạn. Vui lòng nhập nội dung Mission và ID hóa đơn Square cho Cycle này.',
+      pt: 'Restauramos os dados de contato da sua Entry anterior. Por favor, insira o conteúdo da Mission e o ID do recibo do Square para este Cycle.',
+      id: 'Detail kontak dari Entry sebelumnya telah dipulihkan. Silakan masukkan konten Mission dan ID tanda terima Square untuk Cycle ini.',
+      th: 'กู้คืนข้อมูลติดต่อจาก Entry ก่อนหน้าแล้ว โปรดกรอกเนื้อหา Mission และรหัสใบเสร็จ Square สำหรับ Cycle นี้',
+      fr: 'Coordonnées restaurées depuis votre Entry précédente. Veuillez saisir le contenu de la Mission et l\'ID du reçu Square pour ce Cycle.',
+    },
+    'entry.prefill.clear': {
+      ja: 'クリア',
+      en: 'CLEAR',
+      ko: '지우기',
+      es: 'BORRAR',
+      hi: 'साफ़ करें',
+      vi: 'XÓA',
+      pt: 'LIMPAR',
+      id: 'HAPUS',
+      th: 'ล้าง',
+      fr: 'EFFACER',
     },
     'entry.note': {
       ja: 'Bell Entry は参加記録です。通貨・暗号資産・前払式支払手段・投資商品ではなく、換金できません。Grant 支給は本人確認・Mission 確認・AML 審査・法令確認・Grant Fund 残高確認を経た場合に限り、運営者の判断で行われます。選出・公開一覧への掲載自体は Grant の権利を意味しません。',
