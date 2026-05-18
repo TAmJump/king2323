@@ -45,12 +45,20 @@
   .entry-page input[type=email],
   .entry-page input[type=url],
   .entry-page textarea {
+    /* defensive — explicit display+box so the form survives any
+       upstream CSS regression (was missing the opening brace of a
+       second declaration block previously, which broke the form
+       silently in some browsers) */
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    min-height: 44px;
+    padding: 14px 16px;
     background: var(--paper-2);
-    border: 1px solid var(--line);
     color: var(--bone);
+    border: 1px solid var(--line);
     font-family: var(--f-serif);
     font-size: 15px;
-    padding: 14px 16px;
     line-height: 1.5;
     transition: border-color 0.2s ease;
   }
@@ -292,6 +300,6 @@
 
 </main>
 
-<script src="js/i18n.js?v=20260514d"></script>
+<script src="js/i18n.js?v=20260518i"></script>
 </body>
 </html>
