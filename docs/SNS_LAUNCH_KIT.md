@@ -47,6 +47,9 @@ KINGMAKER 23:23 — the bell has opened.
 ¥100 does not buy a prize. It records a will.
 To be chosen, you must choose.
 
+Cycle 1 · Japan only.
+Other regions coming after legal review.
+
 Bell rings · Fri 5/22 · 23:23 JST
 The Three · Sat 5/23 · 23:23 JST
 
@@ -134,6 +137,141 @@ Link in bio.
 - X はスケジュール投稿可、Threads は手動推奨、Instagram は手動
 - 投稿後すぐに、フライヤー画像(`/art/myth_*.webp` から1枚)を追加投稿 or 引用 RT
 
+## 1-7. TIER 1 残り 8 言語の予告投稿(参加促進ではなく「将来予告」型)
+
+サイトは 108 言語対応(`i18n.js`)で TIER 1 戦略言語が 10。JA/EN はフル告知済みなので、残り 8 言語(韓 / 西 / 印 / 越 / 葡 / 尼 / 泰 / 仏)で短い予告投稿を出します。
+
+**投稿戦略:**
+
+- 5/20 23:23 JST から **30 分後 (23:53 JST)** に 8 言語を **連投 / スレッド化**
+- Cycle 1 は日本国内のみなので **参加を促さない** — 各言語圏のフォロワーに「世界の鐘が鳴った、君たちの番はもうすぐ」と伝えるだけ
+- 各言語版は同一フォーマット(KINGMAKER / Bell は固有名詞として原語維持)
+- ハッシュタグ `#KINGMAKER2323` は全言語共通
+
+**注意事項:**
+
+> これらの翻訳は Claude が作成したもので、各言語ネイティブのチェックを通していません。launch 前に各言語圏のネイティブスピーカーに目を通してもらうことを強く推奨します(特に韓・印・越・泰)。最低限、ブランド語(KINGMAKER / Bell / Cycle / 23:23)が翻訳されていないこと、語気が「賭博/投資」を匂わせないことを確認してください。
+
+### 韓国語 (한국어)
+
+```
+🔔 KINGMAKER 23:23
+
+종이 일본 시간 23:23에 울렸습니다.
+Cycle 1이 일본에서 열렸습니다.
+
+다른 지역도 법적 검토 후 곧 시작됩니다.
+계속 지켜봐 주세요.
+
+https://king2323.tamjump.com
+#KINGMAKER2323
+```
+
+### スペイン語 (Español)
+
+```
+🔔 KINGMAKER 23:23
+
+La campana ha sonado a las 23:23 JST.
+El Cycle 1 está abierto en Japón.
+
+Otras regiones llegarán tras revisión legal.
+Manténganse atentos.
+
+https://king2323.tamjump.com
+#KINGMAKER2323
+```
+
+### ヒンディー語 (हिन्दी)
+
+```
+🔔 KINGMAKER 23:23
+
+घंटी जापान समय 23:23 पर बजी है।
+Cycle 1 जापान में खुला है।
+
+अन्य क्षेत्र कानूनी समीक्षा के बाद आएंगे।
+हमारे साथ बने रहें।
+
+https://king2323.tamjump.com
+#KINGMAKER2323
+```
+
+### ベトナム語 (Tiếng Việt)
+
+```
+🔔 KINGMAKER 23:23
+
+Chuông đã reo lúc 23:23 giờ Nhật Bản.
+Cycle 1 đã mở tại Nhật Bản.
+
+Các khu vực khác sẽ đến sau khi rà soát pháp lý.
+Hãy tiếp tục theo dõi.
+
+https://king2323.tamjump.com
+#KINGMAKER2323
+```
+
+### ポルトガル語 (Português)
+
+```
+🔔 KINGMAKER 23:23
+
+O sino tocou às 23:23 JST.
+O Cycle 1 está aberto no Japão.
+
+Outras regiões virão após análise legal.
+Fiquem atentos.
+
+https://king2323.tamjump.com
+#KINGMAKER2323
+```
+
+### インドネシア語 (Bahasa Indonesia)
+
+```
+🔔 KINGMAKER 23:23
+
+Lonceng telah berbunyi pukul 23:23 JST.
+Cycle 1 dibuka di Jepang.
+
+Wilayah lain akan menyusul setelah peninjauan hukum.
+Tetap pantau kami.
+
+https://king2323.tamjump.com
+#KINGMAKER2323
+```
+
+### タイ語 (ไทย)
+
+```
+🔔 KINGMAKER 23:23
+
+ระฆังได้ดังขึ้นเมื่อเวลา 23:23 ตามเวลาญี่ปุ่น
+Cycle 1 เปิดในประเทศญี่ปุ่น
+
+ภูมิภาคอื่นจะตามมาหลังการตรวจสอบทางกฎหมาย
+ติดตามเราต่อไป
+
+https://king2323.tamjump.com
+#KINGMAKER2323
+```
+
+### フランス語 (Français)
+
+```
+🔔 KINGMAKER 23:23
+
+La cloche a sonné à 23:23 JST.
+Le Cycle 1 est ouvert au Japon.
+
+D'autres régions arriveront après examen juridique.
+Restez avec nous.
+
+https://king2323.tamjump.com
+#KINGMAKER2323
+```
+
 ---
 
 # §2. Bell rings — 5/22 (金) 23:23 JST
@@ -218,6 +356,23 @@ The will of the world has been recorded.
 
 The Three · Sat 5/23 · 23:23 JST.
 
+#KINGMAKER2323 #BellRings
+```
+
+## 2-6. 国際フォロワー向け(5/22 23:30 頃、英語の引用 RT または独立投稿)
+
+5/22 鐘の段階では、Cycle 1 は日本国内のみで完結します。多言語連投は不要。ただし英語で「世界が見ている」感を持続させる短い報告は出します。
+
+```
+🔔 KINGMAKER 23:23 · Cycle 1 — the bell has rung.
+
+The receipt is closed. The five minutes are recorded.
+The world will see The Three tomorrow at 23:23 JST.
+
+A regional bell is coming for everyone outside Japan.
+The first bell was here.
+
+https://king2323.tamjump.com/verify.html
 #KINGMAKER2323 #BellRings
 ```
 
@@ -325,6 +480,108 @@ Their Missions will be executed by the Mission Fund.
 The first bell, of many.
 Next Bell: Cycle 2 · Wed 5/27 · 23:23 JST.
 
+#KINGMAKER2323 #TheThree
+```
+
+## 3-6. TIER 1 残り 8 言語の完了発表(5/23 23:30 頃、連投 / スレッド)
+
+The Three が発表された後、5/20 開門時と同じ 8 言語で「Cycle 1 が完了した、次は他地域」の告知を流します。5/27 (水) 23:23 JST の Cycle 2 へのフォロワー誘導も兼ねます。
+
+**5/27 が「Cycle 2 開門」となる前提で書いていますが、当日までに Cycle 2 が日本国外を含むかどうかは未確定です**。launch 後に方針が固まったら投稿前に書き直してください。
+
+### 韓国語 (한국어)
+
+```
+🔔 KINGMAKER 23:23 · Cycle 1 — The Three가 발표되었습니다.
+
+세계 최초의 종이 일본에서 울렸습니다.
+다음 종은 곧 다른 지역에도 도달합니다.
+
+https://king2323.tamjump.com/verify.html
+#KINGMAKER2323 #TheThree
+```
+
+### スペイン語 (Español)
+
+```
+🔔 KINGMAKER 23:23 · Cycle 1 — Se han anunciado The Three.
+
+La primera campana del mundo ha sonado en Japón.
+La próxima campana llegará pronto a otras regiones.
+
+https://king2323.tamjump.com/verify.html
+#KINGMAKER2323 #TheThree
+```
+
+### ヒンディー語 (हिन्दी)
+
+```
+🔔 KINGMAKER 23:23 · Cycle 1 — The Three की घोषणा हो गई।
+
+दुनिया की पहली घंटी जापान में बजी।
+अगली घंटी जल्द ही अन्य क्षेत्रों तक पहुंचेगी।
+
+https://king2323.tamjump.com/verify.html
+#KINGMAKER2323 #TheThree
+```
+
+### ベトナム語 (Tiếng Việt)
+
+```
+🔔 KINGMAKER 23:23 · Cycle 1 — The Three đã được công bố.
+
+Chiếc chuông đầu tiên của thế giới đã reo tại Nhật Bản.
+Chiếc chuông tiếp theo sẽ sớm đến các khu vực khác.
+
+https://king2323.tamjump.com/verify.html
+#KINGMAKER2323 #TheThree
+```
+
+### ポルトガル語 (Português)
+
+```
+🔔 KINGMAKER 23:23 · Cycle 1 — The Three foram anunciados.
+
+O primeiro sino do mundo tocou no Japão.
+O próximo sino chegará em breve a outras regiões.
+
+https://king2323.tamjump.com/verify.html
+#KINGMAKER2323 #TheThree
+```
+
+### インドネシア語 (Bahasa Indonesia)
+
+```
+🔔 KINGMAKER 23:23 · Cycle 1 — The Three telah diumumkan.
+
+Lonceng pertama dunia telah berbunyi di Jepang.
+Lonceng berikutnya akan segera tiba di wilayah lain.
+
+https://king2323.tamjump.com/verify.html
+#KINGMAKER2323 #TheThree
+```
+
+### タイ語 (ไทย)
+
+```
+🔔 KINGMAKER 23:23 · Cycle 1 — The Three ได้รับการประกาศแล้ว
+
+ระฆังใบแรกของโลกได้ดังขึ้นในประเทศญี่ปุ่น
+ระฆังใบถัดไปจะมาถึงภูมิภาคอื่นในไม่ช้า
+
+https://king2323.tamjump.com/verify.html
+#KINGMAKER2323 #TheThree
+```
+
+### フランス語 (Français)
+
+```
+🔔 KINGMAKER 23:23 · Cycle 1 — The Three ont été annoncés.
+
+La première cloche du monde a sonné au Japon.
+La prochaine cloche arrivera bientôt dans d'autres régions.
+
+https://king2323.tamjump.com/verify.html
 #KINGMAKER2323 #TheThree
 ```
 
