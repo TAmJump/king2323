@@ -1165,11 +1165,22 @@ font[style*="background-color"],
 }
 
 /* === v20260514f: Bilingual display switch for legal/entry pages === */
-/* 日本語ピッカー時: 英語 <p> 非表示、.jp 表示 */
+/* 日本語ピッカー時: 英語 <p> 非表示、.jp 表示
+   NOTE v20260518k: the L1172 rule used to also catch entry.html
+   <label> elements that had neither `.jp` nor `.lang-ja` — which
+   sounded right ('hide non-Japanese labels in JP mode'), but
+   entry.html's labels are NEUTRAL wrappers containing both .lang-en
+   and .lang-ja <span>s inside. Killing the <label> killed the
+   <input> inside it too, making the entire form invisible in JP
+   mode (operator screenshot v20260518j confirmed). Solution:
+   restrict the hide-rule to labels that carry an explicit
+   English-only marker, so neutral entry-form labels survive. */
 html[data-display-lang="ja"] .legal-page p:not(.jp),
 html[data-display-lang="ja"] .entry-page p:not(.jp),
-html[data-display-lang="ja"] .legal-page label:not(.jp):not(.lang-ja),
-html[data-display-lang="ja"] .entry-page label:not(.jp):not(.lang-ja) {
+html[data-display-lang="ja"] .legal-page label.en,
+html[data-display-lang="ja"] .legal-page label.lang-en,
+html[data-display-lang="ja"] .entry-page label.en,
+html[data-display-lang="ja"] .entry-page label.lang-en {
   display: none;
 }
 /* 日本語以外: 日本語 <p class="jp"> と日本語見出し非表示 */
