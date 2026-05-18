@@ -673,6 +673,7 @@ Cycle 1 は Pool が小さい想定で大丈夫だが、Cycle 2 以降で規模�
 | **`HANDOFF_2026-05-14_session6_complete.md`** | **本ファイル(完全引き継ぎ書、正本)** |
 | **`HANDOFF_2026-05-18_session7.md`** | **session 7 補遺(2026-05-18 作成、jewel + docs 仕上げ)** |
 | **`docs/GLOBAL_ROLLOUT.md`** | **世界展開戦略の議論スナップショット**(session 7、Cycle 1 後の議論用) |
+| **`docs/POSTLAUNCH_TODO.md`** | **Cycle 1 後の TODO**(session 7、i18n統一・Cycle 2準備・PAT revoke) |
 | `worker/README.md` | Worker の deploy 手順とエンドポイント仕様 |
 
 リポジトリ外の素材:
