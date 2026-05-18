@@ -120,8 +120,8 @@
 <body>
 
 <header class="site-header notranslate" translate="no" style="display:flex; justify-content:space-between; align-items:center; padding:18px 24px; border-bottom:1px solid var(--line);">
-  <a href="index.html" class="brand-link" style="display:flex; align-items:center; gap:10px; text-decoration:none;">
-    <span class="brand-mark" style="font-size:18px; color:var(--gold);">♛</span>
+  <a href="index.html" class="brand-link notranslate" translate="no" style="display:flex; align-items:center; gap:12px; text-decoration:none;">
+    <img src="assets/logo-v3-128.png" alt="" style="width:32px; height:32px; flex-shrink:0;">
     <span class="brand-name" style="font-family:var(--f-display); font-size:14px; letter-spacing:0.18em; color:var(--ink);">KINGMAKER</span>
     <span class="brand-time" style="font-family:var(--f-mono); font-size:11px; letter-spacing:0.18em; color:var(--gold);">23:23</span>
   </a>
@@ -129,8 +129,8 @@
   <div id="google_translate_element" style="position:fixed;bottom:0;right:0;width:1px;height:1px;opacity:0;pointer-events:none;overflow:hidden;z-index:-1;"></div>
 </header>
 
-<main class="entry-page" lang="ja">
-  <h1><span data-i18n-html="entry.title">Founding Bell エントリー</span></h1>
+<main class="entry-page" translate="no" lang="ja">
+  <h1 class="notranslate" translate="no"><span data-i18n-html="entry.title">Founding Bell エントリー</span></h1>
   <p class="entry-sub" data-i18n-html="entry.sub">— Mission Submission · Cycle 1 —</p>
 
   <p class="entry-intro" data-i18n-html="entry.intro">
@@ -150,8 +150,8 @@
     </label>
 
     <label>
-      <span data-i18n-html="entry.label.receipt_id">Square 領収書 ID、または決済日時(JST)</span>
-      <input type="text" name="receipt_id" required placeholder="e.g. 2026-05-22 23:00 JST">
+      <span data-i18n-html="entry.label.receipt_id">Square 決済日時(JST)— 領収書 ID があれば併記</span>
+      <input type="text" name="receipt_id" placeholder="例: 2026-05-20 23:25 JST">
     </label>
 
     <label>
@@ -165,9 +165,9 @@
     </label>
 
     <label>
-      <span data-i18n-html="entry.label.mission_summary">Mission の内容(具体的に。Grant を何にどう使うか)</span>
-      <textarea name="mission_summary" required minlength="20" maxlength="50" placeholder="20〜50文字 / 20–50 characters"></textarea>
-      <span class="entry-counter" id="missionSummaryCounter" aria-live="polite">0 / 50</span>
+      <span data-i18n-html="entry.label.mission_summary">Mission の内容(200〜500文字)</span>
+      <textarea name="mission_summary" required minlength="200" maxlength="500" placeholder="200〜500文字 / 200–500 characters" style="min-height: 160px;"></textarea>
+      <span class="entry-counter" id="missionSummaryCounter" aria-live="polite">0 / 500</span>
     </label>
 
     <label>
@@ -210,15 +210,15 @@
         errorBox.textContent = '';
       }
 
-      // ---------- v20260518n: Mission summary live counter ----------
+      // ---------- v20260518o: Mission summary live counter (200-500) ----------
       const missionSummaryEl = form.querySelector('[name="mission_summary"]');
       const missionCounterEl = document.getElementById('missionSummaryCounter');
       function updateMissionCounter() {
         const len = missionSummaryEl.value.length;
-        missionCounterEl.textContent = len + ' / 50';
-        missionCounterEl.classList.toggle('is-warn',  len > 0 && len < 20);
-        missionCounterEl.classList.toggle('is-ok',    len >= 20 && len <= 50);
-        missionCounterEl.classList.toggle('is-over',  len > 50);
+        missionCounterEl.textContent = len + ' / 500';
+        missionCounterEl.classList.toggle('is-warn',  len > 0 && len < 200);
+        missionCounterEl.classList.toggle('is-ok',    len >= 200 && len <= 500);
+        missionCounterEl.classList.toggle('is-over',  len > 500);
       }
       missionSummaryEl.addEventListener('input', updateMissionCounter);
       updateMissionCounter();
@@ -304,8 +304,8 @@
           showError('必須項目を入力してください / Required fields missing');
           return;
         }
-        if (payload.mission_summary.length < 20 || payload.mission_summary.length > 50) {
-          showError('Mission 内容は 20〜50 文字で入力してください / Mission summary must be 20–50 characters');
+        if (payload.mission_summary.length < 200 || payload.mission_summary.length > 500) {
+          showError('Mission 内容は 200〜500 文字で入力してください / Mission summary must be 200–500 characters');
           return;
         }
         if (!payload.agree_rules) {
@@ -412,6 +412,6 @@
 
 </main>
 
-<script src="js/i18n.js?v=20260518n"></script>
+<script src="js/i18n.js?v=20260518o"></script>
 </body>
 </html>
