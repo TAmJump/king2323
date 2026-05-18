@@ -38,7 +38,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link rel="preconnect" href="https://translate.googleapis.com" />
 <link rel="dns-prefetch" href="https://translate-pa.googleapis.com" />
-<link rel="stylesheet" href="css/main.css?v=20260518e" />
+<link rel="stylesheet" href="css/main.css?v=20260518f" />
 <style>
 
 /* ============== HERO ============== */
@@ -234,11 +234,26 @@
   text-shadow: 0 0 30px rgba(212, 175, 55, 0.3);
 }
 .countdown-unit .lab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1.1;
+  gap: 1px;
+}
+.countdown-unit .lab-en {
   font-family: var(--f-mono);
   font-size: 10px;
   letter-spacing: 0.2em;
   color: var(--dust);
   text-transform: uppercase;
+  font-weight: 400;
+}
+.countdown-unit .lab-ja {
+  font-family: var(--f-jp);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--dust);
+  opacity: 0.75;
   font-weight: 400;
 }
 .countdown-time .colon { color: var(--gold-deep); }
@@ -295,9 +310,13 @@
     letter-spacing: 0.02em;
   }
   .countdown-unit { gap: 2px; }
-  .countdown-unit .lab {
+  .countdown-unit .lab-en {
     font-size: 9px;
     letter-spacing: 0.15em;
+  }
+  .countdown-unit .lab-ja {
+    font-size: 9px;
+    letter-spacing: 0.06em;
   }
   .countdown-label { font-size: 9px; letter-spacing: 0.3em; }
   .countdown-target { font-size: 10px; }
@@ -2711,13 +2730,13 @@ html:not([data-display-lang="ja"]) span[style*="--f-jp"]:not(.notranslate) {
       <span class="cycle-bar-label-ja" id="cb-label-ja">受付開始まで</span>
     </div>
     <div class="cycle-bar-countdown tabular">
-      <div class="cb-unit"><span class="cb-num" id="cb-d">00</span><span class="cb-lab">D</span></div>
+      <div class="cb-unit"><span class="cb-num" id="cb-d">00</span><span class="cb-lab"><span class="cb-lab-en">Days</span><span class="cb-lab-ja">日</span></span></div>
       <span class="cb-sep">:</span>
-      <div class="cb-unit"><span class="cb-num" id="cb-h">00</span><span class="cb-lab">H</span></div>
+      <div class="cb-unit"><span class="cb-num" id="cb-h">00</span><span class="cb-lab"><span class="cb-lab-en">Hrs</span><span class="cb-lab-ja">時</span></span></div>
       <span class="cb-sep">:</span>
-      <div class="cb-unit"><span class="cb-num" id="cb-m">00</span><span class="cb-lab">M</span></div>
+      <div class="cb-unit"><span class="cb-num" id="cb-m">00</span><span class="cb-lab"><span class="cb-lab-en">Min</span><span class="cb-lab-ja">分</span></span></div>
       <span class="cb-sep">:</span>
-      <div class="cb-unit"><span class="cb-num" id="cb-s">00</span><span class="cb-lab">S</span></div>
+      <div class="cb-unit"><span class="cb-num" id="cb-s">00</span><span class="cb-lab"><span class="cb-lab-en">Sec</span><span class="cb-lab-ja">秒</span></span></div>
     </div>
     <div class="cycle-bar-stages brand-lock">
       <span class="cb-stage" data-stage="1"><span class="cb-dot"></span><span class="cb-date">5/20</span><span class="cb-name">Bell opens</span></span>
@@ -2776,13 +2795,13 @@ html:not([data-display-lang="ja"]) span[style*="--f-jp"]:not(.notranslate) {
       <div class="countdown notranslate" id="countdown" translate="no">
         <div class="countdown-label">— The Bell opens in —</div>
         <div class="countdown-time tabular">
-          <div class="countdown-unit"><span class="num" id="cd-d">02</span><span class="lab">Days</span></div>
+          <div class="countdown-unit"><span class="num" id="cd-d">02</span><span class="lab"><span class="lab-en">Days</span><span class="lab-ja">日</span></span></div>
           <span class="colon">·</span>
-          <div class="countdown-unit"><span class="num" id="cd-h">14</span><span class="lab">Hrs</span></div>
+          <div class="countdown-unit"><span class="num" id="cd-h">14</span><span class="lab"><span class="lab-en">Hrs</span><span class="lab-ja">時</span></span></div>
           <span class="colon">·</span>
-          <div class="countdown-unit"><span class="num" id="cd-m">37</span><span class="lab">Min</span></div>
+          <div class="countdown-unit"><span class="num" id="cd-m">37</span><span class="lab"><span class="lab-en">Min</span><span class="lab-ja">分</span></span></div>
           <span class="colon">·</span>
-          <div class="countdown-unit"><span class="num" id="cd-s">52</span><span class="lab">Sec</span></div>
+          <div class="countdown-unit"><span class="num" id="cd-s">52</span><span class="lab"><span class="lab-en">Sec</span><span class="lab-ja">秒</span></span></div>
         </div>
         <div class="countdown-target brand-lock" id="cd-target">Friday · 23:23 JST</div>
       </div>
