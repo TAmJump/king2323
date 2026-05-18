@@ -701,6 +701,89 @@ Cycle 1 はあくまで「Founding Bell」— 最初の鐘です。
 https://king2323.tamjump.com/rules.html L90-92 に詳細記載。
 ```
 
+## 5-bis. 多言語リプライへの対応方針
+
+§1-7 / §3-6 の TIER 1 8 言語投稿に対して、その言語でリプライ・引用 RT・DM が来る可能性があります。対応方針:
+
+| シチュエーション | 対応 |
+|---|---|
+| 短い反応(👏 / 🔔 / 「いいね!」相当) | Like / 軽い絵文字返しで OK |
+| 質問が来た(英語以外) | **無理に翻訳して答えない**。「Thanks for following. We'll have a region-specific FAQ when your region's bell opens.」と英語で返す(Cycle 2 以降の各国展開の準備中であることを前提に) |
+| 法的・規制関連の質問 | **絶対に当該言語で回答しない**。英語で「This question requires careful answer in your jurisdiction. Please email info@tamjump.com.」と返す |
+| メディア / 公式アカウントからの照会 | info@tamjump.com に誘導、即答しない |
+
+**「翻訳して回答」は誤訳が法的問題に直結するため絶対 NG**。launch 期間中、operator が即答できない言語の質問はすべてメール誘導が安全。
+
+## 5-ter. 翻訳ネイティブチェック依頼テンプレ
+
+§1-7 / §3-6 / §4-2 の翻訳について、launch 前に各言語ネイティブにチェックしてもらう場合のテンプレ:
+
+### 件名
+
+```
+Native review request · KINGMAKER 23:23 SNS post (target: [言語名])
+```
+
+### 本文(英語、ネイティブに渡す)
+
+```
+Hi,
+
+I'm preparing the launch announcement for KINGMAKER 23:23 — a Japan-
+based participation ritual launching 2026-05-20 at 23:23 JST. The
+opening post will be published in 10 languages, and I'd like your
+help reviewing the [target language] version below for:
+
+  1. Naturalness — does a native speaker read this and not flinch?
+  2. Brand vocab — please confirm "KINGMAKER", "Bell", "Cycle",
+     "23:23" stay untranslated (these are proper-noun brand terms
+     by design).
+  3. Legal tone — please flag anything that could be read as
+     "lottery", "gambling", "investment promise", or "guaranteed
+     prize". This service is none of those, and we must not
+     accidentally suggest otherwise.
+  4. Cultural fit — anything that lands wrong for your region.
+
+Translation to review:
+
+   [§1-7 の該当言語版をここに貼る]
+
+Background: Cycle 1 is open to participants inside Japan only. The
+post is a "future-preview" announcement to followers in your region,
+not a participation push (their bell hasn't opened yet).
+
+Please reply with: (a) approved as-is, (b) suggested edits inline,
+or (c) flag specific concerns.
+
+Thank you.
+```
+
+各言語版に対して同じテンプレートを使い回せます。ネイティブが見つかった言語から順次差し替え、ダメな言語は launch から外す(その言語の投稿を skip する)判断も可能。
+
+## 5-quat. Threads / Instagram の多言語化
+
+X (Twitter) は §1-7 / §3-6 で 8 言語化されましたが、Threads と Instagram キャプションは JA/EN のままです。理由:
+
+- **Threads**: X のクロス投稿が主用途で、独立した多言語連投はリソースに見合わない
+- **Instagram**: 1 投稿に複数言語を併記する形(IG キャプションは長文可)が一般的なので、独立投稿より「§1-5 のキャプションに 8 言語を追記」する方が効果的
+
+**Instagram キャプションへの多言語追記(任意・5/20 用):**
+
+§1-5 の既存 JA/EN キャプションの末尾に、以下の「世界各地語の一文」を連ねる形を推奨。各言語ネイティブに気づかれる効果あり、長文を読ませる必要なし:
+
+```
+🔔 한국어: 종이 울렸습니다. 사이클 1은 일본에서.
+🔔 Español: La campana ha sonado. Cycle 1 está en Japón.
+🔔 हिन्दी: घंटी बजी है। Cycle 1 जापान में।
+🔔 Tiếng Việt: Chuông đã reo. Cycle 1 ở Nhật Bản.
+🔔 Português: O sino tocou. Cycle 1 está no Japão.
+🔔 Bahasa Indonesia: Lonceng telah berbunyi. Cycle 1 di Jepang.
+🔔 ไทย: ระฆังได้ดังขึ้น Cycle 1 อยู่ในประเทศญี่ปุ่น
+🔔 Français: La cloche a sonné. Cycle 1 est au Japon.
+```
+
+各言語 1 行で完結。launch 投稿の終盤に貼ると「世界に告げた」感が出ます。
+
 ---
 
 # §6. NG ワード集(SNS 投稿で絶対に使わない)

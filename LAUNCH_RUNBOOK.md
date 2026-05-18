@@ -356,6 +356,13 @@ wrangler d1 execute YOUR_DB_NAME --command \
 ## 13. 当日タイムライン
 
 ```
+[5/19 (火) 中]  ← launch 前日まで
+  □ 翻訳ネイティブチェック(docs/SNS_LAUNCH_KIT.md §1-7 / §3-6)
+    - ヒンディー語 / ベトナム語 / タイ語は **必ず** ネイティブに見てもらう
+    - 韓国語 / インドネシア語も推奨
+    - ネイティブが用意できない言語は launch から外す判断可
+    - 依頼テンプレは §5-ter
+
 [5/20 (水) 22:00 JST]  T-83min
   □ 最終目視確認(§8, §9 の項目を抜粋で再走)
   □ Cloudflare WAF Custom Rule 本デプロイ(§5.3)
@@ -366,19 +373,26 @@ wrangler d1 execute YOUR_DB_NAME --command \
 
 [5/20 (水) 23:00 JST]  T-23min
   □ サイトをブラウザで開いておく(複数タブ・複数デバイス)
-  □ SNS 投稿の下書きを開いておく(SNS_LAUNCH_KIT.md 参照)
+  □ SNS 投稿の下書きを開いておく(docs/SNS_LAUNCH_KIT.md 参照)
+    - §1-1 〜 §1-5 をコピーして各 SNS の下書きに保存
+    - §1-7 の 8 言語版もスレッド投稿の下書きに保存(23:53 投稿予定)
   □ Square Dashboard を別タブで開いておく(リアルタイム監視)
   □ D1 監視コマンドを cmdline に貼っておく(下記)
 
 [5/20 (水) 23:23 JST]  ★ Bell opens
   - サイトのカウントダウンが 0 になり、Hero CTA が「→ ENTER THE 5 MINUTES」に切替
-  - SNS 投稿実行(SNS_LAUNCH_KIT.md の §1)
+  - SNS 投稿実行(docs/SNS_LAUNCH_KIT.md §1-1 〜 §1-5、JA/EN フル告知)
   - 関係各所(韓国、映像会社、近しい関係者)への連絡
+
+[5/20 (水) 23:53 JST]  T+30min
+  - SNS 投稿:TIER 1 8 言語予告(docs/SNS_LAUNCH_KIT.md §1-7)
+  - X はスレッド投稿、Instagram は §5-quat の多言語追記版キャプション
 
 [5/20 (水) 23:23–5/22 (金) 23:23]  受付期間 約46時間
   - 問い合わせ対応(info@tamjump.com)
   - D1 監視(下記コマンド)
   - 異常検知(Square 決済失敗率、フォーム送信エラー、WAF 誤検知)
+  - 非日本語のリプライ対応は SNS_KIT §5-bis 方針(英語で返す、回答困難なら info@tamjump.com 誘導)
 ```
 
 ## 14. D1 監視コマンド(操作中ずっと使う)

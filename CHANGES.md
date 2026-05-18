@@ -278,3 +278,208 @@ rule (Step 3 of LAUNCH_RUNBOOK — legally most important), Worker
 sanity test (Step 2.5), Square checkout link verification, ¥100
 test purchase (Step 5), final visual pass on mobile (Step 6).
 
+---
+
+# Session 6 late commits (post-z)
+
+After the v20260514z snapshot above, session 6 continued and produced
+six more commits that the prior CHANGES section missed:
+
+## v20260514aa · WAF SEO bypass document + incomplete session-6 handoff
+
+`WAF_SEO_BYPASS.md` — operator-facing document explaining why the
+WAF expression from session 5 (`http.host eq "..." and
+ip.geoip.country ne "JP"`) needs `and not cf.client.bot` appended.
+Without it, every verified search-engine and social-media crawler
+(Googlebot, Bingbot, Twitterbot, facebookexternalhit, etc.) gets
+451'd from US/EU datacenters, which would silently kill SNS link
+previews (OGP added in v20260514w) and search indexing.
+
+Includes the corrected expression, a behavior matrix
+(user × host × country × bot? → outcome), and an upgraded bilingual
+JA/EN 451 response body. The `cf.client.bot` filter is a Cloudflare-
+maintained verified-bot whitelist (IP-range + reverse DNS verified),
+so User-Agent spoofing attacks don't get free passes.
+
+Also: an initial draft of HANDOFF_2026-05-14_session6.md, later
+superseded by the complete version below.
+
+## v20260514ab · CRITICAL hamburger-menu bug fix
+
+The session-5 hamburger menu started failing silently on mobile after
+some intermediate session-6 commit (exact cause: a `display: none`
+that overrode the toggle). Discovered by operator screenshot — menu
+button visible, no panel opening. Fix: explicit `display: flex !
+important` on the open state, plus a `?v=20260514ab` cache buster on
+js/main.js so the fix actually reaches users behind Cloudflare
+caches.
+
+The cache-buster pattern established here (`js/main.js?v=20260514ab`)
+becomes the project's standard for any JS update from this point on.
+
+## v20260514ac · Schedule transition (intermediate)
+
+Mid-discussion commit while operator and Claude were converging on
+the three-stage launch schedule. Not the final state.
+
+## v20260514ad · Mission Fund model adopted
+
+Brand reframe: from "Grant paid to the King" to "Mission Fund
+executes the Mission". The new phrasing makes it explicit that the
+fund is not a prize handed to a winner — it's the money that does
+what the chosen King said they would do. The denial form ("Grant is
+not a prize") is preserved alongside the positive frame, so legal
+clarity is unaffected.
+
+Affected pages: index.html, money.html, rules.html, risk.html, the
+brand-vocab list in i18n.js (Mission Fund added as untranslated
+brand term).
+
+## v20260514ae · Final schedule: Option B′ (all gates at 23:23)
+
+Three-stage launch confirmed:
+  - 5/20 (Wed) 23:23 JST · Bell opens — entries accepted
+  - 5/22 (Fri) 23:23 JST · Bell rings — receipt closes, Public Seed
+                          fixed, The Three extracted
+  - 5/23 (Sat) 23:23 JST · The Three announced
+
+Brand rationale: 23:23 (子の刻 / "hour of the rat" — the start of
+the new day in traditional Japanese reckoning) + 9 strokes of the
+bell at 23:23 each gate, are non-negotiable brand pillars. The
+"single-date 5/15 launch" of session 5 is dead.
+
+Affected: Hero countdown, Live ribbon, money.html schedule panel,
+verify.html notes, rules.html and risk.html Cycle 1 scope notes.
+
+## v20260514af · Complete session-6 handoff (Parts Ⅰ–Ⅸ)
+
+Replacement for the incomplete v20260514aa handoff. 1240 lines
+covering: current state, design intent, site capability map (which
+features actually work vs. which are mentioned in copy but deferred
+to Cycle 2+), legal posture, launch blockers (operator side),
+Cycle 2+ roadmap, risks and pitfalls, documentation index, and
+direct instructions to the next-session Claude.
+
+## v20260514ag · Handoff Part Ⅹ: operator-decision history
+
+Appended chronological record of every "採用!" (adopted) decision
+the operator made during session 6, with the alternatives that were
+considered and rejected. This is the antidote to "Claude forgets
+why we chose X" failures in future sessions.
+
+## v20260514ah · Handoff Part Ⅺ: PAT-handling full record
+
+Appended a complete account of the PAT-handling failure during
+session 6: the leaked token (`ghp_SNxD...oJln`), the operator's
+explicit decision to not rotate it mid-session for time reasons,
+the post-launch revoke procedure, the new-PAT issuance procedure
+for future sessions, and a long-term standard (30-day expiry,
+minimum scope, per-session identifier, mandatory rotation).
+
+---
+
+# Session 7 (2026-05-17 → 2026-05-18)
+
+## v20260514ai → an · Hero play-button — iterative redesign as crown jewel
+
+Six-commit sequence transforming the hero play-button. The operator's
+opening note: "the ▶ is too loud, make it more subtle, like a jewel
+set into the crown".
+
+```
+ai  (4a4b948)  red disc 110px center → ink dot 36px at bottom
+aj  (d2aea9b)  reposition into central spike of crown (top: 20%)
+ak  (7e139c2)  add ?v= cache-buster to css/main.css on all 8 pages
+                (the aj reposition wasn't reaching browsers because
+                 main.css had no version param — caches held the
+                 old CSS even after Cloudflare purge)
+al  (5fea08b)  drop into the white triangle at the crown base
+                (top: 30%)
+am  (a1350ef)  ruby-red radial gradient replaces the ink dot
+an  (b28374e)  1.5× size (54px / 42px mobile) + three-layer radial
+                (specular highlight + warm midtone + deep body)
+                to read as a proper cut stone, settled at the base
+                of the crown band
+```
+
+Each step was confirmed against an operator screenshot before
+proceeding. Net result: from a loud Christmas-red CTA disc to a small
+ruby gem set into the King Gorilla's crown — emblematic, calmer, on-
+brand.
+
+Cache-buster `?v=20260514an` is the current value for css/main.css
+across all 8 pages.
+
+## v20260518a · Session-7 launch kit — runbook rewrite + SNS templates
+
+Three deliverables landing together:
+
+1. `LAUNCH_RUNBOOK.md` — full rewrite for session-7 facts. The
+   session-5 runbook was preserved at
+   `docs/archived/LAUNCH_RUNBOOK_session5_5-15.md` (intact, for
+   historical reference). The new runbook reflects: three-stage
+   launch dates, Worker+D1+SES (Formspree removed entirely),
+   WAF expression with cf.client.bot, Square bc9p0BET confirmed,
+   D1 test-record cleanup procedure, PAT revoke as post-launch
+   step, 11 numbered operator-blocker sections, rollback playbook.
+   ~550 lines.
+
+2. `docs/SNS_LAUNCH_KIT.md` (new) — pre-written launch posts for
+   all three beats (5/20 opens / 5/22 rings / 5/23 The Three),
+   JA + EN, across X (short / threaded), Threads, Instagram. Plus:
+   notification-email template for The Three, FAQ replies for the
+   "isn't this a lottery?" class of questions, and a do-not-use
+   word list (当選 / 賞金 / 確率 / 投資 etc.). ~490 lines.
+
+3. Cross-references added to the handoff documentation index.
+
+## v20260518b · SNS Kit — multilingual launch coverage
+
+Operator decision: site supports 108 languages via Google Translate,
+so SNS announcement shouldn't stop at JA/EN. Resolution:
+
+  - §1-2 (EN short) — added "Cycle 1 · Japan only. Other regions
+    coming after legal review." to prevent non-JP English readers
+    from showing up and hitting the WAF 451.
+
+  - §1-7 (new) — TIER 1 remaining 8 languages (ko / es / hi / vi /
+    pt / id / th / fr) as a "future preview" post for ~23:53 JST
+    on launch day, stitched thread. Brand vocab (KINGMAKER, Bell,
+    Cycle, 23:23) kept untranslated by design. Native-speaker
+    review flagged in the section header — strongest for hi / vi /
+    th where Claude's translation confidence is weakest.
+
+  - §2-6 (new) — single EN post for 5/22 rings night aimed at the
+    international audience that followed from §1-7.
+
+  - §3-6 (new) — 8 languages again for 5/23 announcement night.
+
+Net: +257 lines. No code changes.
+
+## v20260518c · SNS Kit — multilingual ops + cross-refs
+
+Three additions to close the multilingual loop:
+
+  - §5-bis — reply-handling policy for the 8-language posts. Short
+    rule: do not reply in the target language unless you read it
+    natively. Legal / regulatory questions in any language go to
+    info@tamjump.com. Liking and emoji reactions OK; substantive
+    answers in English only.
+
+  - §5-ter — translation native-review request template (English).
+    Single template, reusable across all 8 languages. Asks for
+    naturalness / brand-vocab preservation / legal-tone /
+    cultural-fit feedback, with the actual translation to be
+    pasted in. Operator can send to any native speaker.
+
+  - §5-quat — Threads / Instagram multilingual strategy. Threads
+    inherits from X by cross-post and doesn't need separate threads.
+    Instagram gets a one-line-per-language footer pattern to add to
+    the §1-5 caption — eight 🔔 lines, "the bell has rung. Cycle 1
+    is in Japan" in each language.
+
+Plus LAUNCH_RUNBOOK.md §13 timeline updated:
+  - 5/19 pre-launch row: native-translator review step
+  - 5/20 23:53 row: explicit multilingual thread post
+  - 5/20 23:23+ row: reply-handling reference to §5-bis
+
