@@ -16,8 +16,59 @@
   const CYCLE1_RINGS_MS = Date.UTC(2026, 4, 22, 14, 23, 0); // Fri 5/22 23:23 JST
   const CYCLE1_THREE_MS = Date.UTC(2026, 4, 23, 14, 23, 0); // Sat 5/23 23:23 JST
 
+  // ---------- Preview mode (operator-only, never affects real visitors) ----------
+  // Append ?preview=open / ?preview=pre / ?preview=pending / ?preview=complete
+  // to the URL to spoof the cycle phase for visual QA. The actual schedule
+  // constants above are not touched, so this is safe: anyone without the
+  // query string sees the real, time-driven state.
+  function previewPhase() {
+    try {
+      const p = new URLSearchParams(window.location.search).get('preview');
+      if (!p) return null;
+      const map = { 'pre': 'pre_open', 'open': 'open',
+                    'pending': 'pending_three', 'complete': 'cycle1_complete' };
+      return map[p] || null;
+    } catch (e) { return null; }
+  }
+
+  function fakeStateForPreview(phase) {
+    const nowMs = Date.now();
+    const day = 24 * 60 * 60 * 1000;
+    switch (phase) {
+      case 'pre_open':
+        return { phase, targetMs: nowMs + 2*day + 3*60*60*1000 + 17*60*1000,
+                 msUntilBell: 2*day + 3*60*60*1000 + 17*60*1000,
+                 labelEn: 'Bell opens in', labelJa: '受付開始まで',
+                 stageActive: 0, ctaEnabled: false };
+      case 'open':
+        return { phase, targetMs: nowMs + 1*day + 19*60*60*1000 + 42*60*1000,
+                 msUntilClose: 1*day + 19*60*60*1000 + 42*60*1000,
+                 msUntilBell: 1*day + 19*60*60*1000 + 42*60*1000,
+                 labelEn: 'Bell rings in', labelJa: '受付終了まで',
+                 stageActive: 1, ctaEnabled: true };
+      case 'pending_three':
+        return { phase, targetMs: nowMs + 14*60*60*1000 + 8*60*1000,
+                 msUntilBell: 14*60*60*1000 + 8*60*1000,
+                 labelEn: 'The Three announced in', labelJa: 'The Three 発表まで',
+                 stageActive: 2, ctaEnabled: false };
+      case 'cycle1_complete':
+        return { phase, targetMs: nowMs + 3*day + 22*60*60*1000,
+                 msUntilBell: 3*day + 22*60*60*1000,
+                 labelEn: 'Cycle 2 opens in', labelJa: 'Cycle 2 開門まで',
+                 stageActive: 3, ctaEnabled: false };
+    }
+    return null;
+  }
+
   // ---------- Cycle state machine ----------
   function getBellState() {
+    // Preview mode takes priority (operator-only via ?preview= query).
+    const pv = previewPhase();
+    if (pv) {
+      const faked = fakeStateForPreview(pv);
+      if (faked) return faked;
+    }
+
     const nowMs = Date.now();
 
     // ----- Cycle 1 path (hard-coded three-stage) -----
