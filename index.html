@@ -38,7 +38,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link rel="preconnect" href="https://translate.googleapis.com" />
 <link rel="dns-prefetch" href="https://translate-pa.googleapis.com" />
-<link rel="stylesheet" href="css/main.css?v=20260514an" />
+<link rel="stylesheet" href="css/main.css?v=20260518e" />
 <style>
 
 /* ============== HERO ============== */
@@ -2699,6 +2699,36 @@ html:not([data-display-lang="ja"]) span[style*="--f-jp"]:not(.notranslate) {
   </div>
 </header>
 
+<!-- ============== CYCLE-1 STATUS BAR (countdown + three-stage timeline) ============== -->
+<!-- Added v20260518e. The site-wide visible countdown that doubles as a
+     schedule preview. JS (#main.js) fills the time fields every second
+     and flips data-active / data-done on .cb-stage to highlight where
+     in the cycle we are. -->
+<section class="cycle-bar notranslate" id="cycle-bar" translate="no" aria-label="Cycle 1 status">
+  <div class="cycle-bar-inner">
+    <div class="cycle-bar-label">
+      <span class="cycle-bar-label-en brand-lock" id="cb-label-en">Bell opens in</span>
+      <span class="cycle-bar-label-ja" id="cb-label-ja">受付開始まで</span>
+    </div>
+    <div class="cycle-bar-countdown tabular">
+      <div class="cb-unit"><span class="cb-num" id="cb-d">00</span><span class="cb-lab">D</span></div>
+      <span class="cb-sep">:</span>
+      <div class="cb-unit"><span class="cb-num" id="cb-h">00</span><span class="cb-lab">H</span></div>
+      <span class="cb-sep">:</span>
+      <div class="cb-unit"><span class="cb-num" id="cb-m">00</span><span class="cb-lab">M</span></div>
+      <span class="cb-sep">:</span>
+      <div class="cb-unit"><span class="cb-num" id="cb-s">00</span><span class="cb-lab">S</span></div>
+    </div>
+    <div class="cycle-bar-stages brand-lock">
+      <span class="cb-stage" data-stage="1"><span class="cb-dot"></span><span class="cb-date">5/20</span><span class="cb-name">Bell opens</span></span>
+      <span class="cb-arrow">›</span>
+      <span class="cb-stage" data-stage="2"><span class="cb-dot"></span><span class="cb-date">5/22</span><span class="cb-name">Bell rings</span></span>
+      <span class="cb-arrow">›</span>
+      <span class="cb-stage" data-stage="3"><span class="cb-dot"></span><span class="cb-date">5/23</span><span class="cb-name">The Three</span></span>
+    </div>
+  </div>
+</section>
+
 <!-- ============== HERO — STAGE 2: TITLE + CTA + COUNTDOWN ============== -->
 <section class="hero-content" id="hero-content">
   <div class="hero-content-inner">
@@ -2720,6 +2750,18 @@ html:not([data-display-lang="ja"]) span[style*="--f-jp"]:not(.notranslate) {
           <span class="km-cta-open notranslate" translate="no">
             <span class="km-cta-open-arrow">→</span>
             <span class="km-cta-open-text">ENTER THE 5 MINUTES</span>
+          </span>
+          <span class="km-cta-locked km-cta-locked-pre notranslate" translate="no">
+            <span class="km-cta-locked-icon">🔒</span>
+            <span class="km-cta-locked-text">Bell opens 5/20 · 23:23 JST</span>
+          </span>
+          <span class="km-cta-locked km-cta-locked-pending notranslate" translate="no">
+            <span class="km-cta-locked-icon">🔔</span>
+            <span class="km-cta-locked-text">Receipt closed · Awaiting The Three</span>
+          </span>
+          <span class="km-cta-locked km-cta-locked-complete notranslate" translate="no">
+            <span class="km-cta-locked-icon">✦</span>
+            <span class="km-cta-locked-text">Cycle 1 complete · Cycle 2 ahead</span>
           </span>
         </button>
       </div>
@@ -3667,9 +3709,23 @@ html:not([data-display-lang="ja"]) span[style*="--f-jp"]:not(.notranslate) {
   </p>
   <p class="answer">— You have until Friday · 23:23 —</p>
   <div class="actions">
-    <button type="button" class="btn btn-primary km-cta" data-ritual-open="coin" data-cta="founding-final">
-      <span class="brand-lock notranslate" translate="no">Founding Bell Entry</span>
-      <span class="brand-lock notranslate" translate="no" style="display:block; font-size:11px; letter-spacing:0.2em; opacity:0.85; margin-top:4px;">100 Bell · ¥100</span>
+    <button type="button" class="btn btn-primary km-cta km-cta-stacked" data-ritual-open="coin" data-cta="founding-final">
+      <span class="km-cta-default">
+        <span class="brand-lock notranslate" translate="no">Founding Bell Entry</span>
+        <span class="brand-lock notranslate" translate="no" style="display:block; font-size:11px; letter-spacing:0.2em; opacity:0.85; margin-top:4px;">100 Bell · ¥100</span>
+      </span>
+      <span class="km-cta-locked km-cta-locked-pre notranslate" translate="no">
+        <span class="km-cta-locked-icon">🔒</span>
+        <span class="km-cta-locked-text">Bell opens 5/20 · 23:23 JST</span>
+      </span>
+      <span class="km-cta-locked km-cta-locked-pending notranslate" translate="no">
+        <span class="km-cta-locked-icon">🔔</span>
+        <span class="km-cta-locked-text">Receipt closed · Awaiting The Three</span>
+      </span>
+      <span class="km-cta-locked km-cta-locked-complete notranslate" translate="no">
+        <span class="km-cta-locked-icon">✦</span>
+        <span class="km-cta-locked-text">Cycle 1 complete · Cycle 2 ahead</span>
+      </span>
     </button>
     <a href="app.html" class="btn btn-ghost">Open the App</a>
   </div>
@@ -4171,6 +4227,12 @@ html:not([data-display-lang="ja"]) span[style*="--f-jp"]:not(.notranslate) {
     const el = e.target.closest('[data-ritual-open]');
     if (!el) return;
     e.preventDefault();
+    // Cycle-1 phase guard: if the element advertises itself as
+    // locked (aria-disabled set by main.js based on getBellState),
+    // swallow the click silently. Belt-and-suspenders alongside CSS
+    // pointer-events restriction — defends against keyboard-Enter
+    // activation and against ad-blockers that strip CSS.
+    if (el.getAttribute('aria-disabled') === 'true') return;
     open(el.getAttribute('data-ritual-open'));
   });
 
@@ -4533,6 +4595,6 @@ html:not([data-display-lang="ja"]) span[style*="--f-jp"]:not(.notranslate) {
 
 <script src="js/i18n.js?v=20260514d"></script>
 <script src="js/fx.js?v=20260514d"></script>
-<script src="js/main.js?v=20260514ab"></script>
+<script src="js/main.js?v=20260518e"></script>
 </body>
 </html>

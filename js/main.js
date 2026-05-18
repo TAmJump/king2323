@@ -1,60 +1,87 @@
 /* ============================================================
-   KINGMAKER 23:23 — Main JS  (v20260514d)
-   Countdown becomes a ritual: pulses last 60s, flashes at 0,
-   5-minute "Bell open" window, then resets to next Friday.
+   KINGMAKER 23:23 — Main JS  (v20260518e)
+   Cycle 1 three-stage schedule:
+     2026-05-20 (Wed) 23:23 JST · Bell opens
+     2026-05-22 (Fri) 23:23 JST · Bell rings (receipt closes)
+     2026-05-23 (Sat) 23:23 JST · The Three announced
+   After Cycle 1 completes, falls back to weekly-Wed cycles.
    ============================================================ */
 
 (function () {
   'use strict';
 
-  // ---------- Time arithmetic (JST = UTC+9) ----------
-  // Returns the JST-anchored next-Friday-23:23 boundary that the page
-  // should be counting toward AS WELL AS whether the bell is currently
-  // ringing (a 5-minute window after 23:23 JST every Friday).
+  // ---------- Cycle 1 three-stage schedule (UTC equivalents) ----------
+  // 23:23 JST = 14:23 UTC same calendar day (JST = UTC+9, 23-9 = 14).
+  const CYCLE1_OPENS_MS = Date.UTC(2026, 4, 20, 14, 23, 0); // Wed 5/20 23:23 JST
+  const CYCLE1_RINGS_MS = Date.UTC(2026, 4, 22, 14, 23, 0); // Fri 5/22 23:23 JST
+  const CYCLE1_THREE_MS = Date.UTC(2026, 4, 23, 14, 23, 0); // Sat 5/23 23:23 JST
+
+  // ---------- Cycle state machine ----------
   function getBellState() {
     const nowMs = Date.now();
-    const jstOffsetMs = 9 * 60 * 60 * 1000;
-    const nowJst = new Date(nowMs + jstOffsetMs);
-    const dow = nowJst.getUTCDay();
 
-    // Most recent Friday 23:23 JST (could be past or future this week)
-    const daysSinceFri = (dow - 5 + 7) % 7;
-    const thisFri = new Date(Date.UTC(
-      nowJst.getUTCFullYear(),
-      nowJst.getUTCMonth(),
-      nowJst.getUTCDate() - daysSinceFri,
-      23, 23, 0, 0
-    ));
-    const thisFriUtcMs = thisFri.getTime() - jstOffsetMs;
-
-    // Window: 23:23 → 23:28 JST (5 minutes after the bell)
-    const windowEndMs = thisFriUtcMs + 5 * 60 * 1000;
-
-    if (nowMs >= thisFriUtcMs && nowMs < windowEndMs) {
-      // Bell is currently ringing.
+    // ----- Cycle 1 path (hard-coded three-stage) -----
+    if (nowMs < CYCLE1_OPENS_MS) {
       return {
-        phase: 'bell_open',
-        nextBellMs: thisFriUtcMs,
-        windowEndMs: windowEndMs,
-        msInWindow: nowMs - thisFriUtcMs,
-        msUntilClose: windowEndMs - nowMs
+        phase: 'pre_open',           // before the bell opens
+        targetMs: CYCLE1_OPENS_MS,
+        msUntilBell: CYCLE1_OPENS_MS - nowMs,
+        labelEn: 'Bell opens in',
+        labelJa: '受付開始まで',
+        stageActive: 0,              // 0 = none lit yet
+        ctaEnabled: false
+      };
+    }
+    if (nowMs < CYCLE1_RINGS_MS) {
+      // Entries accepted during this 46-hour window.
+      return {
+        phase: 'open',
+        targetMs: CYCLE1_RINGS_MS,
+        msUntilClose: CYCLE1_RINGS_MS - nowMs,
+        msUntilBell: CYCLE1_RINGS_MS - nowMs,
+        labelEn: 'Bell rings in',
+        labelJa: '受付終了まで',
+        stageActive: 1,
+        ctaEnabled: true
+      };
+    }
+    if (nowMs < CYCLE1_THREE_MS) {
+      return {
+        phase: 'pending_three',
+        targetMs: CYCLE1_THREE_MS,
+        msUntilBell: CYCLE1_THREE_MS - nowMs,
+        labelEn: 'The Three announced in',
+        labelJa: 'The Three 発表まで',
+        stageActive: 2,
+        ctaEnabled: false
       };
     }
 
-    // Bell not ringing — count down to next Friday.
-    let nextFriUtcMs;
-    if (nowMs >= windowEndMs) {
-      // Window closed earlier; next bell is 7 days after this one.
-      nextFriUtcMs = thisFriUtcMs + 7 * 24 * 60 * 60 * 1000;
-    } else {
-      // Still before this week's bell.
-      nextFriUtcMs = thisFriUtcMs;
+    // ----- Cycle 1 complete — show Cycle 2 (weekly Wed 23:23 JST) -----
+    const jstOffsetMs = 9 * 60 * 60 * 1000;
+    const nowJst = new Date(nowMs + jstOffsetMs);
+    const dow = nowJst.getUTCDay();
+    // Find next Wednesday 23:23 JST in the future.
+    const daysToWed = (3 - dow + 7) % 7;  // Wed = 3
+    const candidate = new Date(Date.UTC(
+      nowJst.getUTCFullYear(),
+      nowJst.getUTCMonth(),
+      nowJst.getUTCDate() + daysToWed,
+      23, 23, 0, 0
+    ));
+    let nextWedUtcMs = candidate.getTime() - jstOffsetMs;
+    if (nextWedUtcMs <= nowMs) {
+      // Wed has passed today already — go to next week.
+      nextWedUtcMs += 7 * 24 * 60 * 60 * 1000;
     }
-
     return {
-      phase: 'waiting',
-      nextBellMs: nextFriUtcMs,
-      msUntilBell: nextFriUtcMs - nowMs
+      phase: 'cycle1_complete',
+      targetMs: nextWedUtcMs,
+      msUntilBell: nextWedUtcMs - nowMs,
+      labelEn: 'Cycle 2 opens in',
+      labelJa: 'Cycle 2 開門まで',
+      stageActive: 3,
+      ctaEnabled: false
     };
   }
 
@@ -73,22 +100,13 @@
   let hasStruck = false;
 
   function applyVisuals(state) {
-    if (state.phase === 'bell_open') {
+    if (state.phase === 'open') {
       setPhase('open');
       isPulsing = false;
-      // Strike flash fires once at the very top of the window.
-      if (!hasStruck && state.msInWindow < 1500) {
-        hasStruck = true;
-        const flash = document.getElementById('bell-strike-flash');
-        if (flash) {
-          flash.classList.add('strike');
-          setTimeout(() => flash.classList.remove('strike'), 2200);
-        }
-      }
+      // No single "strike flash" event in the Cycle 1 model — open is a 46h window.
       return;
     }
-
-    // Waiting phase
+    // Waiting / pre_open / pending_three / cycle1_complete
     hasStruck = false;
     const remain = state.msUntilBell;
     if (remain <= 60000) {
@@ -102,48 +120,60 @@
 
   function renderCountdown(state) {
     const countdownLabel = document.getElementById('cd-target');
-    const countdownBox   = document.getElementById('countdown');
-    const ctaButtons     = document.querySelectorAll('[data-cta="founding"]');
+    const ctaButtons     = document.querySelectorAll('[data-cta="founding"], [data-cta="founding-final"]');
 
-    if (state.phase === 'bell_open') {
-      // Show "BELL IS OPEN" + minutes:seconds remaining in window.
-      const remain = Math.max(0, Math.floor(state.msUntilClose / 1000));
-      const mm = Math.floor(remain / 60);
-      const ss = remain % 60;
-      // Repurpose D/H to dashes, M/S to live minutes/seconds-in-window
-      const set = (id, v) => {
-        const el = document.getElementById(id);
-        if (el) el.textContent = v;
-      };
-      set('cd-d', '0');
-      set('cd-h', '0');
-      set('cd-m', pad(mm));
-      set('cd-s', pad(ss));
-      if (countdownLabel) {
-        countdownLabel.textContent = '— THE BELL IS OPEN · ' + pad(mm) + ':' + pad(ss) + ' remaining —';
-      }
-      ctaButtons.forEach(b => b.dataset.bellOpen = '1');
-      return;
-    }
-
-    const diff = state.msUntilBell;
-    const s = Math.floor(diff / 1000);
+    // Decompose msUntilBell into D/H/M/S for both the legacy hero
+    // widget (#cd-d/h/m/s) and the new cycle-bar (#cb-d/h/m/s).
+    const ms = Math.max(0, state.msUntilBell || 0);
+    const s = Math.floor(ms / 1000);
     const days = Math.floor(s / 86400);
     const hrs  = Math.floor((s % 86400) / 3600);
     const mins = Math.floor((s % 3600) / 60);
     const secs = s % 60;
+
     const set = (id, v) => {
       const el = document.getElementById(id);
       if (el) el.textContent = pad(v);
     };
+
+    // Legacy hero countdown.
     set('cd-d', days);
     set('cd-h', hrs);
     set('cd-m', mins);
     set('cd-s', secs);
     if (countdownLabel) {
-      countdownLabel.textContent = 'Friday · 23:23 JST';
+      countdownLabel.textContent = (state.labelEn || 'Bell · 23:23 JST');
     }
-    ctaButtons.forEach(b => { delete b.dataset.bellOpen; });
+
+    // New top-of-page cycle-bar countdown.
+    set('cb-d', days);
+    set('cb-h', hrs);
+    set('cb-m', mins);
+    set('cb-s', secs);
+    const cbLabelEn = document.getElementById('cb-label-en');
+    const cbLabelJa = document.getElementById('cb-label-ja');
+    if (cbLabelEn) cbLabelEn.textContent = state.labelEn || '';
+    if (cbLabelJa) cbLabelJa.textContent = state.labelJa || '';
+
+    // Stage indicator (1=opens, 2=rings, 3=Three).
+    const stages = document.querySelectorAll('.cb-stage');
+    stages.forEach(el => {
+      const n = Number(el.dataset.stage);
+      el.dataset.active = (n === state.stageActive) ? '1' : '0';
+      el.dataset.done   = (n < state.stageActive) ? '1' : '0';
+    });
+
+    // CTA enable/disable. data-cycle-phase drives CSS for locked text.
+    ctaButtons.forEach(btn => {
+      btn.dataset.cyclePhase = state.phase;
+      if (state.ctaEnabled) {
+        btn.removeAttribute('aria-disabled');
+        btn.dataset.bellOpen = '1';  // keep legacy CSS hook alive during open phase
+      } else {
+        btn.setAttribute('aria-disabled', 'true');
+        delete btn.dataset.bellOpen;
+      }
+    });
   }
 
   function tick() {
