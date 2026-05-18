@@ -1,539 +1,554 @@
 # LAUNCH RUNBOOK · KINGMAKER 23:23 · Founding Bell
-## 2026-05-22 (金) 23:23 JST — Bell rings (Founding Bell Cycle 1)
 
-このドキュメント一本を順番に上から下までやれば公開できる、を目指したチェックリスト。所要時間は全部で **約2時間** 想定(慣れていれば1時間)。
-
-私(Claude)ができない作業 = operator のあなたがブラウザを開いてアカウントにログインして実行する作業を、ここに全部書きます。
-
----
-
-## 全体フロー
-
-```
-[17:00]  Step 0  zipを展開してリポジトリ更新 (15分)   ← Claudeが既にpush済みの場合は skip
-[17:00]  ~~Step 1~~  特商法 placeholder 埋め  ← 不要(commerce.htmlは削除済、tamjump.comに集約)
-[17:00]  Step 2  Formspree アカウント作成 + ID差し替え (15分)
-[17:15]  Step 3  Cloudflare WAF で日本IP限定ルール (20分)   ← 最重要
-[17:35]  Step 4  Square商品作成 (25分)
-[18:00]  Step 5  ¥100テスト購入 (10分)
-[18:10]  Step 6  全ページ目視確認 (30分)
-[18:40]  Step 7  push & デプロイ確認 (15分)   ← Claude が随時 push してる場合は skip
-[22:00]  Step 8  最終確認とSNS下書き (60分余裕)
-[23:23]  ✦      鐘が鳴る
-```
-
-時間がない場合は **Step 3 → 4 → 5** が最低ライン(WAF / Square / テスト)。Step 2 (Formspree) は応募フォームが死ぬだけで決済自体は通るので、最悪後追いでも可。
+**作成:** 2026-05-18 (月) by Claude session ⑦
+**版:** session 7 / supersedes the session-5 version in `docs/archived/`
+**対象:** 大下さん(operator)— ブラウザを開いてアカウントを叩く作業
 
 ---
 
-## Step 0 · zip を repo に展開 ⏱ 15分
+## ⏱ Launch スケジュール(三段階・確定)
 
-```bash
-# 手元のリポジトリで(GitHubに push する側)
-cd /path/to/your/king2323-main
+| 段階 | 日時 (JST) | 何が起きる |
+|---|---|---|
+| **Bell opens** | **2026-05-20 (水) 23:23** | サイトの受付が開く。¥100 Bell Entry の受付開始 |
+| **Bell rings** | **2026-05-22 (金) 23:23** | 受付終了。Public Seed 確定 → The Three 抽出 |
+| **The Three** | **2026-05-23 (土) 23:23** | 公開発表(verify.html 更新、SNS、個別通知) |
 
-# 念のため現状をコミットしておく
-git add -A && git commit -m "pre-launch snapshot" || true
-
-# 最新zip展開
-unzip -o ~/Downloads/kingmaker-launch-v20260514d.zip
-cp -r kingmaker-launch-v20260514d/. .
-rm -rf kingmaker-launch-v20260514d
-
-# docs/ を完全に消す(設計書を公開してはいけない)
-rm -rf docs/
-
-# git status で変更ファイル確認
-git status
-```
-
-期待するファイル一覧:
-
-```
-modified:   index.html
-modified:   money.html
-modified:   verify.html
-modified:   app.html
-modified:   css/main.css
-modified:   js/i18n.js
-modified:   js/fx.js
-modified:   js/fx.json
-modified:   js/main.js
-
-new file:   terms.html
-new file:   privacy.html
-new file:   commerce.html
-new file:   rules.html
-new file:   risk.html
-new file:   entry.html
-new file:   api/cycle.json
-new file:   .github/workflows/fx-update.yml
-new file:   art/myth_*.webp           (11個)
-new file:   art/legend_*.webp
-new file:   audio/anthem.mp3
-new file:   video/hero.mp4
-new file:   video/hero.webm
-new file:   video/hero_poster.webp
-new file:   DEPLOY_geoblock.md
-new file:   CHANGES.md
-new file:   scripts/fill_commerce.py
-```
-
-`docs/` が消えていることを確認:
-
-```bash
-ls docs/ 2>&1
-# 期待: "No such file or directory"
-```
+セッション 5 時点の「5/15 単独 launch」は **廃止**。3 段階に分割されたのは session 6 (Mission Fund モデル採用時)。**この日付は絶対に単独で言わない** — 必ず三点セットで扱う(SNS文も同じ)。
 
 ---
 
-## ~~Step 1 · 特商法 placeholder 埋め~~  ⛔ DEPRECATED
+## 0. ローンチ前の現在地(2026-05-18 時点)
 
-このステップは**不要**になりました。
+Claude 側の作業は基本完了。最新コミット `b28374e` (v20260514an = ヒーローの ▶ を 1.5倍ルビー宝石化)が main に反映済み。
 
-設計変更により、特商法表記は **tamjump.com/commerce.html**(コーポレートサイト)に集約。
-king2323/commerce.html は **削除済み**(v20260514i)。
-
-tamjump.com 側には:
-- 販売事業者:タムジ株式会社
-- 運営責任者:代表取締役 大下 甚
-- 所在地:東京都中央区東日本橋3-3-17 Re-Know4B
-- メール:info@tamjump.com
-
-が既に記載済み。Founding Bell 用の補足(商品名・価格 ¥100・性質・提供開始)も別途追記済(commit 657351d on TAmJump/TAmj)。
+残ってる operator タスクは **11項目**(下記)。優先順位順。
 
 ---
 
-## Step 2 · Cloudflare Workers にエントリーAPI追加 ⏱ 15分
+## 1. ローンチ前ブロッカー 11項目(operator 作業)
 
-`entry.html` の Mission 申込フォームは、TAmJ コーポレートと同じ仕組みで動かします:**既存の `tamjump-contact-api` Worker に `/entry` エンドポイントを追加**(同 Worker・同 DB・同 SES、project='kingmaker' で識別)。
+| # | タスク | 所要 | 期限 | このランブックでの場所 |
+|---|---|---|---|---|
+| 1 | Worker 再デプロイ(累積 2 変更) | 5分 | 5/19 まで | §2 |
+| 2 | Cloudflare キャッシュ Purge | 1分 | 各CSS更新後+5/19夜 | §3 |
+| 3 | スケジュール変更の目視確認 | 5分 | 5/19 まで | §4 |
+| 4 | Cloudflare WAF 設定(準備のみ・本デプロイは 5/20 22:00 以降) | 25分 | 5/19 まで準備 | §5 |
+| 5 | Square Link 動作確認(`bc9p0BET` 実開) | 2分 | 5/18 中 | §6 |
+| 6 | ¥100 テスト購入(動線一気通し) | 10分 | 5/19 まで | §7 |
+| 7 | 全ページ目視(desktop) | 15分 | 5/19 まで | §8 |
+| 8 | 全ページ目視(mobile) | 15分 | 5/19 まで | §9 |
+| 9 | Twitter Card Validator で OGP 確認 | 5分 | 5/19 まで | §10 |
+| 10 | Google Search Console で sitemap 登録 | 10分 | 5/20 以降可 | §11 |
+| 11 | テスト Entry `KM-20260514-0001` を D1 から削除 | 3分 | 5/20 開門直前 | §12 |
 
-Formspree は使いません(月 50 件制限、第三者経由、運用分散のため)。
+合計: **約 1.5 時間** を 5/18–5/19 のどこかで確保すれば足りる。WAF の本デプロイだけは別 (5/20 22:00 以降)。
 
-### 2.1 改修済み Worker コードをデプロイ
+---
 
-Claude が用意した `worker_v2_kingmaker.js` を Cloudflare ダッシュボードに反映:
+## 2. Worker 再デプロイ(累積 2 変更)⏱ 5分
+
+`tamjump-contact-api` Worker には session 6 以降、2 つの変更が積まれていてまだデプロイされていません(セッション 6 引き継ぎ書 §15-1 で識別)。
+
+### 2.1 デプロイ手順
 
 1. https://dash.cloudflare.com/ にログイン
 2. **Workers & Pages** → **`tamjump-contact-api`** を開く
-3. 右上の **「Edit code」** ボタン
-4. エディタ内で **Ctrl+A** → **Delete**(既存コード全削除)
-5. `worker_v2_kingmaker.js` の中身を全コピペ
-6. 右上の **「Deploy」** ボタン
-7. 「Success」表示を確認
+3. **Deployments** タブ → 「History」を確認、最後の deploy 日時が **2026-05-13 以前**なら累積変更が未反映
+4. **Edit code** ボタン → エディタ右上の **Deploy** ボタン
+5. 「Success」表示を確認
 
-**変更点:**
-- `ALLOWED_ORIGINS` に `https://king2323.tamjump.com` 追加
-- `PROJECT_CONFIG.kingmaker` 追加(prefix=KM、件名【KINGMAKER 23:23】等)
-- **新規エンドポイント `POST /entry`**(handleEntry)
-- KingMaker 用の英日 bilingual メール文面(運営宛 + 自動返信)
-
-**既存の `/contact`(tamjump / scsgo)は完全に無変更** — 影響なし。
-
-### 2.2 動作確認(curl で疎通テスト)
-
-デプロイ完了後、Claude 側で以下を実行して 200 が返ってくることを確認:
+### 2.2 動作確認(curl)
 
 ```bash
 curl -X POST https://tamjump-contact-api.animalb001.workers.dev/entry \
   -H 'Content-Type: application/json' \
   -H 'Origin: https://king2323.tamjump.com' \
   -d '{
-    "payment_email":"test@example.com",
-    "receipt_id":"TEST-001",
-    "mission_name":"Pre-launch sanity test",
+    "payment_email":"info@tamjump.com",
+    "receipt_id":"SANITY-20260518",
+    "mission_name":"Sanity test after redeploy",
     "country":"Japan",
-    "mission_summary":"This is a sanity test from the launch checklist.",
+    "mission_summary":"Worker redeploy verification.",
     "sns":"",
     "agree_rules":true
   }'
 ```
 
-期待する応答:
+期待:
 ```json
-{"success":true,"message":"Mission Entry を受け付けました / Mission Entry received","ticketNumber":"KM-20260514-0001"}
+{"success":true,"message":"Mission Entry を受け付けました / Mission Entry received","ticketNumber":"KM-20260518-NNNN"}
 ```
 
-加えて、`info@tamjump.com` にテストメールが届くこと、自動返信が `test@example.com` に送られたことを SES のログ等で確認。
+`info@tamjump.com` にも管理者宛メールが届くこと(SES経由)。
 
-### 2.3 entry.html はすでに更新済み(v20260514j 以降)
-
-`entry.html` は `<form>` を JS の `fetch()` ベースに改修済み:
-
-- `action` 属性は無し、`id="entryForm"` の JS ハンドラが POST
-- API_URL は `https://tamjump-contact-api.animalb001.workers.dev/entry`
-- 成功時は受付番号(KM-YYYYMMDD-NNNN)表示、フォームは隠れる
-- エラー時は赤帯でエラー表示
-- 利用規約同意チェックがクライアント側でも検証
-
-### 2.4 Formspree(過去案)は廃止
-
-過去版では Formspree を予定していましたが、Workers 統一に変更しました。理由:
-- 既存(tamjump / scsgo)と運用が一致
-- 月 50 件制限なし
-- 第三者を経由しない(参加者データ・メアドが formspree.io に行かない)
-- カスタムドメイン化(`api.tamjump.com`)に乗れる
+このテストレコードも launch 前に削除します(§12 と一緒)。
 
 ---
 
-## Step 3 · Cloudflare WAF で日本IP限定 ⏱ 20分
+## 3. Cloudflare キャッシュ Purge ⏱ 1分
 
-これが今夜の **最重要** タスク。やらないと:
-- 海外IPからアクセス可能 → 各国の lottery/gambling 法に同時抵触
-- 各国規制当局からのテイクダウン要請のリスク
+CSS / HTML / JS を更新するたびに毎回必要。
 
-### 3.1 ダッシュボードへ
+1. https://dash.cloudflare.com/ → `tamjump.com` を選択
+2. 左メニュー **Caching** → **Configuration**
+3. **Purge Everything** ボタン → 確認ダイアログで **Purge Everything**
 
-1. https://dash.cloudflare.com/ にログイン
-2. `king2323.tamjump.com` のドメインを選択(または `tamjump.com` の管理画面で「king2323」サブドメインを選ぶ)
+特に session 7 (5/17–5/18) 中の `main.css?v=...` 連続更新(ah / ai / aj / ak / al / am / an の 7 回)で、HTML 側のキャッシュも更新されているのでこれを実行しないと一部ユーザーには旧版 HTML が見え続けます。**§7 テスト購入の前に必ず 1 回**。
 
-### 3.2 ルール作成
-
-1. 左メニュー **Security** → **WAF**
-2. **Custom rules** タブ
-3. **Create rule** ボタン
-4. 以下を入力:
-
-```
-Rule name:    Geo restriction — JP only (king2323 subdomain)
-When incoming requests match:
-  → "Edit expression" を押して以下を貼り付け:
-  
-  (http.host eq "king2323.tamjump.com" and ip.geoip.country ne "JP")
-
-  ⚠️ ホスト名フィルタ (http.host eq ...) を必ず含めること。
-     これを抜くと tamjump.com 親ドメイン全体が JP-only になり、
-     他のサブドメイン (運営者所有の別サイト) を巻き込んで殺します。
-
-Then:
-  Action:                   Block
-  ▼ Choose Block response   (展開する)
-  With response type:       Custom HTML
-  Response code:            451
-  Response body (HTML):
-```
-
-レスポンス body は以下を貼り付け(コピペ可):
-
-```html
-<!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8"><title>451 — Unavailable</title>
-<style>
-body { font-family: Georgia, serif; background:#0f0e0c; color:#d4c8a8;
-       display:flex; align-items:center; justify-content:center;
-       min-height:100vh; margin:0; padding:32px; line-height:1.6; }
-.box { max-width:560px; text-align:center; }
-h1 { font-size:48px; margin-bottom:8px; color:#d4af37; letter-spacing:0.02em; }
-.sub { font-family:monospace; font-size:11px; letter-spacing:0.3em;
-       color:#988868; margin-bottom:36px; text-transform:uppercase; }
-p { font-size:14px; color:#b8a888; }
-em { color:#d4af37; font-style:italic; }
-</style></head><body>
-<div class="box">
-<h1>451</h1>
-<div class="sub">— Unavailable For Legal Reasons —</div>
-<p>KINGMAKER 23:23 is currently only available within Japan.</p>
-<p>The platform is operating in compliance with Japanese law. Operation in
-other jurisdictions requires per-country legal review, which has not yet
-been completed.</p>
-<p><em>We are not accepting registrations or payments from this region.</em></p>
-</div></body></html>
-```
-
-5. **Deploy** を押す
-6. ルールが有効状態であることを確認(右側のトグルがON)
-
-### 3.3 動作確認
-
-VPN を使って米国IPからアクセス → 451ページが表示される、ことを確認。
-VPN を切って日本IPからアクセス → 通常のサイトが表示される、ことを確認。
-
-VPN がなければ、海外の友人に頼むか、無料の Web プロキシ ( https://www.proxysite.com/ ) で米国経由アクセス試行。
+ハードリフレッシュ(Ctrl+Shift+R / Cmd+Shift+R)で自分のブラウザは即更新できますが、これは self-check 用。全ユーザー反映は Purge Everything が必要。
 
 ---
 
-## Step 4 · Square 商品作成 ⏱ 25分
+## 4. スケジュール変更の目視確認 ⏱ 5分
 
-### 4.1 Square Dashboard へ
-
-1. https://squareup.com/dashboard/ にログイン
-2. 左メニュー **アイテム** → **アイテムライブラリ**
-3. **アイテムを作成** ボタン
-
-### 4.2 商品情報
-
-| 項目 | 入力内容 |
-|---|---|
-| 名前 | `KINGMAKER 23:23 — Founding Bell Entry` |
-| カテゴリ | (新規作成) `KINGMAKER` |
-| 詳細(商品説明) | 下記ブロックをコピペ |
-| 価格 | ¥100 |
-| 税の扱い | 税込価格 |
-| 在庫追跡 | 無効(デジタル商品) |
-| 写真 | (任意)assets/logo-v3-512.png をアップロード |
-
-商品説明にコピペ:
+セッション 6 でスケジュール B′ (全ゲート 23:23 JST 統一)が反映されました。各ページの記述が三段階になっているか確認:
 
 ```
-KINGMAKER 23:23 — Founding Bell Entry
-
-KINGMAKER 23:23 の Founding Bell 参加記録です。
-Bell Entry は参加記録であり、通貨、ポイント、暗号資産、
-前払式支払手段、投資商品ではありません。
-換金・譲渡・売買はできません。
-Grant の自動支給を保証するものではありません。
-
-Bell Entry is a participation record for KINGMAKER 23:23.
-It is not currency, not points, not crypto, not stored value,
-not investment product, and not exchangeable for cash.
-Grant disbursement is not guaranteed and requires review.
-
-Rules:  https://king2323.tamjump.com/rules.html
-Terms:  https://king2323.tamjump.com/terms.html
-特商法: https://king2323.tamjump.com/commerce.html
+□ /index.html        Hero に「Bell opens · Bell rings · The Three」の三点表示
+□ /index.html        Live ribbon が「CYCLE 1 · BELL OPENS 5/20 · RINGS 5/22 · THREE 5/23」
+□ /money.html        Cycle 1 スケジュールが三段階表示
+□ /rules.html        L90-92 付近に Cycle 1 scope と "Cycle 2+ features deferred" 記載
+□ /risk.html         同様の Cycle 1 注記
+□ /verify.html       Cycle 1 は市場データ簡略版である旨の注記
 ```
 
-### 4.3 オンラインリンク作成 (Checkout Link)
-
-1. アイテム作成後、左メニュー **オンライン** → **オンラインチェックアウト** または **支払いリンク**
-2. **新規リンク作成** → タイプ「商品の販売」
-3. 上で作った商品を選択
-4. **オプション設定** で:
-   - 在庫数: 無制限
-   - 支払い完了後のリダイレクト先: `https://king2323.tamjump.com/entry.html`
-   - 配送先住所収集: **オフ**(デジタルなので)
-   - メールアドレス収集: **オン**(必須)
-5. リンクが生成される(例: `https://square.link/u/xxxxxx`)
-
-### 4.4 受信メール文面のカスタマイズ(任意だが推奨)
-
-Square Dashboard → 設定 → 受信メール → 注文確認メールに以下を追記:
-
-```
-Founding Bell へのご参加ありがとうございます。
-Square 領収書を保管してください。
-
-Mission Entry はこちら:
-https://king2323.tamjump.com/entry.html
-
-Bell Entry は参加記録です。換金・譲渡はできません。
-Grant 支給には別途審査が必要です。
-```
-
-### 4.5 サイト側のCTAをSquareリンクに繋ぐ
-
-`index.html` の Hero CTA は現状 `data-ritual-open="coin"` でモーダルを開きます。モーダル内に Square リンクへの誘導があるか確認:
+`5/15` が文字列として残っていないことを確認:
 
 ```bash
-grep -n "square" index.html | head
+# operator 環境では browser DevTools の Find in page、または:
+# GitHub repo 上で検索: https://github.com/TAmJump/king2323/search?q=5%2F15
 ```
 
-なければ、モーダル内に「Square で決済」ボタンを追加する必要がありますが、Founding Bell では **Hero CTA → entry.html → Square リンク** という流れでも良いです(2クリックで決済画面)。明日対応で十分。
+なお `2026-05-14` や `20260514` はバージョン文字列・日付メタデータなので残っていて OK(これらは launch 日ではなく commit/work 日)。
 
 ---
 
-## Step 5 · ¥100 テスト購入 ⏱ 10分
+## 5. Cloudflare WAF 設定 ⏱ 25分(本デプロイは 5/20 22:00 以降)
 
-### 5.1 本物のカードで1回
+**最重要タスク**。海外IP からのアクセスを 451 でブロックし、各国 lottery/gambling 法との同時抵触リスクを回避します。
 
-1. Step 4.3 で作った Square リンクを開く
-2. ご自分のクレジットカードで ¥100 決済
-3. メアド入力
-4. **決済**
+### 5.1 expression(session 7 確定版)
 
-確認:
+```
+(http.host eq "king2323.tamjump.com" and ip.geoip.country ne "JP" and not cf.client.bot)
+```
+
+3 つの条件すべてを **必ず含める**:
+
+| 条件 | 役割 | 抜くとどうなる |
+|---|---|---|
+| `http.host eq "king2323.tamjump.com"` | ホスト名フィルタ | tamjump.com 親ドメイン全体が JP-only になり、他サブドメイン (運営者所有の別サイト) を巻き込んで殺す |
+| `ip.geoip.country ne "JP"` | 国外ブロック | 国外からのアクセスを通してしまう(法的リスク) |
+| `not cf.client.bot` | クローラ通過 | Google / Bing / Twitterbot がブロックされ、SNS で URL 貼っても OGP プレビュー出ない・検索インデックスされない |
+
+`cf.client.bot` は Cloudflare が検証済みの bot のみ true になるフラグ。User-Agent 偽装攻撃には反応しない(=安全)。
+
+詳細根拠は同リポの `WAF_SEO_BYPASS.md` を参照。
+
+### 5.2 設定手順
+
+1. https://dash.cloudflare.com/ → `tamjump.com`
+2. 左メニュー **Security** → **WAF** → **Custom rules** タブ
+3. **Create rule**
+4. 設定:
+   ```
+   Rule name: Geo restriction — JP only (king2323 subdomain)
+   When incoming requests match: → Edit expression → 上の式を貼り付け
+   Then:
+     Action:               Block
+     With response type:   Custom HTML
+     Response code:        451
+     Response body:        WAF_SEO_BYPASS.md の bilingual 451 ページ HTML をコピペ
+   ```
+5. **重要:** Deploy は **5/20 (水) 22:00 以降** に行う。 それまでは保存だけして無効化しておく(右側トグル OFF)。launch 直前で動作確認時間を確保するため。
+
+### 5.3 launch 当日 (5/20 22:00) の手順
+
+1. WAF Custom rule の右側トグルを ON
+2. VPN を米国に切り替えて `https://king2323.tamjump.com` を開く → bilingual 451 ページが出る
+3. VPN を切って国内 IP から → 通常のサイトが見える
+4. Twitter Card Validator (https://cards-dev.twitter.com/validator) で URL を入れる → OGP プレビュー出る(= bot 通過)
+5. すべて OK なら 23:23 を待つ
+
+---
+
+## 6. Square Link 動作確認 ⏱ 2分
+
+`bc9p0BET` は session 5 で疎通確認済みですが、launch 直前にもう一度開いておきます(URL が今も生きているかの確認)。
+
+1. ブラウザで `https://square.link/u/bc9p0BET` を開く
+2. KINGMAKER 23:23 — Founding Bell Entry、¥100 が表示される
+3. 「決済する」までは行かず、ページ表示確認のみで OK
+
+`index.html` (line 3742 付近)と `money.html` の Square 動線リンクも同じ ID になっていることを確認:
+
+```bash
+grep -n bc9p0BET index.html money.html
+```
+
+両方の出力に `bc9p0BET` が含まれていれば OK(session 7 開始時点で確認済み: index.html に 1 件)。
+
+---
+
+## 7. ¥100 テスト購入(動線一気通し)⏱ 10分
+
+実カード で 1 回通します。これが最も重要な動作確認。
+
+### 7.1 シナリオ
+
+1. https://king2323.tamjump.com/ にハードリフレッシュで開く(§3 の Purge 後)
+2. Hero の ▶ ボタン(王冠下の赤宝石)→ クリック → ショートムービー再生 → モーダルを閉じる
+3. CTA「Ring the Bell」をクリック → coin ritual モーダル開く
+4. モーダル内の Square 決済リンク → Square ページへ遷移
+5. ご自分のメアド + クレジットカードで ¥100 決済
+6. 完了 → `entry.html` にリダイレクト
+7. Mission Entry フォーム入力:
+   - payment_email = Square で使ったメアド
+   - receipt_id = Square の領収書 ID(メールに記載)
+   - mission_name = `Launch動線テスト 20260519`(任意)
+   - country = Japan
+   - mission_summary = 任意
+   - agree_rules = チェック
+8. **Submit** → 「Mission Entry を受け付けました」と受付番号(`KM-YYYYMMDD-NNNN`)が表示
+
+### 7.2 確認項目
 
 | チェック項目 | 期待 |
 |---|---|
 | Square から領収書メールが届いた | ✓ |
 | Square Dashboard の取引履歴に ¥100 が出ている | ✓ |
 | 完了後 entry.html にリダイレクトされた | ✓ |
-| entry.html でテストフォーム送信 | ✓ |
-| Formspree のダッシュボードに送信が記録された | ✓ |
-| Formspree から運営メアド宛にメールが届いた | ✓ |
+| entry.html フォーム送信が成功し受付番号が出た | ✓ |
+| `info@tamjump.com` に運営宛メールが届いた | ✓ |
+| 入力したメアドに自動返信が届いた | ✓ |
+| D1 にレコードが入った(下記コマンド) | ✓ |
 
-### 5.2 自分への返金
-
-テスト購入は Square Dashboard → 取引 → 該当取引 → 返金 で全額返金可能。
-ただし「Founding Bell の取引履歴に1件あるのは演出として悪くない」かもしれないので、返金は任意。
-
----
-
-## Step 6 · 全ページ目視確認 ⏱ 30分
-
-### 6.1 メインフロー
-
-```
-□ /index.html        Hero表示 → 動画再生 → カウントダウン動作
-□ /index.html        Opening Notice が表示されている
-□ /index.html        Myth セクション 4枚 のアートが表示
-□ /index.html        Legends セクション 7枚 + クリックでライトボックス
-□ /index.html        Sound Toggle (右下) → クリックで anthem 再生
-□ /index.html        ハンバーガーメニュー(右上)→ チラシ風メニュー
-□ /index.html        メニュー → Ring the Bell → entry.html へ
-□ /money.html        Fund パネル全て $0、ラベル「Cycle 1 · Awaiting first ring」
-□ /verify.html       「Method demonstrated」と表示
-□ /entry.html        フォーム表示 → ダミー送信成功
-□ /terms.html        利用規約全文表示、言語ピッカー動作
-□ /privacy.html      プライバシー全文表示
-□ /commerce.html     特商法全文表示、運営者氏名が入力済み
-□ /rules.html        Rules全文表示
-□ /risk.html         Risk全文表示
-```
-
-### 6.2 翻訳確認
-
-英語ピッカーの状態で:
-
-1. 言語ピッカーで「日本語」を選択
-2. ページがリロード
-3. **brand vocabulary (KINGMAKER, Bell, Crown, Grant, Cycle, 23:23) は英語のまま** であること
-4. **footer や hero h1 など (KINGMAKER以外) は日本語に変わっている** こと
-5. Live ribbon は「— CYCLE 1 · AWAITING FIRST RING · FRIDAY 23:23 JST —」のまま
-
-英語 → 韓国語、英語 → スペイン語、英語 → フランス語 でも同様確認。
-
-### 6.3 23:23 ritual 状態確認(本番直前のリハーサル)
-
-23:22:00 にページを開いて放置。23:22:00 から:
-
-```
-23:22:00       ページ背景がゆっくり脈動し始める
-23:22:30       カウントダウン数字がゴールドに光る
-23:23:00.000   画面全体が金色のフラッシュ + 「THE BELL IS OPEN.」
-23:23:01       Hero CTA が「→ ENTER THE 5 MINUTES」に切り替わる
-23:23:00–23:28:00  5分間 open モード
-23:28:00       通常に戻り、次の金曜までカウントダウン
-```
-
-確認用ブラウザを2つ開いて同時に見る → 同じ瞬間にフラッシュが起きることを確認。
-
-### 6.4 DevTools コンソール
-
-F12 → Console タブ。期待する出力:
-
-```
-[i18n] v20260514d loaded · cookie: (none)
-[i18n] marked NN elements with lang="ja"
-[fx]   v20260514d · 1 USD = ¥157.60 · updated 2026-05-13
-[live] v20260514d · Cycle 0 · baseline ¥0 · updated 2026-05-13T04:30:00Z
-```
-
-`v20260514d` が3回出れば成功。古い version 番号が出ていたらキャッシュが残っている → CF キャッシュパージ。
-
----
-
-## Step 7 · Push & デプロイ確認 ⏱ 15分
+### 7.3 D1 レコード確認
 
 ```bash
-git add -A
-git status                # 差分ファイル確認
-git commit -m "Launch v20260514d: Founding Bell ritual UI, legal pages, media, chirashi menu"
-git push origin main
+# operator 環境(Cloudflare Wrangler CLI 想定)
+wrangler d1 execute YOUR_DB_NAME --command \
+  "SELECT ticket_number, payment_email, mission_name, created_at FROM entries WHERE project='kingmaker' ORDER BY created_at DESC LIMIT 5;"
 ```
 
-GitHub Pages または Cloudflare Pages へのデプロイが自動で走る。1-2分待つ。
+`KM-20260519-NNNN` の自分のレコードが見えれば OK。
 
-その後 Cloudflare ダッシュボード → Caching → Configuration → **Purge Everything** を実行(キャッシュ全消し)。
+### 7.4 テスト購入の返金
 
-ブラウザでハードリフレッシュ(Ctrl/Cmd + Shift + R)→ コンソールに `v20260514d` が3行出ていることを最終確認。
+任意。Square Dashboard → 取引 → 該当 → 返金 で全額返金可。返金しなくても「launch前テスト1件あり」という記録は問題なし(性質はテストレコード = 識別可能)。
+
+このテストレコード自体は §12 で D1 から削除します。
 
 ---
 
-## Step 8 · 23:23 直前のSNS下書き ⏱ 余裕分
+## 8. 全ページ目視確認(desktop)⏱ 15分
 
-### 23:23:00 JST に投稿する文章
-
-#### X (旧Twitter)
-
-英語:
 ```
-KINGMAKER 23:23 has opened.
-2026.05.15 · 23:23 JST
-The Founding Bell is now live.
-
-¥100 does not buy a prize. It records a will.
-To be chosen, you must choose.
-
-https://king2323.tamjump.com
-```
-
-日本語:
-```
-KINGMAKER 23:23 開始。
-Founding Bell が鳴りました。
-
-100円で賞金を買うのではない。意思を記録する。
-選ばれたいなら、誰かを選べ。
-
-https://king2323.tamjump.com
+□ /index.html        Hero表示、▶ボタンが王冠下の赤宝石(王冠の白い三角の中、額の真上)
+□ /index.html        ▶ボタン → クリックでショートムービー再生
+□ /index.html        Opening Notice が表示
+□ /index.html        Myth セクション 4枚、Legends 7枚 アート表示
+□ /index.html        Sound Toggle(右下)→ クリックで anthem 再生
+□ /index.html        ハンバーガーメニュー(右上)→ チラシ風メニュー
+□ /index.html        Live ribbon が三段階(Bell opens / rings / Three)
+□ /index.html        フッターに不変文言:
+                     NOT A LOTTERY · NOT AN INVESTMENT · NOT A WAGER ·
+                     BELL IS A RIGHT, NEVER CASH
+□ /money.html        Fund パネル、Cycle 1 baseline 表示
+□ /verify.html       The Three 抽出ロジック表示(Cycle 1 注記あり)
+□ /entry.html        フォーム表示
+□ /terms.html        利用規約全文表示、言語ピッカー動作
+□ /privacy.html      プライバシー全文表示
+□ /rules.html        Rules 全文表示、Cycle 2+ 機能の注記あり
+□ /risk.html         Risk 全文表示、Cycle 1 scope 注記
 ```
 
-スクリーンショット案: Bell strike が画面全体を覆ったその瞬間の写真。
+### 8.1 翻訳確認
+
+言語ピッカーで日本語→英語、英語→韓国語等を切り替え:
+- **brand vocabulary**(KINGMAKER, Bell, Crown, Grant, Cycle, 23:23)は英語のまま
+- それ以外は対象言語に切り替わる
+
+### 8.2 DevTools コンソール
+
+F12 → Console:
+- エラーが出ていないこと
+- `[i18n]`, `[fx]`, `[live]` 系のログが正常
 
 ---
 
-## トラブルシューティング
+## 9. 全ページ目視確認(mobile)⏱ 15分
 
-### サイトを開いても古いバージョンが出る
+実機(スマホ)で全ページ表示。特に:
 
-- Cloudflare Cache: ダッシュボード → Caching → Purge Everything
-- ブラウザ: Ctrl/Cmd + Shift + R
-- コンソールの `v20260514d` の有無で判定
+```
+□ ハンバーガーメニュー(右上)→ タップで開く ← session ⑥ で修正済の最重要バグ
+                                            (`?v=20260514ab` 以降が必要)
+□ Hero の ▶ ルビー宝石が王冠下の白三角内に表示(28px、画像が縦に詰まらない)
+□ Sound Toggle が右下に表示(画面端で見切れない)
+□ 言語ピッカーが右上付近で押せる
+□ 全長文ページが横スクロールしない
+□ フォーム入力(entry.html)がモバイルで完了できる
+```
 
-### 日本国内から見ても 451 が出る
+iPhone Safari と Android Chrome の両方で確認推奨。Pixel 7 サイズ(412×915)は session 5 で screenshot 検証済み。
 
-- Cloudflare WAF Custom Rule を確認
-- VPN を ON にしていないか確認(自宅の VPN が海外サーバー経由になっているケース)
-- ルール式 `(http.host eq "king2323.tamjump.com" and ip.geoip.country ne "JP")` が正確かを確認(`!=` ではない、ホスト名フィルタも忘れない)
+---
 
-### Square で「日本円が選べない」
+## 10. Twitter Card Validator で OGP 確認 ⏱ 5分
 
-- Square 日本アカウント (squareup.com/jp/ja) でログインしているか確認
-- アカウントが日本拠点でない場合、Stripe や PayPal など別決済への切り替えを検討
+WAF 本デプロイ後(5/20 22:00 以降)に再確認。
 
-### Formspree から確認メールが届かない
+1. https://cards-dev.twitter.com/validator にアクセス(X ログイン要)
+2. URL: `https://king2323.tamjump.com/` を入力 → **Preview card**
+3. 期待:
+   - Card type: `summary_large_image`
+   - Title: `KINGMAKER 23:23 — 王を造る五分間 / The Five Minutes That Make a King`
+   - Description: 短文 (rules 抜粋)
+   - Image: og.png / logo
 
-- 迷惑メールフォルダ確認
-- 別アカウント(Gmail等)で再登録試行
-- 最悪 Google Form (forms.google.com) に切り替え可能。フォーム作成 → 共有リンク取得 → entry.html の `<form action>` を Google Form リダイレクト URL に差し替え
+`/entry.html`, `/money.html` でも同様に1回ずつ。
 
-### Bell Strike が 23:23 にフラッシュしない
+WAF 本デプロイ前に検証すると Twitterbot が WAF にブロックされて OGP が出ません(`cf.client.bot` を抜いて作った場合のみ)。
 
-- DevTools コンソールに `v20260514d` が出ているか確認(古い JS の可能性)
-- スマホは Auto-Lock で画面が消えていないか確認
+---
+
+## 11. Google Search Console で sitemap 登録 ⏱ 10分
+
+これは 5/20 以降でも可。launch を遅らせる要素ではない。
+
+1. https://search.google.com/search-console にアクセス
+2. プロパティ「`king2323.tamjump.com`」を追加(`tamjump.com` 全体ではなくサブドメイン単位)
+3. DNS TXT または HTML ファイルで verification
+4. 左メニュー **Sitemaps** → `https://king2323.tamjump.com/sitemap.xml` を送信
+5. Status `Success` が出れば完了
+
+`robots.txt` と `sitemap.xml` は session 6 (v20260514x) で配置済み。
+
+---
+
+## 12. テスト Entry `KM-20260514-0001` を D1 から削除 ⏱ 3分
+
+session 6 初期のテストエントリと、§7 で作る新テストエントリの両方を launch 開門の **直前**(5/20 23:00 頃)に削除します。
+
+```bash
+# 確認(削除前)
+wrangler d1 execute YOUR_DB_NAME --command \
+  "SELECT ticket_number, payment_email, mission_name FROM entries WHERE project='kingmaker' AND mission_name LIKE '%test%' OR mission_name LIKE '%動線テスト%';"
+
+# 削除
+wrangler d1 execute YOUR_DB_NAME --command \
+  "DELETE FROM entries WHERE ticket_number IN ('KM-20260514-0001', 'KM-20260518-NNNN', 'KM-20260519-NNNN');"
+# NNNN は §2.2 / §7 で実際に発番された番号に置き換え
+
+# 削除確認
+wrangler d1 execute YOUR_DB_NAME --command \
+  "SELECT COUNT(*) FROM entries WHERE project='kingmaker';"
+```
+
+期待: Cycle 1 開門直前は **0 件**。最初の本物の Bell Entry が `KM-20260520-0001` になる。
+
+---
+
+# 第二部 · ローンチ当日(5/20 水曜)
+
+## 13. 当日タイムライン
+
+```
+[5/20 (水) 22:00 JST]  T-83min
+  □ 最終目視確認(§8, §9 の項目を抜粋で再走)
+  □ Cloudflare WAF Custom Rule 本デプロイ(§5.3)
+  □ 米国VPN経由で 451 出るか確認
+  □ 国内アクセスで普通に開けるか確認
+  □ Twitter Card Validator で再確認(§10)
+  □ §12 のテスト Entry 削除
+
+[5/20 (水) 23:00 JST]  T-23min
+  □ サイトをブラウザで開いておく(複数タブ・複数デバイス)
+  □ SNS 投稿の下書きを開いておく(SNS_LAUNCH_KIT.md 参照)
+  □ Square Dashboard を別タブで開いておく(リアルタイム監視)
+  □ D1 監視コマンドを cmdline に貼っておく(下記)
+
+[5/20 (水) 23:23 JST]  ★ Bell opens
+  - サイトのカウントダウンが 0 になり、Hero CTA が「→ ENTER THE 5 MINUTES」に切替
+  - SNS 投稿実行(SNS_LAUNCH_KIT.md の §1)
+  - 関係各所(韓国、映像会社、近しい関係者)への連絡
+
+[5/20 (水) 23:23–5/22 (金) 23:23]  受付期間 約46時間
+  - 問い合わせ対応(info@tamjump.com)
+  - D1 監視(下記コマンド)
+  - 異常検知(Square 決済失敗率、フォーム送信エラー、WAF 誤検知)
+```
+
+## 14. D1 監視コマンド(操作中ずっと使う)
+
+```bash
+# 現在の Bell Entry 件数
+wrangler d1 execute YOUR_DB_NAME --command \
+  "SELECT COUNT(*) FROM entries WHERE project='kingmaker' AND ticket_number LIKE 'KM-2026052%';"
+
+# 直近 10 件
+wrangler d1 execute YOUR_DB_NAME --command \
+  "SELECT ticket_number, payment_email, country, created_at FROM entries WHERE project='kingmaker' ORDER BY created_at DESC LIMIT 10;"
+
+# 異常検知:同一メアドからの重複申し込み
+wrangler d1 execute YOUR_DB_NAME --command \
+  "SELECT payment_email, COUNT(*) c FROM entries WHERE project='kingmaker' GROUP BY payment_email HAVING c > 1;"
+```
+
+---
+
+# 第三部 · Bell rings 当日(5/22 金曜)
+
+## 15. タイムライン
+
+```
+[5/22 (金) 22:00 JST]
+  □ 市場データ取得準備
+    - BTC USD: Coinbase / Binance 公開 API
+    - Nikkei 225: 終値 (15:00 JST 確定値)
+    - S&P 500: 前日米市場終値 or 当日リアルタイム
+  □ D1 から Final Pool 集計開始
+    wrangler d1 execute ... --command \
+      "SELECT COUNT(*) FROM entries WHERE project='kingmaker' AND created_at < '2026-05-22T14:23:00Z';"
+
+[5/22 (金) 23:00 JST]
+  □ KYC NG / 重複 / 不正 を除外して Final Pool Size 確定
+  □ Public Seed 文字列の準備: "BTC=XXX|N225=XXX|SP500=XXX|POOL=NNN"
+
+[5/22 (金) 23:23 JST]  ★ Receipt closes · Bell rings
+  - Public Seed 確定
+  - SHA-256 計算
+  - The Three 抽出(verify.html JS ロジック参照)
+  - Square 決済も同時刻にクローズ(WAF Custom Rule で動的閉鎖は不要、
+    時刻判定は JS 側で実装済)
+  - SNS 投稿実行(SNS_LAUNCH_KIT.md §2)
+
+[5/22 (金) 23:28 JST]
+  - 5分間 ritual window 終了
+  - The Three 内部確定(まだ公表しない、審査開始)
+
+[5/22 (金) 23:28 – 5/23 (土) 23:23]
+  - The Three 候補の Square 領収書照合
+  - KYC + AML + Mission 適合性審査
+  - verify.html に Cycle 1 結果セクション追記準備
+```
+
+---
+
+# 第四部 · The Three 発表(5/23 土曜)
+
+## 16. タイムライン
+
+```
+[5/23 (土) 23:23 JST]  ★ The Three announced
+  □ verify.html を更新 push(Claude が支援可)
+  □ The Three へ個別通知メール(本名・receipt 番号で照合)
+  □ SNS で発表(SNS_LAUNCH_KIT.md §3)
+  □ 受付番号で公開、本名は出さない
+  □ Mission Fund 配賦の事務開始
+```
+
+---
+
+# 第五部 · トラブルシューティング
+
+## 17. よくある障害
+
+### 17-1. 「サイトを開いても古いバージョンが出る」
+
+- **Cloudflare Cache**: §3 の Purge Everything
+- **ブラウザ**: Ctrl/Cmd + Shift + R
+- **判定**: F12 → Console で `[i18n] v20260514an` のようなバージョン文字列が出る。古い `v20260514t` 等が出ていたらキャッシュが残っている
+
+### 17-2. 「日本国内から見ても 451 が出る」
+
+- **WAF Custom Rule の expression を確認**(§5.1 の3条件すべて)
+- VPN を ON にしていないか(自宅のフルトンネル VPN が海外サーバー経由になっているケース)
+- 同じ rule が複数登録されて競合していないか
+
+### 17-3. 「entry.html フォーム送信が `Failed to fetch` で失敗」
+
+- Worker が再デプロイされていない可能性 → §2 を実行
+- CORS で `Origin` ヘッダがマッチしていない可能性
+- Worker 側ログ(Cloudflare ダッシュボード → Workers → Logs)で詳細確認
+
+### 17-4. 「Square 決済成功後に entry.html に戻ってこない」
+
+- Square Dashboard → 該当 Checkout Link → リダイレクト先 URL が `https://king2323.tamjump.com/entry.html` になっているか
+- WAF が Square からのリダイレクトを 451 で弾いていないか(`cf.client.bot` 入れていれば OK)
+
+### 17-5. 「Bell strike アニメが 23:23 にフラッシュしない」
+
+- DevTools Console にバージョン文字列が出ているか
+- スマホは Auto-Lock で画面が消えていないか
 - ブラウザの reduced-motion 設定が ON だとアニメーション無効(意図的仕様)
+- システム時計のずれ:NTP 同期されているか確認(±1秒以内)
+
+## 18. 緊急時:サイト全停止のフォールバック
+
+最悪のシナリオ(致命的バグ、コンプライアンス上の重大問題等)で launch を**即停止**したい場合:
+
+```
+Option A: Cloudflare WAF で全 IP ブロック
+  Custom rule の expression を:
+    (http.host eq "king2323.tamjump.com")
+  に変更し Block → 全アクセスが 451
+  即時反映、5分後に解除も可能
+
+Option B: GitHub Pages を停止
+  TAmJump/king2323 → Settings → Pages → Source: None
+  反映に数分
+
+Option C: tamjump.com DNS から king2323 を削除
+  Cloudflare DNS で CNAME 削除
+  伝搬に最長 24時間(TTL次第)
+```
+
+推奨は **Option A** — 戻すのも最速。
 
 ---
 
-## あなた(operator)の判断が必要な所
+# 第六部 · ローンチ後のクリーンアップ
 
-このランブックには判断保留の所が2つあります:
+## 19. 5/24 (日) 以降のタスク
 
-### A. Hero CTA は Square link を直接開くべきか?
+```
+□ GitHub PAT の revoke
+  - session 6/7 で使った PAT `ghp_SNxD...oJln` を Delete
+  - URL: https://github.com/settings/tokens
+  - 該当 PAT 行右の Delete → 確認
 
-現状: モーダルが開く → モーダルから entry.html 案内
+□ Square Dashboard で取引履歴アーカイブ
 
-提案: 23:23 当日は Hero CTA を「直接 Square 決済リンク」に変える。決済 1 クリック完了 → 戻ってきて entry.html。
+□ D1 のバックアップ
+  wrangler d1 export YOUR_DB_NAME --output backup-cycle1.sql
 
-実装する場合は私に「Hero CTA を Square リンクに直してください」と指示すれば、`href="https://square.link/u/xxxxxx"` + ターゲット指定で書き換えます。
+□ Cycle 1 振り返り
+  - 申込総数
+  - メアド/カード重複
+  - KYC NG 率
+  - Mission Fund 配賦完了
+  - 引き継ぎ書に Cycle 2 へのフィードバック追記
 
-### B. /stories の Naia_R / Hokori 等は完全削除?
-
-現状: "ILLUSTRATIVE SCENARIOS · NO PAST CYCLE HAS OCCURRED" の disclaimer を付けて example として残す形。
-
-代替: そもそも /stories セクションを完全に削除して、Cycle 1 が終わるまで「The throne has no name yet.」とだけ表示。
-
-私としては今の現状(disclaimer 付き example)で景表法的にはセーフだと判断しています。が、念のため気になるなら完全削除も可能。
+□ 次の Bell(Cycle 2 開門)準備
+  - 開門日: 2026-05-27 (水) 23:23 JST(weekly cycle B′)
+  - Claude session ⑧ 開始時に新 PAT 発行 → 都度 revoke
+```
 
 ---
 
-## 私(Claude)の最後のメッセージ
+# 私(Claude session ⑦)から operator へ
 
-このランブックは「あなたが今夜2時間でやり切る」を前提に書きました。途中で詰まったら、その時点のスクショと一緒に「Step 3.2 で WAF Custom rule の Edit expression が見当たらない」と私に投げてください。それぞれの画面 specifically どう動くか分かる範囲で答えます。
+このランブックは session 5 版を session 7 時点で書き直したものです。**session 5 版は陳腐化していました**(Formspree 想定、Square 未確定、WAF expression 旧版、launch 5/15 単独)。それを置き換える形で書きました。
 
-23:23 に間に合わなくても、世界は終わりません。来週金曜にもう1回鐘は鳴ります。
-完璧に間に合うことより、嘘のないサイトを世に出すことのほうが、KINGMAKER のブランドにとってずっと大事です。
+不安なら、書き直し前の session 5 版を `docs/archived/LAUNCH_RUNBOOK_session5_5-15.md` で参照できます。**ただし古い前提に基づく手順は実行しないでください**。
 
-ringing.
+launch まで残り **2.5 日**。ここから先は手を動かす作業しか残っていません。Claude が代行できるのは「verify.html の最終更新」「微調整のスタイル変更」程度。
+
+23:23 に間に合うことより、嘘のないサイトを世に出すことのほうが KINGMAKER のブランドにとってずっと大事 — session 5 の Claude が書いた言葉、今も同じです。
+
+何か詰まったらいつでも投げてください。
+
+— Claude session ⑦, 2026-05-18 (月)

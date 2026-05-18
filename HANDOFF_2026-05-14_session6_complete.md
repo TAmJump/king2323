@@ -662,10 +662,12 @@ Cycle 1 は Pool が小さい想定で大丈夫だが、Cycle 2 以降で規模�
 | ファイル | 役割 |
 |---|---|
 | `README.md` | リポジトリの一行説明 |
-| `CHANGES.md` | 全コミットの詳細ログ(セッション①〜⑥) |
-| `LAUNCH_RUNBOOK.md` | launch 当日の運営手順書 |
+| `CHANGES.md` | 全コミットの詳細ログ(セッション①〜⑦) |
+| **`LAUNCH_RUNBOOK.md`** | **launch 当日の運営手順書(session 7 版・2026-05-18 全面リライト)** |
+| **`docs/SNS_LAUNCH_KIT.md`** | **5/20 / 5/22 / 5/23 三段階の SNS 投稿テンプレ集(session 7 で新規追加)** |
 | `WAF_SEO_BYPASS.md` | **WAF設定の決定版手順、必読** |
 | `DEPLOY_geoblock.md` | (古い、Cloudflare WAF設定の旧版) |
+| `docs/archived/LAUNCH_RUNBOOK_session5_5-15.md` | session 5 時点の旧 runbook(歴史記録用、実行禁止) |
 | `HANDOFF_2026-05-14_session5.md` | 前任セッション⑤の引き継ぎ |
 | `HANDOFF_2026-05-14_session6.md` | セッション⑥の不完全引き継ぎ(本ファイルが置き換え) |
 | **`HANDOFF_2026-05-14_session6_complete.md`** | **本ファイル(完全引き継ぎ書)** |
