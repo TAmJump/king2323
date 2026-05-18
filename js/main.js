@@ -118,9 +118,24 @@
     }
   }
 
+  // Format the target moment of `state` as "5/20 · 23:23 JST" etc.
+  // Uses JST regardless of the viewer's local timezone (the brand is
+  // anchored to JST, see HANDOFF session 6 §28-7).
+  function formatTargetJst(ms) {
+    if (!ms) return '';
+    const jstOffsetMs = 9 * 60 * 60 * 1000;
+    const d = new Date(ms + jstOffsetMs);
+    const mo = d.getUTCMonth() + 1;
+    const da = d.getUTCDate();
+    const hh = pad(d.getUTCHours());
+    const mm = pad(d.getUTCMinutes());
+    return mo + '/' + da + ' · ' + hh + ':' + mm + ' JST';
+  }
+
   function renderCountdown(state) {
-    const countdownLabel = document.getElementById('cd-target');
-    const ctaButtons     = document.querySelectorAll('[data-cta="founding"], [data-cta="founding-final"]');
+    const countdownLabelTop = document.querySelector('.countdown-label');
+    const countdownTarget   = document.getElementById('cd-target');
+    const ctaButtons        = document.querySelectorAll('[data-cta="founding"], [data-cta="founding-final"]');
 
     // Decompose msUntilBell into D/H/M/S for both the legacy hero
     // widget (#cd-d/h/m/s) and the new cycle-bar (#cb-d/h/m/s).
@@ -141,8 +156,13 @@
     set('cd-h', hrs);
     set('cd-m', mins);
     set('cd-s', secs);
-    if (countdownLabel) {
-      countdownLabel.textContent = (state.labelEn || 'Bell · 23:23 JST');
+    // Top label = phase verb ('Bell opens in' / 'Bell rings in' / etc.)
+    if (countdownLabelTop) {
+      countdownLabelTop.textContent = '— ' + (state.labelEn || 'The Bell') + ' —';
+    }
+    // Bottom target = the exact JST moment we're counting toward
+    if (countdownTarget) {
+      countdownTarget.textContent = formatTargetJst(state.targetMs);
     }
 
     // New top-of-page cycle-bar countdown.

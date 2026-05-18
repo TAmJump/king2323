@@ -1852,14 +1852,18 @@ header.hero-v2 {
    ================================================================= */
 
 .cycle-bar {
-  position: relative;
-  background: linear-gradient(180deg,
-              rgba(15, 14, 12, 0.045) 0%,
-              rgba(15, 14, 12, 0.015) 60%,
-              rgba(15, 14, 12, 0) 100%);
-  border-bottom: 1px solid rgba(184, 134, 45, 0.20);
-  padding: 16px 24px;
-  z-index: 4;
+  /* Stays parked just under the .nav bar (position:fixed at z-index:100)
+     so the countdown is always visible no matter where the user has
+     scrolled. The cycle-bar's own z-index sits below the nav. */
+  position: sticky;
+  top: 60px;    /* navbar height ~60px — keep below the fixed nav overlay */
+  z-index: 50;
+  background: rgba(248, 244, 235, 0.92);  /* cream parchment, slightly opaque */
+  backdrop-filter: blur(10px) saturate(140%);
+  -webkit-backdrop-filter: blur(10px) saturate(140%);
+  border-bottom: 1px solid rgba(184, 134, 45, 0.22);
+  padding: 14px 24px;
+  margin-top: 60px;  /* page-top spacer matching navbar height */
 }
 .cycle-bar-inner {
   max-width: 1100px;
@@ -2009,48 +2013,33 @@ header.hero-v2 {
   .cb-name { display: none; }  /* on mobile, dates alone identify the stages */
 }
 
-/* ---------- CTA locked states (Cycle 1 four-phase) ---------- */
+/* ---------- CTA locked states (Cycle 1 four-phase) ----------
+   Replaced v20260518h: previous opacity+absolute design caused the
+   button bounding box to keep the size of .km-cta-default (¥100)
+   while a much longer locked text 'Bell opens 5/20 · 23:23 JST' was
+   abs-centred on top — overflowing into the H1 above. New scheme:
+   only the active state is display:inline-flex, all others display:none,
+   so the button auto-sizes to whichever state is showing. */
 .km-cta-locked {
-  position: absolute;
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-  opacity: 0;
-  pointer-events: none;
+  display: none;
+  align-items: center;
+  gap: 8px;
   white-space: nowrap;
   font-family: var(--f-display, 'Cinzel', serif);
   font-weight: 600;
   letter-spacing: 0.14em;
   font-size: 0.92em;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
 }
 .km-cta-locked-icon { font-size: 1.05em; }
 .km-cta-locked-text { font-size: 0.95em; }
 
-/* By phase: show the right span, hide the others. */
-.km-cta[data-cycle-phase="open"]            .km-cta-default { opacity: 1; }
-.km-cta[data-cycle-phase="open"]            .km-cta-open    { opacity: 0; }
-.km-cta[data-cycle-phase="open"][data-bell-open="1"] .km-cta-default { opacity: 0; }
-.km-cta[data-cycle-phase="open"][data-bell-open="1"] .km-cta-open    { opacity: 1; }
+/* By phase: show ONE state, hide the others. */
+.km-cta[data-cycle-phase="open"]:not([data-bell-open="1"]) .km-cta-default { display: inline-flex; }
+.km-cta[data-cycle-phase="open"][data-bell-open="1"] .km-cta-open { display: inline-flex; }
 
-.km-cta[data-cycle-phase="pre_open"]        .km-cta-default,
-.km-cta[data-cycle-phase="pre_open"]        .km-cta-open,
-.km-cta[data-cycle-phase="pre_open"]        .km-cta-locked-pending,
-.km-cta[data-cycle-phase="pre_open"]        .km-cta-locked-complete { opacity: 0; }
-.km-cta[data-cycle-phase="pre_open"]        .km-cta-locked-pre { opacity: 1; }
-
-.km-cta[data-cycle-phase="pending_three"]   .km-cta-default,
-.km-cta[data-cycle-phase="pending_three"]   .km-cta-open,
-.km-cta[data-cycle-phase="pending_three"]   .km-cta-locked-pre,
-.km-cta[data-cycle-phase="pending_three"]   .km-cta-locked-complete { opacity: 0; }
-.km-cta[data-cycle-phase="pending_three"]   .km-cta-locked-pending { opacity: 1; }
-
-.km-cta[data-cycle-phase="cycle1_complete"] .km-cta-default,
-.km-cta[data-cycle-phase="cycle1_complete"] .km-cta-open,
-.km-cta[data-cycle-phase="cycle1_complete"] .km-cta-locked-pre,
-.km-cta[data-cycle-phase="cycle1_complete"] .km-cta-locked-pending { opacity: 0; }
-.km-cta[data-cycle-phase="cycle1_complete"] .km-cta-locked-complete { opacity: 1; }
+.km-cta[data-cycle-phase="pre_open"] .km-cta-locked-pre { display: inline-flex; }
+.km-cta[data-cycle-phase="pending_three"] .km-cta-locked-pending { display: inline-flex; }
+.km-cta[data-cycle-phase="cycle1_complete"] .km-cta-locked-complete { display: inline-flex; }
 
 /* Make the button feel locked when it's not in 'open' phase. */
 .km-cta[aria-disabled="true"] {
