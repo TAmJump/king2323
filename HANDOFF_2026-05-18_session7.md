@@ -169,17 +169,23 @@ session ⑧ Claude が **真っ先に開くべき** のは:
 
 # 6. PAT の現状
 
-PAT `ghp_SNxD...oJln` は **まだ生きている**。session 6 で漏洩(チャット平文に貼付)し、session 7 では operator 判断で「**launch 後に revoke**」方針が選ばれた。
+**【UPDATE 2026-05-21】PAT がローテーションされました**:
 
-session 7 中の使用回数: **約 10 回**(jewel iterations 6 + docs 3 + 微調整)。launch 当日(session ⑧)もこの PAT を使う可能性がある。
+- **旧 PAT** `ghp_SNxD...oJln` は **revoke 済**(operator 確認)
+- **新 PAT** `ghp_7PPAq...1rOv` が現役。**両リポ(carepass + king2323)カバー** の共有 PAT 運用に切替
+- 新 PAT のフル値は **`HANDOVER_v13.md`(carepass プロジェクトの引き継ぎ書、§1)に記載**。operator が当該ドキュメントを共有してくれた時にチャット履歴から取得可
+
+session ⑦ の経緯(歴史記録、参考):
+
+- session 6 で旧 PAT が漏洩(チャット平文に貼付)、session 7 では operator 判断で「launch 後に revoke」方針が選ばれた
+- session 7 中の使用回数: 約 25 回(jewel iterations 6 + docs 多数 + entry.html 連続修正)
+- launch 直後(5/21)に operator が両プロジェクトを統合する形で新 PAT 発行 + 旧 PAT revoke を実施
 
 session ⑧ Claude へ:
-- この PAT を新規発行なしで使ってよい(operator の明示的判断)
-- ただし `git remote -v` で平文露出するので、新 PAT を発行できるなら推奨
-- **launch (5/20 23:23) 後の最初の機会**で必ず revoke する(`LAUNCH_RUNBOOK.md §19`)
-- revoke のリマインダーを session 終了時に必ず operator へ
 
-PAT 完全値が必要な場合: チャット履歴の session ⑦ 開幕直後に operator が貼付したメッセージ(または session 6 引き継ぎ書 第 Ⅺ部の伏字とチャット履歴の組み合わせ)から取得。
+- 新 PAT(`ghp_7PPAq...1rOv`)を使って `git clone https://x-access-token:<PAT>@github.com/TAmJump/king2323.git repo` する
+- **この PAT は carepass リポでも同じものが使われている**(共有運用)。漏洩した場合は両プロジェクトに影響するので、平文での露出に細心の注意
+- セッション終了時の方針は引き続き operator の判断:都度 revoke するか、両プロジェクトで継続運用するかは launch 後の議論次第
 
 ---
 
