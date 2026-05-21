@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en" data-display-lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Receipt · KINGMAKER 23:23</title>
+<meta name="description" content="Look up your KINGMAKER 23:23 Mission Entry by email and Receipt number.">
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="KINGMAKER 23:23" />
+<meta property="og:title" content="My Receipt · KINGMAKER 23:23" />
+<meta property="og:description" content="Look up your Mission Entry by email and Receipt number." />
+<meta property="og:url" content="https://king2323.tamjump.com/mypage.html" />
+<meta property="og:image" content="https://king2323.tamjump.com/assets/logo-v3-1024.png" />
+<meta property="og:image:width" content="1024" />
+<meta property="og:image:height" content="1024" />
+<meta property="og:locale" content="ja_JP" />
+<meta property="og:locale:alternate" content="en_US" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="My Receipt · KINGMAKER 23:23" />
+<meta name="twitter:description" content="Look up your Mission Entry by email and Receipt number." />
+<meta name="twitter:image" content="https://king2323.tamjump.com/assets/logo-v3-1024.png" />
+<link rel="canonical" href="https://king2323.tamjump.com/mypage.html" />
+<meta name="robots" content="noindex" />
+<meta name="theme-color" content="#f8f4eb" media="(prefers-color-scheme: light)" />
+<meta name="theme-color" content="#1a1612" media="(prefers-color-scheme: dark)" />
+<meta name="color-scheme" content="light" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="css/main.css?v=20260518m" />
+<style>
+  .my-page { max-width: 720px; margin: 0 auto; padding: 56px var(--pad) 120px; }
+  .my-page h1 { font-family: var(--f-display); font-size: clamp(32px, 4.5vw, 52px); color: var(--bone); margin-bottom: 8px; letter-spacing: -0.01em; }
+  .my-page .my-sub { font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.3em; color: var(--gold); text-transform: uppercase; margin-bottom: 32px; }
+  .my-page .my-lead { color: var(--ash); line-height: 1.85; font-size: 15px; margin-bottom: 40px; }
+
+  .my-page form { display: flex; flex-direction: column; gap: 22px; max-width: 520px; }
+  .my-page label {
+    display: flex; flex-direction: column;
+    font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.2em;
+    color: var(--gold-deep); text-transform: uppercase; gap: 8px;
+  }
+  .my-page input[type=email],
+  .my-page input[type=text] {
+    display: block; width: 100%; box-sizing: border-box;
+    min-height: 44px; padding: 14px 16px;
+    background: var(--paper-2); color: var(--bone);
+    border: 1px solid var(--line);
+    font-family: var(--f-serif); font-size: 15px; line-height: 1.5;
+    transition: border-color 0.2s ease;
+  }
+  .my-page input:focus { outline: none; border-color: var(--gold); }
+
+  .my-page button[type=submit] {
+    margin-top: 8px; padding: 16px 32px;
+    background: linear-gradient(180deg, var(--gold-bright), var(--gold-deep));
+    color: var(--black);
+    font-family: var(--f-display); font-size: 14px;
+    letter-spacing: 0.25em; text-transform: uppercase;
+    border: none; cursor: pointer;
+    transition: transform 0.15s ease;
+  }
+  .my-page button[type=submit]:hover { transform: translateY(-1px); }
+  .my-page button[type=submit]:disabled { opacity: 0.6; cursor: wait; transform: none; }
+
+  .my-status {
+    margin-top: 24px; padding: 14px 16px;
+    font-family: var(--f-jp); font-size: 13.5px; line-height: 1.7;
+    border-left: 2px solid var(--gold-deep);
+  }
+  .my-status-error {
+    background: rgba(196, 46, 62, 0.08);
+    border-left-color: #b62a3a; color: #6b1a22;
+  }
+
+  /* Result view */
+  .my-result { margin-top: 40px; display: none; }
+  .my-result.is-shown { display: block; }
+  .my-result-header {
+    margin-bottom: 24px; padding-bottom: 16px;
+    border-bottom: 1px solid var(--line);
+  }
+  .my-result-tag {
+    font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.28em;
+    color: var(--gold-deep); text-transform: uppercase; margin-bottom: 4px;
+  }
+  .my-result-ticket {
+    font-family: var(--f-display); font-size: clamp(22px, 3vw, 30px);
+    color: var(--bone); letter-spacing: 0.04em;
+  }
+  .my-result-cycle {
+    display: inline-block; margin-left: 12px;
+    padding: 4px 10px; font-family: var(--f-mono); font-size: 10px;
+    letter-spacing: 0.2em; color: var(--gold-deep);
+    background: rgba(184, 134, 45, 0.10); vertical-align: middle;
+  }
+  .my-result-grid { display: grid; gap: 24px; }
+  .my-result-row {
+    display: grid; grid-template-columns: 140px 1fr; gap: 16px;
+    padding: 14px 0; border-bottom: 1px dashed var(--line);
+    align-items: start;
+  }
+  .my-result-row:last-child { border-bottom: none; }
+  .my-result-label {
+    font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.24em;
+    color: var(--gold-deep); text-transform: uppercase; padding-top: 2px;
+  }
+  .my-result-value {
+    color: var(--bone); font-size: 14.5px; line-height: 1.7;
+    font-family: var(--f-jp); word-break: break-word;
+  }
+  .my-result-value a { color: var(--gold); }
+  .my-result-meta {
+    margin-top: 28px; padding: 14px 18px;
+    background: rgba(184, 134, 45, 0.06);
+    border-left: 2px solid var(--gold);
+    font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.10em;
+    color: var(--ash); line-height: 1.6;
+  }
+  .my-newlookup {
+    margin-top: 32px;
+    font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.18em;
+    color: var(--gold-deep); cursor: pointer; background: none;
+    border: 1px solid var(--gold-deep); padding: 10px 18px;
+    text-transform: uppercase;
+  }
+  .my-newlookup:hover { background: rgba(184, 134, 45, 0.08); }
+
+  .my-note {
+    margin-top: 48px; padding: 20px 24px;
+    background: rgba(15, 14, 12, 0.04); border-left: 2px solid var(--gold-deep);
+    font-family: var(--f-jp); font-size: 12px; color: var(--ash); line-height: 1.8;
+  }
+
+  @media (max-width: 640px) {
+    .my-page { padding: 40px var(--pad) 80px; }
+    .my-result-row { grid-template-columns: 1fr; gap: 4px; padding: 12px 0; }
+    .my-result-label { padding-top: 0; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header notranslate" translate="no" style="display:flex; justify-content:space-between; align-items:center; padding:18px 24px; border-bottom:1px solid var(--line);">
+  <a href="index.html" class="brand-link notranslate" translate="no" style="display:flex; align-items:center; gap:12px; text-decoration:none;">
+    <img src="assets/logo-v3-128.png" alt="" style="width:32px; height:32px; flex-shrink:0;">
+    <span class="brand-name" style="font-family:var(--f-display); font-size:14px; letter-spacing:0.18em; color:var(--ink);">KINGMAKER</span>
+    <span class="brand-time" style="font-family:var(--f-mono); font-size:11px; letter-spacing:0.18em; color:var(--gold);">23:23</span>
+  </a>
+  <div class="lang-picker notranslate" translate="no"></div>
+  <div id="google_translate_element" style="position:fixed;bottom:0;right:0;width:1px;height:1px;opacity:0;pointer-events:none;overflow:hidden;z-index:-1;"></div>
+</header>
+
+<main class="my-page" translate="no" lang="ja">
+
+  <h1 class="notranslate" translate="no"><span data-i18n-html="my.title">My Receipt</span></h1>
+  <p class="my-sub notranslate" translate="no"><span data-i18n-html="my.sub">— Mission Entry Lookup · No login —</span></p>
+
+  <p class="my-lead" data-i18n-html="my.lead">
+    Bell Entry に使ったメールアドレスと受付番号を入力すると、提出した Mission の内容を確認できます。
+    ログインはありません。<strong>あなたが受け取ったメールに両方の情報があります</strong>。
+  </p>
+
+  <form id="lookupForm">
+    <label>
+      <span data-i18n-html="my.label.email">メールアドレス(Square 決済時のもの)</span>
+      <input type="email" name="email" required autocomplete="email" placeholder="you@example.com">
+    </label>
+
+    <label>
+      <span data-i18n-html="my.label.ticket">受付番号(KM-YYYYMMDD-NNNN)</span>
+      <input type="text" name="ticket_number" required placeholder="KM-20260520-0001">
+    </label>
+
+    <div id="lookupError" class="my-status my-status-error" style="display:none;"></div>
+
+    <button type="submit" id="lookupSubmit" data-i18n-html="my.button.lookup">Mission Entry を表示</button>
+  </form>
+
+  <div id="lookupResult" class="my-result">
+    <div class="my-result-header">
+      <div class="my-result-tag notranslate" translate="no" data-i18n-html="my.result.tag">— Mission Entry · Verified —</div>
+      <div>
+        <span class="my-result-ticket" id="resultTicket"></span>
+        <span class="my-result-cycle notranslate" translate="no">CYCLE 1</span>
+      </div>
+    </div>
+
+    <div class="my-result-grid">
+      <div class="my-result-row">
+        <div class="my-result-label notranslate" translate="no" data-i18n-html="my.result.mission_name">Mission Name</div>
+        <div class="my-result-value" id="resultMissionName"></div>
+      </div>
+      <div class="my-result-row">
+        <div class="my-result-label notranslate" translate="no" data-i18n-html="my.result.country">Country</div>
+        <div class="my-result-value" id="resultCountry"></div>
+      </div>
+      <div class="my-result-row">
+        <div class="my-result-label notranslate" translate="no" data-i18n-html="my.result.mission_summary">Mission</div>
+        <div class="my-result-value" id="resultSummary"></div>
+      </div>
+      <div class="my-result-row" id="resultSnsRow" style="display:none;">
+        <div class="my-result-label notranslate" translate="no" data-i18n-html="my.result.sns">SNS / Web</div>
+        <div class="my-result-value"><a id="resultSns" href="#" target="_blank" rel="noopener"></a></div>
+      </div>
+      <div class="my-result-row">
+        <div class="my-result-label notranslate" translate="no" data-i18n-html="my.result.email">Email</div>
+        <div class="my-result-value" id="resultEmail"></div>
+      </div>
+      <div class="my-result-row">
+        <div class="my-result-label notranslate" translate="no" data-i18n-html="my.result.created_at">Submitted</div>
+        <div class="my-result-value" id="resultCreatedAt"></div>
+      </div>
+    </div>
+
+    <div class="my-result-meta" data-i18n-html="my.result.note">
+      この記録は変更できません。Mission Fund は本人確認・Mission 適合性審査を経て The Three の Mission に対して動きます。
+      審査結果や Mission Fund の進捗は、登録メールアドレス宛に通知されます。
+    </div>
+
+    <button type="button" class="my-newlookup notranslate" translate="no" id="newLookupBtn" data-i18n-html="my.new_lookup">Look up another</button>
+  </div>
+
+  <div class="my-note" data-i18n-html="my.note">
+    Bell Entry は参加記録です。換金できず、譲渡できません。Grant 支給は本人確認・Mission 確認・AML 審査を経た場合に限り、運営の判断で行われます。
+    Receipt 番号と公開された The Three の照合は <a href="verify.html">verify.html</a> から行えます。
+  </div>
+
+</main>
+
+<footer class="legal-footer">
+  <nav class="legal-footer-nav legal-footer-nav-primary">
+    <a href="index.html">← KINGMAKER</a>
+    <span class="sep">·</span>
+    <a href="how-it-works.html" data-i18n-html="footer.howitworks_link">仕組み</a>
+    <span class="sep">·</span>
+    <a href="entry.html" data-i18n-html="footer.entry_link">エントリー</a>
+    <span class="sep">·</span>
+    <a href="rules.html" data-i18n-html="footer.rules_link">Founding Bell ルール</a>
+    <span class="sep">·</span>
+    <a href="risk.html" data-i18n-html="footer.risk_link">重要事項</a>
+  </nav>
+  <div class="legal-footer-meta">
+    <span class="meta-line">© 2026 · KINGMAKER 23:23 · Operated by <a href="https://tamjump.com/" target="_blank" rel="noopener">タムジ株式会社 / TAmJ</a></span>
+    <span class="meta-line" data-i18n-html="footer.disclaimer">富くじではない · 投資ではない · 賭博ではない · Bell は権利、金ではない</span>
+  </div>
+</footer>
+
+<script src="js/i18n.js?v=20260521b"></script>
+<script>
+(function () {
+  'use strict';
+
+  const ENDPOINT = 'https://tamjump-contact-api.animalb001.workers.dev/entry/lookup';
+
+  const form = document.getElementById('lookupForm');
+  const submitBtn = document.getElementById('lookupSubmit');
+  const errorBox = document.getElementById('lookupError');
+  const result = document.getElementById('lookupResult');
+  const newLookupBtn = document.getElementById('newLookupBtn');
+
+  function showError(msg) {
+    errorBox.style.display = 'block';
+    errorBox.textContent = msg;
+  }
+  function hideError() {
+    errorBox.style.display = 'none';
+    errorBox.textContent = '';
+  }
+  function showResult(entry) {
+    document.getElementById('resultTicket').textContent       = entry.ticket_number || '';
+    document.getElementById('resultMissionName').textContent  = entry.mission_name || '';
+    document.getElementById('resultCountry').textContent      = entry.country || '';
+    document.getElementById('resultSummary').textContent      = entry.mission_summary || '';
+    document.getElementById('resultEmail').textContent        = entry.payment_email || '';
+    document.getElementById('resultCreatedAt').textContent    = entry.created_at
+      ? new Date(entry.created_at).toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo', hour12: false }) + ' JST'
+      : '';
+
+    const snsRow = document.getElementById('resultSnsRow');
+    const snsLink = document.getElementById('resultSns');
+    if (entry.sns && entry.sns.trim()) {
+      let href = entry.sns.trim();
+      if (!/^https?:\/\//i.test(href)) href = 'https://' + href;
+      snsLink.href = href;
+      snsLink.textContent = entry.sns;
+      snsRow.style.display = '';
+    } else {
+      snsRow.style.display = 'none';
+    }
+
+    form.style.display = 'none';
+    result.classList.add('is-shown');
+    result.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  function resetView() {
+    form.style.display = '';
+    result.classList.remove('is-shown');
+    hideError();
+  }
+
+  newLookupBtn.addEventListener('click', resetView);
+
+  form.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    hideError();
+
+    const fd = new FormData(form);
+    const payload = {
+      email: (fd.get('email') || '').trim().toLowerCase(),
+      ticket_number: (fd.get('ticket_number') || '').trim().toUpperCase(),
+    };
+
+    if (!payload.email || !payload.ticket_number) {
+      showError('メールアドレスと受付番号を入力してください / Email and Receipt number required');
+      return;
+    }
+
+    submitBtn.disabled = true;
+    const originalLabel = submitBtn.innerHTML;
+    submitBtn.textContent = '照合中… / Looking up…';
+
+    try {
+      const res = await fetch(ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok || !data.success) {
+        showError((data && data.error) || '該当する Mission Entry が見つかりません / No matching Mission Entry');
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalLabel;
+        return;
+      }
+
+      showResult(data.entry || {});
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = originalLabel;
+    } catch (err) {
+      showError('通信エラー / Network error: ' + (err && err.message ? err.message : ''));
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = originalLabel;
+    }
+  });
+})();
+</script>
+</body>
+</html>

@@ -90,6 +90,15 @@ var index_default = {
       if (url.pathname === "/entry" && request.method === "POST") {
         return await handleEntry(request, env, origin);
       }
+      // 【追加 v20260521b】KINGMAKER Receipt lookup for mypage.html
+      // No auth — caller provides email + ticket_number, must match exactly.
+      // This is intentionally light: KINGMAKER has no login system by design
+      // (carepass's password/magic-link model is a wrong fit; the ritual
+      // breaks if you bolt on a member identity). The two-field match acts
+      // as a soft proof that the requester is who they say they are.
+      if (url.pathname === "/entry/lookup" && request.method === "POST") {
+        return await handleEntryLookup(request, env, origin);
+      }
       if (url.pathname === "/admin/contacts" && request.method === "GET") {
         return await handleAdminList(request, env, origin);
       }
@@ -222,6 +231,77 @@ async function handleEntry(request, env, origin) {
   }, 200, origin);
 }
 __name(handleEntry, "handleEntry");
+
+// ══════════════════════════════════════
+// 【v20260521b 追加】handleEntryLookup
+//   POST /entry/lookup
+//   body: { email, ticket_number }
+//   Returns the matching Mission Entry, or 404 if no match.
+//
+//   Security stance: KINGMAKER deliberately has no login. The email +
+//   receipt-number combo is a "soft proof" — anyone with both knows the
+//   record exists anyway (the entrant has the email in their inbox and
+//   the receipt was returned to them). We do NOT enumerate or return
+//   list views, only the single matching record.
+// ══════════════════════════════════════
+async function handleEntryLookup(request, env, origin) {
+  const body = await request.json();
+  const { email, ticket_number } = body || {};
+
+  if (!email || !ticket_number) {
+    return jsonResponse({ error: "メールアドレスと受付番号が必要です / Email and Receipt number required" }, 400, origin);
+  }
+  if (!isValidEmail(email)) {
+    return jsonResponse({ error: "メールアドレスの形式が正しくありません / Invalid email format" }, 400, origin);
+  }
+
+  // Ticket format: KM-YYYYMMDD-NNNN
+  const ticketTrimmed = String(ticket_number).trim().toUpperCase();
+  if (!/^KM-\d{8}-\d{1,5}$/.test(ticketTrimmed)) {
+    return jsonResponse({ error: "受付番号の形式が正しくありません (KM-YYYYMMDD-NNNN) / Invalid Receipt format" }, 400, origin);
+  }
+
+  const row = await env.DB.prepare(
+    `SELECT ticket_number, name AS mission_name, email AS payment_email,
+            category AS country, message AS mission_summary_raw, created_at
+       FROM contacts
+      WHERE project = 'kingmaker'
+        AND email = ?
+        AND ticket_number = ?
+      LIMIT 1`
+  ).bind(email.trim().toLowerCase(), ticketTrimmed).first();
+
+  if (!row) {
+    // Don't say "email is right but ticket is wrong" or vice versa —
+    // a single generic message prevents the lookup endpoint from being
+    // used as a verifier oracle.
+    return jsonResponse({ error: "該当する Mission Entry が見つかりません / No matching Mission Entry" }, 404, origin);
+  }
+
+  // Split mission_summary from the trailing SNS line (the writer stores
+  // them concatenated; we present them separately).
+  let mission_summary = row.mission_summary_raw || '';
+  let sns = '';
+  const snsMatch = mission_summary.match(/\n\n\[Website\/SNS\]\s+(.+)$/);
+  if (snsMatch) {
+    sns = snsMatch[1].trim();
+    mission_summary = mission_summary.replace(snsMatch[0], '');
+  }
+
+  return jsonResponse({
+    success: true,
+    entry: {
+      ticket_number: row.ticket_number,
+      mission_name: row.mission_name,
+      payment_email: row.payment_email,
+      country: row.country,
+      mission_summary: mission_summary,
+      sns: sns,
+      created_at: row.created_at
+    }
+  }, 200, origin);
+}
+__name(handleEntryLookup, "handleEntryLookup");
 
 async function handleAdminList(request, env, origin) {
   const auth = request.headers.get("Authorization") || "";

@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en" data-display-lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How It Works · KINGMAKER 23:23</title>
+<meta name="description" content="How KINGMAKER 23:23 Cycle 1 works: the bell opens, you ring, the world watches, three are chosen.">
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="KINGMAKER 23:23" />
+<meta property="og:title" content="How It Works · KINGMAKER 23:23" />
+<meta property="og:description" content="From Bell Opens to The Three. The five‑minute moment, explained." />
+<meta property="og:url" content="https://king2323.tamjump.com/how-it-works.html" />
+<meta property="og:image" content="https://king2323.tamjump.com/assets/logo-v3-1024.png" />
+<meta property="og:image:width" content="1024" />
+<meta property="og:image:height" content="1024" />
+<meta property="og:locale" content="ja_JP" />
+<meta property="og:locale:alternate" content="en_US" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="How It Works · KINGMAKER 23:23" />
+<meta name="twitter:description" content="From Bell Opens to The Three. The five‑minute moment, explained." />
+<meta name="twitter:image" content="https://king2323.tamjump.com/assets/logo-v3-1024.png" />
+<link rel="canonical" href="https://king2323.tamjump.com/how-it-works.html" />
+<meta name="theme-color" content="#f8f4eb" media="(prefers-color-scheme: light)" />
+<meta name="theme-color" content="#1a1612" media="(prefers-color-scheme: dark)" />
+<meta name="color-scheme" content="light" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="css/main.css?v=20260518m" />
+<style>
+  .hiw-page { max-width: 920px; margin: 0 auto; padding: 56px var(--pad) 120px; }
+  .hiw-page h1 { font-family: var(--f-display); font-size: clamp(32px, 4.5vw, 52px); color: var(--bone); margin-bottom: 8px; letter-spacing: -0.01em; }
+  .hiw-page .hiw-sub { font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.3em; color: var(--gold); text-transform: uppercase; margin-bottom: 48px; }
+  .hiw-page .hiw-lead { color: var(--ash); line-height: 1.85; font-size: 16px; margin-bottom: 56px; max-width: 680px; }
+
+  /* Five-step timeline */
+  .hiw-steps { display: flex; flex-direction: column; gap: 0; margin: 0 0 64px; position: relative; }
+  .hiw-step { display: grid; grid-template-columns: 76px 1fr; gap: 24px; padding: 28px 0; position: relative; }
+  .hiw-step + .hiw-step::before {
+    content: ''; position: absolute; left: 30px; top: -2px; bottom: 0;
+    width: 1px; background: linear-gradient(180deg, var(--gold) 0%, transparent 100%);
+    opacity: 0.4;
+  }
+  .hiw-step-num {
+    display: flex; align-items: flex-start; justify-content: center;
+    position: relative; z-index: 2;
+  }
+  .hiw-step-num .dot {
+    width: 60px; height: 60px; border-radius: 50%;
+    background: var(--paper-2); border: 1.5px solid var(--gold);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--f-display); font-size: 22px; font-weight: 700;
+    color: var(--gold-deep);
+    box-shadow: 0 0 0 4px rgba(184, 134, 45, 0.08);
+  }
+  .hiw-step.is-current .hiw-step-num .dot {
+    background: var(--gold);
+    color: var(--paper);
+    box-shadow: 0 0 0 6px rgba(184, 134, 45, 0.18), 0 0 24px rgba(184, 134, 45, 0.35);
+    animation: hiw-pulse 2.4s ease-in-out infinite;
+  }
+  @keyframes hiw-pulse {
+    0%, 100% { box-shadow: 0 0 0 6px rgba(184, 134, 45, 0.18), 0 0 24px rgba(184, 134, 45, 0.35); }
+    50%      { box-shadow: 0 0 0 10px rgba(184, 134, 45, 0.06), 0 0 32px rgba(184, 134, 45, 0.5); }
+  }
+  .hiw-step-body { padding-top: 8px; }
+  .hiw-step-when {
+    font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.28em;
+    color: var(--gold-deep); text-transform: uppercase; margin-bottom: 8px;
+  }
+  .hiw-step-title {
+    font-family: var(--f-display); font-size: clamp(22px, 3vw, 30px);
+    color: var(--bone); margin-bottom: 12px; letter-spacing: -0.005em;
+    line-height: 1.25;
+  }
+  .hiw-step-text {
+    color: var(--ash); line-height: 1.8; font-size: 14.5px; max-width: 620px;
+    margin-bottom: 14px;
+  }
+  .hiw-step-meta {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(15, 14, 12, 0.04); padding: 8px 14px;
+    border-left: 2px solid var(--gold);
+    font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.12em;
+    color: var(--ash);
+  }
+
+  /* Visual flow diagram (SVG-backed conceptual map) */
+  .hiw-flow { margin: 64px 0 48px; padding: 32px var(--pad); background: var(--paper-2); border: 1px solid var(--line); border-radius: 0; }
+  .hiw-flow-caption { font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.28em; color: var(--gold-deep); text-transform: uppercase; margin-bottom: 24px; text-align: center; }
+
+  /* What is NOT this thing */
+  .hiw-isnot {
+    margin: 56px 0 32px; padding: 28px 32px;
+    background: rgba(15, 14, 12, 0.04); border-left: 3px solid var(--gold-deep);
+  }
+  .hiw-isnot h2 {
+    font-family: var(--f-display); font-size: 22px; color: var(--bone);
+    margin-bottom: 16px; letter-spacing: -0.005em;
+  }
+  .hiw-isnot ul { list-style: none; padding: 0; }
+  .hiw-isnot li {
+    color: var(--ash); line-height: 1.75; font-size: 14px;
+    padding: 6px 0; padding-left: 22px; position: relative;
+  }
+  .hiw-isnot li::before {
+    content: '×'; position: absolute; left: 0; top: 5px;
+    color: var(--gold-deep); font-family: var(--f-mono); font-weight: 700;
+  }
+
+  /* Closing CTA */
+  .hiw-cta-block { margin-top: 64px; text-align: center; padding: 40px 24px; }
+  .hiw-cta-block .hiw-cta-line {
+    font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.3em;
+    color: var(--gold-deep); text-transform: uppercase; margin-bottom: 16px;
+  }
+  .hiw-cta-block .hiw-cta-bell {
+    font-family: var(--f-display); font-size: clamp(20px, 3vw, 28px);
+    color: var(--bone); line-height: 1.5; margin-bottom: 28px;
+  }
+  .hiw-cta-block .hiw-cta-btn {
+    display: inline-block; padding: 16px 36px;
+    background: linear-gradient(180deg, var(--gold-bright), var(--gold-deep));
+    color: var(--ink); text-decoration: none;
+    font-family: var(--f-display); font-size: 14px; letter-spacing: 0.25em;
+    font-weight: 700; transition: transform 0.15s ease;
+  }
+  .hiw-cta-block .hiw-cta-btn:hover { transform: translateY(-1px); }
+
+  @media (max-width: 640px) {
+    .hiw-page { padding: 40px var(--pad) 80px; }
+    .hiw-step { grid-template-columns: 56px 1fr; gap: 16px; padding: 22px 0; }
+    .hiw-step-num .dot { width: 44px; height: 44px; font-size: 17px; }
+    .hiw-step + .hiw-step::before { left: 22px; }
+    .hiw-flow { padding: 20px 12px; }
+    .hiw-isnot { padding: 22px 18px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header notranslate" translate="no" style="display:flex; justify-content:space-between; align-items:center; padding:18px 24px; border-bottom:1px solid var(--line);">
+  <a href="index.html" class="brand-link notranslate" translate="no" style="display:flex; align-items:center; gap:12px; text-decoration:none;">
+    <img src="assets/logo-v3-128.png" alt="" style="width:32px; height:32px; flex-shrink:0;">
+    <span class="brand-name" style="font-family:var(--f-display); font-size:14px; letter-spacing:0.18em; color:var(--ink);">KINGMAKER</span>
+    <span class="brand-time" style="font-family:var(--f-mono); font-size:11px; letter-spacing:0.18em; color:var(--gold);">23:23</span>
+  </a>
+  <div class="lang-picker notranslate" translate="no"></div>
+  <div id="google_translate_element" style="position:fixed;bottom:0;right:0;width:1px;height:1px;opacity:0;pointer-events:none;overflow:hidden;z-index:-1;"></div>
+</header>
+
+<main class="hiw-page" translate="no" lang="ja">
+
+  <h1 class="notranslate" translate="no"><span data-i18n-html="hiw.title">こうやって動く</span></h1>
+  <p class="hiw-sub notranslate" translate="no"><span data-i18n-html="hiw.sub">— How Cycle 1 Works · The Founding Bell —</span></p>
+
+  <p class="hiw-lead" data-i18n-html="hiw.lead">
+    KINGMAKER 23:23 は、参加するのではなく、世界が同じ瞬間に立ち会う儀式です。
+    Cycle 1 は 3 つの瞬間で構成されます。
+    <strong>Bell opens(受付開始)</strong>、<strong>Bell rings(受付終了)</strong>、<strong>The Three(三人発表)</strong>。
+    すべて JST 23:23 に起こります。
+  </p>
+
+  <!-- ============== FIVE-STEP TIMELINE ============== -->
+  <div class="hiw-steps">
+
+    <div class="hiw-step" data-step="1">
+      <div class="hiw-step-num"><span class="dot">1</span></div>
+      <div class="hiw-step-body">
+        <div class="hiw-step-when notranslate" translate="no">— Wed 2026-05-20 · 23:23 JST —</div>
+        <h3 class="hiw-step-title" data-i18n-html="hiw.s1.title">Bell opens · 鐘が開く</h3>
+        <p class="hiw-step-text" data-i18n-html="hiw.s1.text">
+          サイトのカウントダウンが 0 になり、エントリー受付が始まる。
+          世界中、同じ瞬間に。CTA ボタンが押せるようになり、Square 決済画面が開く。
+        </p>
+        <span class="hiw-step-meta notranslate" translate="no">¥100 = 1 Bell Entry</span>
+      </div>
+    </div>
+
+    <div class="hiw-step" data-step="2">
+      <div class="hiw-step-num"><span class="dot">2</span></div>
+      <div class="hiw-step-body">
+        <div class="hiw-step-when notranslate" translate="no">— Open Window · ~46 hours —</div>
+        <h3 class="hiw-step-title" data-i18n-html="hiw.s2.title">Mission を出す · あなたの意思を記録する</h3>
+        <p class="hiw-step-text" data-i18n-html="hiw.s2.text">
+          ¥100 で Bell Entry。Square 決済が完了すると Mission Entry フォームへ。
+          あなたが「もし Grant を受け取ったら、何を、誰のために、なぜするか」を、
+          200〜500 文字で書く。匿名でも本名でもよい。受付番号(KM-YYYYMMDD-NNNN)が即時発行される。
+        </p>
+        <span class="hiw-step-meta notranslate" translate="no">Receipt #KM-20260520-NNNN</span>
+      </div>
+    </div>
+
+    <div class="hiw-step" data-step="3">
+      <div class="hiw-step-num"><span class="dot">3</span></div>
+      <div class="hiw-step-body">
+        <div class="hiw-step-when notranslate" translate="no">— Fri 2026-05-22 · 23:23 JST —</div>
+        <h3 class="hiw-step-title" data-i18n-html="hiw.s3.title">Bell rings · 鐘が鳴る</h3>
+        <p class="hiw-step-text" data-i18n-html="hiw.s3.text">
+          受付が締まる。Public Seed(BTC USD 終値 / Nikkei 225 / S&amp;P 500 / 参加者総数)が確定。
+          この 4 つの数字を SHA-256 でハッシュ化し、その結果から The Three の Receipt 番号が
+          機械的に抽出される。人為的操作の余地はゼロ。
+        </p>
+        <span class="hiw-step-meta notranslate" translate="no">SHA-256 (Public Seed) → The Three</span>
+      </div>
+    </div>
+
+    <div class="hiw-step" data-step="4">
+      <div class="hiw-step-num"><span class="dot">4</span></div>
+      <div class="hiw-step-body">
+        <div class="hiw-step-when notranslate" translate="no">— 23h Review Window —</div>
+        <h3 class="hiw-step-title" data-i18n-html="hiw.s4.title">運営審査 · The Three の確認</h3>
+        <p class="hiw-step-text" data-i18n-html="hiw.s4.text">
+          選ばれた三人の Square 領収書と Mission を運営が照合する。本人確認(KYC)、
+          AML(資金洗浄防止)審査、Mission がルールに適合しているかの確認。
+          照合できない場合、その Receipt は次点に繰り上げられる。
+        </p>
+      </div>
+    </div>
+
+    <div class="hiw-step" data-step="5">
+      <div class="hiw-step-num"><span class="dot">5</span></div>
+      <div class="hiw-step-body">
+        <div class="hiw-step-when notranslate" translate="no">— Sat 2026-05-23 · 23:23 JST —</div>
+        <h3 class="hiw-step-title" data-i18n-html="hiw.s5.title">The Three · 三人発表</h3>
+        <p class="hiw-step-text" data-i18n-html="hiw.s5.text">
+          verify.html に三人の Receipt 番号が公開される。Public Seed と SHA-256 ハッシュも
+          一緒に。誰でも検証できる。本名は本人の同意なく公開しない。
+          ここから Mission Fund が動き、三人の Mission を運営が実行に移す。
+        </p>
+        <span class="hiw-step-meta notranslate" translate="no">Mission Fund → executes the Mission</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ============== VISUAL FLOW DIAGRAM (SVG) ============== -->
+  <div class="hiw-flow">
+    <div class="hiw-flow-caption notranslate" translate="no">— The Five Days, At A Glance —</div>
+    <svg viewBox="0 0 900 220" xmlns="http://www.w3.org/2000/svg" style="display:block; width:100%; height:auto; max-height:240px;" role="img" aria-label="Cycle 1 timeline diagram">
+      <!-- Horizontal baseline -->
+      <line x1="60" y1="110" x2="840" y2="110" stroke="#B8862D" stroke-width="1" opacity="0.4" />
+      <!-- 5 stations -->
+      <g font-family="Cinzel, Georgia, serif" text-anchor="middle">
+        <!-- Station 1: Bell opens -->
+        <circle cx="80"  cy="110" r="14" fill="#B8862D" />
+        <text x="80"  y="116" fill="#FAF7F1" font-size="11" font-weight="700">1</text>
+        <text x="80"  y="80"  fill="#5c5a52" font-size="9" letter-spacing="2">5/20 WED</text>
+        <text x="80"  y="148" fill="#0F0E0C" font-size="11" font-weight="600">Bell opens</text>
+        <text x="80"  y="164" fill="#5c5a52" font-size="9" font-style="italic">23:23 JST</text>
+
+        <!-- 1→2 (during Open Window) -->
+        <text x="200" y="100" fill="#8a6a0a" font-size="9" letter-spacing="2">~46h · OPEN WINDOW</text>
+        <text x="200" y="138" fill="#5c5a52" font-size="9" font-style="italic">Bell Entry × N people</text>
+
+        <!-- Station 2: Bell rings -->
+        <circle cx="320" cy="110" r="14" fill="#B8862D" />
+        <text x="320" y="116" fill="#FAF7F1" font-size="11" font-weight="700">2</text>
+        <text x="320" y="80"  fill="#5c5a52" font-size="9" letter-spacing="2">5/22 FRI</text>
+        <text x="320" y="148" fill="#0F0E0C" font-size="11" font-weight="600">Bell rings</text>
+        <text x="320" y="164" fill="#5c5a52" font-size="9" font-style="italic">23:23 JST</text>
+
+        <!-- 2→3 (Review Window) -->
+        <text x="450" y="100" fill="#8a6a0a" font-size="9" letter-spacing="2">~23h · REVIEW</text>
+        <text x="450" y="138" fill="#5c5a52" font-size="9" font-style="italic">SHA-256 · KYC · AML</text>
+
+        <!-- Station 3: The Three -->
+        <circle cx="580" cy="110" r="14" fill="#B8862D" />
+        <text x="580" y="116" fill="#FAF7F1" font-size="11" font-weight="700">3</text>
+        <text x="580" y="80"  fill="#5c5a52" font-size="9" letter-spacing="2">5/23 SAT</text>
+        <text x="580" y="148" fill="#0F0E0C" font-size="11" font-weight="600">The Three</text>
+        <text x="580" y="164" fill="#5c5a52" font-size="9" font-style="italic">23:23 JST</text>
+
+        <!-- 3→4 (Mission Fund) -->
+        <text x="710" y="100" fill="#8a6a0a" font-size="9" letter-spacing="2">MISSION FUND</text>
+        <text x="710" y="138" fill="#5c5a52" font-size="9" font-style="italic">executes the Mission</text>
+
+        <!-- Station 4: Mission begins -->
+        <circle cx="820" cy="110" r="14" fill="none" stroke="#B8862D" stroke-width="1.5" stroke-dasharray="2 2" />
+        <text x="820" y="116" fill="#B8862D" font-size="11" font-weight="700">4</text>
+        <text x="820" y="80"  fill="#5c5a52" font-size="9" letter-spacing="2">ONGOING</text>
+        <text x="820" y="148" fill="#0F0E0C" font-size="11" font-weight="600">Mission</text>
+        <text x="820" y="164" fill="#5c5a52" font-size="9" font-style="italic">begins</text>
+      </g>
+    </svg>
+  </div>
+
+  <!-- ============== WHAT THIS IS NOT ============== -->
+  <div class="hiw-isnot">
+    <h2 class="notranslate" translate="no" data-i18n-html="hiw.isnot.title">これは何ではないか</h2>
+    <ul>
+      <li data-i18n-html="hiw.isnot.l1"><strong>宝くじではない</strong> ── 当選番号は無く、偶然ではない</li>
+      <li data-i18n-html="hiw.isnot.l2"><strong>投資ではない</strong> ── 金銭的リターンを約束しない</li>
+      <li data-i18n-html="hiw.isnot.l3"><strong>賭けではない</strong> ── 換金できない、譲渡できない</li>
+      <li data-i18n-html="hiw.isnot.l4"><strong>Bell は資格、お金ではない</strong> ── ¥100 は参加権の記録、報酬の購入ではない</li>
+      <li data-i18n-html="hiw.isnot.l5"><strong>Grant is not a prize</strong> ── 賞金ではなく、Mission を実行する Mission Fund の動き</li>
+    </ul>
+  </div>
+
+  <!-- ============== CLOSING CTA ============== -->
+  <div class="hiw-cta-block">
+    <div class="hiw-cta-line notranslate" translate="no">— Once you understand this, the bell waits —</div>
+    <div class="hiw-cta-bell" data-i18n-html="hiw.closing">
+      選ばれたいなら、誰かを選べ。
+    </div>
+    <a href="index.html" class="hiw-cta-btn notranslate" translate="no" data-i18n-html="hiw.cta_back">← Back to KINGMAKER</a>
+  </div>
+
+</main>
+
+<footer class="legal-footer">
+  <nav class="legal-footer-nav legal-footer-nav-primary">
+    <a href="index.html">← KINGMAKER</a>
+    <span class="sep">·</span>
+    <a href="entry.html" data-i18n-html="footer.entry_link">エントリー</a>
+    <span class="sep">·</span>
+    <a href="mypage.html" data-i18n-html="footer.mypage_link">My Receipt</a>
+    <span class="sep">·</span>
+    <a href="rules.html" data-i18n-html="footer.rules_link">Founding Bell ルール</a>
+    <span class="sep">·</span>
+    <a href="risk.html" data-i18n-html="footer.risk_link">重要事項</a>
+  </nav>
+  <div class="legal-footer-meta">
+    <span class="meta-line">© 2026 · KINGMAKER 23:23 · Operated by <a href="https://tamjump.com/" target="_blank" rel="noopener">タムジ株式会社 / TAmJ</a></span>
+    <span class="meta-line" data-i18n-html="footer.disclaimer">富くじではない · 投資ではない · 賭博ではない · Bell は権利、金ではない</span>
+  </div>
+</footer>
+
+<script src="js/i18n.js?v=20260521b"></script>
+</body>
+</html>
