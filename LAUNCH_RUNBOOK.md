@@ -46,17 +46,34 @@ Claude 側の作業は基本完了。最新コミット `b28374e` (v20260514an =
 
 ---
 
-## 2. Worker 再デプロイ(累積 2 変更)⏱ 5分
+## 2. Worker 再デプロイ(累積 3 変更)⏱ 7分
 
-`tamjump-contact-api` Worker には session 6 以降、2 つの変更が積まれていてまだデプロイされていません(セッション 6 引き継ぎ書 §15-1 で識別)。
+`tamjump-contact-api` Worker には session 6 以降、**3 つの変更**が積まれていてまだデプロイされていません:
 
-### 2.1 デプロイ手順
+- session 6: KINGMAKER の `/entry` ルートと handleEntry 関数追加(セッション 6 引き継ぎ書 §15-1)
+- v20260521b: **`/entry/lookup` ルートと handleEntryLookup 関数追加**(mypage.html がこれ無しでは動かない)
+- ALLOWED_ORIGINS に `https://king2323.tamjump.com` 追加(同 commit)
+
+### 2.1 デプロイ手順(★ mypage.html を動かすために必須)
+
+Cloudflare Workers Dashboard は GitHub repo と自動同期しないため、**手動で worker/index.js の内容を貼り付けてデプロイ**する必要があります。
 
 1. https://dash.cloudflare.com/ にログイン
 2. **Workers & Pages** → **`tamjump-contact-api`** を開く
 3. **Deployments** タブ → 「History」を確認、最後の deploy 日時が **2026-05-13 以前**なら累積変更が未反映
-4. **Edit code** ボタン → エディタ右上の **Deploy** ボタン
-5. 「Success」表示を確認
+4. **Edit code** ボタン
+5. 左ペインで `src/index.js`(または `index.js`)を選択
+6. エディタの内容を全選択(Ctrl+A)→ 削除
+7. GitHub 上の最新 `worker/index.js` をブラウザで開く:
+   https://github.com/TAmJump/king2323/blob/main/worker/index.js
+8. **Raw** ボタン → 全選択(Ctrl+A)→ コピー(Ctrl+C)
+9. Cloudflare エディタに貼り付け(Ctrl+V)
+10. エディタ右上の **Save and deploy** ボタン
+11. 「Success」表示を確認
+
+### 2.2 動作確認(curl 2 種)
+
+**(a) /entry エンドポイント**(session 6 から既存):
 
 ### 2.2 動作確認(curl)
 
@@ -83,6 +100,24 @@ curl -X POST https://tamjump-contact-api.animalb001.workers.dev/entry \
 `info@tamjump.com` にも管理者宛メールが届くこと(SES経由)。
 
 このテストレコードも launch 前に削除します(§12 と一緒)。
+
+**(b) /entry/lookup エンドポイント**(v20260521b で追加、mypage.html 用):
+
+```bash
+curl -X POST https://tamjump-contact-api.animalb001.workers.dev/entry/lookup \
+  -H 'Content-Type: application/json' \
+  -H 'Origin: https://king2323.tamjump.com' \
+  -d '{"email":"nonexistent@test.com","ticket_number":"KM-20260101-0001"}'
+```
+
+期待(レコードが存在しないので 404):
+```json
+{"error":"該当する Mission Entry が見つかりません / No matching Mission Entry"}
+```
+
+このレスポンスが返れば、新ルートが正しくデプロイされている証拠です。**500 や `Not Found` が返ったら、§2.1 のデプロイがまだ反映されていません**。
+
+D1 にテストレコード `KM-20260514-0001`(session 6 から残存)があれば、その receipt と正しいメアドで lookup すると `success: true` が返ります。
 
 ---
 

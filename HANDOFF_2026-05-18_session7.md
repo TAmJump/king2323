@@ -105,6 +105,46 @@ native review 依頼テンプレは §5-ter に。
 
 session 5 最後(v20260514z)で止まっていた CHANGES.md に、session 6 後半(aa → ah)+ session 7 全体(ai → an, 18a/b/c)の 8 コミット分を英語で追記。
 
+## 2-5. session 7 後半: entry.html 連続修正(v20260518e–p, 5/18–5/19)
+
+operator のスクリーンショット駆動デバッグサイクルで entry.html がほぼ全面的に作り直された。主要な commit:
+
+| ver | 内容 |
+|---|---|
+| 18e | Cycle-1 status bar + 3-phase CTA gating |
+| 18f | カウントダウン bilingual(Days·日 等) |
+| 18g | Why-23:23 矛盾文修正 + GLOBAL_ROLLOUT.md 新規 |
+| 18h | 重なり修正 + session-5 遺物 8 箇所一掃 + sticky cycle-bar |
+| 18i | ?preview=phase 視覚 QA モード |
+| 18j | entry.html 壊れた CSS 修正 + i18n/fx cache buster 取り残し解消 |
+| 18k | **JP モードで entry フォーム消失バグ修正**(label.en/lang-en 限定セレクタ) |
+| 18L | POSTLAUNCH_TODO.md 新規 |
+| 18m | entry.html 9 言語 i18n 統一 |
+| 18n | 言語ピッカー 10 言語限定 + Mission 文字制限 + ワンタップ再エントリー |
+| 18o | ブランド語保護 + ロゴ統一 + Mission 200-500 + receipt 任意 |
+| 18p | myth_03_enigma フライヤー差し替え |
+
+## 2-6. session 7 最終(v20260521a/b, 5/21)
+
+| ver | 内容 |
+|---|---|
+| 21a | PAT ローテーション記録(旧 PAT revoke 済、新 PAT は carepass と共有) |
+| 21b | **新規ページ 2 つ**: how-it-works.html(280 行、5 段階タイムライン+SVG フロー図)+ mypage.html(350 行、Receipt 検索、ログイン無し)。Worker に `/entry/lookup` ルート追加 |
+
+operator の CarePass 比較分析の結果生まれた。「ゲームのイメージが付かない」「マイページ部分」への回答。**CarePass コード/アーキは 1 行も持ち込んでいない**(operator 厳命「ごちゃ混ぜにしないで」遵守)。
+
+## 2-7. 5/21 仕上げ作業(v20260521c, session 7 最後)
+
+| 内容 | 場所 |
+|---|---|
+| LAUNCH_RUNBOOK §2 を新 `/entry/lookup` 込みで更新 + curl 検証手順追加 | LAUNCH_RUNBOOK.md |
+| sitemap.xml に how-it-works.html + entry.html 追加(mypage は noindex) | sitemap.xml |
+| rules.html / risk.html / entry.html フッターに how-it-works + mypage リンク追加 | 3 ページ |
+| index.html ヒーロー CTA 下に「→ どう動くのか, 見る」リンク追加 | index.html |
+| mypage.html に `?preview=open` モード追加(operator QA 用) | mypage.html |
+| 本ファイル(session 7 引き継ぎ書)に 5/21 作業を反映 | HANDOFF_session7.md |
+| CHANGES.md に v20260518d-21b の 16 commit 分追記 | CHANGES.md |
+
 ---
 
 # 3. 現時点での全機能ステータス(変更なし)
@@ -150,18 +190,19 @@ session ⑧ Claude が **真っ先に開くべき** のは:
 
 | # | タスク | 期限 | 状態 |
 |---|---|---|---|
-| 1 | Worker 再デプロイ | 5/19 まで | **未** |
+| 1 | **Worker 再デプロイ**(`/entry/lookup` 追加で **mypage.html を動かすために必須**) | 5/20 まで | **未** |
 | 2 | Cloudflare キャッシュ Purge | 各更新後 | (operator 任せ) |
 | 3 | スケジュール変更目視確認 | 5/19 まで | **未** |
 | 4 | Cloudflare WAF 設定 | 5/19 準備 → 5/20 22:00 deploy | **未** |
 | 5 | Square Link 動作確認 | 5/18 中 | **未** |
 | 6 | ¥100 テスト購入 | 5/19 まで | **未** |
-| 7 | 全ページ目視(desktop) | 5/19 まで | **未** |
-| 8 | 全ページ目視(mobile) | 5/19 まで | **未** |
+| 7 | 全ページ目視(desktop)— **how-it-works.html / mypage.html 含む** | 5/19 まで | **未** |
+| 8 | 全ページ目視(mobile)— **how-it-works.html / mypage.html 含む** | 5/19 まで | **未** |
 | 9 | Twitter Card Validator OGP 確認 | 5/19 まで | **未** |
-| 10 | Google Search Console sitemap 登録 | 5/20 以降可 | **未** |
+| 10 | Google Search Console sitemap 登録(新 sitemap.xml に how-it-works.html 含む) | 5/20 以降可 | **未** |
 | 11 | テスト Entry `KM-20260514-0001` D1 削除 | 5/20 直前 | **未** |
 | **追** | **TIER 1 8 言語のネイティブチェック**(印/越/泰は必須レベル)| 5/19 まで | **未** |
+| **追** | **mypage.html 動作確認**: 21b 以降。手順は `?preview=open` で UI 確認 → Worker 再デプロイ後に curl で `/entry/lookup` 確認 → テスト購入の Receipt で実機 lookup | 5/20 まで | **未** |
 
 合計約 1.5 〜 2 時間。明日(5/19 火)夜にまとめて消化が現実的。
 

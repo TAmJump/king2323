@@ -245,7 +245,7 @@
   </div>
 </footer>
 
-<script src="js/i18n.js?v=20260521b"></script>
+<script src="js/i18n.js?v=20260521c"></script>
 <script>
 (function () {
   'use strict';
@@ -299,6 +299,22 @@
   }
 
   newLookupBtn.addEventListener('click', resetView);
+
+  // ---------- v20260521b: ?preview=open lets operator see the result view without Worker round-trip ----------
+  try {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('preview') === 'open') {
+      showResult({
+        ticket_number: 'KM-20260520-0001',
+        mission_name: 'Founding Bell · Sample Mission',
+        payment_email: 'sample@example.com',
+        country: 'Japan',
+        mission_summary: 'これはプレビュー表示です。実際の Mission Entry はあなたのメールアドレスと受付番号で照合された後にここに表示されます。本物の Mission の内容は、200〜500 文字で具体的に書かれた、あなたの意思の記録になります。',
+        sns: 'https://king2323.tamjump.com',
+        created_at: '2026-05-20T14:23:00.000Z'
+      });
+    }
+  } catch (e) { /* ignore preview mode failures */ }
 
   form.addEventListener('submit', async function (e) {
     e.preventDefault();

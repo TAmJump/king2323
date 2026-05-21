@@ -2923,7 +2923,20 @@
       fr: 'Mon Reçu',
     },
 
-    // ============== how-it-works.html ==============
+    // ============== hero hub link (subtle "see how it works" line under the hero CTA) ==============
+    'hero.how_link': {
+      ja: '→ どう動くのか、見る',
+      en: '→ See how it works',
+      ko: '→ 어떻게 진행되는지 보기',
+      es: '→ Ver cómo funciona',
+      hi: '→ देखें यह कैसे काम करता है',
+      vi: '→ Xem cách hoạt động',
+      pt: '→ Veja como funciona',
+      id: '→ Lihat cara kerjanya',
+      th: '→ ดูว่ามันทำงานอย่างไร',
+      fr: '→ Voir comment ça marche',
+    },
+
     'hiw.title': {
       ja: 'こうやって動く',
       en: 'How It Works',

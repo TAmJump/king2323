@@ -483,3 +483,166 @@ Plus LAUNCH_RUNBOOK.md §13 timeline updated:
   - 5/20 23:53 row: explicit multilingual thread post
   - 5/20 23:23+ row: reply-handling reference to §5-bis
 
+
+---
+
+## v20260518d · session 7 handoff document
+
+Created HANDOFF_2026-05-18_session7.md (~335 lines) as a supplement
+to the canonical HANDOFF_2026-05-14_session6_complete.md. Covers
+what session 7 added on top of session 6.
+
+---
+
+## v20260518e · Cycle-1 status bar + 3-phase CTA gating + slate play button
+
+Session-5 weekly Friday model still hiding in main.js getBellState().
+Full rewrite for three-stage Cycle 1: pre_open / open / pending_three
+/ cycle1_complete. CTA HTML grew three locked-state spans. Status
+bar first render (sticky, three progressively-lighting stage dots).
+Hero play button finally landed at slate grey after 6 iterations.
+
+---
+
+## v20260518f · countdown labels bilingual
+
+Days·日 / Hrs·時 / Min·分 / Sec·秒 bilingual span pairs added to
+the cycle-bar countdown.
+
+---
+
+## v20260518g · fix Why-23:23 schedule contradiction + add GLOBAL_ROLLOUT doc
+
+ritual.why.p1/p2 rewrote to drop session-5 "Five minutes a week"
+and "Fri 23:23 → Mon 23:23" remnants in all 9 languages. New
+docs/GLOBAL_ROLLOUT.md (~250 lines) drafts the world-rollout
+strategy discussion for revisiting on 5/24.
+
+---
+
+## v20260518h · overlap fixes + session-5 remnant purge + sticky cycle-bar
+
+CTA opacity-stack rewritten to display-swap (fixes button-overflows-
+H1 bug). Countdown duplicate label fixed (top phase verb / bottom
+JST target). Cycle-bar moved BEFORE the gorilla header, position:
+sticky top:60px. Session-5 remnants purged across H1 subtitle, meta
+descriptions, ticker, rules.html, app.html.
+
+---
+
+## v20260518i · ?preview= URL query for operator visual QA
+
+Query parameter mode: ?preview=pre/open/pending/complete spoofs the
+cycle state without touching the real schedule constants.
+
+---
+
+## v20260518j · fix entry.html broken CSS + bump stale i18n/fx cache busters
+
+Dangling CSS block in entry.html was silently dropping all input
+styles, making form fields invisible. Plus i18n.js and fx.js had
+been stuck at ?v=20260514d across all of session 6/7 — every
+dictionary fix invisible to anyone with the cached JS. Bumped both
+to ?v=20260518i across all 6 pages.
+
+---
+
+## v20260518k · fix entry form vanishing in Japanese display mode
+
+Operator's three-screenshot triangulation pinned css/main.css
+L1171: was hiding all labels in JP mode that lacked .jp or
+.lang-ja classes. entry.html's neutral wrapper <label> got killed
+and the <input> inside with it. Restricted the rule to labels
+explicitly carrying .en or .lang-en.
+
+---
+
+## v20260518L · postlaunch todo doc
+
+docs/POSTLAUNCH_TODO.md (~200 lines): three-way priority discussion
+for 5/24+ (Cycle 1 retro / i18n unification / Cycle 2 prep),
+step-by-step i18n migration plan, PAT revoke procedure.
+
+---
+
+## v20260518m · entry.html — 9-language i18n unification
+
+16 dictionary-driven elements covering every label, button, and
+notice in entry.html. ~150 lines of entry.* dictionary keys plus
+4 new footer.* keys, each in 9 TIER-1 languages. window.apply
+ContentTranslations exposed for dynamic re-render.
+
+---
+
+## v20260518n · language picker TIER-1 only + mission char limit + one-tap re-entry
+
+Picker now shows 10 languages only (was 108). Mission summary gets
+a 20–50 char limit with three-state live counter. One-tap re-entry
+via localStorage (email/mission-name/country/sns saved on success,
+prefilled next visit with CLEAR button).
+
+---
+
+## v20260518o · brand-protect entry.html + logo unify + mission 200-500 + receipt optional
+
+Google Translate had been eating brand vocab in entry.html (tab
+title 創立の鐘の音 · キングメ, H1 建国の鐘エントリー). Restored
+translate='no' on <main> + notranslate on <h1>/brand-link. Logo
+unification: entry/rules/risk header gorilla image (was ♛ emoji).
+receipt_id made OPTIONAL (operator: '意味分からない'). Mission
+summary 20–50 → 200–500 characters.
+
+---
+
+## v20260518p · replace myth_03_enigma flyer artwork
+
+Operator-supplied new design for Episode Three / Number Myth 03.
+Removed in-flyer KINGMAKER · 23:23 header and three concrete examples
+(Caesar / Euclid / 9.11). Re-encoded to 800×1200 WebP quality 85
+to match other myth_*.webp.
+
+---
+
+## v20260521a · PAT rotation recorded
+
+Old PAT (ghp_SNxD...oJln) revoked. New shared PAT (ghp_7PPAq...1rOv)
+covers both kingmaker and carepass. Full value in HANDOVER_v13.md
+§1 (carepass handover doc).
+
+---
+
+## v20260521b · how-it-works.html + mypage.html (CarePass-inspired but NOT borrowed)
+
+Operator question: 'ゲームはどこでどうやって開催されるのか?全く
+イメージが付かない' + 'マイページ部分'. Two new pages, kept strictly
+separate from CarePass code:
+
+  A. how-it-works.html (~280 lines): five-step timeline (Bell opens
+     → Mission submit → Bell rings → Review → The Three) + SVG
+     horizontal flow diagram + 'What this is NOT' callout. All copy
+     in hiw.* keys in 9 languages.
+
+  B. mypage.html (~350 lines): Receipt lookup, NO login. Email +
+     Receipt number → POST /entry/lookup. Returns single record or
+     generic 404 (anti-oracle). noindex meta. Includes ?preview=open
+     for operator QA without Worker round-trip.
+
+  Worker (worker/index.js): new /entry/lookup POST route + handle
+  EntryLookup function. Reuses existing contacts table. Operator
+  must redeploy manually via Cloudflare dashboard — LAUNCH_RUNBOOK
+  §2 updated with deploy steps and curl verification.
+
+  Navigation: hamburger nav, main footer, and rules/risk/entry
+  footers all gain How It Works and My Receipt entries. Hero gets a
+  subtle '→ どう動くのか, 見る' link below the aphorism. sitemap.xml
+  adds how-it-works (priority 0.9) and entry.html (priority 0.8);
+  mypage stays out (noindex).
+
+  Cache buster: i18n.js → ?v=20260521b. CSS untouched.
+
+  NOT borrowed from CarePass: subscription model, PBKDF2 / magic-
+  link login, 4-role accounts, coupon system, facility/partner
+  directory, admin dashboards, Cron triggers, mobile-nav script.
+  All stay as CarePass's solutions to CarePass's problems.
+
+---
