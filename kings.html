@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en" data-display-lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hall of Kings · KINGMAKER 23:23</title>
+<meta name="description" content="The permanent record of every King chosen by KINGMAKER 23:23. Granted, in progress, awaiting fund — none forgotten.">
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="KINGMAKER 23:23" />
+<meta property="og:title" content="Hall of Kings · KINGMAKER 23:23" />
+<meta property="og:description" content="Every King. Every Cycle. None forgotten. Fund builds — promises kept." />
+<meta property="og:url" content="https://king2323.tamjump.com/kings.html" />
+<meta property="og:image" content="https://king2323.tamjump.com/assets/logo-v3-1024.png" />
+<link rel="canonical" href="https://king2323.tamjump.com/kings.html" />
+<meta name="theme-color" content="#f8f4eb" media="(prefers-color-scheme: light)" />
+<meta name="theme-color" content="#1a1612" media="(prefers-color-scheme: dark)" />
+<meta name="color-scheme" content="light" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="css/main.css?v=20260522a" />
+<style>
+  .hall-page { max-width: 1100px; margin: 0 auto; padding: 56px var(--pad) 120px; }
+  .hall-page h1 { font-family: var(--f-display); font-size: clamp(32px, 5vw, 56px); color: var(--bone); margin-bottom: 8px; letter-spacing: -0.01em; text-align: center; }
+  .hall-page .hall-sub { font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.3em; color: var(--gold); text-transform: uppercase; margin-bottom: 16px; text-align: center; }
+  .hall-page .hall-tagline { font-family: var(--f-editorial); font-style: italic; font-size: clamp(16px, 1.6vw, 20px); color: var(--gold-deep); text-align: center; margin-bottom: 56px; }
+
+  /* Status legend */
+  .hall-legend {
+    display: flex; gap: 22px; flex-wrap: wrap; justify-content: center;
+    margin-bottom: 48px; padding: 20px;
+    background: var(--paper-2); border: 1px solid var(--line);
+  }
+  .legend-item {
+    display: flex; align-items: center; gap: 8px;
+    font-family: var(--f-mono); font-size: 11px;
+    letter-spacing: 0.18em; text-transform: uppercase;
+  }
+  .legend-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+  .legend-dot.awaiting { background: var(--ash); }
+  .legend-dot.progress { background: var(--gold-deep); }
+  .legend-dot.granted  { background: var(--gold); box-shadow: 0 0 10px var(--gold); }
+
+  /* Cycle group */
+  .cycle-group { margin-bottom: 64px; }
+  .cycle-group-head {
+    display: flex; align-items: baseline; gap: 18px; flex-wrap: wrap;
+    padding-bottom: 14px; margin-bottom: 24px;
+    border-bottom: 1px solid var(--gold-deep);
+  }
+  .cycle-num {
+    font-family: var(--f-display); font-size: 32px; color: var(--gold); font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .cycle-meta { font-family: var(--f-mono); font-size: 12px; color: var(--ash); letter-spacing: 0.15em; text-transform: uppercase; }
+  .cycle-founding-tag {
+    display: inline-block; padding: 4px 12px;
+    background: rgba(212,175,55,0.12); border: 1px solid var(--gold);
+    font-family: var(--f-mono); font-size: 10px; color: var(--gold);
+    letter-spacing: 0.2em; text-transform: uppercase;
+  }
+
+  /* King card */
+  .king-grid { display: grid; gap: 22px; grid-template-columns: 1fr; }
+  @media (min-width: 768px) { .king-grid { grid-template-columns: repeat(3, 1fr); } }
+
+  .king-card {
+    padding: 28px 26px; background: var(--paper-2); border: 1px solid var(--line);
+    position: relative; transition: transform 0.25s ease, border-color 0.25s ease;
+  }
+  .king-card:hover { transform: translateY(-2px); border-color: var(--gold-deep); }
+  .king-card.is-granted {
+    background: linear-gradient(180deg, rgba(212,175,55,0.10), var(--paper-2));
+    border-color: var(--gold);
+  }
+  .king-rank {
+    font-family: var(--f-display); font-size: 14px; color: var(--gold);
+    letter-spacing: 0.25em; text-transform: uppercase; margin-bottom: 14px;
+  }
+  .king-rank::before { content: "♛  "; }
+  .king-mission {
+    font-family: var(--f-display); font-size: 18px; color: var(--bone);
+    margin-bottom: 8px; line-height: 1.4; font-weight: 600;
+  }
+  .king-meta {
+    font-family: var(--f-mono); font-size: 11px; color: var(--gold-deep);
+    letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 14px;
+  }
+  .king-summary {
+    font-family: var(--f-jp); font-size: 13.5px; color: var(--ash);
+    line-height: 1.7; margin-bottom: 18px;
+    display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .king-status {
+    display: flex; align-items: center; gap: 8px;
+    padding-top: 14px; border-top: 1px dotted var(--line);
+    font-family: var(--f-mono); font-size: 11px;
+    letter-spacing: 0.18em; text-transform: uppercase;
+  }
+  .king-status .dot { width: 8px; height: 8px; border-radius: 50%; }
+  .king-status .dot.awaiting { background: var(--ash); }
+  .king-status .dot.progress { background: var(--gold-deep); }
+  .king-status .dot.granted  { background: var(--gold); box-shadow: 0 0 8px var(--gold); }
+  .king-status .amt { margin-left: auto; color: var(--gold); font-weight: 700; }
+  .king-status .amt.unfunded { color: var(--ash); font-weight: 400; }
+
+  .proof-link { display: inline-block; margin-top: 12px; font-family: var(--f-mono); font-size: 11px; color: var(--gold-deep); letter-spacing: 0.18em; text-decoration: none; border-bottom: 1px solid var(--gold-deep); }
+
+  /* Empty state */
+  .empty-hall {
+    padding: 80px 32px; text-align: center;
+    background: var(--paper-2); border: 1px dashed var(--line);
+  }
+  .empty-hall .glyph { font-size: 48px; color: var(--gold); margin-bottom: 18px; }
+  .empty-hall h3 { font-family: var(--f-display); color: var(--bone); margin-bottom: 12px; }
+  .empty-hall p  { font-family: var(--f-jp); color: var(--ash); line-height: 1.7; max-width: 540px; margin: 0 auto; }
+
+  /* Regret framing — for unfunded Cycles */
+  .regret-block {
+    margin-top: 64px; padding: 32px;
+    background: linear-gradient(180deg, rgba(40, 26, 12, 0.02), transparent);
+    border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+    text-align: center;
+  }
+  .regret-block .regret-title { font-family: var(--f-editorial); font-style: italic; font-size: 22px; color: var(--gold); margin-bottom: 14px; }
+  .regret-block .regret-body { font-family: var(--f-jp); font-size: 14.5px; color: var(--ash); line-height: 1.85; max-width: 620px; margin: 0 auto 18px; }
+  .regret-block a.btn-regret {
+    display: inline-block; padding: 14px 28px;
+    background: linear-gradient(180deg, var(--gold-bright), var(--gold-deep));
+    color: var(--black); text-decoration: none;
+    font-family: var(--f-display); font-size: 13px; letter-spacing: 0.25em; text-transform: uppercase;
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header notranslate" translate="no" style="display:flex; justify-content:space-between; align-items:center; padding:18px 24px; border-bottom:1px solid var(--line);">
+  <a href="index.html" class="brand-link notranslate" translate="no" style="display:flex; align-items:center; gap:12px; text-decoration:none;">
+    <img src="assets/logo-v3-128.png" alt="" style="width:32px; height:32px; flex-shrink:0;">
+    <span class="brand-name" style="font-family:var(--f-display); font-size:14px; letter-spacing:0.18em; color:var(--ink);">KINGMAKER</span>
+    <span class="brand-time" style="font-family:var(--f-mono); font-size:11px; letter-spacing:0.18em; color:var(--gold);">23:23</span>
+  </a>
+  <div class="lang-picker notranslate" translate="no"></div>
+</header>
+
+<main class="hall-page notranslate" translate="no" lang="ja">
+  <p class="hall-sub">— Permanent Record · Every King · Every Cycle —</p>
+  <h1>Hall of Kings</h1>
+  <p class="hall-tagline">
+    None are forgotten.<br>
+    <span style="font-size: 0.82em; color: var(--ash); font-style: normal; font-family: var(--f-jp);">資金が貯まり次第、すべての王のMissionは叶えられる。</span>
+  </p>
+
+  <div class="hall-legend">
+    <span class="legend-item"><span class="legend-dot awaiting"></span>Awaiting Fund · 資金待ち</span>
+    <span class="legend-item"><span class="legend-dot progress"></span>In Progress · 進行中</span>
+    <span class="legend-item"><span class="legend-dot granted"></span>Granted · 達成</span>
+  </div>
+
+  <div id="hallContent">
+    <div class="empty-hall" id="hallLoading">
+      <div class="glyph">⌛</div>
+      <h3>Loading Hall…</h3>
+    </div>
+  </div>
+
+  <!-- Regret framing — shown after content -->
+  <section class="regret-block" id="regretBlock" style="display:none;">
+    <p class="regret-title">"あの時、参加していれば。"</p>
+    <p class="regret-body">
+      早期Cycleの参加者は永久に「Founding Member」として記録されます。<br>
+      参加者が少ない時に Bell を鳴らした者は、選ばれる確率が高い。<br>
+      <span style="color: var(--gold-deep); font-style: italic;">— The earliest Bells ring the loudest. —</span>
+    </p>
+    <a href="entry.html" class="btn-regret">Ring the Bell now · ¥100</a>
+  </section>
+
+  <script>
+    (function () {
+      const API_BASE = 'https://tamjump-contact-api.animalb001.workers.dev';
+      const content  = document.getElementById('hallContent');
+      const regret   = document.getElementById('regretBlock');
+
+      fetch(API_BASE + '/kings/list?limit=200')
+        .then(r => r.json())
+        .then(data => {
+          if (!data.success) throw new Error('Load failed');
+          render(data);
+        })
+        .catch(err => {
+          content.innerHTML = `<div class="empty-hall">
+            <div class="glyph">⌛</div>
+            <h3>The Hall is being prepared.</h3>
+            <p>最初の鐘の余韻が、まだここに記録されていません。<br>
+            <span style="color:var(--ash);">No Kings have been recorded yet. The first Cycle is approaching its close.</span></p>
+          </div>`;
+          regret.style.display = 'block';
+        });
+
+      function render(data) {
+        const kings = data.kings || [];
+        const cycleMap = {};
+        kings.forEach(k => {
+          if (!cycleMap[k.cycle_number]) cycleMap[k.cycle_number] = [];
+          cycleMap[k.cycle_number].push(k);
+        });
+
+        const cycleNums = Object.keys(cycleMap).map(Number).sort((a, b) => b - a);
+
+        if (cycleNums.length === 0) {
+          content.innerHTML = `<div class="empty-hall">
+            <div class="glyph">⌛</div>
+            <h3>The Hall awaits its first King.</h3>
+            <p>Cycle 1 が進行中です。最初の Bell が鳴った後、ここに王の記録が刻まれます。<br>
+            <span style="color:var(--ash);">Cycle 1 is in progress. After the first Bell rings, the first King's name will be inscribed here forever.</span></p>
+          </div>`;
+          regret.style.display = 'block';
+          return;
+        }
+
+        // Build participant-count lookup from cycleSummary
+        const partMap = {};
+        (data.cycleSummary || []).forEach(c => { partMap[c.cycle_number] = c.participants; });
+
+        let html = '';
+        cycleNums.forEach(cn => {
+          const isFounding = cn <= (data.foundingCohortMax || 3);
+          const part = partMap[cn];
+          html += `<section class="cycle-group">
+            <div class="cycle-group-head">
+              <span class="cycle-num">Cycle ${cn}</span>
+              ${isFounding ? '<span class="cycle-founding-tag">Founding Cycle</span>' : ''}
+              ${part != null ? `<span class="cycle-meta">${part} participants</span>` : ''}
+            </div>
+            <div class="king-grid">
+              ${cycleMap[cn].map(k => kingCard(k)).join('')}
+            </div>
+          </section>`;
+        });
+        content.innerHTML = html;
+        regret.style.display = 'block';
+      }
+
+      function kingCard(k) {
+        const status = k.grant_status || 'awaiting_fund';
+        const amt = k.grant_amount_jpy || 0;
+        const isGranted = status === 'granted';
+        const statusLabel = status === 'granted' ? '✓ Granted' : status === 'in_progress' ? '◐ In Progress' : '○ Awaiting Fund';
+        const dotClass = status === 'granted' ? 'granted' : status === 'in_progress' ? 'progress' : 'awaiting';
+        return `<article class="king-card ${isGranted ? 'is-granted' : ''}">
+          <div class="king-rank">Rank ${k.rank} · King</div>
+          <h3 class="king-mission">${escapeHtml(k.mission_name)}</h3>
+          <div class="king-meta">${escapeHtml(k.country || '—')} · ${escapeHtml(k.display_handle || 'Anonymous')}</div>
+          <p class="king-summary">${escapeHtml(k.mission_summary || '')}</p>
+          <div class="king-status">
+            <span class="dot ${dotClass}"></span>
+            <span>${statusLabel}</span>
+            <span class="amt ${amt > 0 ? '' : 'unfunded'}">¥${(amt).toLocaleString()}</span>
+          </div>
+          ${k.proof_url ? `<a class="proof-link" href="${escapeAttr(k.proof_url)}" target="_blank" rel="noopener">↗ Proof of Mission</a>` : ''}
+        </article>`;
+      }
+
+      function escapeHtml(s) {
+        return String(s == null ? '' : s)
+          .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+      }
+      function escapeAttr(s) { return escapeHtml(s).replace(/`/g, '&#96;'); }
+    })();
+  </script>
+
+<footer class="legal-footer">
+  <nav class="legal-footer-nav legal-footer-nav-primary">
+    <a href="index.html">← KINGMAKER</a>
+    <span class="sep">·</span>
+    <a href="how-it-works.html">仕組み</a>
+    <span class="sep">·</span>
+    <a href="entry.html">エントリー</a>
+    <span class="sep">·</span>
+    <a href="mypage.html">My Page</a>
+    <span class="sep">·</span>
+    <a href="kings.html">Hall of Kings</a>
+    <span class="sep">·</span>
+    <a href="rules.html">Founding Bell ルール</a>
+    <span class="sep">·</span>
+    <a href="risk.html">重要事項</a>
+  </nav>
+  <div class="legal-footer-meta">
+    <span class="meta-line">© 2026 · KINGMAKER 23:23 · Operated by <a href="https://tamjump.com/" target="_blank" rel="noopener">タムジ株式会社 / TAmJ</a></span>
+  </div>
+</footer>
+
+</main>
+
+<script src="js/i18n.js?v=20260522a"></script>
+</body>
+</html>

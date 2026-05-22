@@ -25,7 +25,7 @@
 <meta name="color-scheme" content="light" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link rel="stylesheet" href="css/main.css?v=20260518m" />
+<link rel="stylesheet" href="css/main.css?v=20260522a" />
 <style>
   .hiw-page { max-width: 920px; margin: 0 auto; padding: 56px var(--pad) 120px; }
   .hiw-page h1 { font-family: var(--f-display); font-size: clamp(32px, 4.5vw, 52px); color: var(--bone); margin-bottom: 8px; letter-spacing: -0.01em; }
@@ -170,7 +170,7 @@
         <h3 class="hiw-step-title" data-i18n-html="hiw.s1.title">Bell opens · 鐘が開く</h3>
         <p class="hiw-step-text" data-i18n-html="hiw.s1.text">
           サイトのカウントダウンが 0 になり、エントリー受付が始まる。
-          世界中、同じ瞬間に。CTA ボタンが押せるようになり、Square 決済画面が開く。
+          世界中、同じ瞬間に。<a href="entry.html" style="color:var(--gold); font-weight:600;">entry.html</a> が開く。
         </p>
         <span class="hiw-step-meta notranslate" translate="no">¥100 = 1 Bell Entry</span>
       </div>
@@ -180,11 +180,12 @@
       <div class="hiw-step-num"><span class="dot">2</span></div>
       <div class="hiw-step-body">
         <div class="hiw-step-when notranslate" translate="no">— Open Window · ~46 hours —</div>
-        <h3 class="hiw-step-title" data-i18n-html="hiw.s2.title">Mission を出す · あなたの意思を記録する</h3>
+        <h3 class="hiw-step-title" data-i18n-html="hiw.s2.title">Mission を出す + 決済 · 1 つのフォームで完結</h3>
         <p class="hiw-step-text" data-i18n-html="hiw.s2.text">
-          ¥100 で Bell Entry。Square 決済が完了すると Mission Entry フォームへ。
-          あなたが「もし Grant を受け取ったら、何を、誰のために、なぜするか」を、
-          200〜500 文字で書く。匿名でも本名でもよい。受付番号(KM-YYYYMMDD-NNNN)が即時発行される。
+          1つのフォームに、Mission の内容(200〜500 文字)、メールアドレス、カード情報を入力する。
+          「もし Grant を受け取ったら、何を、誰のために、なぜするか」を書く。
+          送信すると ¥100 が決済され、受付番号(KM-YYYYMMDD-NNNN)が即時発行される。
+          領収書 ID の手入力は不要。Square から控えがメールで届く。
         </p>
         <span class="hiw-step-meta notranslate" translate="no">Receipt #KM-20260520-NNNN</span>
       </div>
@@ -228,6 +229,22 @@
           ここから Mission Fund が動き、三人の Mission を運営が実行に移す。
         </p>
         <span class="hiw-step-meta notranslate" translate="no">Mission Fund → executes the Mission</span>
+      </div>
+    </div>
+
+    <div class="hiw-step" data-step="6">
+      <div class="hiw-step-num"><span class="dot" style="background: linear-gradient(180deg, var(--gold-bright), var(--gold-deep)); color: var(--black);">∞</span></div>
+      <div class="hiw-step-body">
+        <div class="hiw-step-when notranslate" translate="no">— Permanent · For every Cycle, forever —</div>
+        <h3 class="hiw-step-title">Hall of Kings · 王の殿堂 — 資金が貯まり次第、Mission を叶える</h3>
+        <p class="hiw-step-text">
+          選ばれた King は <a href="kings.html" style="color:var(--gold); font-weight:600;">kings.html</a> に永続記録される。
+          <strong>資金が足りない Cycle</strong> でも、King の権利は消えない。<strong>「Awaiting Fund」</strong>状態で待機。<br>
+          次の Cycle 以降、プールが貯まり次第、運営が <strong>「In Progress」</strong> → <strong>「Granted」</strong> へ
+          状態を更新する。Cycle 1〜3 の参加者は永久に <strong>「Founding Member」</strong> として表示される。<br>
+          <em style="color: var(--gold-deep);">早期 Cycle の参加者ほど、競争が少なく、選ばれる確率が高い。</em>
+        </p>
+        <span class="hiw-step-meta notranslate" translate="no">None forgotten · Founding 100 cohort</span>
       </div>
     </div>
 
@@ -313,7 +330,9 @@
     <span class="sep">·</span>
     <a href="entry.html" data-i18n-html="footer.entry_link">エントリー</a>
     <span class="sep">·</span>
-    <a href="mypage.html" data-i18n-html="footer.mypage_link">My Receipt</a>
+    <a href="mypage.html" data-i18n-html="footer.mypage_link">My Page</a>
+    <span class="sep">·</span>
+    <a href="kings.html">Hall of Kings</a>
     <span class="sep">·</span>
     <a href="rules.html" data-i18n-html="footer.rules_link">Founding Bell ルール</a>
     <span class="sep">·</span>
@@ -325,6 +344,6 @@
   </div>
 </footer>
 
-<script src="js/i18n.js?v=20260521c"></script>
+<script src="js/i18n.js?v=20260522a"></script>
 </body>
 </html>

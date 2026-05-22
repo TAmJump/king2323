@@ -4,12 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Founding Bell Entry · KINGMAKER 23:23</title>
-<meta name="description" content="Mission Entry form for KINGMAKER 23:23 Founding Bell.">
+<meta name="description" content="Mission Entry form for KINGMAKER 23:23 Founding Bell. One form: payment + Mission. ¥100.">
 <!-- ============== OGP / Twitter Card ============== -->
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="KINGMAKER 23:23" />
 <meta property="og:title" content="Founding Bell Entry · KINGMAKER 23:23" />
-<meta property="og:description" content="Mission Entry form for KINGMAKER 23:23 Founding Bell. Submit after Square payment with your receipt to complete entry." />
+<meta property="og:description" content="One form. ¥100. Submit your Mission. The Bell rings at 23:23 JST." />
 <meta property="og:url" content="https://king2323.tamjump.com/entry.html" />
 <meta property="og:image" content="https://king2323.tamjump.com/assets/logo-v3-1024.png" />
 <meta property="og:image:width" content="1024" />
@@ -19,102 +19,135 @@
 <meta property="og:locale:alternate" content="en_US" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="Founding Bell Entry · KINGMAKER 23:23" />
-<meta name="twitter:description" content="Mission Entry form for KINGMAKER 23:23 Founding Bell. Submit after Square payment with your receipt to complete entry." />
+<meta name="twitter:description" content="One form. ¥100. Submit your Mission. The Bell rings at 23:23 JST." />
 <meta name="twitter:image" content="https://king2323.tamjump.com/assets/logo-v3-1024.png" />
 <link rel="canonical" href="https://king2323.tamjump.com/entry.html" />
-<!-- Mobile browser chrome — match brand parchment -->
 <meta name="theme-color" content="#f8f4eb" media="(prefers-color-scheme: light)" />
 <meta name="theme-color" content="#1a1612" media="(prefers-color-scheme: dark)" />
 <meta name="color-scheme" content="light" />
-<!-- Performance: warm up critical third-party origins -->
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link rel="preconnect" href="https://translate.googleapis.com" />
-<link rel="dns-prefetch" href="https://translate-pa.googleapis.com" />
-<link rel="stylesheet" href="css/main.css?v=20260518m" />
+<link rel="stylesheet" href="css/main.css?v=20260522a" />
+<!-- Square Web Payments SDK (loaded conditionally based on /entry/config response) -->
 <style>
-  .entry-page { max-width: 760px; margin: 0 auto; padding: 64px var(--pad) 120px; }
-  .entry-page h1 { font-family: var(--f-display); font-size: clamp(32px, 4.5vw, 52px); color: var(--bone); margin-bottom: 8px; letter-spacing: -0.01em; }
-  .entry-page .entry-sub { font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.3em; color: var(--gold); text-transform: uppercase; margin-bottom: 32px; }
-  .entry-page .entry-intro { color: var(--ash); line-height: 1.85; font-size: 15px; margin-bottom: 48px; }
-  .entry-page .entry-intro.jp { font-family: var(--f-jp); font-size: 13px; color: var(--dust); }
-  .entry-page form { display: flex; flex-direction: column; gap: 24px; }
-  .entry-page label { display: flex; flex-direction: column; font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.2em; color: var(--gold-deep); text-transform: uppercase; gap: 8px; }
-  .entry-page label .hint { font-family: var(--f-jp); font-size: 11px; color: var(--dust); text-transform: none; letter-spacing: 0.05em; margin-top: 2px; }
+  .entry-page { max-width: 760px; margin: 0 auto; padding: 56px var(--pad) 120px; }
+  .entry-page h1 { font-family: var(--f-display); font-size: clamp(30px, 4.2vw, 48px); color: var(--bone); margin-bottom: 8px; letter-spacing: -0.01em; }
+  .entry-page .entry-sub { font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.3em; color: var(--gold); text-transform: uppercase; margin-bottom: 24px; }
+  .entry-page .entry-intro { color: var(--ash); line-height: 1.85; font-size: 14.5px; margin-bottom: 40px; }
+
+  /* Steps strip */
+  .entry-steps {
+    display: flex; gap: 8px; margin-bottom: 36px;
+    padding: 14px 18px; background: var(--paper-2); border-left: 2px solid var(--gold);
+    font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.18em; color: var(--gold-deep);
+    text-transform: uppercase; line-height: 1.4;
+  }
+  .entry-steps .step { opacity: 0.55; }
+  .entry-steps .step.is-active { opacity: 1; color: var(--gold); }
+  .entry-steps .sep { opacity: 0.4; }
+
+  .entry-page form { display: flex; flex-direction: column; gap: 22px; }
+  .entry-page label {
+    display: flex; flex-direction: column; gap: 8px;
+    font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.2em;
+    color: var(--gold-deep); text-transform: uppercase;
+  }
+  .entry-page label .hint {
+    font-family: var(--f-jp); font-size: 11px; color: var(--dust);
+    text-transform: none; letter-spacing: 0.05em; margin-top: 2px;
+  }
   .entry-page input[type=text],
   .entry-page input[type=email],
   .entry-page input[type=url],
   .entry-page textarea {
-    /* defensive — explicit display+box so the form survives any
-       upstream CSS regression (was missing the opening brace of a
-       second declaration block previously, which broke the form
-       silently in some browsers) */
-    display: block;
-    width: 100%;
-    box-sizing: border-box;
-    min-height: 44px;
-    padding: 14px 16px;
-    background: var(--paper-2);
-    color: var(--bone);
+    display: block; width: 100%; box-sizing: border-box;
+    min-height: 44px; padding: 14px 16px;
+    background: var(--paper-2); color: var(--bone);
     border: 1px solid var(--line);
-    font-family: var(--f-serif);
-    font-size: 15px;
-    line-height: 1.5;
+    font-family: var(--f-serif); font-size: 15px; line-height: 1.5;
     transition: border-color 0.2s ease;
   }
-  .entry-page input:focus, .entry-page textarea:focus {
-    outline: none;
-    border-color: var(--gold);
+  .entry-page input:focus, .entry-page textarea:focus { outline: none; border-color: var(--gold); }
+  .entry-page textarea { min-height: 160px; resize: vertical; font-family: inherit; }
+
+  /* Section heading inside the form */
+  .form-section-head {
+    display: flex; align-items: baseline; gap: 12px;
+    margin-top: 20px; padding-bottom: 8px;
+    border-bottom: 1px solid var(--line);
+    font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.25em;
+    color: var(--gold); text-transform: uppercase;
   }
-  .entry-page textarea {
-    min-height: 140px;
-    resize: vertical;
-    font-family: inherit;
+  .form-section-head::before {
+    content: ""; width: 28px; height: 1px; background: var(--gold);
+    align-self: center;
   }
+
+  /* Square card container */
+  #card-container {
+    min-height: 86px; padding: 4px 0;
+    background: var(--paper-2); border: 1px solid var(--line);
+    transition: border-color 0.2s ease;
+  }
+  #card-container.is-ready { border-color: var(--gold-deep); }
+  #card-container.is-error { border-color: #c0282d; }
+  .card-status {
+    font-family: var(--f-mono); font-size: 11px; color: var(--dust);
+    margin-top: 6px; letter-spacing: 0.12em; text-transform: uppercase;
+  }
+  .card-status.is-error { color: #c0282d; }
+
   .entry-page .agree-row {
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    font-family: var(--f-serif);
-    font-size: 13px;
-    color: var(--ash);
-    text-transform: none;
-    letter-spacing: 0.01em;
-    line-height: 1.7;
+    display: flex; align-items: flex-start; gap: 12px;
+    font-family: var(--f-serif); font-size: 13px; color: var(--ash);
+    text-transform: none; letter-spacing: 0.01em; line-height: 1.7;
   }
   .entry-page .agree-row input[type=checkbox] { margin-top: 4px; }
   .entry-page .agree-row a { color: var(--gold); }
-  /* Mission summary live counter */
+
   .entry-page .entry-counter {
-    display: block;
-    margin-top: 4px;
-    font-family: var(--f-mono);
-    font-size: 11px;
-    letter-spacing: 0.18em;
-    color: var(--dust);
-    text-align: right;
-    transition: color 0.2s ease;
+    display: block; margin-top: 4px;
+    font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.18em;
+    color: var(--dust); text-align: right; transition: color 0.2s ease;
   }
-  .entry-page .entry-counter.is-warn { color: #c08428; }   /* under 20 chars */
+  .entry-page .entry-counter.is-warn { color: #c08428; }
   .entry-page .entry-counter.is-ok   { color: var(--gold); font-weight: 600; }
   .entry-page .entry-counter.is-over { color: #c0282d; font-weight: 700; }
+
   .entry-page button[type=submit] {
-    margin-top: 16px;
-    padding: 16px 32px;
+    margin-top: 24px; padding: 18px 32px;
     background: linear-gradient(180deg, var(--gold-bright), var(--gold-deep));
-    color: var(--black);
-    font-family: var(--f-display);
-    font-size: 14px;
-    letter-spacing: 0.25em;
-    text-transform: uppercase;
-    border: none;
-    cursor: pointer;
-    transition: transform 0.15s ease;
+    color: var(--black); font-family: var(--f-display); font-size: 14px;
+    letter-spacing: 0.25em; text-transform: uppercase;
+    border: none; cursor: pointer; transition: transform 0.15s ease, opacity 0.15s ease;
   }
   .entry-page button[type=submit]:hover { transform: translateY(-1px); }
+  .entry-page button[type=submit]:disabled { opacity: 0.55; cursor: wait; transform: none; }
+
+  .price-line {
+    display: flex; align-items: baseline; justify-content: space-between;
+    padding: 18px 22px; background: linear-gradient(180deg, rgba(212,175,55,0.08), rgba(212,175,55,0.04));
+    border: 1px solid var(--gold-deep);
+    font-family: var(--f-display); font-size: 18px; color: var(--bone);
+    letter-spacing: 0.02em;
+  }
+  .price-line .label { font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.25em; color: var(--gold-deep); text-transform: uppercase; }
+  .price-line .amount { font-size: 24px; color: var(--gold); font-weight: 700; }
+
+  .entry-status { margin-top: 24px; padding: 14px 18px; font-family: var(--f-jp); font-size: 14px; line-height: 1.7; border-left: 2px solid var(--gold-deep); }
+  .entry-status-error { background: rgba(196, 46, 62, 0.08); border-left-color: #b62a3a; color: #6b1a22; }
+  .entry-status-success { background: rgba(212, 175, 55, 0.08); border-left-color: var(--gold); color: var(--bone); padding: 28px; }
+  .entry-status-success h3 { font-family: var(--f-display); color: var(--bone); margin-bottom: 12px; font-size: 22px; letter-spacing: -0.005em; }
+  .entry-status-success p { color: var(--ash); margin-bottom: 8px; font-size: 13.5px; }
+  .entry-status-success strong { font-family: var(--f-mono); color: var(--gold); letter-spacing: 0.05em; font-size: 14px; }
+  .entry-status-success .next-steps { margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--line); display: flex; gap: 18px; flex-wrap: wrap; }
+  .entry-status-success .next-steps a {
+    font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.22em;
+    color: var(--gold-deep); text-transform: uppercase; text-decoration: none;
+    border-bottom: 1px solid rgba(184,134,45,0.4); padding-bottom: 3px;
+  }
+
   .entry-page .entry-note { margin-top: 40px; padding: 18px 22px; background: var(--paper-2); border-left: 2px solid var(--gold); font-size: 13px; color: var(--ash); line-height: 1.8; }
-  .entry-page .entry-note.jp { font-family: var(--f-jp); font-size: 12px; color: var(--dust); }
-  .entry-page .legal-back { display: inline-block; margin-top: 56px; font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.3em; color: var(--gold); text-decoration: none; border-bottom: 1px solid var(--gold-deep); padding-bottom: 4px; }
 </style>
 </head>
 <body>
@@ -126,33 +159,28 @@
     <span class="brand-time" style="font-family:var(--f-mono); font-size:11px; letter-spacing:0.18em; color:var(--gold);">23:23</span>
   </a>
   <div class="lang-picker notranslate" translate="no"></div>
-  <div id="google_translate_element" style="position:fixed;bottom:0;right:0;width:1px;height:1px;opacity:0;pointer-events:none;overflow:hidden;z-index:-1;"></div>
 </header>
 
-<main class="entry-page" translate="no" lang="ja">
+<main class="entry-page notranslate" translate="no" lang="ja">
   <h1 class="notranslate" translate="no"><span data-i18n-html="entry.title">Founding Bell エントリー</span></h1>
   <p class="entry-sub" data-i18n-html="entry.sub">— Mission Submission · Cycle 1 —</p>
 
+  <div class="entry-steps notranslate" translate="no" aria-label="Entry steps">
+    <span class="step is-active">01 · Mission</span>
+    <span class="sep">→</span>
+    <span class="step is-active">02 · Payment</span>
+    <span class="sep">→</span>
+    <span class="step is-active">03 · Bell rings</span>
+  </div>
+
   <p class="entry-intro" data-i18n-html="entry.intro">
-    Founding Bell へのご参加ありがとうございます。Square 決済時に使用したメールアドレスと、Square 領収書の情報をご入力ください。Mission 内容と決済記録を照合します。照合できない場合、Mission Entry は処理できません。
+    1つのフォームで完了します。Missionの内容を書き、カード情報を入力して、送信。¥100が決済され、Mission Entry が記録されます。Square 領収書 ID の手入力は不要になりました。
   </p>
 
-  <!--
-    Mission Entry form submits to TAmJ shared Worker (Cloudflare Workers + AWS SES).
-    Endpoint: https://tamjump-contact-api.animalb001.workers.dev/entry
-    Worker handler: handleEntry → DB insert (project=kingmaker) + SES mail to operator + auto-reply to participant.
-  -->
-  <form id="entryForm">
+  <form id="entryForm" novalidate>
 
-    <label>
-      <span data-i18n-html="entry.label.payment_email">Square 決済時に使用したメールアドレス</span>
-      <input type="email" name="payment_email" required autocomplete="email" placeholder="you@example.com">
-    </label>
-
-    <label>
-      <span data-i18n-html="entry.label.receipt_id">Square 決済日時(JST)— 領収書 ID があれば併記</span>
-      <input type="text" name="receipt_id" placeholder="例: 2026-05-20 23:25 JST">
-    </label>
+    <!-- ───── Section 1: Mission ───── -->
+    <div class="form-section-head notranslate" translate="no">Mission</div>
 
     <label>
       <span data-i18n-html="entry.label.mission_name">Mission 名(短く、一行で)</span>
@@ -175,6 +203,29 @@
       <input type="url" name="sns" placeholder="https://...">
     </label>
 
+    <!-- ───── Section 2: Payment ───── -->
+    <div class="form-section-head notranslate" translate="no">Payment · ¥100</div>
+
+    <label>
+      <span data-i18n-html="entry.label.payment_email">メールアドレス</span>
+      <input type="email" name="payment_email" required autocomplete="email" placeholder="you@example.com">
+      <span class="hint" data-i18n-html="entry.hint.payment_email">領収書とログインリンクの送付先です</span>
+    </label>
+
+    <div>
+      <label style="margin-bottom: 8px;">
+        <span data-i18n-html="entry.label.card">カード情報</span>
+      </label>
+      <div id="card-container" aria-label="Card details"></div>
+      <div id="cardStatus" class="card-status notranslate" translate="no">Loading payment form…</div>
+    </div>
+
+    <div class="price-line notranslate" translate="no">
+      <span class="label">Total</span>
+      <span class="amount">¥100</span>
+    </div>
+
+    <!-- ───── Agreement ───── -->
     <label class="agree-row">
       <input type="checkbox" name="agree_rules" required>
       <span data-i18n-html="entry.label.agree"><a href="https://tamjump.com/terms.html" target="_blank" rel="noopener">利用規約</a>、<a href="rules.html" target="_blank" rel="noopener">Founding Bell ルール</a>、<a href="risk.html" target="_blank" rel="noopener">重要事項</a> を読み、同意します。Bell Entry に換金価値はなく、Grant 支給は審査を経るもので保証されないことを理解しています。</span>
@@ -182,203 +233,210 @@
 
     <div id="entryError" class="entry-status entry-status-error" style="display:none;"></div>
 
-    <button type="submit" id="entrySubmit" data-i18n-html="entry.button.submit">Mission エントリーを送信</button>
+    <button type="submit" id="entrySubmit" disabled data-i18n-html="entry.button.submit">Mission エントリーを送信 · ¥100</button>
   </form>
 
   <div id="entrySuccess" class="entry-status entry-status-success" style="display:none;">
     <h3 data-i18n-html="entry.success.title">Mission Entry を受け付けました</h3>
     <p><span data-i18n-html="entry.success.receipt_label">受付番号</span>: <strong id="entryTicket"></strong></p>
-    <p data-i18n-html="entry.success.body">ご入力のメールアドレスに確認メールをお送りしました。Square 決済記録との照合を行います。</p>
+    <p data-i18n-html="entry.success.body">ご入力のメールアドレスに確認メールをお送りしました。Bell が鳴る瞬間(23:23 JST)に、SHA-256 で The Three が選ばれます。</p>
+    <div class="next-steps">
+      <a href="mypage.html">→ My Page で履歴を見る</a>
+      <a href="how-it-works.html">→ 次のステップ</a>
+      <a href="kings.html">→ Hall of Kings</a>
+    </div>
   </div>
-
-  <script>
-    (function () {
-      const API_URL = 'https://tamjump-contact-api.animalb001.workers.dev/entry';
-      const form = document.getElementById('entryForm');
-      const errorBox = document.getElementById('entryError');
-      const successBox = document.getElementById('entrySuccess');
-      const submitBtn = document.getElementById('entrySubmit');
-      const ticketSpan = document.getElementById('entryTicket');
-
-      function showError(msg) {
-        errorBox.textContent = msg;
-        errorBox.style.display = 'block';
-        errorBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
-      function hideError() {
-        errorBox.style.display = 'none';
-        errorBox.textContent = '';
-      }
-
-      // ---------- v20260518o: Mission summary live counter (200-500) ----------
-      const missionSummaryEl = form.querySelector('[name="mission_summary"]');
-      const missionCounterEl = document.getElementById('missionSummaryCounter');
-      function updateMissionCounter() {
-        const len = missionSummaryEl.value.length;
-        missionCounterEl.textContent = len + ' / 500';
-        missionCounterEl.classList.toggle('is-warn',  len > 0 && len < 200);
-        missionCounterEl.classList.toggle('is-ok',    len >= 200 && len <= 500);
-        missionCounterEl.classList.toggle('is-over',  len > 500);
-      }
-      missionSummaryEl.addEventListener('input', updateMissionCounter);
-      updateMissionCounter();
-
-      // ---------- v20260518n: One-tap re-entry via localStorage ----------
-      // Persist contact identity (email/country/sns) and mission name
-      // ONLY on a successful submit. receipt_id and mission_summary are
-      // intentionally NOT persisted — each Cycle needs a fresh Square
-      // receipt and a fresh Mission, so re-using those would create
-      // false records.
-      const STORAGE_KEY = 'km-entry-prefill-v1';
-      function loadPrefill() {
-        try {
-          const raw = localStorage.getItem(STORAGE_KEY);
-          if (!raw) return null;
-          const data = JSON.parse(raw);
-          if (data && typeof data === 'object') return data;
-        } catch (e) { /* ignore corrupted localStorage */ }
-        return null;
-      }
-      function savePrefill(payload) {
-        try {
-          const slim = {
-            payment_email: payload.payment_email || '',
-            mission_name: payload.mission_name || '',
-            country: payload.country || '',
-            sns: payload.sns || '',
-            savedAt: new Date().toISOString(),
-          };
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(slim));
-        } catch (e) { /* localStorage may be disabled */ }
-      }
-      function clearPrefill() {
-        try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
-      }
-      // Apply prefill at page load
-      const prefill = loadPrefill();
-      if (prefill) {
-        ['payment_email', 'mission_name', 'country', 'sns'].forEach(name => {
-          const el = form.querySelector('[name="' + name + '"]');
-          if (el && prefill[name]) el.value = prefill[name];
-        });
-        // Show a small notice with a clear-button
-        const notice = document.createElement('div');
-        notice.id = 'entryPrefillNotice';
-        notice.style.cssText = 'margin: 16px 0; padding: 12px 14px; background: rgba(184,134,45,0.08); border-left: 2px solid var(--gold-deep); font-size: 13px; color: var(--ash); line-height: 1.6; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap;';
-        notice.innerHTML = '<span data-i18n-html="entry.prefill.notice">前回の Entry から連絡先を復元しました。Mission の内容と Square 領収書 ID は今回のものを入力してください。</span><button type="button" id="entryPrefillClear" style="background: none; border: 1px solid var(--gold-deep); color: var(--gold-deep); padding: 6px 12px; font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.2em; cursor: pointer;" data-i18n-html="entry.prefill.clear">CLEAR</button>';
-        form.insertBefore(notice, form.firstChild);
-        document.getElementById('entryPrefillClear').addEventListener('click', () => {
-          clearPrefill();
-          ['payment_email', 'mission_name', 'country', 'sns'].forEach(name => {
-            const el = form.querySelector('[name="' + name + '"]');
-            if (el) el.value = '';
-          });
-          notice.remove();
-        });
-        // Re-apply translations now that we injected a new
-        // [data-i18n-html] element after page load.
-        if (window.applyContentTranslations) {
-          const curLang = document.documentElement.getAttribute('data-display-lang') || 'ja';
-          window.applyContentTranslations(curLang);
-        }
-      }
-
-      form.addEventListener('submit', async function (e) {
-        e.preventDefault();
-        hideError();
-
-        // Collect data
-        const fd = new FormData(form);
-        const payload = {
-          payment_email: (fd.get('payment_email') || '').trim(),
-          receipt_id: (fd.get('receipt_id') || '').trim(),
-          mission_name: (fd.get('mission_name') || '').trim(),
-          country: (fd.get('country') || '').trim(),
-          mission_summary: (fd.get('mission_summary') || '').trim(),
-          sns: (fd.get('sns') || '').trim(),
-          agree_rules: form.querySelector('[name="agree_rules"]').checked,
-        };
-
-        // Client-side validation
-        if (!payload.payment_email || !payload.mission_name || !payload.mission_summary || !payload.country) {
-          showError('必須項目を入力してください / Required fields missing');
-          return;
-        }
-        if (payload.mission_summary.length < 200 || payload.mission_summary.length > 500) {
-          showError('Mission 内容は 200〜500 文字で入力してください / Mission summary must be 200–500 characters');
-          return;
-        }
-        if (!payload.agree_rules) {
-          showError('利用規約への同意が必要です / Agreement to rules is required');
-          return;
-        }
-
-        // UI: lock submit
-        submitBtn.disabled = true;
-        const originalLabel = submitBtn.innerHTML;
-        // Pull the localised "Sending…" string from the i18n dictionary
-        // via the same applyContentTranslations helper that's used for
-        // page load (data-i18n-html attribute). We just toggle the
-        // submit button's data-i18n-html key and re-apply.
-        submitBtn.setAttribute('data-i18n-html', 'entry.button.sending');
-        if (window.applyContentTranslations) {
-          // i18n.js exposes the apply function on the global if loaded;
-          // re-apply against the current display language.
-          const curLang = document.documentElement.getAttribute('data-display-lang') || 'ja';
-          window.applyContentTranslations(curLang);
-        } else {
-          // Fallback if helper not yet exposed.
-          submitBtn.innerHTML = '送信中… / Sending…';
-        }
-
-        try {
-          const res = await fetch(API_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload),
-          });
-          const data = await res.json();
-
-          if (!res.ok || !data.success) {
-            showError((data && data.error) || '送信に失敗しました / Submission failed');
-            submitBtn.disabled = false;
-            submitBtn.setAttribute('data-i18n-html', 'entry.button.submit');
-            if (window.applyContentTranslations) {
-              const curLang = document.documentElement.getAttribute('data-display-lang') || 'ja';
-              window.applyContentTranslations(curLang);
-            } else {
-              submitBtn.innerHTML = originalLabel;
-            }
-            return;
-          }
-
-          // Success
-          savePrefill(payload);  // remember contact fields for next time
-          form.style.display = 'none';
-          ticketSpan.textContent = data.ticketNumber || '';
-          successBox.style.display = 'block';
-          successBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        } catch (err) {
-          showError('通信エラー / Network error: ' + (err && err.message ? err.message : ''));
-          submitBtn.disabled = false;
-          submitBtn.setAttribute('data-i18n-html', 'entry.button.submit');
-          if (window.applyContentTranslations) {
-            const curLang = document.documentElement.getAttribute('data-display-lang') || 'ja';
-            window.applyContentTranslations(curLang);
-          } else {
-            submitBtn.innerHTML = originalLabel;
-          }
-        }
-      });
-    })();
-  </script>
 
   <div class="entry-note" data-i18n-html="entry.note">
     Bell Entry は参加記録です。通貨・暗号資産・前払式支払手段・投資商品ではなく、換金できません。Grant 支給は本人確認・Mission 確認・AML 審査・法令確認・Grant Fund 残高確認を経た場合に限り、運営者の判断で行われます。選出・公開一覧への掲載自体は Grant の権利を意味しません。
   </div>
 
+  <script>
+    (function () {
+      const API_BASE = 'https://tamjump-contact-api.animalb001.workers.dev';
+      const form        = document.getElementById('entryForm');
+      const errorBox    = document.getElementById('entryError');
+      const successBox  = document.getElementById('entrySuccess');
+      const submitBtn   = document.getElementById('entrySubmit');
+      const ticketEl    = document.getElementById('entryTicket');
+      const counter     = document.getElementById('missionSummaryCounter');
+      const summary     = form.elements['mission_summary'];
+      const cardStatus  = document.getElementById('cardStatus');
+      const cardWrap    = document.getElementById('card-container');
 
+      let squarePayments = null;
+      let squareCard = null;
+      let squareReady = false;
 
+      // ── Local-storage prefill (re-entry across cycles) ──
+      const STORAGE_KEY = 'kingmaker_entry_prefill_v2';
+      function loadPrefill() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) return;
+          const data = JSON.parse(raw);
+          ['payment_email', 'mission_name', 'country', 'sns'].forEach(name => {
+            if (data[name] && form.elements[name]) form.elements[name].value = data[name];
+          });
+        } catch (e) { /* ignore */ }
+      }
+      function savePrefill(payload) {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify({
+            payment_email: payload.payment_email || '',
+            mission_name:  payload.mission_name  || '',
+            country:       payload.country       || '',
+            sns:           payload.sns           || ''
+          }));
+        } catch (e) { /* ignore */ }
+      }
+      loadPrefill();
+
+      // ── Mission summary counter ──
+      function updateCounter() {
+        const len = (summary.value || '').length;
+        counter.textContent = len + ' / 500';
+        counter.classList.remove('is-warn', 'is-ok', 'is-over');
+        if (len > 500) counter.classList.add('is-over');
+        else if (len >= 200) counter.classList.add('is-ok');
+        else if (len > 0) counter.classList.add('is-warn');
+      }
+      summary.addEventListener('input', updateCounter);
+      updateCounter();
+
+      // ── Show error ──
+      function showError(msg) {
+        errorBox.style.display = 'block';
+        errorBox.textContent = msg;
+        errorBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+
+      // ── Initialize Square Web Payments SDK ──
+      async function initSquare() {
+        try {
+          // 1. Fetch app + location IDs from worker
+          const cfgRes = await fetch(API_BASE + '/entry/config');
+          if (!cfgRes.ok) throw new Error('Could not load payment configuration');
+          const cfg = await cfgRes.json();
+
+          if (!cfg.applicationId || !cfg.locationId) {
+            cardStatus.textContent = '⚠ Payment temporarily unavailable. Operator: set SQUARE_APPLICATION_ID + SQUARE_LOCATION_ID in Worker secrets.';
+            cardStatus.classList.add('is-error');
+            cardWrap.classList.add('is-error');
+            return;
+          }
+
+          // 2. Load Square SDK script dynamically
+          const sdkUrl = cfg.environment === 'production'
+            ? 'https://web.squarecdn.com/v1/square.js'
+            : 'https://sandbox.web.squarecdn.com/v1/square.js';
+          await new Promise((res, rej) => {
+            const s = document.createElement('script');
+            s.src = sdkUrl; s.async = true;
+            s.onload = res; s.onerror = () => rej(new Error('Failed to load Square SDK'));
+            document.head.appendChild(s);
+          });
+
+          if (!window.Square) throw new Error('Square SDK not available');
+
+          // 3. Init payments + card
+          squarePayments = window.Square.payments(cfg.applicationId, cfg.locationId);
+          squareCard = await squarePayments.card();
+          await squareCard.attach('#card-container');
+          squareReady = true;
+          cardStatus.textContent = '✓ Card form ready';
+          cardStatus.classList.remove('is-error');
+          cardWrap.classList.add('is-ready');
+          submitBtn.disabled = false;
+        } catch (err) {
+          console.error('[entry] Square init failed:', err);
+          cardStatus.textContent = '⚠ ' + (err.message || 'Payment form failed to load');
+          cardStatus.classList.add('is-error');
+          cardWrap.classList.add('is-error');
+        }
+      }
+      initSquare();
+
+      // ── Submit handler ──
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        errorBox.style.display = 'none';
+
+        if (!squareReady || !squareCard) {
+          showError('カード入力欄の読み込みが完了していません / Card form not ready');
+          return;
+        }
+
+        const fd = new FormData(form);
+        const payload = {
+          payment_email:   (fd.get('payment_email') || '').trim(),
+          mission_name:    (fd.get('mission_name') || '').trim(),
+          country:         (fd.get('country') || '').trim(),
+          mission_summary: (fd.get('mission_summary') || '').trim(),
+          sns:             (fd.get('sns') || '').trim(),
+          agree_rules:     fd.get('agree_rules') === 'on'
+        };
+
+        if (!payload.payment_email || !payload.mission_name || !payload.mission_summary || !payload.country) {
+          showError('必須項目を入力してください / Required fields missing');
+          return;
+        }
+        if (payload.mission_summary.length < 200 || payload.mission_summary.length > 500) {
+          showError('Mission の内容は 200〜500 文字で入力してください / Mission summary must be 200–500 chars');
+          return;
+        }
+        if (!payload.agree_rules) {
+          showError('利用規約への同意が必要です / Agreement required');
+          return;
+        }
+
+        submitBtn.disabled = true;
+        const originalLabel = submitBtn.textContent;
+        submitBtn.textContent = '送信中… / Processing…';
+
+        try {
+          // 1. Tokenize card
+          const tokenResult = await squareCard.tokenize();
+          if (tokenResult.status !== 'OK') {
+            const detail = (tokenResult.errors && tokenResult.errors[0] && tokenResult.errors[0].message) || 'Card tokenization failed';
+            throw new Error(detail);
+          }
+
+          payload.card_token = tokenResult.token;
+          if (tokenResult.details && tokenResult.details.verification && tokenResult.details.verification.token) {
+            payload.verification_token = tokenResult.details.verification.token;
+          }
+
+          // 2. POST /entry/pay
+          const res = await fetch(API_BASE + '/entry/pay', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+          const data = await res.json();
+
+          if (!res.ok || !data.success) {
+            throw new Error(data.error || ('HTTP ' + res.status));
+          }
+
+          // 3. Show success
+          savePrefill(payload);
+          form.style.display = 'none';
+          successBox.style.display = 'block';
+          ticketEl.textContent = data.ticketNumber || '';
+          successBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+          // 4. Optionally clear card form (don't reuse token)
+          try { await squareCard.destroy(); } catch (e) { /* ignore */ }
+
+        } catch (err) {
+          showError('エラー / Error: ' + (err && err.message ? err.message : 'Unknown'));
+          submitBtn.disabled = false;
+          submitBtn.textContent = originalLabel;
+        }
+      });
+    })();
+  </script>
 
 <footer class="legal-footer">
   <nav class="legal-footer-nav legal-footer-nav-primary">
@@ -388,7 +446,9 @@
     <span class="sep">·</span>
     <a href="entry.html" data-i18n-html="footer.entry_link">エントリー</a>
     <span class="sep">·</span>
-    <a href="mypage.html" data-i18n-html="footer.mypage_link">My Receipt</a>
+    <a href="mypage.html" data-i18n-html="footer.mypage_link">My Page</a>
+    <span class="sep">·</span>
+    <a href="kings.html">Hall of Kings</a>
     <span class="sep">·</span>
     <a href="rules.html" data-i18n-html="footer.rules_link">Founding Bell ルール</a>
     <span class="sep">·</span>
@@ -416,6 +476,6 @@
 
 </main>
 
-<script src="js/i18n.js?v=20260521c"></script>
+<script src="js/i18n.js?v=20260522a"></script>
 </body>
 </html>

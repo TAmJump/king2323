@@ -2061,3 +2061,137 @@ header.hero-v2 {
 .km-cta[aria-disabled="true"]:hover {
   transform: none;
 }
+
+/* ════════════════════════════════════════════════════════════
+   v20260522: Quick explainer (10-second understanding section)
+   ════════════════════════════════════════════════════════════ */
+.quick-explain {
+  padding: 80px var(--pad) 80px;
+  background:
+    linear-gradient(180deg, transparent, rgba(212, 175, 55, 0.03) 30%, rgba(212, 175, 55, 0.06) 70%, transparent),
+    var(--paper);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.quick-explain-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.quick-explain-head {
+  text-align: center;
+  margin-bottom: 56px;
+}
+.quick-explain-eyebrow {
+  display: inline-block;
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+.quick-explain-title {
+  font-family: var(--f-display);
+  font-size: clamp(28px, 4vw, 44px);
+  color: var(--bone);
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+.quick-steps {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 28px;
+  grid-template-columns: 1fr;
+}
+@media (min-width: 768px) {
+  .quick-steps { grid-template-columns: repeat(3, 1fr); gap: 32px; }
+}
+.quick-step {
+  background: var(--paper-2);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 28px 24px;
+  position: relative;
+  transition: border-color 0.25s ease, transform 0.25s ease;
+}
+.quick-step:hover {
+  border-color: var(--gold-deep);
+  transform: translateY(-2px);
+}
+.quick-step-num {
+  font-family: var(--f-display);
+  font-size: 42px;
+  color: var(--gold);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  margin-bottom: 18px;
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+.quick-step-num::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, var(--gold-deep), transparent);
+  align-self: center;
+  margin-top: 4px;
+}
+.quick-step-body h3 {
+  font-family: var(--f-display);
+  font-size: 18px;
+  color: var(--bone);
+  margin: 0 0 12px;
+  line-height: 1.35;
+  letter-spacing: -0.005em;
+}
+.quick-step-body p {
+  font-family: var(--f-jp);
+  font-size: 14px;
+  color: var(--ash);
+  line-height: 1.65;
+  margin: 0;
+}
+.quick-explain-foot {
+  margin-top: 48px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 32px;
+}
+.quick-explain-more {
+  font-family: var(--f-mono);
+  font-size: 12px;
+  letter-spacing: 0.22em;
+  color: var(--gold-deep);
+  text-transform: uppercase;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(184, 134, 45, 0.4);
+  padding-bottom: 3px;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+.quick-explain-more:hover {
+  color: var(--gold);
+  border-bottom-color: var(--gold);
+}
+
+/* Hide language span based on display lang */
+html[data-display-lang="ja"] .quick-step-body .lang-en,
+html[data-display-lang="ja"] .quick-explain-title .lang-en,
+html[data-display-lang="ja"] .quick-explain-more .lang-en {
+  display: none;
+}
+html[data-display-lang="en"] .quick-step-body .lang-ja,
+html[data-display-lang="en"] .quick-explain-title .lang-ja,
+html[data-display-lang="en"] .quick-explain-more .lang-ja {
+  display: none;
+}
+/* Default (any other lang): show English */
+html:not([data-display-lang="ja"]) .quick-step-body .lang-ja,
+html:not([data-display-lang="ja"]) .quick-explain-title .lang-ja,
+html:not([data-display-lang="ja"]) .quick-explain-more .lang-ja {
+  display: none;
+}

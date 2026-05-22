@@ -1,3 +1,42 @@
+# KINGMAKER 23:23 — `v=20260522a` (v2: Integrated Payment + Hall of Kings + Magic-Link MyPage)
+
+Major restructure responding to operator's feedback (2026-05-22, Cycle 1 day 3): "現状の決済はIDを求められたり意味が分からない / マイページは存在するのか / app.htmlは何 / Kingの履歴は必ず残して、資金が溜まり次第その人の欲望を叶える / 少人数の時に参加した人は特になるようにしてほしい"
+
+## What changed
+
+1. **Square integrated checkout** (carepass pattern). The old `https://square.link/u/bc9p0BET` flow with its mandatory "KING ID" custom field is gone. New `entry.html` uses **Square Web Payments SDK** inside the form itself: fill in Mission + email + card → submit → Worker tokenizes, charges ¥100 via Square Payments API, then writes the Mission Entry to D1. Single step, no manual receipt-ID copy.
+2. **`mypage.html` rebuilt for magic-link login**. Email-only. POST to `/mypage/magic` issues a 30-min single-use token, sent via SES; clicking the link loads the user's full Cycle history (Founding badge, Mission Entries, King-history if ever chosen). No password. Aligns with KINGMAKER's "no login system" stance while still giving users a real My Page.
+3. **`kings.html` new — Hall of Kings**. Permanent record of every chosen King across every Cycle. Public read endpoint `/kings/list` returns no PII (no email, no IP, no ticket — only display_handle, mission, country, grant status). Three states: `awaiting_fund` → `in_progress` → `granted`. None forgotten. Cycle ≤ 3 shows "Founding Cycle" tag. The "あの時、参加していれば" regret-framing block below pushes new visitors toward entry.
+4. **`app.html` deleted**. It was a session-5 era prototype mockup ("Cycle 47", fake Wallet 90 Coin, Naia_R/Cebu/31) with no working functionality. Operator confirmed it was confusing visitors. All inbound links redirected to `kings.html`.
+5. **`index.html` quick explainer**. New "10秒でわかる仕組み" 3-step section sits between hero and ticker. Each step in JP + EN. Links to Hall of Kings and How It Works. Replaces the old "Open the App" ghost button (which pointed to the deleted app.html).
+6. **D1 schema additions**:
+   - `contacts`: +`founding_cohort INTEGER`, +`paid INTEGER`, +`square_payment_id TEXT`
+   - `kings` (new table): cycle_number, rank, mission_name, country, mission_summary, display_handle, contact_ticket, grant_amount_jpy, grant_status, proof_url, participant_count, chosen_at, granted_at, notes
+   - `magic_tokens` (new table): token, email, created_at, expires_at, consumed_at, ip
+7. **Worker new routes**:
+   - `GET  /entry/config` — returns Square applicationId + locationId for frontend SDK init
+   - `POST /entry/pay` — full Mission Entry flow with Square card-token, ¥100 charge, D1 insert, SES mail
+   - `POST /mypage/magic` — issue magic link
+   - `GET  /mypage/me?token=...` — validate token + return entry history + king history
+   - `GET  /kings/list` — public Hall of Kings data
+   - `POST/PATCH /admin/kings` — operator-only King CRUD (Bearer ADMIN_TOKEN)
+8. **Footer / nav unified** across all pages: removed "Open App", renamed "My Receipt" → "My Page", added "Hall of Kings" everywhere.
+
+## Operator action required
+
+Code is committed. Operator must complete 5 steps from `docs/OPERATOR_v2_SETUP.md`:
+- Remove KING ID field from Square Checkout `bc9p0BET` (or disable the link entirely)
+- Get Square Application ID + Location ID + Access Token from Square Developer Dashboard
+- Add 5 secrets to Cloudflare Worker (`SQUARE_ACCESS_TOKEN`, `SQUARE_APPLICATION_ID`, `SQUARE_LOCATION_ID`, `SQUARE_ENV`, `CURRENT_CYCLE`)
+- Run D1 migration SQL (3 ALTER TABLE + 2 CREATE TABLE statements)
+- Manually re-deploy `worker/index.js` via Cloudflare dashboard Edit Code → Save and Deploy
+
+## Why Cycle 1 was sandbox
+
+D1 audit on 2026-05-22 showed only 2 entries in `contacts` for project=kingmaker, both `tiger@tamjump.com` (operator's own SANITY-TEST). Cycle 1 had zero real participants. Operator's stated direction: treat Cycle 1 as a test run, ship Cycle 2 properly with all the features above in place. Early Cycle participants get the permanent "Founding Member" badge to honor the operator's request: "少人数の時に参加した人は特になるようにしてほしい".
+
+---
+
 # KINGMAKER 23:23 — `v=20260514e` (Translation Hardening + Launch Runbook)
 
 Builds on v20260514d. Two areas, both responding directly to the brief "翻訳機能も確実に実装" and "Cloudflare WAF / commerce.html 埋め / Formspree / Square 商品設定 / テスト購入を早く進めて":
