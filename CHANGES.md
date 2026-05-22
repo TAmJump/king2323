@@ -646,3 +646,59 @@ separate from CarePass code:
   All stay as CarePass's solutions to CarePass's problems.
 
 ---
+
+## v20260521d · session 8 入口の引き継ぎ書整備(過去内容を消さず追記)
+
+operator: 「新規 chat で再開できるように、設計書・引き継ぎ書を更新して。
+過去の内容は消さないように、ここでの会話も詳細に端折らず記載して。
+PAT 等は必ず記載するように」
+
+session 7 最終ターンで、session ⑧ Claude が新規 chat から再開できるよう
+完全な引き継ぎセットを整備した。**過去ドキュメントは一切削除せず追加のみ**:
+
+  1. NEW: `HANDOFF_2026-05-21_session7-final.md` (~700 行)
+     - § 0 ひとことで言うと(session 7 で起きた 4 大事件のサマリ)
+     - § 1 現在地スナップショット
+     - § 2 session 7 後半 (5/18-5/21) で起きたこと全 15 サブセクション
+       (e/f/g/h/i/j/k/L/m/n/o/p の commit 詳細 + 21a/21b/21c)
+       — 私の前で operator と Claude の間に起きた議論を端折らず
+       記録、特に PAT ローテーション・CarePass 比較分析・JP モード
+       バグ三角測量・ブランド語保護 Google Translate 問題等
+     - § 3 全機能ステータス
+     - § 4 リポ内ドキュメント完全マップ(13 ファイル)
+     - § 5 operator 残ブロッカー完全リスト(16 項目、各 LAUNCH_RUNBOOK §
+       参照付き)
+     - § 6 PAT 完全状態 — 両 PAT 値を伏字記載(prefix + 末尾 4 桁)+
+       完全値は repo 外(/mnt/user-data/uploads/HANDOVER_v13.md § 1)
+       への参照を明示。理由:GitHub secret-scanning が PAT 平文を
+       commit する push をブロックする。operator 厳命「PAT は必ず
+       記載」は伏字 + 元出処への確実な誘導で代替
+     - § 7 session ⑧ Claude への直接指示(セッション開始手順、状態確認
+       手順、operator 最初の発言の 4 パターン予想、やってはいけないこと、
+       やっていいこと)
+     - § 8 操作手順スニペット(リポ準備、状態スナップショット、commit、
+       cache buster bump)
+     - § 9 「混ぜないこと」リスト — CarePass からは取らない 11 領域
+     - § 10 全 commit リスト時系列
+     - § 11 最後のメッセージ
+
+  2. UPDATE: `HANDOFF_2026-05-18_session7.md` § 4(docs map)
+     - 新ファイルへの参照行追加
+
+  3. UPDATE: `HANDOFF_2026-05-14_session6_complete.md` § 22(docs map)
+     - 新ファイルへの参照行追加
+
+  4. UPDATE: `docs/POSTLAUNCH_TODO.md` § 4(PAT 取扱)
+     - 当初予定セクションを「実際の運用」セクションに昇格
+     - 新旧 PAT 値を本セクションにも記載
+
+過去ドキュメントは一切削除なし、追記のみ。session 6 引き継ぎ書 (1245
+行) も session 7 中盤引き継ぎ書 (381 行) も既存 docs/* も intact。
+
+新 chat 開始時の手順:
+1. `git clone https://x-access-token:ghp_7PPAq...1rOv@github.com/TAmJump/king2323.git`
+2. `cat HANDOFF_2026-05-21_session7-final.md` を最初から最後まで
+3. 補完が必要なら `HANDOFF_2026-05-18_session7.md` → `HANDOFF_2026-05-14_session6_complete.md` の順
+4. operator の最初の発言を待つ
+
+---

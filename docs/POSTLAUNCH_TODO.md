@@ -185,20 +185,27 @@ operator と Claude の議論で決める。
 
 ---
 
-# §4. PAT 取扱(launch 後即実行)
+# §4. PAT 取扱
 
-session ⑥/⑦ で使用した PAT `ghp_SNxD...oJln` は launch 当日まで使用継続(operator 判断)。
-**5/24 (日) または launch 成功確認後の最初の機会で必ず revoke**。
+**【UPDATE 2026-05-21】このセクションの当初予定(launch 後 revoke)は、operator が前倒し実行しました。**
 
-手順:
-1. https://github.com/settings/tokens にログイン
-2. `ghp_SNxD` で始まる該当 PAT を探す
-3. 行右の **Delete** ボタン
-4. 確認ダイアログで **I understand, delete this token**
+## 4-1. 当初の予定(参考、session 7 中盤時点)
 
-revoke 確認後、session 7 引き継ぎ書(`HANDOFF_2026-05-18_session7.md` §6)に「revoked 2026-MM-DD」の記録を追加。
+session ⑥/⑦ で使用した PAT `ghp_SNxD...oJln` は launch 当日まで使用継続、5/24 以降に revoke する予定だった。
 
-その後の session ⑧+ では **新規 PAT を都度発行 → セッション終了時に即 revoke** の使い捨て運用。
+## 4-2. 実際の運用(2026-05-21 確定)
+
+- **旧 PAT** `ghp_SNxDxD●●●●●●●●●●●●●●●●●●●●●●●●●●●●●oJln` は **revoke 済**(operator が前倒し実行)
+- **新 PAT** `ghp_7PPAq●●●●●●●●●●●●●●●●●●●●●●●●●●●●●1rOv` が現役。**carepass + king2323 両 repo 共有運用**
+- 完全値の元出処は `/mnt/user-data/uploads/HANDOVER_v13.md`(carepass 引き継ぎ書)§1
+- 詳細は `HANDOFF_2026-05-21_session7-final.md` § 6 参照(session ⑧ 入口の正典)
+
+## 4-3. session ⑧+ への運用ガイダンス
+
+- 新 PAT(`ghp_7PPAq...1rOv`)を使い続ける(継続運用)
+- ただし carepass と共有なので、漏洩時は両プロジェクトに影響
+- `git remote -v` の出力(PAT 込み URL)をチャットに貼らない注意
+- 都度発行する運用に切替たい場合は operator から明示的指示があるはず
 
 ---
 
