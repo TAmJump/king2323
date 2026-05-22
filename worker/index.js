@@ -70,7 +70,8 @@ function corsHeaders(origin) {
   return {
     "Access-Control-Allow-Origin": allowed,
     "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type"
+    "Access-Control-Allow-Headers": "Content-Type",
+    "Access-Control-Allow-Credentials": "true"
   };
 }
 __name(corsHeaders, "corsHeaders");
@@ -120,6 +121,24 @@ var index_default = {
       }
       if (url.pathname === "/admin/kings" && (request.method === "POST" || request.method === "PATCH")) {
         return await handleAdminKings(request, env, origin);
+      }
+      // ── v20260522b additions: password authentication for mypage ──
+      // After receiving magic link, user can set a password to enable
+      // direct email+password login on subsequent visits.
+      if (url.pathname === "/mypage/setup-password" && request.method === "POST") {
+        return await handleMypageSetupPassword(request, env, origin);
+      }
+      if (url.pathname === "/mypage/login" && request.method === "POST") {
+        return await handleMypageLogin(request, env, origin);
+      }
+      if (url.pathname === "/mypage/logout" && request.method === "POST") {
+        return await handleMypageLogout(request, env, origin);
+      }
+      if (url.pathname === "/mypage/session" && request.method === "GET") {
+        return await handleMypageSession(request, env, origin);
+      }
+      if (url.pathname === "/mypage/check-password" && request.method === "POST") {
+        return await handleMypageCheckPassword(request, env, origin);
       }
       return jsonResponse({ error: "Not Found" }, 404, origin);
     } catch (err) {
@@ -857,14 +876,24 @@ async function handleMypageMagic(request, env, origin) {
         from: fromAddr,
         subject: `${config.subjectPrefix}My Page ログインリンク / login link`,
         body:
-`KINGMAKER 23:23
+`KINGMAKER 23:23 — My Page Login
 
 下記リンクをクリックすると、ご自身の Mission Entry 履歴をご覧いただけます。
-Click the link below to view your Mission Entry history.
+ログイン後、パスワードを設定すれば、次回からメールを使わずに直接ログインできます。
+
+Click the link below to view your Mission Entry history. After login,
+you can set a password so future visits don't require this email step.
 
 ${link}
 
-このリンクは30分間有効です。 / This link expires in 30 minutes.
+────────────────────────────
+このリンクは30分間有効です。一度使うと無効になります。
+This link expires in 30 minutes and can only be used once.
+
+不審なメールの場合は無視してください。リンクをクリックしない限り、
+あなたのアカウントは安全です。
+If you didn't request this, ignore this email. Your account is safe
+unless you click the link.
 
 KINGMAKER 23:23
 ${config.siteUrl}`
@@ -881,7 +910,8 @@ ${config.siteUrl}`
 __name(handleMypageMagic, "handleMypageMagic");
 
 // ── /mypage/me?token=... ─────────────────────────────────────
-// Validates token, returns all Mission Entries for that email.
+// Validates magic token, returns all Mission Entries + ALSO issues a
+// session cookie so subsequent visits don't need the token.
 async function handleMypageMe(request, env, origin) {
   const url = new URL(request.url);
   const token = url.searchParams.get("token");
@@ -907,62 +937,29 @@ async function handleMypageMe(request, env, origin) {
     ).bind(new Date().toISOString(), token).run();
   }
 
-  const entries = (await env.DB.prepare(
-    `SELECT ticket_number, name AS mission_name, category AS country,
-            message AS mission_summary_raw, created_at,
-            founding_cohort, paid, square_payment_id
-       FROM contacts
-      WHERE project = 'kingmaker' AND email = ?
-      ORDER BY created_at DESC`
-  ).bind(row.email).all()).results;
+  // Assemble user data
+  const data = await buildUserData(env, row.email);
 
-  // Has this email ever been picked as a King?
-  const tickets = entries.map(e => e.ticket_number);
-  let kingHistory = [];
-  if (tickets.length) {
-    const placeholders = tickets.map(() => "?").join(",");
-    kingHistory = (await env.DB.prepare(
-      `SELECT cycle_number, rank, grant_status, grant_amount_jpy, granted_at
-         FROM kings
-        WHERE contact_ticket IN (${placeholders})`
-    ).bind(...tickets).all()).results;
-  }
+  // Also issue a session cookie so reload of /mypage.html (without token)
+  // keeps the user logged in.
+  const ip = request.headers.get("CF-Connecting-IP") || "unknown";
+  const { sessionId, expiresIso } = await createSession(env, row.email, ip);
 
-  // Format entries
-  const formatted = entries.map(e => {
-    let summary = e.mission_summary_raw || "";
-    let sns = "";
-    const m = summary.match(/\n\n\[Website\/SNS\]\s+(.+)$/);
-    if (m) { sns = m[1].trim(); summary = summary.replace(m[0], ""); }
-    return {
-      ticket_number: e.ticket_number,
-      mission_name: e.mission_name,
-      country: e.country,
-      mission_summary: summary,
-      sns,
-      created_at: e.created_at,
-      founding_cohort: e.founding_cohort,
-      paid: !!e.paid
-    };
-  });
-
-  // The smallest founding_cohort across this user's entries = their "founding rank".
-  // founding_cohort ≤ 3 → Founding 100 badge.
-  let foundingCohort = null;
-  for (const f of formatted) {
-    if (f.founding_cohort != null && (foundingCohort == null || f.founding_cohort < foundingCohort)) {
-      foundingCohort = f.founding_cohort;
-    }
-  }
-
-  return jsonResponse({
+  return new Response(JSON.stringify({
     success: true,
-    email: row.email,
-    entries: formatted,
-    kingHistory,
-    foundingCohort,
-    isFoundingMember: foundingCohort != null && foundingCohort <= 3
-  }, 200, origin);
+    ...data,
+    // Expose the original token so the frontend can use it for one more action:
+    // calling /mypage/setup-password (which also wants the token to prove
+    // the user owns this email).
+    token
+  }), {
+    status: 200,
+    headers: {
+      ...corsHeaders(origin),
+      "Content-Type": "application/json",
+      "Set-Cookie": buildSessionCookie(sessionId, expiresIso)
+    }
+  });
 }
 __name(handleMypageMe, "handleMypageMe");
 
@@ -1054,6 +1051,371 @@ async function handleAdminKings(request, env, origin) {
   return jsonResponse({ success: true }, 200, origin);
 }
 __name(handleAdminKings, "handleAdminKings");
+
+// ══════════════════════════════════════════════════════════════
+// v20260522b: Password authentication for MyPage
+// ══════════════════════════════════════════════════════════════
+// Flow:
+//   1st visit: /mypage/magic → email → magic link
+//              → click link → /mypage/me?token=... shows history
+//              → user clicks "Set a password" → /mypage/setup-password (token + password)
+//              → password saved; session cookie issued
+//   Returning visit: /mypage/login (email + password) → session cookie
+//   Forgot password: /mypage/magic again → click link → set new password
+
+const SESSION_COOKIE = "km_session";
+const SESSION_DAYS = 30;
+
+// ── Password hashing (PBKDF2-SHA256) ──
+function hexToBytes(hex) {
+  const bytes = new Uint8Array(hex.length / 2);
+  for (let i = 0; i < bytes.length; i++) bytes[i] = parseInt(hex.substr(i * 2, 2), 16);
+  return bytes;
+}
+__name(hexToBytes, "hexToBytes");
+
+function bytesToHex(buf) {
+  return Array.from(new Uint8Array(buf), b => b.toString(16).padStart(2, "0")).join("");
+}
+__name(bytesToHex, "bytesToHex");
+
+function timingSafeEqualHex(a, b) {
+  if (a.length !== b.length) return false;
+  let diff = 0;
+  for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  return diff === 0;
+}
+__name(timingSafeEqualHex, "timingSafeEqualHex");
+
+async function hashPassword(plain, iter = 100000) {
+  const saltBytes = new Uint8Array(16);
+  crypto.getRandomValues(saltBytes);
+  const enc = new TextEncoder();
+  const keyMaterial = await crypto.subtle.importKey(
+    "raw", enc.encode(plain), "PBKDF2", false, ["deriveBits"]
+  );
+  const bits = await crypto.subtle.deriveBits(
+    { name: "PBKDF2", salt: saltBytes, iterations: iter, hash: "SHA-256" },
+    keyMaterial, 256
+  );
+  return `pbkdf2$${iter}$${bytesToHex(saltBytes)}$${bytesToHex(bits)}`;
+}
+__name(hashPassword, "hashPassword");
+
+async function verifyPasswordHash(plain, storedHash) {
+  if (!plain || !storedHash) return false;
+  const parts = String(storedHash).split("$");
+  if (parts.length !== 4 || parts[0] !== "pbkdf2") return false;
+  const iter = parseInt(parts[1], 10);
+  const saltHex = parts[2];
+  const expectedHex = parts[3];
+  if (!iter || !saltHex || !expectedHex) return false;
+  const enc = new TextEncoder();
+  const keyMaterial = await crypto.subtle.importKey(
+    "raw", enc.encode(plain), "PBKDF2", false, ["deriveBits"]
+  );
+  const bits = await crypto.subtle.deriveBits(
+    { name: "PBKDF2", salt: hexToBytes(saltHex), iterations: iter, hash: "SHA-256" },
+    keyMaterial, expectedHex.length * 4
+  );
+  return timingSafeEqualHex(bytesToHex(bits), expectedHex);
+}
+__name(verifyPasswordHash, "verifyPasswordHash");
+
+// ── Session cookie helpers ──
+function buildSessionCookie(sessionId, expiresIso) {
+  const exp = new Date(expiresIso);
+  return [
+    `${SESSION_COOKIE}=${sessionId}`,
+    "Path=/",
+    "Secure",
+    "HttpOnly",
+    "SameSite=None",
+    `Expires=${exp.toUTCString()}`
+  ].join("; ");
+}
+__name(buildSessionCookie, "buildSessionCookie");
+
+function buildClearSessionCookie() {
+  return [
+    `${SESSION_COOKIE}=`,
+    "Path=/",
+    "Secure",
+    "HttpOnly",
+    "SameSite=None",
+    "Expires=Thu, 01 Jan 1970 00:00:00 GMT"
+  ].join("; ");
+}
+__name(buildClearSessionCookie, "buildClearSessionCookie");
+
+function parseCookies(cookieHeader) {
+  const out = {};
+  if (!cookieHeader) return out;
+  for (const part of cookieHeader.split(";")) {
+    const [k, ...rest] = part.trim().split("=");
+    if (!k) continue;
+    out[k] = decodeURIComponent(rest.join("="));
+  }
+  return out;
+}
+__name(parseCookies, "parseCookies");
+
+async function getSessionEmail(env, request) {
+  const cookies = parseCookies(request.headers.get("Cookie") || "");
+  const sid = cookies[SESSION_COOKIE];
+  if (!sid) return null;
+  const row = await env.DB.prepare(
+    `SELECT email, expires_at FROM mypage_sessions WHERE session_id = ? LIMIT 1`
+  ).bind(sid).first();
+  if (!row) return null;
+  if (new Date(row.expires_at) < new Date()) return null;
+  // Touch last_seen (best-effort, non-blocking)
+  env.DB.prepare(
+    `UPDATE mypage_sessions SET last_seen_at = ? WHERE session_id = ?`
+  ).bind(new Date().toISOString(), sid).run().catch(() => {});
+  return row.email;
+}
+__name(getSessionEmail, "getSessionEmail");
+
+async function createSession(env, email, ip) {
+  const sessionId = (crypto.randomUUID() + crypto.randomUUID()).replace(/-/g, "");
+  const now = new Date();
+  const expires = new Date(now.getTime() + SESSION_DAYS * 24 * 60 * 60 * 1000);
+  await env.DB.prepare(
+    `INSERT INTO mypage_sessions (session_id, email, created_at, expires_at, last_seen_at, ip)
+     VALUES (?, ?, ?, ?, ?, ?)`
+  ).bind(sessionId, email, now.toISOString(), expires.toISOString(), now.toISOString(), ip || null).run();
+  return { sessionId, expiresIso: expires.toISOString() };
+}
+__name(createSession, "createSession");
+
+// ── /mypage/check-password ──
+// Lightweight check: does this email have a password set yet?
+// Used by mypage.html to decide whether to show password-login or magic-link UI.
+async function handleMypageCheckPassword(request, env, origin) {
+  const body = await request.json();
+  const { email } = body || {};
+  if (!email || !isValidEmail(email)) {
+    return jsonResponse({ error: "有効なメールアドレスを入力してください / Valid email required" }, 400, origin);
+  }
+  const emailLower = email.trim().toLowerCase();
+  const row = await env.DB.prepare(
+    `SELECT password_hash FROM mypage_users WHERE email = ? LIMIT 1`
+  ).bind(emailLower).first();
+
+  // Always return the same shape; let frontend decide UI.
+  // We do reveal whether a password is set, but only to people who already
+  // know the email — same exposure level as the magic-link existence check.
+  return jsonResponse({
+    success: true,
+    hasPassword: !!(row && row.password_hash)
+  }, 200, origin);
+}
+__name(handleMypageCheckPassword, "handleMypageCheckPassword");
+
+// ── /mypage/setup-password ──
+// Called after user clicks magic link. Takes magic token + new password.
+// Creates/updates mypage_users row, then issues a session cookie.
+async function handleMypageSetupPassword(request, env, origin) {
+  const body = await request.json();
+  const { token, password } = body || {};
+  if (!token || !/^[a-f0-9]{40,80}$/i.test(token)) {
+    return jsonResponse({ error: "無効なトークン / Invalid token" }, 400, origin);
+  }
+  if (!password || password.length < 8) {
+    return jsonResponse({ error: "パスワードは8文字以上で入力してください / Password must be at least 8 characters" }, 400, origin);
+  }
+
+  const tokenRow = await env.DB.prepare(
+    `SELECT email, expires_at FROM magic_tokens WHERE token = ? LIMIT 1`
+  ).bind(token).first();
+  if (!tokenRow) {
+    return jsonResponse({ error: "無効なトークン / Invalid token" }, 404, origin);
+  }
+  if (new Date(tokenRow.expires_at) < new Date()) {
+    return jsonResponse({ error: "リンクの有効期限が切れています / Link expired" }, 410, origin);
+  }
+
+  const passwordHash = await hashPassword(password);
+  const now = new Date().toISOString();
+
+  // UPSERT
+  const existing = await env.DB.prepare(
+    `SELECT email FROM mypage_users WHERE email = ? LIMIT 1`
+  ).bind(tokenRow.email).first();
+  if (existing) {
+    await env.DB.prepare(
+      `UPDATE mypage_users SET password_hash = ?, updated_at = ? WHERE email = ?`
+    ).bind(passwordHash, now, tokenRow.email).run();
+  } else {
+    await env.DB.prepare(
+      `INSERT INTO mypage_users (email, password_hash, created_at, updated_at)
+       VALUES (?, ?, ?, ?)`
+    ).bind(tokenRow.email, passwordHash, now, now).run();
+  }
+
+  // Consume magic token (single-use)
+  await env.DB.prepare(
+    `UPDATE magic_tokens SET consumed_at = ? WHERE token = ?`
+  ).bind(now, token).run();
+
+  // Create session
+  const ip = request.headers.get("CF-Connecting-IP") || "unknown";
+  const { sessionId, expiresIso } = await createSession(env, tokenRow.email, ip);
+
+  return new Response(JSON.stringify({
+    success: true,
+    email: tokenRow.email,
+    message: "パスワードを設定し、ログインしました / Password set, logged in"
+  }), {
+    status: 200,
+    headers: {
+      ...corsHeaders(origin),
+      "Content-Type": "application/json",
+      "Set-Cookie": buildSessionCookie(sessionId, expiresIso)
+    }
+  });
+}
+__name(handleMypageSetupPassword, "handleMypageSetupPassword");
+
+// ── /mypage/login ──
+// Email + password → session cookie.
+async function handleMypageLogin(request, env, origin) {
+  const body = await request.json();
+  const { email, password } = body || {};
+  if (!email || !isValidEmail(email)) {
+    return jsonResponse({ error: "有効なメールアドレスを入力してください / Valid email required" }, 400, origin);
+  }
+  if (!password) {
+    return jsonResponse({ error: "パスワードを入力してください / Password required" }, 400, origin);
+  }
+
+  const emailLower = email.trim().toLowerCase();
+  const row = await env.DB.prepare(
+    `SELECT password_hash FROM mypage_users WHERE email = ? LIMIT 1`
+  ).bind(emailLower).first();
+
+  if (!row || !row.password_hash) {
+    return jsonResponse({ error: "メールアドレスまたはパスワードが正しくありません / Invalid email or password" }, 401, origin);
+  }
+  const ok = await verifyPasswordHash(password, row.password_hash);
+  if (!ok) {
+    return jsonResponse({ error: "メールアドレスまたはパスワードが正しくありません / Invalid email or password" }, 401, origin);
+  }
+
+  const ip = request.headers.get("CF-Connecting-IP") || "unknown";
+  const { sessionId, expiresIso } = await createSession(env, emailLower, ip);
+
+  return new Response(JSON.stringify({
+    success: true,
+    email: emailLower,
+    message: "ログインしました / Logged in"
+  }), {
+    status: 200,
+    headers: {
+      ...corsHeaders(origin),
+      "Content-Type": "application/json",
+      "Set-Cookie": buildSessionCookie(sessionId, expiresIso)
+    }
+  });
+}
+__name(handleMypageLogin, "handleMypageLogin");
+
+// ── /mypage/logout ──
+async function handleMypageLogout(request, env, origin) {
+  const cookies = parseCookies(request.headers.get("Cookie") || "");
+  const sid = cookies[SESSION_COOKIE];
+  if (sid) {
+    await env.DB.prepare(
+      `DELETE FROM mypage_sessions WHERE session_id = ?`
+    ).bind(sid).run();
+  }
+  return new Response(JSON.stringify({ success: true }), {
+    status: 200,
+    headers: {
+      ...corsHeaders(origin),
+      "Content-Type": "application/json",
+      "Set-Cookie": buildClearSessionCookie()
+    }
+  });
+}
+__name(handleMypageLogout, "handleMypageLogout");
+
+// ── /mypage/session ──
+// Returns user's data IF session cookie is valid. Used by mypage.html on load
+// to auto-login if already authenticated.
+async function handleMypageSession(request, env, origin) {
+  const email = await getSessionEmail(env, request);
+  if (!email) {
+    return jsonResponse({ success: false, authenticated: false }, 200, origin);
+  }
+  // Reuse the same data assembly as handleMypageMe (DRY)
+  const data = await buildUserData(env, email);
+  return jsonResponse({ success: true, authenticated: true, ...data }, 200, origin);
+}
+__name(handleMypageSession, "handleMypageSession");
+
+// ── Helper: assemble user data (used by /mypage/me and /mypage/session) ──
+async function buildUserData(env, email) {
+  const entries = (await env.DB.prepare(
+    `SELECT ticket_number, name AS mission_name, category AS country,
+            message AS mission_summary_raw, created_at,
+            founding_cohort, paid, square_payment_id
+       FROM contacts
+      WHERE project = 'kingmaker' AND email = ?
+      ORDER BY created_at DESC`
+  ).bind(email).all()).results;
+
+  const tickets = entries.map(e => e.ticket_number);
+  let kingHistory = [];
+  if (tickets.length) {
+    const placeholders = tickets.map(() => "?").join(",");
+    kingHistory = (await env.DB.prepare(
+      `SELECT cycle_number, rank, grant_status, grant_amount_jpy, granted_at
+         FROM kings
+        WHERE contact_ticket IN (${placeholders})`
+    ).bind(...tickets).all()).results;
+  }
+
+  const formatted = entries.map(e => {
+    let summary = e.mission_summary_raw || "";
+    let sns = "";
+    const m = summary.match(/\n\n\[Website\/SNS\]\s+(.+)$/);
+    if (m) { sns = m[1].trim(); summary = summary.replace(m[0], ""); }
+    return {
+      ticket_number: e.ticket_number,
+      mission_name: e.mission_name,
+      country: e.country,
+      mission_summary: summary,
+      sns,
+      created_at: e.created_at,
+      founding_cohort: e.founding_cohort,
+      paid: !!e.paid
+    };
+  });
+
+  let foundingCohort = null;
+  for (const f of formatted) {
+    if (f.founding_cohort != null && (foundingCohort == null || f.founding_cohort < foundingCohort)) {
+      foundingCohort = f.founding_cohort;
+    }
+  }
+
+  // Check if user has a password set
+  const userRow = await env.DB.prepare(
+    `SELECT password_hash FROM mypage_users WHERE email = ? LIMIT 1`
+  ).bind(email).first();
+
+  return {
+    email,
+    entries: formatted,
+    kingHistory,
+    foundingCohort,
+    isFoundingMember: foundingCohort != null && foundingCohort <= 3,
+    hasPassword: !!(userRow && userRow.password_hash)
+  };
+}
+__name(buildUserData, "buildUserData");
 
 export {
   index_default as default

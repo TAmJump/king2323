@@ -4,11 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>My Page · KINGMAKER 23:23</title>
-<meta name="description" content="View your KINGMAKER Mission Entry history. Email-only login.">
+<meta name="description" content="View your KINGMAKER Mission Entry history. Login with email + password.">
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="KINGMAKER 23:23" />
 <meta property="og:title" content="My Page · KINGMAKER 23:23" />
-<meta property="og:description" content="View your Mission Entry history. Email-only login." />
+<meta property="og:description" content="View your Mission Entry history. Email + password login." />
 <meta property="og:url" content="https://king2323.tamjump.com/mypage.html" />
 <meta property="og:image" content="https://king2323.tamjump.com/assets/logo-v3-1024.png" />
 <link rel="canonical" href="https://king2323.tamjump.com/mypage.html" />
@@ -18,80 +18,137 @@
 <meta name="color-scheme" content="light" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link rel="stylesheet" href="css/main.css?v=20260522a" />
+<link rel="stylesheet" href="css/main.css?v=20260522b" />
 <style>
   .my-page { max-width: 760px; margin: 0 auto; padding: 56px var(--pad) 120px; }
   .my-page h1 { font-family: var(--f-display); font-size: clamp(30px, 4.2vw, 48px); color: var(--bone); margin-bottom: 8px; letter-spacing: -0.01em; }
   .my-page .my-sub { font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.3em; color: var(--gold); text-transform: uppercase; margin-bottom: 32px; }
-  .my-page .my-lead { color: var(--ash); line-height: 1.85; font-size: 15px; margin-bottom: 40px; }
+  .my-page .my-lead { color: var(--ash); line-height: 1.85; font-size: 15px; margin-bottom: 32px; }
 
-  .my-page form { display: flex; flex-direction: column; gap: 18px; max-width: 520px; }
+  .auth-card {
+    max-width: 520px; padding: 32px; background: var(--paper-2);
+    border: 1px solid var(--line); margin-bottom: 18px;
+  }
+  .auth-card h2 {
+    font-family: var(--f-display); font-size: 18px; color: var(--bone);
+    margin: 0 0 16px; letter-spacing: 0;
+  }
+
+  .my-page form { display: flex; flex-direction: column; gap: 16px; max-width: 520px; }
   .my-page label {
     display: flex; flex-direction: column;
     font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.2em;
-    color: var(--gold-deep); text-transform: uppercase; gap: 8px;
+    color: var(--gold-deep); text-transform: uppercase; gap: 6px;
   }
-  .my-page input[type=email] {
+  .my-page input[type=email],
+  .my-page input[type=password],
+  .my-page input[type=text] {
     display: block; width: 100%; box-sizing: border-box;
     min-height: 44px; padding: 14px 16px;
-    background: var(--paper-2); color: var(--bone);
+    background: var(--paper); color: var(--bone);
     border: 1px solid var(--line);
     font-family: var(--f-serif); font-size: 15px; line-height: 1.5;
   }
   .my-page input:focus { outline: none; border-color: var(--gold); }
 
-  .my-page button[type=submit] {
-    margin-top: 8px; padding: 16px 32px;
+  /* Password input + show/hide button */
+  .pw-wrap { position: relative; }
+  .pw-wrap input { padding-right: 48px; }
+  .pw-toggle {
+    position: absolute; right: 6px; top: 50%; transform: translateY(-50%);
+    width: 36px; height: 36px; background: none; border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--gold-deep); padding: 0;
+  }
+  .pw-toggle:hover { color: var(--gold); }
+  .pw-toggle svg { width: 20px; height: 20px; }
+
+  .my-page button[type=submit], .btn-link {
+    margin-top: 8px; padding: 14px 28px;
     background: linear-gradient(180deg, var(--gold-bright), var(--gold-deep));
     color: var(--black);
-    font-family: var(--f-display); font-size: 14px;
-    letter-spacing: 0.25em; text-transform: uppercase;
+    font-family: var(--f-display); font-size: 13px;
+    letter-spacing: 0.22em; text-transform: uppercase;
     border: none; cursor: pointer;
     transition: transform 0.15s ease;
+    text-decoration: none; display: inline-block; text-align: center;
   }
-  .my-page button[type=submit]:hover { transform: translateY(-1px); }
+  .my-page button[type=submit]:hover, .btn-link:hover { transform: translateY(-1px); }
   .my-page button[type=submit]:disabled { opacity: 0.55; cursor: wait; transform: none; }
 
-  .my-status { margin-top: 18px; padding: 14px 18px; font-family: var(--f-jp); font-size: 13.5px; line-height: 1.7; border-left: 2px solid var(--gold-deep); }
+  .alt-link {
+    display: inline-block; margin-top: 12px;
+    font-family: var(--f-mono); font-size: 11px;
+    letter-spacing: 0.2em; color: var(--gold-deep);
+    text-transform: uppercase; text-decoration: none;
+    border-bottom: 1px dashed var(--gold-deep); padding-bottom: 2px;
+    cursor: pointer; background: none; border-left: none; border-right: none; border-top: none;
+  }
+  .alt-link:hover { color: var(--gold); border-bottom-color: var(--gold); }
+
+  .my-status { margin-top: 12px; padding: 12px 16px; font-family: var(--f-jp); font-size: 13.5px; line-height: 1.6; border-left: 2px solid var(--gold-deep); }
   .my-status-error { background: rgba(196, 46, 62, 0.08); border-left-color: #b62a3a; color: #6b1a22; }
   .my-status-info  { background: rgba(212,175,55,0.08); border-left-color: var(--gold); color: var(--bone); }
+  .my-status-success { background: rgba(60, 140, 60, 0.06); border-left-color: #2d8a3a; color: #1a4a23; }
+
+  .pw-hint { font-family: var(--f-jp); font-size: 11px; color: var(--dust); margin-top: 4px; }
+
+  /* Set-password CTA banner (shown after magic-link entry) */
+  .setup-banner {
+    margin: 0 0 28px; padding: 22px 26px;
+    background: linear-gradient(180deg, rgba(212,175,55,0.10), rgba(212,175,55,0.04));
+    border: 1px solid var(--gold-deep);
+  }
+  .setup-banner h3 { font-family: var(--f-display); color: var(--gold); margin: 0 0 8px; font-size: 16px; }
+  .setup-banner p { font-family: var(--f-jp); color: var(--ash); font-size: 13px; line-height: 1.7; margin: 0 0 14px; }
+  .setup-banner .setup-form { display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap; }
+  .setup-banner .setup-form .pw-wrap { flex: 1; min-width: 220px; }
+  .setup-banner .setup-form input {
+    width: 100%; box-sizing: border-box;
+    padding: 10px 44px 10px 14px;
+    background: var(--paper); border: 1px solid var(--line); color: var(--bone);
+    font-family: var(--f-serif); font-size: 14px;
+  }
+  .setup-banner .setup-form button {
+    padding: 11px 22px;
+    background: linear-gradient(180deg, var(--gold-bright), var(--gold-deep));
+    color: var(--black); border: none; cursor: pointer;
+    font-family: var(--f-display); font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase;
+  }
+  .setup-banner-dismiss {
+    margin-top: 10px; font-family: var(--f-mono); font-size: 10px;
+    letter-spacing: 0.2em; color: var(--dust); cursor: pointer;
+    background: none; border: none; text-decoration: underline;
+  }
 
   /* === Logged-in view === */
-  .my-result { display: none; margin-top: 32px; }
-  .my-result.is-shown { display: block; }
-  .my-result-header { margin-bottom: 24px; padding-bottom: 18px; border-bottom: 1px solid var(--line); }
+  .my-result-header { margin-bottom: 24px; padding-bottom: 18px; border-bottom: 1px solid var(--line); display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
   .my-email { font-family: var(--f-mono); font-size: 13px; color: var(--gold); letter-spacing: 0.05em; }
 
-  /* Founding badge */
   .founding-badge {
-    display: inline-block; margin: 18px 0;
-    padding: 10px 18px;
+    display: inline-block;
+    padding: 8px 14px;
     background: linear-gradient(180deg, rgba(212,175,55,0.18), rgba(212,175,55,0.06));
     border: 1px solid var(--gold);
-    font-family: var(--f-display); font-size: 13px; color: var(--gold);
+    font-family: var(--f-display); font-size: 12px; color: var(--gold);
     letter-spacing: 0.18em; text-transform: uppercase;
-    border-radius: 2px;
   }
   .founding-badge::before { content: "♛  "; }
   .founding-tag {
-    display: inline-block; padding: 4px 10px; margin-left: 12px;
+    display: inline-block; padding: 3px 8px; margin-left: 10px;
     background: rgba(212,175,55,0.12); border: 1px solid var(--gold-deep);
-    font-family: var(--f-mono); font-size: 10px; color: var(--gold-deep);
-    letter-spacing: 0.18em; text-transform: uppercase;
+    font-family: var(--f-mono); font-size: 9px; color: var(--gold-deep);
+    letter-spacing: 0.15em; text-transform: uppercase;
     vertical-align: middle;
   }
 
-  /* Entry cards */
   .entry-list { display: flex; flex-direction: column; gap: 18px; margin-top: 24px; }
   .entry-card {
     padding: 22px 24px; background: var(--paper-2); border: 1px solid var(--line);
     transition: border-color 0.2s ease;
   }
   .entry-card:hover { border-color: var(--gold-deep); }
-  .entry-card-head {
-    display: flex; align-items: baseline; justify-content: space-between;
-    gap: 12px; margin-bottom: 12px; flex-wrap: wrap;
-  }
+  .entry-card-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 12px; flex-wrap: wrap; }
   .entry-card-cycle { font-family: var(--f-display); font-size: 20px; color: var(--bone); font-weight: 700; }
   .entry-card-ticket { font-family: var(--f-mono); font-size: 11px; color: var(--gold); letter-spacing: 0.18em; }
   .entry-card-date { font-family: var(--f-mono); font-size: 10px; color: var(--dust); letter-spacing: 0.12em; }
@@ -102,7 +159,6 @@
   .entry-card-status { display: inline-block; margin-top: 12px; padding: 4px 10px; font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; border: 1px solid var(--line); color: var(--ash); }
   .entry-card-status.is-paid { color: var(--gold-deep); border-color: var(--gold-deep); }
 
-  /* King history block */
   .king-history { margin-top: 36px; padding: 24px; background: linear-gradient(180deg, rgba(212,175,55,0.08), transparent); border: 1px solid var(--gold-deep); }
   .king-history h3 { font-family: var(--f-display); color: var(--gold); font-size: 18px; margin: 0 0 12px; letter-spacing: 0.02em; }
   .king-history .king-row { padding: 10px 0; border-bottom: 1px dotted var(--line); font-family: var(--f-mono); font-size: 12px; color: var(--ash); }
@@ -111,7 +167,20 @@
 
   .empty-state { font-family: var(--f-jp); font-size: 14px; color: var(--ash); padding: 32px; text-align: center; border: 1px dashed var(--line); }
 
-  .logout-link { display: inline-block; margin-top: 32px; font-family: var(--f-mono); font-size: 11px; color: var(--gold-deep); letter-spacing: 0.2em; text-transform: uppercase; border-bottom: 1px solid var(--gold-deep); padding-bottom: 3px; text-decoration: none; cursor: pointer; }
+  .logout-row { display: flex; gap: 18px; margin-top: 32px; }
+  .logout-link {
+    font-family: var(--f-mono); font-size: 11px; color: var(--gold-deep);
+    letter-spacing: 0.2em; text-transform: uppercase;
+    border-bottom: 1px solid var(--gold-deep); padding-bottom: 3px;
+    text-decoration: none; cursor: pointer;
+    background: none; border-left: none; border-right: none; border-top: none;
+  }
+
+  .loading-indicator {
+    text-align: center; padding: 64px 24px;
+    font-family: var(--f-mono); font-size: 12px; color: var(--dust);
+    letter-spacing: 0.2em; text-transform: uppercase;
+  }
 </style>
 </head>
 <body>
@@ -129,26 +198,88 @@
   <h1>My Page</h1>
   <p class="my-sub">— Your Mission History —</p>
 
-  <!-- ───── State A: Email entry (default) ───── -->
-  <section id="loginSection">
+  <!-- Loading indicator (initial) -->
+  <div id="loadingSection" class="loading-indicator">— Loading —</div>
+
+  <!-- ═══ State A: Step 1 — Enter email ═══ -->
+  <section id="emailSection" style="display:none;">
     <p class="my-lead">
-      ご登録のメールアドレスを入力してください。マイページにログインするためのリンクをお送りします。<br>
-      <span style="color:var(--dust); font-size:13px;">Enter your registered email. We'll send you a one-time link to access your history.</span>
+      ご登録のメールアドレスを入力してください。<br>
+      <span style="color:var(--dust); font-size:13px;">Enter your registered email to continue.</span>
     </p>
-
-    <form id="magicForm" novalidate>
-      <label>
-        <span>メールアドレス · Email</span>
-        <input type="email" name="email" required autocomplete="email" placeholder="you@example.com">
-      </label>
-      <button type="submit" id="magicSubmit">ログインリンクを送る · Send login link</button>
-    </form>
-
-    <div id="magicStatus" class="my-status" style="display:none;"></div>
+    <div class="auth-card">
+      <form id="emailForm" novalidate>
+        <label>
+          <span>メールアドレス · Email</span>
+          <input type="email" name="email" required autocomplete="email" placeholder="you@example.com">
+        </label>
+        <button type="submit" id="emailSubmit">次へ · Continue</button>
+      </form>
+      <div id="emailStatus" class="my-status" style="display:none;"></div>
+    </div>
   </section>
 
-  <!-- ───── State B: Logged-in view (token in URL) ───── -->
-  <section id="resultSection" class="my-result">
+  <!-- ═══ State B1: Password login (email has password) ═══ -->
+  <section id="passwordSection" style="display:none;">
+    <p class="my-lead">
+      <span style="color:var(--gold); font-family:var(--f-mono); font-size:12px; letter-spacing:0.15em;" id="pwEmailDisplay"></span><br>
+      パスワードを入力してログインしてください。<br>
+      <span style="color:var(--dust); font-size:13px;">Enter your password to log in.</span>
+    </p>
+    <div class="auth-card">
+      <form id="passwordForm" novalidate>
+        <label>
+          <span>パスワード · Password</span>
+          <div class="pw-wrap">
+            <input type="password" name="password" id="pwInput" required autocomplete="current-password" placeholder="••••••••">
+            <button type="button" class="pw-toggle" data-target="pwInput" aria-label="Show password">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+        </label>
+        <button type="submit" id="passwordSubmit">ログイン · Login</button>
+      </form>
+      <div id="passwordStatus" class="my-status" style="display:none;"></div>
+      <button class="alt-link" id="forgotLink" style="margin-top: 18px;">パスワードを忘れた · Forgot password?</button>
+      <button class="alt-link" id="switchEmailLink" style="margin-top: 10px; display:block;">← 別のメールアドレスで</button>
+    </div>
+  </section>
+
+  <!-- ═══ State B2: Magic link (email has no password OR forgot password) ═══ -->
+  <section id="magicSection" style="display:none;">
+    <p class="my-lead">
+      <span style="color:var(--gold); font-family:var(--f-mono); font-size:12px; letter-spacing:0.15em;" id="magicEmailDisplay"></span><br>
+      <span id="magicSubtitle">初めてのログインです。確認のため、メールアドレスにログイン用のリンクをお送りします。<br>
+      <span style="color:var(--dust); font-size:13px;">First time login. We'll send you a login link to verify your email.</span></span>
+    </p>
+    <div class="auth-card">
+      <button class="btn-link" id="magicSubmit" style="width:100%;">ログインリンクを送る · Send login link</button>
+      <div id="magicStatus" class="my-status" style="display:none;"></div>
+      <button class="alt-link" id="switchEmailLink2" style="margin-top: 18px; display:block;">← 別のメールアドレスで</button>
+    </div>
+  </section>
+
+  <!-- ═══ State C: Logged-in view ═══ -->
+  <section id="resultSection" style="display:none;">
+
+    <!-- Set-password banner (shown if user just used magic link and hasn't set a password yet) -->
+    <div id="setupBanner" class="setup-banner" style="display:none;">
+      <h3>♛ 次回はワンクリックでログイン · Faster login next time</h3>
+      <p>パスワードを設定すると、次回からメールを開かずに直接ログインできます。<br>
+        <span style="color:var(--dust); font-size:11px;">Set a password to skip the email step next time.</span></p>
+      <form class="setup-form" id="setupForm">
+        <div class="pw-wrap">
+          <input type="password" id="setupPw" required minlength="8" autocomplete="new-password" placeholder="新しいパスワード (8文字以上)">
+          <button type="button" class="pw-toggle" data-target="setupPw" aria-label="Show password" style="top: 50%;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+        <button type="submit">設定</button>
+      </form>
+      <div id="setupStatus" class="my-status" style="display:none;"></div>
+      <button class="setup-banner-dismiss" id="dismissSetup">あとで · Later</button>
+    </div>
+
     <div class="my-result-header">
       <span class="my-email" id="resultEmail"></span>
       <span class="founding-badge" id="foundingBadge" style="display:none;">Founding Member · Cycle <span id="foundingCycle"></span></span>
@@ -157,48 +288,187 @@
     <div id="kingHistoryBlock"></div>
     <div id="entryListBlock"></div>
 
-    <a href="mypage.html" class="logout-link">← Sign out</a>
+    <div class="logout-row">
+      <button class="logout-link" id="logoutBtn">← Sign out</button>
+    </div>
   </section>
 
-  <!-- ───── State C: Token error ───── -->
+  <!-- ═══ State D: Magic-link error ═══ -->
   <section id="tokenErrorSection" style="display:none;">
     <div class="my-status my-status-error" id="tokenErrorMsg"></div>
-    <a href="mypage.html" class="logout-link" style="margin-top: 20px;">← もう一度ログインリンクを送る</a>
+    <a href="mypage.html" class="alt-link" style="margin-top: 20px; display:inline-block;">← もう一度ログインする</a>
   </section>
 
   <script>
     (function () {
       const API_BASE = 'https://tamjump-contact-api.animalb001.workers.dev';
-      const loginSection      = document.getElementById('loginSection');
-      const resultSection     = document.getElementById('resultSection');
-      const tokenErrorSection = document.getElementById('tokenErrorSection');
-      const tokenErrorMsg     = document.getElementById('tokenErrorMsg');
 
-      // ── If URL has ?token=, fetch user data ──
+      // Sections
+      const sections = {
+        loading:    document.getElementById('loadingSection'),
+        email:      document.getElementById('emailSection'),
+        password:   document.getElementById('passwordSection'),
+        magic:      document.getElementById('magicSection'),
+        result:     document.getElementById('resultSection'),
+        tokenError: document.getElementById('tokenErrorSection')
+      };
+      function show(name) {
+        Object.entries(sections).forEach(([n, el]) => { el.style.display = (n === name) ? 'block' : 'none'; });
+      }
+
+      // Password show/hide toggles (wire up all .pw-toggle in DOM, once)
+      document.querySelectorAll('.pw-toggle').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const targetId = btn.getAttribute('data-target');
+          const input = document.getElementById(targetId);
+          if (!input) return;
+          const showing = input.type === 'text';
+          input.type = showing ? 'password' : 'text';
+          btn.setAttribute('aria-pressed', showing ? 'false' : 'true');
+        });
+      });
+
+      // ── Boot: check for token in URL OR existing session ──
       const params = new URLSearchParams(location.search);
       const token = params.get('token');
 
       if (token) {
-        loginSection.style.display = 'none';
-        loadUser(token);
-        return;
+        loadByToken(token);
+      } else {
+        checkSession();
       }
 
-      // ── Otherwise show login form ──
-      const form = document.getElementById('magicForm');
-      const submitBtn = document.getElementById('magicSubmit');
-      const statusBox = document.getElementById('magicStatus');
+      async function checkSession() {
+        try {
+          const res = await fetch(API_BASE + '/mypage/session', { credentials: 'include' });
+          const data = await res.json();
+          if (data.success && data.authenticated) {
+            renderUser(data);
+            return;
+          }
+        } catch (e) { /* fall through */ }
+        show('email');
+      }
 
-      form.addEventListener('submit', async (e) => {
+      async function loadByToken(tok) {
+        try {
+          const res = await fetch(API_BASE + '/mypage/me?token=' + encodeURIComponent(tok), { credentials: 'include' });
+          const data = await res.json();
+          if (!res.ok || !data.success) {
+            document.getElementById('tokenErrorMsg').textContent = data.error || 'リンクが無効か期限切れです / Link invalid or expired';
+            show('tokenError');
+            return;
+          }
+          renderUser(data, { fromMagic: true, magicToken: tok });
+          // Clean the URL so refresh stays logged-in via cookie, not token
+          history.replaceState({}, '', '/mypage.html');
+        } catch (err) {
+          document.getElementById('tokenErrorMsg').textContent = 'エラー / Error: ' + (err.message || 'unknown');
+          show('tokenError');
+        }
+      }
+
+      // ── Step 1: Email submitted, check if password exists ──
+      const emailForm = document.getElementById('emailForm');
+      emailForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const email = (form.elements['email'].value || '').trim();
+        const email = (emailForm.elements['email'].value || '').trim();
         if (!email) return;
+        const submitBtn = document.getElementById('emailSubmit');
+        const statusBox = document.getElementById('emailStatus');
+        submitBtn.disabled = true;
+        statusBox.style.display = 'none';
+        try {
+          const res = await fetch(API_BASE + '/mypage/check-password', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email })
+          });
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.error || 'failed');
 
+          window._pendingEmail = email;
+          if (data.hasPassword) {
+            document.getElementById('pwEmailDisplay').textContent = email;
+            show('password');
+            setTimeout(() => document.getElementById('pwInput').focus(), 80);
+          } else {
+            document.getElementById('magicEmailDisplay').textContent = email;
+            show('magic');
+          }
+        } catch (err) {
+          statusBox.className = 'my-status my-status-error';
+          statusBox.textContent = 'エラー / Error: ' + (err.message || 'unknown');
+          statusBox.style.display = 'block';
+        } finally {
+          submitBtn.disabled = false;
+        }
+      });
+
+      // ── Switch email links ──
+      document.querySelectorAll('#switchEmailLink, #switchEmailLink2').forEach(btn => {
+        btn.addEventListener('click', () => {
+          window._pendingEmail = null;
+          show('email');
+        });
+      });
+
+      // ── Forgot password ── (just shows magic-link section)
+      document.getElementById('forgotLink').addEventListener('click', () => {
+        document.getElementById('magicEmailDisplay').textContent = window._pendingEmail || '';
+        document.getElementById('magicSubtitle').innerHTML =
+          'パスワードを再設定します。メールアドレスにリンクをお送りします。<br>' +
+          '<span style="color:var(--dust); font-size:13px;">We\'ll send a link to reset your password.</span>';
+        show('magic');
+      });
+
+      // ── Step 2a: Password login ──
+      const passwordForm = document.getElementById('passwordForm');
+      passwordForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const password = passwordForm.elements['password'].value;
+        const email = window._pendingEmail;
+        if (!email || !password) return;
+        const submitBtn = document.getElementById('passwordSubmit');
+        const statusBox = document.getElementById('passwordStatus');
+        submitBtn.disabled = true;
+        statusBox.style.display = 'none';
+        try {
+          const res = await fetch(API_BASE + '/mypage/login', {
+            method: 'POST',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+          });
+          const data = await res.json();
+          if (!res.ok || !data.success) throw new Error(data.error || 'login failed');
+
+          // Now fetch user data via session
+          const sess = await fetch(API_BASE + '/mypage/session', { credentials: 'include' });
+          const userData = await sess.json();
+          if (userData.success && userData.authenticated) {
+            renderUser(userData);
+          } else {
+            throw new Error('Session check failed');
+          }
+        } catch (err) {
+          statusBox.className = 'my-status my-status-error';
+          statusBox.textContent = err.message || 'ログインに失敗しました / Login failed';
+          statusBox.style.display = 'block';
+          submitBtn.disabled = false;
+        }
+      });
+
+      // ── Step 2b: Magic link send ──
+      document.getElementById('magicSubmit').addEventListener('click', async () => {
+        const email = window._pendingEmail;
+        if (!email) return;
+        const submitBtn = document.getElementById('magicSubmit');
+        const statusBox = document.getElementById('magicStatus');
         submitBtn.disabled = true;
         const orig = submitBtn.textContent;
         submitBtn.textContent = '送信中… / Sending…';
         statusBox.style.display = 'none';
-
         try {
           const res = await fetch(API_BASE + '/mypage/magic', {
             method: 'POST',
@@ -206,8 +476,8 @@
             body: JSON.stringify({ email })
           });
           const data = await res.json();
-          statusBox.className = 'my-status my-status-info';
-          statusBox.textContent = data.message || 'ログインリンクをメールでお送りしました。受信トレイをご確認ください。';
+          statusBox.className = 'my-status my-status-success';
+          statusBox.textContent = '✓ ' + (data.message || 'ログインリンクをメールでお送りしました。受信トレイをご確認ください。');
           statusBox.style.display = 'block';
         } catch (err) {
           statusBox.className = 'my-status my-status-error';
@@ -219,71 +489,99 @@
         }
       });
 
-      // ── Loaded with ?token=... ──
-      async function loadUser(tok) {
+      // ── Set-password (after magic-link entry) ──
+      const setupForm = document.getElementById('setupForm');
+      setupForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const pw = document.getElementById('setupPw').value;
+        const tok = window._magicToken;
+        if (!pw || pw.length < 8 || !tok) return;
+        const statusBox = document.getElementById('setupStatus');
+        statusBox.style.display = 'none';
         try {
-          const res = await fetch(API_BASE + '/mypage/me?token=' + encodeURIComponent(tok));
+          const res = await fetch(API_BASE + '/mypage/setup-password', {
+            method: 'POST',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ token: tok, password: pw })
+          });
           const data = await res.json();
-          if (!res.ok || !data.success) {
-            tokenErrorSection.style.display = 'block';
-            tokenErrorMsg.textContent = data.error || 'リンクが無効か期限切れです / Link invalid or expired';
-            return;
-          }
-          render(data);
+          if (!res.ok || !data.success) throw new Error(data.error || 'failed');
+          statusBox.className = 'my-status my-status-success';
+          statusBox.textContent = '✓ パスワードを設定しました。次回からこのパスワードでログインできます。';
+          statusBox.style.display = 'block';
+          // Hide form, keep banner visible briefly
+          setupForm.style.display = 'none';
+          setTimeout(() => { document.getElementById('setupBanner').style.display = 'none'; }, 3000);
         } catch (err) {
-          tokenErrorSection.style.display = 'block';
-          tokenErrorMsg.textContent = 'エラー / Error: ' + (err.message || 'unknown');
+          statusBox.className = 'my-status my-status-error';
+          statusBox.textContent = err.message || 'パスワード設定に失敗しました';
+          statusBox.style.display = 'block';
         }
-      }
+      });
+      document.getElementById('dismissSetup').addEventListener('click', () => {
+        document.getElementById('setupBanner').style.display = 'none';
+      });
 
-      function render(data) {
-        resultSection.classList.add('is-shown');
+      // ── Logout ──
+      document.getElementById('logoutBtn').addEventListener('click', async () => {
+        try {
+          await fetch(API_BASE + '/mypage/logout', { method: 'POST', credentials: 'include' });
+        } catch (e) { /* ignore */ }
+        location.href = 'mypage.html';
+      });
+
+      // ── Render logged-in view ──
+      function renderUser(data, opts = {}) {
+        show('result');
         document.getElementById('resultEmail').textContent = data.email;
 
-        // Founding badge
+        // Setup-password banner: show if entered via magic link AND no password yet
+        if (opts.fromMagic && !data.hasPassword && opts.magicToken) {
+          window._magicToken = opts.magicToken;
+          document.getElementById('setupBanner').style.display = 'block';
+        }
+
         if (data.isFoundingMember && data.foundingCohort != null) {
           document.getElementById('foundingBadge').style.display = 'inline-block';
           document.getElementById('foundingCycle').textContent = data.foundingCohort;
         }
 
-        // King history (if user has ever been picked)
         const khBlock = document.getElementById('kingHistoryBlock');
         if (data.kingHistory && data.kingHistory.length > 0) {
           let html = '<div class="king-history"><h3>♛ あなたが選ばれたCycle · You\'ve been chosen</h3>';
           data.kingHistory.forEach(k => {
-            html += `<div class="king-row">
-              Cycle ${k.cycle_number} · Rank ${k.rank} ·
-              <span class="status-tag">${formatGrantStatus(k.grant_status)}</span> ·
-              ¥${(k.grant_amount_jpy || 0).toLocaleString()}
-            </div>`;
+            html += '<div class="king-row">Cycle ' + k.cycle_number + ' · Rank ' + k.rank +
+                    ' · <span class="status-tag">' + formatGrantStatus(k.grant_status) + '</span>' +
+                    ' · ¥' + (k.grant_amount_jpy || 0).toLocaleString() + '</div>';
           });
           html += '</div>';
           khBlock.innerHTML = html;
+        } else {
+          khBlock.innerHTML = '';
         }
 
-        // Entry list
         const elBlock = document.getElementById('entryListBlock');
         if (!data.entries || data.entries.length === 0) {
           elBlock.innerHTML = '<div class="empty-state">参加履歴はまだありません / No Mission Entries yet</div>';
           return;
         }
-        let html = '<h3 style="font-family:var(--f-display); color:var(--bone); font-size:18px; margin:32px 0 12px;">Mission Entries</h3>';
-        html += '<div class="entry-list">';
+        let html = '<h3 style="font-family:var(--f-display); color:var(--bone); font-size:18px; margin:32px 0 12px;">Mission Entries</h3><div class="entry-list">';
         data.entries.forEach(e => {
           const cycle = e.founding_cohort || '?';
           const isFounding = e.founding_cohort != null && e.founding_cohort <= 3;
-          html += `<article class="entry-card">
-            <div class="entry-card-head">
-              <span class="entry-card-cycle">Cycle ${cycle}${isFounding ? '<span class="founding-tag">Founding</span>' : ''}</span>
-              <span class="entry-card-ticket">${escapeHtml(e.ticket_number)}</span>
-            </div>
-            <div class="entry-card-mission">${escapeHtml(e.mission_name)}</div>
-            <div class="entry-card-country">${escapeHtml(e.country || '')}</div>
-            <div class="entry-card-summary">${escapeHtml(e.mission_summary)}</div>
-            ${e.sns ? `<div class="entry-card-sns">↗ <a href="${escapeAttr(e.sns)}" target="_blank" rel="noopener noreferrer">${escapeHtml(e.sns)}</a></div>` : ''}
-            <span class="entry-card-status ${e.paid ? 'is-paid' : ''}">${e.paid ? '✓ Paid' : '— Unpaid'}</span>
-            <span class="entry-card-date" style="margin-left:12px;">${formatDate(e.created_at)}</span>
-          </article>`;
+          html += '<article class="entry-card">' +
+            '<div class="entry-card-head">' +
+              '<span class="entry-card-cycle">Cycle ' + cycle + (isFounding ? '<span class="founding-tag">Founding</span>' : '') + '</span>' +
+              '<span class="entry-card-ticket">' + escapeHtml(e.ticket_number) + '</span>' +
+            '</div>' +
+            '<div class="entry-card-mission">' + escapeHtml(e.mission_name) + '</div>' +
+            '<div class="entry-card-country">' + escapeHtml(e.country || '') + '</div>' +
+            '<div class="entry-card-summary">' + escapeHtml(e.mission_summary) + '</div>' +
+            (e.sns ? '<div class="entry-card-sns">↗ <a href="' + escapeAttr(e.sns) + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(e.sns) + '</a></div>' : '') +
+            '<span class="entry-card-status ' + (e.paid ? 'is-paid' : '') + '">' + (e.paid ? '✓ Paid' : '— Unpaid') + '</span>' +
+            '<span class="entry-card-date" style="margin-left:12px;">' + formatDate(e.created_at) + '</span>' +
+          '</article>';
         });
         html += '</div>';
         elBlock.innerHTML = html;
@@ -306,9 +604,7 @@
           .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
           .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
       }
-      function escapeAttr(s) {
-        return escapeHtml(s).replace(/`/g, '&#96;');
-      }
+      function escapeAttr(s) { return escapeHtml(s).replace(/`/g, '&#96;'); }
     })();
   </script>
 
@@ -335,6 +631,6 @@
 
 </main>
 
-<script src="js/i18n.js?v=20260522a"></script>
+<script src="js/i18n.js?v=20260522b"></script>
 </body>
 </html>
