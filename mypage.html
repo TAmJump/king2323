@@ -194,26 +194,25 @@
   <div class="lang-picker notranslate" translate="no"></div>
 </header>
 
-<main class="my-page notranslate" translate="no" lang="ja">
-  <h1>My Page</h1>
-  <p class="my-sub">— Your Mission History —</p>
+<main class="my-page notranslate" translate="no">
+  <h1 data-i18n-html="mypage.title">My Page</h1>
+  <p class="my-sub" data-i18n-html="mypage.sub">— Your Mission History —</p>
 
   <!-- Loading indicator (initial) -->
-  <div id="loadingSection" class="loading-indicator">— Loading —</div>
+  <div id="loadingSection" class="loading-indicator" data-i18n-html="mypage.loading">— Loading —</div>
 
   <!-- ═══ State A: Step 1 — Enter email ═══ -->
   <section id="emailSection" style="display:none;">
-    <p class="my-lead">
-      ご登録のメールアドレスを入力してください。<br>
-      <span style="color:var(--dust); font-size:13px;">Enter your registered email to continue.</span>
+    <p class="my-lead" data-i18n-html="mypage.email_lead">
+      Enter your registered email to continue.
     </p>
     <div class="auth-card">
       <form id="emailForm" novalidate>
         <label>
-          <span>メールアドレス · Email</span>
+          <span data-i18n-html="mypage.label_email">Email</span>
           <input type="email" name="email" required autocomplete="email" placeholder="you@example.com">
         </label>
-        <button type="submit" id="emailSubmit">次へ · Continue</button>
+        <button type="submit" id="emailSubmit" data-i18n-html="mypage.btn_continue">Continue</button>
       </form>
       <div id="emailStatus" class="my-status" style="display:none;"></div>
     </div>
@@ -223,13 +222,12 @@
   <section id="passwordSection" style="display:none;">
     <p class="my-lead">
       <span style="color:var(--gold); font-family:var(--f-mono); font-size:12px; letter-spacing:0.15em;" id="pwEmailDisplay"></span><br>
-      パスワードを入力してログインしてください。<br>
-      <span style="color:var(--dust); font-size:13px;">Enter your password to log in.</span>
+      <span data-i18n-html="mypage.pw_lead">Enter your password to log in.</span>
     </p>
     <div class="auth-card">
       <form id="passwordForm" novalidate>
         <label>
-          <span>パスワード · Password</span>
+          <span data-i18n-html="mypage.label_password">Password</span>
           <div class="pw-wrap">
             <input type="password" name="password" id="pwInput" required autocomplete="current-password" placeholder="••••••••">
             <button type="button" class="pw-toggle" data-target="pwInput" aria-label="Show password">
@@ -237,11 +235,11 @@
             </button>
           </div>
         </label>
-        <button type="submit" id="passwordSubmit">ログイン · Login</button>
+        <button type="submit" id="passwordSubmit" data-i18n-html="mypage.btn_login">Login</button>
       </form>
       <div id="passwordStatus" class="my-status" style="display:none;"></div>
-      <button class="alt-link" id="forgotLink" style="margin-top: 18px;">パスワードを忘れた · Forgot password?</button>
-      <button class="alt-link" id="switchEmailLink" style="margin-top: 10px; display:block;">← 別のメールアドレスで</button>
+      <button class="alt-link" id="forgotLink" style="margin-top: 18px;" data-i18n-html="mypage.forgot">Forgot password?</button>
+      <button class="alt-link" id="switchEmailLink" style="margin-top: 10px; display:block;" data-i18n-html="mypage.switch_email">← Use a different email</button>
     </div>
   </section>
 
@@ -249,13 +247,12 @@
   <section id="magicSection" style="display:none;">
     <p class="my-lead">
       <span style="color:var(--gold); font-family:var(--f-mono); font-size:12px; letter-spacing:0.15em;" id="magicEmailDisplay"></span><br>
-      <span id="magicSubtitle">初めてのログインです。確認のため、メールアドレスにログイン用のリンクをお送りします。<br>
-      <span style="color:var(--dust); font-size:13px;">First time login. We'll send you a login link to verify your email.</span></span>
+      <span id="magicSubtitle" data-i18n-html="mypage.magic_lead">First time login. We'll send you a login link to verify your email.</span>
     </p>
     <div class="auth-card">
-      <button class="btn-link" id="magicSubmit" style="width:100%;">ログインリンクを送る · Send login link</button>
+      <button class="btn-link" id="magicSubmit" style="width:100%;" data-i18n-html="mypage.btn_send_link">Send login link</button>
       <div id="magicStatus" class="my-status" style="display:none;"></div>
-      <button class="alt-link" id="switchEmailLink2" style="margin-top: 18px; display:block;">← 別のメールアドレスで</button>
+      <button class="alt-link" id="switchEmailLink2" style="margin-top: 18px; display:block;" data-i18n-html="mypage.switch_email">← Use a different email</button>
     </div>
   </section>
 
@@ -264,39 +261,38 @@
 
     <!-- Set-password banner (shown if user just used magic link and hasn't set a password yet) -->
     <div id="setupBanner" class="setup-banner" style="display:none;">
-      <h3>♛ 次回はワンクリックでログイン · Faster login next time</h3>
-      <p>パスワードを設定すると、次回からメールを開かずに直接ログインできます。<br>
-        <span style="color:var(--dust); font-size:11px;">Set a password to skip the email step next time.</span></p>
+      <h3 data-i18n-html="mypage.setup_title">♛ Faster login next time</h3>
+      <p data-i18n-html="mypage.setup_body">Set a password to skip the email step next time.</p>
       <form class="setup-form" id="setupForm">
         <div class="pw-wrap">
-          <input type="password" id="setupPw" required minlength="8" autocomplete="new-password" placeholder="新しいパスワード (8文字以上)">
+          <input type="password" id="setupPw" required minlength="8" autocomplete="new-password" placeholder="New password (8+ chars)" data-i18n-placeholder="mypage.setup_placeholder">
           <button type="button" class="pw-toggle" data-target="setupPw" aria-label="Show password" style="top: 50%;">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
           </button>
         </div>
-        <button type="submit">設定</button>
+        <button type="submit" data-i18n-html="mypage.btn_set">Set</button>
       </form>
       <div id="setupStatus" class="my-status" style="display:none;"></div>
-      <button class="setup-banner-dismiss" id="dismissSetup">あとで · Later</button>
+      <button class="setup-banner-dismiss" id="dismissSetup" data-i18n-html="mypage.btn_later">Later</button>
     </div>
 
     <div class="my-result-header">
       <span class="my-email" id="resultEmail"></span>
-      <span class="founding-badge" id="foundingBadge" style="display:none;">Founding Member · Cycle <span id="foundingCycle"></span></span>
+      <span class="founding-badge" id="foundingBadge" style="display:none;"><span data-i18n-html="mypage.founding_label">Founding Member</span> · <span class="notranslate" translate="no">Cycle <span id="foundingCycle"></span></span></span>
     </div>
 
     <div id="kingHistoryBlock"></div>
     <div id="entryListBlock"></div>
 
     <div class="logout-row">
-      <button class="logout-link" id="logoutBtn">← Sign out</button>
+      <button class="logout-link" id="logoutBtn" data-i18n-html="mypage.signout">← Sign out</button>
     </div>
   </section>
 
   <!-- ═══ State D: Magic-link error ═══ -->
   <section id="tokenErrorSection" style="display:none;">
     <div class="my-status my-status-error" id="tokenErrorMsg"></div>
-    <a href="mypage.html" class="alt-link" style="margin-top: 20px; display:inline-block;">← もう一度ログインする</a>
+    <a href="mypage.html" class="alt-link" style="margin-top: 20px; display:inline-block;" data-i18n-html="mypage.try_again">← Try again</a>
   </section>
 
   <script>
@@ -549,48 +545,63 @@
 
         const khBlock = document.getElementById('kingHistoryBlock');
         if (data.kingHistory && data.kingHistory.length > 0) {
-          let html = '<div class="king-history"><h3>♛ あなたが選ばれたCycle · You\'ve been chosen</h3>';
+          let html = '<div class="king-history"><h3>♛ <span data-i18n-html="mypage.king_history_title">You\'ve been chosen</span></h3>';
           data.kingHistory.forEach(k => {
-            html += '<div class="king-row">Cycle ' + k.cycle_number + ' · Rank ' + k.rank +
-                    ' · <span class="status-tag">' + formatGrantStatus(k.grant_status) + '</span>' +
-                    ' · ¥' + (k.grant_amount_jpy || 0).toLocaleString() + '</div>';
+            html += '<div class="king-row"><span class="notranslate" translate="no">Cycle ' + k.cycle_number + ' · Rank ' + k.rank +
+                    '</span> · <span class="status-tag">' + formatGrantStatus(k.grant_status) + '</span>' +
+                    ' · <span class="notranslate" translate="no">¥' + (k.grant_amount_jpy || 0).toLocaleString() + '</span></div>';
           });
           html += '</div>';
           khBlock.innerHTML = html;
+          // Re-apply i18n on freshly inserted nodes
+          if (typeof window.applyContentTranslations === 'function') {
+            window.applyContentTranslations(document.documentElement.getAttribute('data-display-lang') || 'en');
+          }
         } else {
           khBlock.innerHTML = '';
         }
 
         const elBlock = document.getElementById('entryListBlock');
         if (!data.entries || data.entries.length === 0) {
-          elBlock.innerHTML = '<div class="empty-state">参加履歴はまだありません / No Mission Entries yet</div>';
+          elBlock.innerHTML = '<div class="empty-state" data-i18n-html="mypage.empty_entries">No Mission Entries yet</div>';
+          if (typeof window.applyContentTranslations === 'function') {
+            window.applyContentTranslations(document.documentElement.getAttribute('data-display-lang') || 'en');
+          }
           return;
         }
-        let html = '<h3 style="font-family:var(--f-display); color:var(--bone); font-size:18px; margin:32px 0 12px;">Mission Entries</h3><div class="entry-list">';
+        let html = '<h3 style="font-family:var(--f-display); color:var(--bone); font-size:18px; margin:32px 0 12px;" data-i18n-html="mypage.mission_entries_title">Mission Entries</h3><div class="entry-list">';
         data.entries.forEach(e => {
           const cycle = e.founding_cohort || '?';
           const isFounding = e.founding_cohort != null && e.founding_cohort <= 3;
           html += '<article class="entry-card">' +
             '<div class="entry-card-head">' +
-              '<span class="entry-card-cycle">Cycle ' + cycle + (isFounding ? '<span class="founding-tag">Founding</span>' : '') + '</span>' +
-              '<span class="entry-card-ticket">' + escapeHtml(e.ticket_number) + '</span>' +
+              '<span class="entry-card-cycle"><span class="notranslate" translate="no">Cycle ' + cycle + '</span>' + (isFounding ? '<span class="founding-tag notranslate" translate="no">Founding</span>' : '') + '</span>' +
+              '<span class="entry-card-ticket notranslate" translate="no">' + escapeHtml(e.ticket_number) + '</span>' +
             '</div>' +
             '<div class="entry-card-mission">' + escapeHtml(e.mission_name) + '</div>' +
             '<div class="entry-card-country">' + escapeHtml(e.country || '') + '</div>' +
             '<div class="entry-card-summary">' + escapeHtml(e.mission_summary) + '</div>' +
             (e.sns ? '<div class="entry-card-sns">↗ <a href="' + escapeAttr(e.sns) + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(e.sns) + '</a></div>' : '') +
-            '<span class="entry-card-status ' + (e.paid ? 'is-paid' : '') + '">' + (e.paid ? '✓ Paid' : '— Unpaid') + '</span>' +
-            '<span class="entry-card-date" style="margin-left:12px;">' + formatDate(e.created_at) + '</span>' +
+            '<span class="entry-card-status ' + (e.paid ? 'is-paid' : '') + '" data-i18n-html="' + (e.paid ? 'mypage.status_paid' : 'mypage.status_unpaid') + '">' + (e.paid ? '✓ Paid' : '— Unpaid') + '</span>' +
+            '<span class="entry-card-date notranslate" translate="no" style="margin-left:12px;">' + formatDate(e.created_at) + '</span>' +
           '</article>';
         });
         html += '</div>';
         elBlock.innerHTML = html;
+        if (typeof window.applyContentTranslations === 'function') {
+          window.applyContentTranslations(document.documentElement.getAttribute('data-display-lang') || 'en');
+        }
       }
 
       function formatGrantStatus(s) {
-        if (s === 'granted') return '✓ Mission Granted';
-        if (s === 'in_progress') return '◐ Funds Allocated';
-        return '○ Awaiting Fund';
+        const lang = document.documentElement.getAttribute('data-display-lang') || 'en';
+        const T = {
+          granted:     { en: '✓ Mission Granted',  ja: '✓ Mission 達成', ko: '✓ Mission 달성', es: '✓ Mission Concedida', hi: '✓ Mission प्रदान', vi: '✓ Mission đã trao', pt: '✓ Mission Concedida', id: '✓ Mission Diberikan', th: '✓ มอบ Mission แล้ว', fr: '✓ Mission Accordée' },
+          in_progress: { en: '◐ Funds Allocated',  ja: '◐ 資金配分済', ko: '◐ 자금 배정됨', es: '◐ Fondos Asignados', hi: '◐ धन आवंटित', vi: '◐ Đã phân bổ vốn', pt: '◐ Fundos Alocados', id: '◐ Dana Dialokasikan', th: '◐ จัดสรรเงินทุนแล้ว', fr: '◐ Fonds Alloués' },
+          awaiting:    { en: '○ Awaiting Fund',    ja: '○ 資金待ち',   ko: '○ 자금 대기', es: '○ Esperando Fondos', hi: '○ धन की प्रतीक्षा', vi: '○ Chờ vốn', pt: '○ Aguardando Fundos', id: '○ Menunggu Dana', th: '○ รอเงินทุน', fr: '○ En attente de Fonds' },
+        };
+        const key = (s === 'granted' || s === 'in_progress') ? s : 'awaiting';
+        return (T[key][lang] || T[key].en);
       }
       function formatDate(iso) {
         if (!iso) return '';
@@ -610,22 +621,22 @@
 
 <footer class="legal-footer">
   <nav class="legal-footer-nav legal-footer-nav-primary">
-    <a href="index.html">← KINGMAKER</a>
+    <a href="index.html"><span class="notranslate" translate="no">← KINGMAKER</span></a>
     <span class="sep">·</span>
-    <a href="how-it-works.html">仕組み</a>
+    <a href="how-it-works.html" data-i18n-html="footer.howitworks_link">How It Works</a>
     <span class="sep">·</span>
-    <a href="entry.html">エントリー</a>
+    <a href="entry.html" data-i18n-html="footer.entry_link">Mission Entry</a>
     <span class="sep">·</span>
-    <a href="mypage.html">My Page</a>
+    <a href="mypage.html" data-i18n-html="footer.mypage_link">My Page</a>
     <span class="sep">·</span>
-    <a href="kings.html">Hall of Kings</a>
+    <a href="kings.html"><span class="notranslate" translate="no">Hall of Kings</span></a>
     <span class="sep">·</span>
-    <a href="rules.html">Founding Bell ルール</a>
+    <a href="rules.html" data-i18n-html="footer.rules_link">Founding Bell Rules</a>
     <span class="sep">·</span>
-    <a href="risk.html">重要事項</a>
+    <a href="risk.html" data-i18n-html="footer.risk_link">Important Notices</a>
   </nav>
   <div class="legal-footer-meta">
-    <span class="meta-line">© 2026 · KINGMAKER 23:23 · Operated by <a href="https://tamjump.com/" target="_blank" rel="noopener">タムジ株式会社 / TAmJ</a></span>
+    <span class="meta-line">© 2026 · <span class="notranslate" translate="no">KINGMAKER 23:23</span> · <span data-i18n-html="footer.operated_by">Operated by</span> <a href="https://tamjump.com/" target="_blank" rel="noopener" class="notranslate" translate="no">タムジ株式会社 / TAmJ</a></span>
     <span class="meta-line" style="opacity:0.55;"><a href="preview.html" rel="nofollow noindex" style="color:var(--dust); font-size:11px; letter-spacing:0.18em;" data-i18n-html="footer.preview_link">↳ Quiz preview (operator)</a></span>
   </div>
 </footer>
