@@ -42,7 +42,7 @@ Worker は 13 個の環境変数を読みます。`Plain text` か `Secret` か�
 | `AWS_ACCESS_KEY_ID` | Secret | SES 認証 |
 | `AWS_SECRET_ACCESS_KEY` | Secret | SES 認証 |
 | `AWS_REGION` | Plain | デフォルト `ap-northeast-1` |
-| `ADMIN_TOKEN` | Secret | `/admin/contacts`、`/admin/kings`、`/admin/game/*` の Bearer 認証 |
+| `ADMIN_TOKEN` | Secret | `/admin/contacts`、`/admin/kings`、`/game/phase2/draw`、`/game/phase3/finalize` の Bearer 認証 |
 | `TURNSTILE_SECRET` | Secret(任意) | スパム検証(未設定なら検証スキップ) |
 
 ### KINGMAKER 固有(Cycle 2 ローンチで必須)
@@ -110,14 +110,15 @@ Worker は 13 個の環境変数を読みます。`Plain text` か `Secret` か�
 | Method | Path | 用途 |
 |---|---|---|
 | GET | `/kings/list` | 公開済みの King 一覧 |
-| POST/PATCH | `/admin/kings` | King レコードの作成・更新(`X-Admin-Token` 必須) |
+| POST/PATCH | `/admin/kings` | King レコードの作成・更新(`Authorization: Bearer ${ADMIN_TOKEN}` 必須) |
 
 ### 管理
 
 | Method | Path | 用途 |
 |---|---|---|
 | GET | `/admin/contacts?project=kingmaker` | エントリ一覧(`Authorization: Bearer ${ADMIN_TOKEN}`) |
-| POST | `/admin/game/phase2/draw` | Phase 2 ドローを手動トリガー(cron が動かなかった時のフォールバック) |
+
+`/game/phase2/draw` および `/game/phase3/finalize` も Bearer 認証(同じ `ADMIN_TOKEN`)。これらは `/game/*` 名前空間にあるため、admin 専用ではなく cron からも呼べる。
 
 ---
 
@@ -200,16 +201,50 @@ LIMIT 5;
 
 ### 5. Cron トリガー確認
 
-Phase 2 の SHA-256 ドロー(Fri 5/29 23:25 JST)は cron で自動発火する想定。Cloudflare ダッシュボード → Workers → Triggers の Cron 設定が以下になっていること:
+Phase 2 の SHA-256 ドロー(Fri 5/29 23:25 JST)は cron で自動発火する想定。
 
-- 推奨: `25 14 * * 5`(毎週金曜 14:25 UTC = 23:25 JST)
-- ドロー失敗時のフォールバック:
-  ```bash
-  curl -X POST https://tamjump-contact-api.animalb001.workers.dev/admin/game/phase2/draw \
-    -H "X-Admin-Token: <ADMIN_TOKEN の値>" \
-    -H "Content-Type: application/json" \
-    -d '{"cycle": 2}'
-  ```
+> **⚠️ 重要:** この worker には `scheduled(event, env, ctx)` ハンドラが**実装されていない**(2026-05-23 時点の `worker/index.js` を確認)。したがって **Cloudflare ダッシュボード上で Workers の Cron Triggers を設定しても何も起きない**。Cron Triggers は `scheduled` イベントを発火するだけで、HTTP リクエストを送らない。
+>
+> 実際にドローを発火させるには、以下のいずれかが必要:
+> - 外部 cron(例: `cron-job.org`、別 worker、サーバ上の crontab)から `/game/phase2/draw` に HTTP POST する
+> - `worker/index.js` に `scheduled` ハンドラを追加して、その中で `handleGamePhase2Draw` を内部呼び出しする
+>
+> 現状どちらの構成になっているかはダッシュボード側を見ないと分からない。**Bell 当日までに必ず確認すること。**
+
+時刻指定:
+- 推奨スケジュール: Fri 14:25 UTC = 23:25 JST(Bell が鳴ってから 2 分後)
+- crontab 表記なら `25 14 * * 5`(外部スケジューラ用)
+
+呼び出し方:
+- **エンドポイントは `/game/phase2/draw`(`/admin/game/...` は存在しない)。**
+- **認証は `Authorization: Bearer ${ADMIN_TOKEN}`(`X-Admin-Token` ではない)。**
+- **v20260523p 以降、ドロー実行には公開シード入力が必須:** `btcHash`(Bell 直前の Bitcoin ブロックハッシュ)、`nikkeiClose`(同日の Nikkei 225 終値)、`sp500Close`(直近の S&P 500 終値)。3 つすべて欠けると `400 { error: "Public seed inputs required..." }` が返る。テスト時のみ `allowSyntheticSeed: true` でバイパス可。
+
+実行例(ドロー失敗時のフォールバック手動実行):
+
+```bash
+# 本番: 3 つの市場入力すべてを含める
+curl -X POST https://tamjump-contact-api.animalb001.workers.dev/game/phase2/draw \
+  -H "Authorization: Bearer ${ADMIN_TOKEN}" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "cycle": 2,
+    "btcHash": "<5/29 23:23 JST 直前の Bitcoin ブロックハッシュ>",
+    "nikkeiClose": "<5/29 の Nikkei 225 終値、例: 38500.42>",
+    "sp500Close": "<直近の S&P 500 終値、例: 5847.91>"
+  }'
+
+# ドライラン / テスト用(本番では使わない)
+curl -X POST https://tamjump-contact-api.animalb001.workers.dev/game/phase2/draw \
+  -H "Authorization: Bearer ${ADMIN_TOKEN}" \
+  -H "Content-Type: application/json" \
+  -d '{"cycle": 2, "allowSyntheticSeed": true}'
+```
+
+**cron 側の改修が必要:** 外部スケジューラが空ボディ `{}` や `{"cycle": 2}` のみで叩いている場合、v20260523p 以降は 400 になる。スケジューラ側を以下のいずれかに更新すること:
+
+- BTC ハッシュ + 市場終値を取得 → 3 つ揃ったボディを生成 → ドロー API を呼ぶラッパースクリプトに差し替える(推奨)
+- ボディに `allowSyntheticSeed: true` を含める(非推奨。公開検証性が失われる)
 
 ### 6. 当日のモニタリング
 

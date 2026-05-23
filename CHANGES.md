@@ -75,7 +75,89 @@ The full content split:
 
 ---
 
-# KINGMAKER 23:23 — `v=20260523p` (Worker code audit: cycle resolution unified + SHA picker fix + seed-input guard)
+# KINGMAKER 23:23 — `v=20260523q` (Worker README — endpoint mismatches fixed, cron model documented honestly)
+
+Session ⑮ continuation. Documentation-only commit (no code change),
+but the documentation errors here could have cost the operator real
+time on Bell day if they'd followed the README to recover from a cron
+failure.
+
+## What was wrong in `worker/README.md`
+
+Three independent errors, found while writing the session-⑮
+operator handoff:
+
+1. **Fictional endpoint `/admin/game/phase2/draw`** documented in
+   the routing table and the cron-fallback curl example. The
+   actual worker has only one phase-2 draw endpoint:
+   `/game/phase2/draw`. Calling the documented URL would 404.
+
+2. **Wrong auth header `X-Admin-Token`** documented on two
+   endpoints (`/admin/kings` and the fictional draw). Every admin
+   route in `worker/index.js` actually checks
+   `Authorization: Bearer ${ADMIN_TOKEN}`. The `X-Admin-Token`
+   header would be ignored and the request rejected as
+   `401 Unauthorized`.
+
+3. **Cloudflare Cron Trigger guidance that doesn't apply.** The
+   README told the operator to set "Cron Triggers" in the
+   Cloudflare dashboard with schedule `25 14 * * 5`. But Cloudflare
+   Cron Triggers fire the worker's `scheduled(event, env, ctx)`
+   handler — and this worker has no `scheduled` handler. Setting
+   a Cron Trigger in the dashboard would silently do nothing on
+   Fri 5/29 23:25 JST. The SHA-256 draw would never fire.
+
+## What's actually true (per `worker/index.js` at `66a5cdd`)
+
+- The phase-2 draw endpoint is `POST /game/phase2/draw`.
+- Auth is `Authorization: Bearer ${ADMIN_TOKEN}`.
+- Since v20260523p (commit `66a5cdd`), the body must include
+  `btcHash`, `nikkeiClose`, `sp500Close` — or `allowSyntheticSeed:
+  true` for testing. Empty body or missing fields returns 400.
+- The worker exports only a `fetch` handler. There is no
+  `scheduled` handler. Cloudflare Cron Triggers can't drive the
+  draw directly — an external HTTP scheduler (`cron-job.org`, a
+  separate scheduler worker, or a server-side crontab) is needed.
+
+## What this commit changes
+
+`worker/README.md` only. No code change.
+
+- Routing table: removed the fictional `/admin/game/phase2/draw`
+  row. Added a clarifying note that `/game/phase2/draw` and
+  `/game/phase3/finalize` use the same `ADMIN_TOKEN` Bearer auth
+  even though they live in the `/game/*` namespace.
+- `/admin/kings` row: corrected auth header from `X-Admin-Token`
+  to `Authorization: Bearer ${ADMIN_TOKEN}`.
+- §1 env var table: `ADMIN_TOKEN` description updated to list the
+  endpoints it actually authorizes.
+- §5 Cron section: rewritten end-to-end. Now explicitly warns that
+  Cloudflare Cron Triggers won't work (no `scheduled` handler),
+  describes the two available paths (external scheduler with HTTP
+  POST, or add a `scheduled` handler later), and gives the correct
+  curl example with the new required body fields from v20260523p.
+
+## Operator-side cron — explicit warning
+
+If an external scheduler is already configured (operator-only
+visibility), and it's been calling `/game/phase2/draw` with
+`{}` or `{"cycle": 2}`, that call will start returning **400** at
+v20260523p deploy time. The scheduler config must be updated to
+either:
+
+- Fetch BTC/Nikkei/SP500 and include them in the body (recommended),
+  or
+- Pass `allowSyntheticSeed: true` (testing only, breaks the
+  public-verifiability narrative).
+
+If no scheduler is configured at all (because the operator
+believed Cloudflare Cron Triggers were driving the draw), then
+the SHA draw needs to be triggered manually on Bell day — or the
+worker needs a `scheduled` handler. See session-⑮ handoff for
+the "what should the `scheduled` handler do?" design discussion.
+
+---
+
 
 Session ⑮. Post-session-⑭ deeper code audit of `worker/index.js` found
 three correctness issues that all touch the Cycle 2 launch path. Fixed
