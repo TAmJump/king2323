@@ -1,3 +1,99 @@
+# KINGMAKER 23:23 — `v=20260523l` (index.html — 10-lang migration of "How it works" 3-step explainer)
+
+Final site-wide cleanup of the legacy `.lang-en` / `.lang-ja`
+parallel-span pattern. The homepage's 3-step "In 10 seconds — How it
+works" explainer (just above the Mission Fund running total) was the
+last surface still on the bilingual-only pattern after sessions ⑩-⑪
+migrated everything else.
+
+After this commit, **zero** lang-en/ja pairs remain anywhere in the
+site's HTML — `grep -cE 'class="lang-en"|class="lang-ja"' *.html`
+returns 0 for all 12 page files.
+
+## What changed
+
+1. **`I18N_CONTENT` extensions (`js/i18n.js`):**
+   - `hero.tap_to_watch` — the small overlay on the gorilla play frame.
+   - `quick.title` — "How it works" section heading.
+   - `quick.step1.h` / `quick.step1.body` — Step 01 (Offer ¥100).
+   - `quick.step2.h` / `quick.step2.body` — Step 02 (The Bell rings).
+   - `quick.step3.h` / `quick.step3.body` — Step 03 (King's Mission).
+   - `quick.more` — "→ Full explanation" CTA. (Was referenced in HTML
+     since v20260522 but never defined in the dictionary; was falling
+     through to the inner bilingual spans.)
+   - `quick.kings` — "→ Hall of Kings" CTA. (Same — referenced but
+     undefined.)
+   - Every new key in all 10 TIER 1 languages.
+   - Brand-locked tokens (¥100, Mission, Bell, 23:23 JST, Bitcoin,
+     SHA-256, The Three, King, Cycle, Hall of Kings) wrapped in
+     `<span class="notranslate" translate="no">` inside every
+     language's HTML, so Google Translate (TIER 2) leaves them alone
+     too.
+
+2. **`index.html` migration:**
+   - 10 distinct strings × 19 bilingual spans → 10 single elements
+     with `data-i18n-html`. The container `<h3>` / `<p>` / `<h2>`
+     elements now hold the English source as fallback; the
+     `applyContentTranslations` pass swaps `innerHTML` against the
+     dictionary.
+   - Cache buster bumped to `?v=20260523l`.
+
+## Final state
+
+| Page                | lang-en/ja pairs | data-i18n-html keys |
+| ------------------- | ----------------:| -------------------:|
+| 404.html            | 0                | 0                   |
+| entry.html          | 0                | 27                  |
+| how-it-works.html   | 0                | 27                  |
+| index.html          | 0                | 187                 |
+| kings.html          | 0                | (uses static-i18n)  |
+| money.html          | 0                | 1                   |
+| mypage.html         | 0                | (uses static-i18n)  |
+| play.html           | 0                | (uses static-i18n)  |
+| preview.html        | 0                | many                |
+| risk.html           | 0                | 20                  |
+| rules.html          | 0                | 22                  |
+| verify.html         | 0                | 1                   |
+
+Pages with `(uses static-i18n)` carry their own per-page `*_STATIC_I18N`
+dictionaries inline and apply them via a `MutationObserver` on
+`data-display-lang`. Pages with low `data-i18n-html` counts
+(money.html, verify.html, 404.html) are out-of-scope per the
+v20260523k notes — long marketing pages, auth-gated operator tools,
+and error pages don't merit full 10-language coverage of body content.
+
+## Translation system inventory (post-migration)
+
+Three coexisting translation surfaces inside the site:
+
+1. **Site-wide `I18N_CONTENT`** in `js/i18n.js` — dotted-key map
+   applied by `applyContentTranslations(lang)`. Pages mark elements
+   with `data-i18n="key"` (textContent) or `data-i18n-html="key"`
+   (innerHTML). Used by index, entry, how-it-works, rules, risk,
+   404, money chrome, verify chrome.
+
+2. **Per-page `*_STATIC_I18N` dicts** — inline in the page's
+   `<script>` block. Used when the page has tight coupling between
+   translation strings and dynamic UI state (e.g. play.html's state
+   machine, kings.html's render loop, mypage.html's auth flows).
+   The applier function in each page walks `[data-static-i18n]`
+   elements, runs on a `MutationObserver` watching
+   `data-display-lang`. Used by play, kings, mypage, preview.
+
+3. **Google Translate (TIER 2, ~98 languages)** — for languages
+   outside the TIER 1 set of 10. Driven by the `googtrans` cookie
+   when the language picker selects a TIER 2 entry. Brand-locked
+   tokens carry `class="notranslate" translate="no"` so Google's
+   pass leaves them intact.
+
+The picker in `.lang-picker` (header of every page) selects between
+TIER 1 and TIER 2 and triggers the appropriate path. TIER 1 is
+authoritative and curated; TIER 2 is machine-generated and serves
+the long tail of languages where curating 100+ keys × 98 langs would
+be prohibitive.
+
+---
+
 # KINGMAKER 23:23 — `v=20260523k` (rules.html + risk.html — 10-lang heading migration; entry.html dict completion)
 
 Continues the i18n cleanup. After audit, three of the six pages that
