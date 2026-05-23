@@ -1,0 +1,20 @@
+{
+  "schema": 1,
+  "cycle": 2,
+  "phase": "live",
+  "baseline": {
+    "grant_fund_jpy": 0,
+    "patron_7d_jpy": 0,
+    "inflow_7d_jpy": 0,
+    "outflow_7d_jpy": 0,
+    "cycle_cap_jpy": 0,
+    "members_total": 0
+  },
+  "rate_jpy_per_sec": {
+    "members": 0,
+    "patrons": 0
+  },
+  "first_bell_at": "2026-05-29T14:23:00Z",
+  "updated": "2026-05-27T00:00:00Z",
+  "note": "Cycle 2 active. Bell rings 2026-05-29 23:23 JST (= 14:23 UTC Friday). Operator should update 'updated' field to the actual timestamp when this file is committed, and set baseline.grant_fund_jpy / members_total to actual D1 values at the moment of commit."
+}
