@@ -1,0 +1,1 @@
+CREATE TABLE IF NOT EXISTS cycle_state (cycle_number INTEGER PRIMARY KEY, bell_rings_at TEXT NOT NULL, phase2_drawn_at TEXT, phase2_seed TEXT, phase2_hash TEXT, phase2_winner_king_ids TEXT, finalized_at TEXT, final_king_id INTEGER, participant_count INTEGER, passed_count INTEGER, vote_count INTEGER);

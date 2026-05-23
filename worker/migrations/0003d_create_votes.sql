@@ -1,0 +1,1 @@
+CREATE TABLE IF NOT EXISTS votes (id INTEGER PRIMARY KEY AUTOINCREMENT, cycle_number INTEGER NOT NULL, voter_contact_ticket TEXT NOT NULL, voted_for_king_id INTEGER NOT NULL, voted_at TEXT NOT NULL, UNIQUE (cycle_number, voter_contact_ticket));

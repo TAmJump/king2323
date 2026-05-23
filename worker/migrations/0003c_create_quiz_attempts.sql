@@ -1,0 +1,1 @@
+CREATE TABLE IF NOT EXISTS quiz_attempts (id INTEGER PRIMARY KEY AUTOINCREMENT, cycle_number INTEGER NOT NULL, session_id INTEGER NOT NULL, contact_ticket TEXT NOT NULL, question_id INTEGER NOT NULL, group_id INTEGER NOT NULL, chosen_index INTEGER NOT NULL, is_correct INTEGER NOT NULL, answered_at TEXT NOT NULL);
