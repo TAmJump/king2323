@@ -20,7 +20,7 @@
 <meta name="robots" content="noindex, nofollow" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link rel="stylesheet" href="css/main.css?v=20260523c" />
+<link rel="stylesheet" href="css/main.css?v=20260523d" />
 <style>
   .play-page {
     max-width: 760px;
@@ -112,6 +112,14 @@
     font-feature-settings: "tnum";
   }
   .pre-bell .timer .sep { color: var(--gold); opacity: 0.6; }
+  .pre-bell .timer .day-unit {
+    font-size: 0.45em;
+    color: var(--gold);
+    vertical-align: super;
+    letter-spacing: 0.05em;
+    margin-right: 0.18em;
+    font-family: var(--f-mono);
+  }
   .pre-bell .desc {
     font-family: var(--f-jp);
     font-size: 14px;
@@ -469,7 +477,7 @@
   <div class="lang-picker notranslate" translate="no"></div>
 </header>
 
-<main class="play-page" lang="en">
+<main class="play-page" translate="no" lang="en">
 
   <div class="play-meta">
     <span><span class="cycle-label notranslate" translate="no">Cycle</span> <span id="cycle-number">—</span></span>
@@ -799,12 +807,51 @@ function formatHMS(totalSec) {
   return [h, m, s].map(n => String(n).padStart(2, "0")).join(":");
 }
 
+// Pre-bell countdown can run for days. Showing the raw 152:04:36 looks
+// like a clock and confuses people. Roll over 24h into a day suffix so
+// "152 hours" reads as "6 days 8 hours".
+function formatCountdown(totalSec, ja) {
+  if (totalSec < 0) totalSec = 0;
+  const days  = Math.floor(totalSec / 86400);
+  const hours = Math.floor((totalSec % 86400) / 3600);
+  const mins  = Math.floor((totalSec % 3600) / 60);
+  const secs  = totalSec % 60;
+  const hh = String(hours).padStart(2, "0");
+  const mm = String(mins).padStart(2, "0");
+  const ss = String(secs).padStart(2, "0");
+  if (days > 0) {
+    return ja
+      ? `${days} 日 ${hh}:${mm}:${ss}`
+      : `${days}d ${hh}:${mm}:${ss}`;
+  }
+  return `${hh}:${mm}:${ss}`;
+}
+
+// Splits a countdown string into HTML with .sep dots between segments.
+// Used by the giant pre-bell timer face so the colons render in gold.
+function countdownHtml(totalSec) {
+  if (totalSec < 0) totalSec = 0;
+  const days  = Math.floor(totalSec / 86400);
+  const hours = Math.floor((totalSec % 86400) / 3600);
+  const mins  = Math.floor((totalSec % 3600) / 60);
+  const secs  = totalSec % 60;
+  const hh = String(hours).padStart(2, "0");
+  const mm = String(mins).padStart(2, "0");
+  const ss = String(secs).padStart(2, "0");
+  const sep = '<span class="sep">:</span>';
+  if (days > 0) {
+    // "6d  08 : 04 : 36"
+    return `${days}<span class="day-unit">d</span>  ${hh}${sep}${mm}${sep}${ss}`;
+  }
+  return `${hh}${sep}${mm}${sep}${ss}`;
+}
+
 function updateCountdownStrip() {
   if (!bellInfo) return;
   const el = document.getElementById("bell-countdown");
   const ja = isJa();
   if (bellInfo.phase === "pre_bell") {
-    el.textContent = (ja ? "Bell まで " : "Bell in ") + formatHMS(bellInfo.secondsUntilBell);
+    el.textContent = (ja ? "Bell まで " : "Bell in ") + formatCountdown(bellInfo.secondsUntilBell, ja);
     el.classList.remove("is-warning");
   } else if (bellInfo.phase === "post_bell") {
     el.textContent = ja ? "Bell 終了" : "Bell closed";
@@ -838,11 +885,7 @@ async function tick() {
 
   // Pre-Bell screen ticks
   if (info.phase === "pre_bell") {
-    document.getElementById("pre-bell-timer").innerHTML =
-      formatHMS(info.secondsUntilBell)
-        .split(":")
-        .map(p => p)
-        .join('<span class="sep">:</span>');
+    document.getElementById("pre-bell-timer").innerHTML = countdownHtml(info.secondsUntilBell);
     showState(STATES.PRE);
     return;
   }
@@ -1242,6 +1285,6 @@ tick();
 pollTimer = setInterval(tick, 2000);
 </script>
 
-<script src="js/i18n.js?v=20260523c"></script>
+<script src="js/i18n.js?v=20260523d"></script>
 </body>
 </html>

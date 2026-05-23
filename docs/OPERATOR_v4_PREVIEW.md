@@ -25,19 +25,31 @@
 
 ## 🚀 operator が今すぐやるべき 3 ステップ
 
-### Step 1. D1 で migration 0005 を実行(クイズ問題を英語マスターに書き換え)
+### Step 1. D1 で migration 0005a + 0005b を実行(クイズ問題を英語マスターに書き換え)
+
+**重要:** D1 Console は 1 度に 1 文しか実行できないので、0005 は **0005a (DELETE)** と **0005b (INSERT)** に分割した。**両方順番に実行**しないとテーブルが空のままになる。
 
 1. https://dash.cloudflare.com/?to=/:account/workers/d1 を開く
 2. `tamjump_contact_db` (UUID: `ba5cf621-d8c7-49db-90cd-e1fe8ece8437`) を開く
 3. Console タブを開く
 4. **別タブで** このURLを開く:
-   `https://raw.githubusercontent.com/TAmJump/king2323/main/worker/migrations/0005_quiz_english_first.sql`
+   `https://raw.githubusercontent.com/TAmJump/king2323/main/worker/migrations/0005a_quiz_delete.sql`
 5. 中身を**全選択コピー**して D1 Console に貼る
-6. **Execute** をクリック
-7. 確認: `SELECT COUNT(*) FROM quiz_questions;` で **60** が返れば成功
-   (DELETE で 60 行消えて、INSERT で 60 行入る、計 60)
-8. 確認: `SELECT question FROM quiz_questions WHERE group_id = 1 AND language = 'en';` で
-   `What time does the KINGMAKER Bell ring?` が返れば成功
+6. **Execute** をクリック(古い 60 行が削除される)
+7. **次に別タブで** このURLを開く:
+   `https://raw.githubusercontent.com/TAmJump/king2323/main/worker/migrations/0005b_quiz_insert.sql`
+8. 中身を**全選択コピー**して D1 Console に貼る
+9. **Execute** をクリック(英語マスター 60 行が挿入される)
+10. 確認: `SELECT COUNT(*) FROM quiz_questions;` で **60** が返れば成功
+11. 確認: `SELECT question FROM quiz_questions WHERE group_id = 1 AND language = 'en';` で
+    `What time does the KINGMAKER Bell ring?` が返れば成功
+
+**もし `SELECT COUNT(*)` が 0 だった場合(session ⑪ で見つけた問題)**:
+- これは Step 1 の DELETE は走ったが INSERT が失敗した状態
+- Step 7-9 を再度実行して INSERT を完了させる
+
+**もし `SELECT COUNT(*)` が 60 と返るが質問内容が違う場合**:
+- 古い 0003f の seed のまま、Step 1-9 を順に実行する
 
 ### Step 2. Worker を再デプロイ(`/quiz/pool` ルートを live に)
 
