@@ -175,6 +175,13 @@ var index_default = {
       if (url.pathname === "/game/mission-fund" && request.method === "GET") {
         return await handleGameMissionFund(request, env, origin);
       }
+      // Operator preview tool: returns the full quiz question pool.
+      // Public (no auth) because the questions are not secret in design —
+      // they are designed so that knowing them in advance does not help
+      // (the spirit is ritual, not gatekeeping by trivia).
+      if (url.pathname === "/quiz/pool" && request.method === "GET") {
+        return await handleQuizPool(request, env, origin);
+      }
       return jsonResponse({ error: "Not Found" }, 404, origin);
     } catch (err) {
       console.error("Worker error:", err);
@@ -2150,6 +2157,21 @@ async function handleGameMissionFund(request, env, origin) {
   }, 200, origin);
 }
 __name(handleGameMissionFund, "handleGameMissionFund");
+
+// GET /quiz/pool — returns the entire active quiz question pool.
+// Used by preview.html (operator tool) to render any quiz combination.
+// No auth required — questions are not secret by design.
+async function handleQuizPool(request, env, origin) {
+  const rows = await env.DB.prepare(
+    "SELECT id, group_id, language, category, difficulty, question, choices_json, correct_index, explanation FROM quiz_questions WHERE active = 1 ORDER BY group_id ASC, language ASC"
+  ).all();
+  return jsonResponse({
+    ok: true,
+    count: (rows.results || []).length,
+    questions: rows.results || []
+  }, 200, origin);
+}
+__name(handleQuizPool, "handleQuizPool");
 
 
 export {

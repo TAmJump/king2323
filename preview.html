@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en" data-display-lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz Preview · KINGMAKER 23:23</title>
+<meta name="description" content="Preview of the 5-minute quiz. Operator-only.">
+<meta name="robots" content="noindex, nofollow" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="css/main.css?v=20260523a" />
+<style>
+  .preview-page {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 40px var(--pad) 120px;
+  }
+
+  .preview-banner {
+    padding: 14px 18px;
+    border: 1px dashed var(--gold);
+    background: rgba(184, 134, 45, 0.08);
+    margin-bottom: 32px;
+    font-family: var(--f-mono);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold-deep);
+    line-height: 1.6;
+  }
+  .preview-banner strong { color: var(--gold); font-weight: 700; }
+
+  .preview-controls {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 28px;
+    padding: 14px 18px;
+    background: var(--paper-2);
+    border-left: 2px solid var(--gold);
+  }
+  .preview-controls .lbl {
+    font-family: var(--f-mono);
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--gold-deep);
+  }
+  .preview-controls select, .preview-controls button {
+    font-family: var(--f-mono);
+    font-size: 12px;
+    padding: 8px 14px;
+    background: var(--paper);
+    color: var(--ink);
+    border: 1px solid var(--line);
+    cursor: pointer;
+    letter-spacing: 0.1em;
+  }
+  .preview-controls button { background: var(--gold); color: var(--paper); border-color: var(--gold); text-transform: uppercase; }
+  .preview-controls button:hover { background: var(--gold-deep); border-color: var(--gold-deep); }
+  .preview-controls .stats {
+    margin-left: auto;
+    font-family: var(--f-mono);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    color: var(--ash);
+  }
+
+  .phase-header { text-align: center; margin-bottom: 32px; }
+  .phase-header .phase-eyebrow {
+    font-family: var(--f-mono);
+    font-size: 10px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 14px;
+  }
+  .phase-header h1 {
+    font-family: var(--f-display);
+    font-size: clamp(28px, 4vw, 44px);
+    color: var(--ink);
+    letter-spacing: -0.01em;
+    line-height: 1.1;
+    margin-bottom: 10px;
+  }
+  .phase-header .phase-sub {
+    font-family: var(--f-jp);
+    font-size: 13px;
+    color: var(--ash);
+    line-height: 1.7;
+  }
+
+  .quiz-progress {
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+  .quiz-progress .dot {
+    width: 38px;
+    height: 4px;
+    background: var(--line);
+  }
+  .quiz-progress .dot.is-active { background: var(--gold); }
+  .quiz-progress .dot.is-correct { background: var(--jade); }
+  .quiz-progress .dot.is-wrong { background: var(--crimson); }
+
+  .question-card {
+    padding: 36px 28px;
+    border: 1px solid var(--gold-deep);
+    background: var(--paper);
+    margin-bottom: 28px;
+    position: relative;
+  }
+  .question-card::before { content: ''; position: absolute; top: -1px; left: -1px; width: 28px; height: 28px; border-top: 2px solid var(--gold); border-left: 2px solid var(--gold); }
+  .question-card::after { content: ''; position: absolute; bottom: -1px; right: -1px; width: 28px; height: 28px; border-bottom: 2px solid var(--gold); border-right: 2px solid var(--gold); }
+  .q-cat {
+    font-family: var(--f-mono);
+    font-size: 10px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 16px;
+  }
+  .q-cat .dot-sep { color: var(--dust); margin: 0 8px; }
+  .q-text {
+    font-family: var(--f-jp);
+    font-size: clamp(18px, 2.4vw, 22px);
+    color: var(--ink);
+    line-height: 1.6;
+    margin-bottom: 28px;
+    font-weight: 500;
+  }
+  .choices { display: flex; flex-direction: column; gap: 10px; }
+  .choice {
+    display: block;
+    width: 100%;
+    padding: 16px 20px;
+    background: var(--paper-2);
+    border: 1px solid var(--line);
+    color: var(--ink);
+    font-family: var(--f-jp);
+    font-size: 15px;
+    line-height: 1.5;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    box-sizing: border-box;
+  }
+  .choice:hover:not(:disabled) { border-color: var(--gold); background: var(--paper); }
+  .choice:disabled { cursor: default; opacity: 0.55; }
+  .choice.is-chosen { border-color: var(--gold); background: var(--paper); font-weight: 600; }
+  .choice.is-correct { border-color: var(--jade); background: #f0f5ec; color: var(--jade); }
+  .choice.is-wrong { border-color: var(--crimson); background: #f8ecec; color: var(--crimson); }
+  .choice .marker {
+    display: inline-block;
+    width: 22px;
+    font-family: var(--f-mono);
+    font-size: 12px;
+    color: var(--gold);
+    letter-spacing: 0.08em;
+  }
+
+  .feedback {
+    margin-top: 20px;
+    padding: 14px 18px;
+    border-left: 2px solid var(--gold);
+    font-family: var(--f-jp);
+    font-size: 13px;
+    color: var(--ash);
+    line-height: 1.7;
+    background: var(--paper-2);
+  }
+  .feedback.is-correct { border-left-color: var(--jade); }
+  .feedback.is-wrong { border-left-color: var(--crimson); }
+  .feedback .verdict {
+    display: block;
+    font-family: var(--f-mono);
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    color: var(--gold-deep);
+  }
+  .feedback.is-correct .verdict { color: var(--jade); }
+  .feedback.is-wrong .verdict { color: var(--crimson); }
+
+  .preview-result {
+    text-align: center;
+    padding: 50px 24px;
+    border: 1px solid var(--line);
+    background: var(--paper-2);
+  }
+  .preview-result .verdict-big {
+    font-family: var(--f-display);
+    font-size: clamp(36px, 6vw, 56px);
+    color: var(--gold);
+    margin-bottom: 14px;
+  }
+  .preview-result .verdict-big.failed { color: var(--crimson); opacity: 0.85; }
+  .preview-result .score {
+    font-family: var(--f-mono);
+    font-size: 12px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold-deep);
+    padding: 10px 22px;
+    border: 1px solid var(--line);
+    display: inline-block;
+  }
+  .preview-cta {
+    display: inline-block;
+    margin-top: 18px;
+    padding: 14px 28px;
+    background: var(--gold);
+    color: var(--paper);
+    font-family: var(--f-mono);
+    font-size: 12px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+  }
+  .preview-cta:hover { background: var(--gold-deep); }
+
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<header class="site-header notranslate" translate="no" style="display:flex; justify-content:space-between; align-items:center; padding:18px 24px; border-bottom:1px solid var(--line);">
+  <a href="index.html" class="brand-link notranslate" translate="no" style="display:flex; align-items:center; gap:12px; text-decoration:none;">
+    <img src="assets/logo-v3-128.png" alt="" style="width:32px; height:32px; flex-shrink:0;">
+    <span class="brand-name" style="font-family:var(--f-display); font-size:14px; letter-spacing:0.18em; color:var(--ink);">KINGMAKER</span>
+    <span class="brand-time" style="font-family:var(--f-mono); font-size:11px; letter-spacing:0.18em; color:var(--gold);">23:23</span>
+  </a>
+</header>
+
+<main class="preview-page notranslate" translate="no">
+
+  <div class="preview-banner">
+    <strong>▸ Preview Mode</strong><br>
+    This is a <strong>demonstration</strong> of the 5-minute quiz UI.<br>
+    No data is recorded · No participation required · 30 question pool sampled at random.<br>
+    <span style="color: var(--dust);">これは 5 分間ゲームのクイズ UI の<strong style="color: var(--gold-deep);">プレビュー</strong>です。データベースには記録されません。</span>
+  </div>
+
+  <div class="preview-controls">
+    <span class="lbl">Language:</span>
+    <select id="langPicker">
+      <option value="en">English</option>
+      <option value="ja">日本語</option>
+    </select>
+    <span class="lbl" style="margin-left:14px;">Difficulty mix:</span>
+    <select id="diffPicker">
+      <option value="balanced">1 easy + 1 medium + 1 hard</option>
+      <option value="easy">3 easy</option>
+      <option value="medium">3 medium</option>
+      <option value="hard">3 hard</option>
+      <option value="random">Random 3</option>
+    </select>
+    <button id="restartBtn">▸ New Quiz</button>
+    <span class="stats" id="poolStats">— questions in pool</span>
+  </div>
+
+  <!-- Quiz state -->
+  <section id="state-quiz" class="hidden">
+    <div class="phase-header">
+      <div class="phase-eyebrow">Phase 1 · The Trial</div>
+      <h1 id="quizHeader">3 Questions</h1>
+      <p class="phase-sub" id="quizSub">Answer all 3 correctly to advance to The Three drawing pool.</p>
+    </div>
+    <div class="quiz-progress" id="quiz-progress">
+      <div class="dot" data-i="0"></div>
+      <div class="dot" data-i="1"></div>
+      <div class="dot" data-i="2"></div>
+    </div>
+    <article class="question-card" id="question-card">
+      <div class="q-cat" id="q-cat">—</div>
+      <div class="q-text" id="q-text">—</div>
+      <div class="choices" id="choices"></div>
+      <div class="feedback hidden" id="feedback">
+        <span class="verdict" id="feedback-verdict">—</span>
+        <span id="feedback-text">—</span>
+      </div>
+    </article>
+  </section>
+
+  <!-- Result -->
+  <section id="state-result" class="hidden">
+    <div class="preview-result">
+      <div class="verdict-big" id="resultVerdict">—</div>
+      <p style="font-family: var(--f-jp); color: var(--ash); margin-bottom: 24px; line-height: 1.75;" id="resultSub">—</p>
+      <div class="score" id="resultScore">— / 3</div>
+      <br>
+      <button class="preview-cta" id="restartBtn2">▸ Try another quiz</button>
+    </div>
+  </section>
+
+  <!-- Empty / loading state -->
+  <section id="state-loading">
+    <div style="text-align: center; padding: 80px 20px; color: var(--ash); font-family: var(--f-mono); font-size: 12px; letter-spacing: 0.2em;">
+      Loading quiz pool from Worker...
+    </div>
+  </section>
+
+</main>
+
+<footer class="legal-footer">
+  <nav class="legal-footer-nav legal-footer-nav-primary">
+    <a href="index.html">← KINGMAKER</a>
+    <span class="sep">·</span>
+    <a href="how-it-works.html">仕組み</a>
+    <span class="sep">·</span>
+    <a href="play.html">→ play.html (real game)</a>
+  </nav>
+  <div class="legal-footer-meta">
+    <span class="meta-line">© 2026 · KINGMAKER 23:23 · operator preview tool</span>
+  </div>
+</footer>
+
+<script>
+const API = "https://tamjump-contact-api.animalb001.workers.dev";
+
+// All questions loaded once, then filtered client-side.
+let allQuestions = [];
+let currentQuiz = [];        // [{group_id, lang, q...}, ...] selected for this run
+let currentIndex = 0;
+let correctCount = 0;
+
+// ─── State transition helper ────────────────────────────────────
+function show(id) {
+  ['state-quiz', 'state-result', 'state-loading'].forEach(s => {
+    const el = document.getElementById(s);
+    if (el) el.classList.toggle('hidden', s !== id);
+  });
+}
+
+// ─── Load entire question pool from a new endpoint ──────────────
+async function loadPool() {
+  try {
+    const r = await fetch(API + "/quiz/pool");
+    const j = await r.json();
+    if (!j.ok) throw new Error(j.error || "pool fetch failed");
+    allQuestions = j.questions || [];
+    updateStats();
+    pickNewQuiz();
+  } catch (e) {
+    document.getElementById('state-loading').innerHTML =
+      '<div style="padding: 60px 20px; text-align:center; color: var(--crimson); font-family: var(--f-mono); font-size: 13px;">' +
+      '⚠ Failed to load question pool. ' +
+      'Make sure Worker is deployed with /quiz/pool route.<br><br>' +
+      '<span style="color: var(--ash); font-size: 11px;">' + escapeHtml(e.message) + '</span></div>';
+  }
+}
+
+function updateStats() {
+  const lang = document.getElementById('langPicker').value;
+  const langQs = allQuestions.filter(q => q.language === lang);
+  const easy = langQs.filter(q => q.difficulty === 1).length;
+  const med  = langQs.filter(q => q.difficulty === 2).length;
+  const hard = langQs.filter(q => q.difficulty === 3).length;
+  document.getElementById('poolStats').textContent =
+    langQs.length + ' total · ' + easy + ' easy · ' + med + ' medium · ' + hard + ' hard';
+}
+
+// ─── Pick a new quiz based on current settings ──────────────────
+function pickNewQuiz() {
+  const lang = document.getElementById('langPicker').value;
+  const diff = document.getElementById('diffPicker').value;
+  const langQs = allQuestions.filter(q => q.language === lang);
+
+  function randPick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+  if (diff === 'balanced') {
+    const easy = langQs.filter(q => q.difficulty === 1);
+    const med  = langQs.filter(q => q.difficulty === 2);
+    const hard = langQs.filter(q => q.difficulty === 3);
+    currentQuiz = [randPick(easy), randPick(med), randPick(hard)].filter(Boolean);
+  } else if (diff === 'easy') {
+    const pool = langQs.filter(q => q.difficulty === 1);
+    currentQuiz = pickN(pool, 3);
+  } else if (diff === 'medium') {
+    const pool = langQs.filter(q => q.difficulty === 2);
+    currentQuiz = pickN(pool, 3);
+  } else if (diff === 'hard') {
+    const pool = langQs.filter(q => q.difficulty === 3);
+    currentQuiz = pickN(pool, 3);
+  } else { // random
+    currentQuiz = pickN(langQs, 3);
+  }
+
+  if (currentQuiz.length < 3) {
+    show('state-loading');
+    document.getElementById('state-loading').innerHTML =
+      '<div style="padding: 60px 20px; text-align:center; color: var(--crimson); font-family: var(--f-mono); font-size: 13px;">' +
+      'Not enough questions at this difficulty. Try another setting.</div>';
+    return;
+  }
+
+  // Localize the quiz "header" text
+  if (lang === 'ja') {
+    document.getElementById('quizHeader').textContent = '3 つの問い';
+    document.getElementById('quizSub').textContent = '3 問すべて正解すれば The Three の抽選プールへ進める。';
+  } else {
+    document.getElementById('quizHeader').textContent = '3 Questions';
+    document.getElementById('quizSub').textContent = 'Answer all 3 correctly to advance to The Three drawing pool.';
+  }
+
+  currentIndex = 0;
+  correctCount = 0;
+  document.querySelectorAll('#quiz-progress .dot').forEach(d => {
+    d.classList.remove('is-active', 'is-correct', 'is-wrong');
+  });
+  show('state-quiz');
+  renderQuestion();
+}
+
+function pickN(arr, n) {
+  const copy = arr.slice();
+  const result = [];
+  while (copy.length && result.length < n) {
+    const i = Math.floor(Math.random() * copy.length);
+    result.push(copy.splice(i, 1)[0]);
+  }
+  return result;
+}
+
+// ─── Render the current question ────────────────────────────────
+function renderQuestion() {
+  const q = currentQuiz[currentIndex];
+  const dots = document.querySelectorAll('#quiz-progress .dot');
+  dots.forEach((d, i) => {
+    d.classList.remove('is-active');
+    if (i === currentIndex) d.classList.add('is-active');
+  });
+
+  const lang = q.language;
+  const diffLabel = { 1: lang === 'ja' ? 'やさしい' : 'Easy',
+                      2: lang === 'ja' ? 'ふつう' : 'Medium',
+                      3: lang === 'ja' ? 'むずかしい' : 'Hard' }[q.difficulty];
+  document.getElementById('q-cat').innerHTML =
+    'Q' + (currentIndex + 1) + ' / 3 <span class="dot-sep">·</span> ' +
+    escapeHtml(q.category) + ' <span class="dot-sep">·</span> ' + diffLabel;
+  document.getElementById('q-text').textContent = q.question;
+
+  const choicesEl = document.getElementById('choices');
+  choicesEl.innerHTML = '';
+  const choices = JSON.parse(q.choices_json);
+  choices.forEach((c, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'choice';
+    btn.innerHTML = '<span class="marker">' + String.fromCharCode(65 + i) + '</span> ' + escapeHtml(c);
+    btn.addEventListener('click', () => answer(i, btn));
+    choicesEl.appendChild(btn);
+  });
+
+  document.getElementById('feedback').classList.add('hidden');
+}
+
+function answer(idx, btnEl) {
+  const q = currentQuiz[currentIndex];
+  const buttons = document.querySelectorAll('.choice');
+  buttons.forEach(b => b.disabled = true);
+
+  const isCorrect = idx === q.correct_index;
+  buttons.forEach((b, i) => {
+    if (i === q.correct_index) b.classList.add('is-correct');
+    if (i === idx && !isCorrect) b.classList.add('is-wrong');
+  });
+
+  // Update dot
+  const dot = document.querySelectorAll('#quiz-progress .dot')[currentIndex];
+  if (dot) {
+    dot.classList.remove('is-active');
+    dot.classList.add(isCorrect ? 'is-correct' : 'is-wrong');
+  }
+
+  // Feedback
+  const fb = document.getElementById('feedback');
+  fb.classList.remove('hidden', 'is-correct', 'is-wrong');
+  fb.classList.add(isCorrect ? 'is-correct' : 'is-wrong');
+  const lang = q.language;
+  document.getElementById('feedback-verdict').textContent = isCorrect
+    ? (lang === 'ja' ? '正解' : 'Correct')
+    : (lang === 'ja' ? '不正解' : 'Wrong');
+  document.getElementById('feedback-text').textContent = q.explanation || '';
+
+  if (isCorrect) correctCount++;
+  currentIndex++;
+
+  setTimeout(() => {
+    if (currentIndex >= currentQuiz.length) {
+      showResult();
+    } else {
+      renderQuestion();
+    }
+  }, 2200);
+}
+
+function showResult() {
+  const passed = correctCount === 3;
+  const lang = document.getElementById('langPicker').value;
+  document.getElementById('resultVerdict').textContent = passed
+    ? (lang === 'ja' ? '通過' : 'Passed')
+    : (lang === 'ja' ? '今 Cycle はここまで' : 'The Bell remains');
+  document.getElementById('resultVerdict').className = 'verdict-big' + (passed ? '' : ' failed');
+  document.getElementById('resultSub').textContent = passed
+    ? (lang === 'ja'
+      ? '本番ではこの後、Phase 2 (The Three 抽選) と Phase 3 (投票) に進みます。'
+      : 'In a real Cycle, you would now advance to Phase 2 (The Three drawing) and Phase 3 (the vote).')
+    : (lang === 'ja'
+      ? '本番では Bell は失われず、今 Cycle の King 候補資格のみ失います。'
+      : 'In a real Cycle, your Bell remains; only this Cycle\u2019s King candidacy is lost.');
+  document.getElementById('resultScore').textContent = correctCount + ' / 3';
+  show('state-result');
+}
+
+function escapeHtml(s) {
+  if (s == null) return '';
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+// ─── Event hooks ────────────────────────────────────────────────
+document.getElementById('langPicker').addEventListener('change', () => { updateStats(); pickNewQuiz(); });
+document.getElementById('diffPicker').addEventListener('change', () => { pickNewQuiz(); });
+document.getElementById('restartBtn').addEventListener('click', () => { pickNewQuiz(); });
+document.getElementById('restartBtn2').addEventListener('click', () => { pickNewQuiz(); });
+
+// ─── Boot ───────────────────────────────────────────────────────
+loadPool();
+</script>
+
+</body>
+</html>
