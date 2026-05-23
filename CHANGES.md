@@ -1,3 +1,48 @@
+# KINGMAKER 23:23 — `v=20260523m` (site-wide cache buster unification + i18n.js version banner refresh)
+
+Operational cleanup, no behavior change. Every HTML page that references
+`css/main.css` or `js/i18n.js` now does so with the unified cache-buster
+`?v=20260523m`. Before this commit eight pages still referenced
+`?v=20260523e` (the pre-session-⑪ stamp), which meant returning visitors
+whose browser or Cloudflare edge had cached the older `i18n.js` would
+miss every dictionary key added in sessions ⑪ and ⑫. That includes
+`entry.hint.payment_email`, `entry.label.card`, all twelve
+`rulespage.*` keys, all nine `riskpage.*` keys, the new `corp.label`,
+and the extensions added for `play.html` / `kings.html` / `mypage.html`.
+
+In addition, the diagnostic banner that `i18n.js` prints to the browser
+console at load time has been bumped from `v20260514d` to `v20260523m`
+so operators can confirm in DevTools that the latest build is being
+served, not a stale cached copy.
+
+## What changed
+
+1. **Cache busters unified across 11 HTML files.**
+   `404.html`, `entry.html`, `how-it-works.html`, `index.html`,
+   `kings.html`, `money.html`, `mypage.html`, `play.html`,
+   `preview.html`, `risk.html`, `rules.html`, `verify.html` all now
+   reference `css/main.css?v=20260523m` and `js/i18n.js?v=20260523m`
+   (where applicable; `404.html` only loads CSS).
+
+2. **`js/i18n.js` diagnostic banner bumped.** The console banner now
+   reads `[i18n] v20260523m loaded · cookie: …` instead of the stale
+   `v20260514d` that had been in place since 2026-05-14 despite many
+   subsequent dictionary additions.
+
+## Verification
+
+```
+grep -h '?v=20260' *.html | grep -oE '\?v=20260523[a-z]' | sort -u
+→ ?v=20260523m  (single line — all pages aligned)
+
+grep -cE 'class="lang-en"|class="lang-ja"' *.html | grep -v ':0'
+→ (empty — no page carries the legacy bilingual pattern)
+
+node -e "new Function(<i18n.js body>)"  →  OK
+```
+
+---
+
 # KINGMAKER 23:23 — `v=20260523l` (index.html — 10-lang migration of "How it works" 3-step explainer)
 
 Final site-wide cleanup of the legacy `.lang-en` / `.lang-ja`
