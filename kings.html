@@ -146,30 +146,23 @@
 <main class="hall-page" translate="no" lang="en">
   <p class="hall-sub notranslate" translate="no">— Permanent Record · Every King · Every Cycle —</p>
   <h1 class="notranslate" translate="no">Hall of Kings</h1>
-  <p class="hall-tagline">
-    <span class="lang-en">None are forgotten.<br>
-      <span style="font-size: 0.82em; color: var(--ash); font-style: normal;">As the <span class="notranslate" translate="no">Mission Fund</span> fills, every <span class="notranslate" translate="no">King</span>'s <span class="notranslate" translate="no">Mission</span> will be granted.</span>
-    </span>
-    <span class="lang-ja">忘れられる王は一人もいない。<br>
-      <span style="font-size: 0.82em; color: var(--ash); font-style: normal; font-family: var(--f-jp);">資金が貯まり次第、すべての王の <span class="notranslate" translate="no">Mission</span> は叶えられる。</span>
-    </span>
+  <p class="hall-tagline" data-static-i18n="tagline">
+    None are forgotten.<br>
+    <span style="font-size: 0.82em; color: var(--ash); font-style: normal;">As the <span class="notranslate" translate="no">Mission Fund</span> fills, every <span class="notranslate" translate="no">King</span>'s <span class="notranslate" translate="no">Mission</span> will be granted.</span>
   </p>
 
   <div class="hall-legend">
     <span class="legend-item">
       <span class="legend-dot awaiting"></span>
-      <span class="lang-en">Awaiting Fund</span>
-      <span class="lang-ja">資金待ち</span>
+      <span data-static-i18n="legend_awaiting">Awaiting Fund</span>
     </span>
     <span class="legend-item">
       <span class="legend-dot progress"></span>
-      <span class="lang-en">In Progress</span>
-      <span class="lang-ja">進行中</span>
+      <span data-static-i18n="legend_inprogress">In Progress</span>
     </span>
     <span class="legend-item">
       <span class="legend-dot granted"></span>
-      <span class="lang-en">Granted</span>
-      <span class="lang-ja">達成</span>
+      <span data-static-i18n="legend_granted">Granted</span>
     </span>
   </div>
 
@@ -185,45 +178,29 @@
       <span><strong id="mfAvailable" style="color: var(--gold-deep);">¥—</strong> AVAILABLE</span>
       <span><strong id="mfAwaiting" style="color: var(--gold-deep);">—</strong> AWAITING KINGS</span>
     </div>
-    <div style="font-size: 12px; color: var(--ash); margin-top: 16px; font-style: italic;">
-      <span class="lang-en">This Fund accrues from every participant's ¥100 <span class="notranslate" translate="no">Bell</span>.<br>
-        Every <span class="notranslate" translate="no">King</span>'s <span class="notranslate" translate="no">Mission</span> will be granted once the Fund is sufficient.
-      </span>
-      <span class="lang-ja" style="font-family: var(--f-jp);">この資金は、すべての参加者の ¥100 <span class="notranslate" translate="no">Bell</span> から積み上がる。<br>
-        <span class="notranslate" translate="no">King</span> の <span class="notranslate" translate="no">Mission</span> は、資金が満ちれば必ず叶えられる。
-      </span>
+    <div style="font-size: 12px; color: var(--ash); margin-top: 16px; font-style: italic;" data-static-i18n="fund_caption">
+      This Fund accrues from every participant's ¥100 <span class="notranslate" translate="no">Bell</span>.<br>
+      Every <span class="notranslate" translate="no">King</span>'s <span class="notranslate" translate="no">Mission</span> will be granted once the Fund is sufficient.
     </div>
   </div>
 
   <div id="hallContent">
     <div class="empty-hall" id="hallLoading">
       <div class="glyph">⌛</div>
-      <h3>
-        <span class="lang-en">Loading <span class="notranslate" translate="no">Hall</span>…</span>
-        <span class="lang-ja"><span class="notranslate" translate="no">Hall</span> を読み込み中…</span>
-      </h3>
+      <h3 data-static-i18n="hall_loading">Loading <span class="notranslate" translate="no">Hall</span>…</h3>
     </div>
   </div>
 
   <!-- Regret framing — shown after content -->
   <section class="regret-block" id="regretBlock" style="display:none;">
-    <p class="regret-title">
-      <span class="lang-en">"If only I had joined back then."</span>
-      <span class="lang-ja">"あの時、参加していれば。"</span>
+    <p class="regret-title" data-static-i18n="regret_title">"If only I had joined back then."</p>
+    <p class="regret-body" data-static-i18n="regret_body">
+      Participants in early <span class="notranslate" translate="no">Cycles</span> are forever recorded as <span class="notranslate" translate="no">Founding Members</span>.<br>
+      Those who ring the <span class="notranslate" translate="no">Bell</span> when participants are few have higher odds of being chosen.<br>
+      <span style="color: var(--gold-deep); font-style: italic;">— The earliest Bells ring the loudest. —</span>
     </p>
-    <p class="regret-body">
-      <span class="lang-en">Participants in early <span class="notranslate" translate="no">Cycles</span> are forever recorded as <span class="notranslate" translate="no">Founding Members</span>.<br>
-        Those who ring the <span class="notranslate" translate="no">Bell</span> when participants are few have higher odds of being chosen.<br>
-        <span style="color: var(--gold-deep); font-style: italic;">— The earliest Bells ring the loudest. —</span>
-      </span>
-      <span class="lang-ja">早期 <span class="notranslate" translate="no">Cycle</span> の参加者は永久に「<span class="notranslate" translate="no">Founding Member</span>」として記録されます。<br>
-        参加者が少ない時に <span class="notranslate" translate="no">Bell</span> を鳴らした者は、選ばれる確率が高い。<br>
-        <span style="color: var(--gold-deep); font-style: italic;">— The earliest Bells ring the loudest. —</span>
-      </span>
-    </p>
-    <a href="entry.html" class="btn-regret">
-      <span class="lang-en">Ring the <span class="notranslate" translate="no">Bell</span> now · ¥100</span>
-      <span class="lang-ja">今 <span class="notranslate" translate="no">Bell</span> を鳴らす · ¥100</span>
+    <a href="entry.html" class="btn-regret" data-static-i18n="ring_now">
+      Ring the <span class="notranslate" translate="no">Bell</span> now · ¥100
     </a>
   </section>
 
@@ -233,12 +210,170 @@
       const content  = document.getElementById('hallContent');
       const regret   = document.getElementById('regretBlock');
 
-      // Language helper: English is the master, .lang-ja is the alternate.
-      // Read the same data-display-lang attribute that i18n.js maintains
-      // so dynamic JS-rendered text stays in sync with the picker.
-      function isJa() {
-        return document.documentElement.getAttribute('data-display-lang') === 'ja';
+      // ─── Multi-language helpers (10 TIER-1 languages, English master) ──
+      function getDisplayLang() {
+        const v = document.documentElement.getAttribute('data-display-lang') || 'en';
+        return KINGS_I18N.partLabel[v] ? v : 'en';
       }
+      function isJa() {
+        return getDisplayLang() === 'ja';
+      }
+
+      // Dynamic strings produced by JS (rank label, status label, etc).
+      // Brand tokens (King, Cycle, Mission Fund, Founding Cycle, Bell)
+      // stay English everywhere — they are wrapped in notranslate spans.
+      const KINGS_I18N = {
+        partLabel: { en: 'participants', ja: '参加者', ko: '참가자', es: 'participantes', hi: 'प्रतिभागी', vi: 'người tham gia', pt: 'participantes', id: 'peserta', th: 'ผู้เข้าร่วม', fr: 'participants' },
+        anonymous: { en: 'Anonymous', ja: '匿名',   ko: '익명',   es: 'Anónimo',       hi: 'गुमनाम',  vi: 'Ẩn danh',      pt: 'Anônimo',     id: 'Anonim', th: 'ไม่ระบุชื่อ', fr: 'Anonyme' },
+        proof:     { en: '↗ Proof of Mission', ja: '↗ Mission の証跡', ko: '↗ Mission 증거', es: '↗ Prueba de Mission', hi: '↗ Mission का प्रमाण', vi: '↗ Bằng chứng Mission', pt: '↗ Prova de Mission', id: '↗ Bukti Mission', th: '↗ หลักฐาน Mission', fr: '↗ Preuve de Mission' },
+        rankPrefix: {
+          en: (n) => `Rank ${n} · King`,
+          ja: (n) => `第 ${n} 位 · King`,
+          ko: (n) => `${n}위 · King`,
+          es: (n) => `Rango ${n} · King`,
+          hi: (n) => `रैंक ${n} · King`,
+          vi: (n) => `Hạng ${n} · King`,
+          pt: (n) => `Rank ${n} · King`,
+          id: (n) => `Peringkat ${n} · King`,
+          th: (n) => `อันดับ ${n} · King`,
+          fr: (n) => `Rang ${n} · King`,
+        },
+        status_granted:     { en: '✓ Granted',       ja: '✓ 達成',     ko: '✓ 달성',     es: '✓ Otorgado',     hi: '✓ प्रदान किया',     vi: '✓ Đã trao',      pt: '✓ Concedido',   id: '✓ Diberikan',     th: '✓ มอบแล้ว',    fr: '✓ Accordé' },
+        status_in_progress: { en: '◐ In Progress',   ja: '◐ 進行中',  ko: '◐ 진행 중',  es: '◐ En curso',     hi: '◐ प्रगति पर',      vi: '◐ Đang tiến hành', pt: '◐ Em andamento', id: '◐ Sedang berlangsung', th: '◐ กำลังดำเนินการ', fr: '◐ En cours' },
+        status_awaiting:    { en: '○ Awaiting Fund', ja: '○ 資金待ち', ko: '○ 자금 대기', es: '○ Esperando fondos', hi: '○ निधि की प्रतीक्षा', vi: '○ Đang chờ vốn',   pt: '○ Aguardando fundo', id: '○ Menunggu dana', th: '○ รอเงินทุน',  fr: '○ Fonds attendus' },
+        hall_empty_head:    { en: 'The Hall awaits its first King.', ja: 'Hall は最初の King を待っています。', ko: 'Hall은 첫 King을 기다립니다.', es: 'El Hall espera a su primer King.', hi: 'Hall अपने पहले King की प्रतीक्षा कर रहा है।', vi: 'Hall đang chờ vị King đầu tiên.', pt: 'O Hall aguarda seu primeiro King.', id: 'Hall menunggu King pertamanya.', th: 'Hall กำลังรอ King คนแรก', fr: 'Le Hall attend son premier King.' },
+        hall_empty_body: {
+          en: 'Cycle 1 is in progress. After the first Bell rings, the first King\u2019s name will be inscribed here forever.',
+          ja: 'Cycle 1 が進行中です。最初の Bell が鳴った後、ここに王の記録が刻まれます。',
+          ko: 'Cycle 1이 진행 중입니다. 첫 Bell이 울린 뒤, 여기에 King의 이름이 영원히 새겨집니다.',
+          es: 'Cycle 1 está en curso. Tras la primera Bell, el nombre del primer King quedará inscrito aquí para siempre.',
+          hi: 'Cycle 1 चल रहा है। पहली Bell के बाद, पहले King का नाम यहाँ हमेशा के लिए अंकित होगा।',
+          vi: 'Cycle 1 đang diễn ra. Sau khi Bell đầu tiên reo, tên của King đầu tiên sẽ được khắc ghi tại đây mãi mãi.',
+          pt: 'Cycle 1 está em andamento. Após o primeiro toque da Bell, o nome do primeiro King será inscrito aqui para sempre.',
+          id: 'Cycle 1 sedang berlangsung. Setelah Bell pertama berbunyi, nama King pertama akan terukir di sini selamanya.',
+          th: 'Cycle 1 กำลังดำเนินอยู่ หลังจากที่ Bell แรกดังขึ้น ชื่อของ King คนแรกจะถูกจารึกที่นี่ตลอดไป',
+          fr: 'Cycle 1 est en cours. Après le premier coup de Bell, le nom du premier King sera inscrit ici pour toujours.',
+        },
+        hall_loading_err_head: { en: 'The Hall is being prepared.', ja: 'Hall を準備中。', ko: 'Hall을 준비 중.', es: 'El Hall se está preparando.', hi: 'Hall तैयार किया जा रहा है।', vi: 'Hall đang được chuẩn bị.', pt: 'O Hall está sendo preparado.', id: 'Hall sedang disiapkan.', th: 'กำลังจัดเตรียม Hall', fr: 'Le Hall est en préparation.' },
+        hall_loading_err_body: {
+          en: 'The echo of the first Bell has not yet been recorded here.',
+          ja: '最初の鐘の余韻が、まだここに記録されていません。',
+          ko: '첫 Bell의 메아리가 아직 여기에 기록되지 않았습니다.',
+          es: 'El eco de la primera Bell aún no se ha registrado aquí.',
+          hi: 'पहली Bell की प्रतिध्वनि अभी यहाँ दर्ज नहीं हुई है।',
+          vi: 'Tiếng vọng của Bell đầu tiên vẫn chưa được ghi lại tại đây.',
+          pt: 'O eco da primeira Bell ainda não foi registrado aqui.',
+          id: 'Gema Bell pertama belum direkam di sini.',
+          th: 'เสียงสะท้อนของ Bell แรกยังไม่ได้ถูกบันทึกที่นี่',
+          fr: 'L\u2019écho de la première Bell n\u2019a pas encore été enregistré ici.',
+        },
+        hall_loading_err_sub:  { en: 'No Kings have been recorded yet. The first Cycle is approaching its close.', ja: 'まだ King は記録されていません。最初の Cycle が間もなく閉じます。', ko: '아직 King이 기록되지 않았습니다. 첫 Cycle이 곧 마무리됩니다.', es: 'Aún no se han registrado Kings. El primer Cycle se acerca a su cierre.', hi: 'अभी कोई King दर्ज नहीं हुआ। पहला Cycle समापन की ओर है।', vi: 'Chưa có King nào được ghi nhận. Cycle đầu tiên sắp khép lại.', pt: 'Nenhum King foi registrado ainda. O primeiro Cycle se aproxima do fim.', id: 'Belum ada King yang dicatat. Cycle pertama mendekati akhirnya.', th: 'ยังไม่มี King ถูกบันทึก Cycle แรกใกล้จะปิดลงแล้ว', fr: 'Aucun King n\u2019a encore été enregistré. Le premier Cycle approche de sa fin.' },
+      };
+
+      function tr(table, lang) {
+        if (typeof table === 'function') return table;
+        return table[lang] || table.en;
+      }
+
+      // Static-text dictionary for the bilingual blocks now identified
+      // by data-static-i18n="key" instead of paired .lang-en/.lang-ja spans.
+      const KINGS_STATIC_I18N = {
+        legend_awaiting:    { en: 'Awaiting Fund', ja: '資金待ち', ko: '자금 대기', es: 'Esperando fondos', hi: 'निधि की प्रतीक्षा', vi: 'Đang chờ vốn', pt: 'Aguardando fundo', id: 'Menunggu dana', th: 'รอเงินทุน', fr: 'Fonds attendus' },
+        legend_inprogress:  { en: 'In Progress',   ja: '進行中',   ko: '진행 중',   es: 'En curso',         hi: 'प्रगति पर',         vi: 'Đang tiến hành', pt: 'Em andamento', id: 'Sedang berlangsung', th: 'กำลังดำเนินการ', fr: 'En cours' },
+        legend_granted:     { en: 'Granted',       ja: '達成',     ko: '달성',     es: 'Otorgado',         hi: 'प्रदान किया',        vi: 'Đã trao',     pt: 'Concedido',     id: 'Diberikan',      th: 'มอบแล้ว',     fr: 'Accordé' },
+        hall_loading: {
+          en: 'Loading <span class="notranslate" translate="no">Hall</span>…',
+          ja: '<span class="notranslate" translate="no">Hall</span> を読み込み中…',
+          ko: '<span class="notranslate" translate="no">Hall</span> 불러오는 중…',
+          es: 'Cargando <span class="notranslate" translate="no">Hall</span>…',
+          hi: '<span class="notranslate" translate="no">Hall</span> लोड हो रहा है…',
+          vi: 'Đang tải <span class="notranslate" translate="no">Hall</span>…',
+          pt: 'Carregando <span class="notranslate" translate="no">Hall</span>…',
+          id: 'Memuat <span class="notranslate" translate="no">Hall</span>…',
+          th: 'กำลังโหลด <span class="notranslate" translate="no">Hall</span>…',
+          fr: 'Chargement du <span class="notranslate" translate="no">Hall</span>…',
+        },
+        tagline: {
+          en: 'None are forgotten.<br><span style="font-size: 0.82em; color: var(--ash); font-style: normal;">As the <span class="notranslate" translate="no">Mission Fund</span> fills, every <span class="notranslate" translate="no">King</span>\u2019s <span class="notranslate" translate="no">Mission</span> will be granted.</span>',
+          ja: '忘れられる王は一人もいない。<br><span style="font-size: 0.82em; color: var(--ash); font-style: normal; font-family: var(--f-jp);">資金が貯まり次第、すべての王の <span class="notranslate" translate="no">Mission</span> は叶えられる。</span>',
+          ko: '잊혀지는 자는 없다.<br><span style="font-size: 0.82em; color: var(--ash); font-style: normal;"><span class="notranslate" translate="no">Mission Fund</span>이 차오르면, 모든 <span class="notranslate" translate="no">King</span>의 <span class="notranslate" translate="no">Mission</span>이 이뤄진다.</span>',
+          es: 'Ninguno es olvidado.<br><span style="font-size: 0.82em; color: var(--ash); font-style: normal;">A medida que el <span class="notranslate" translate="no">Mission Fund</span> se llena, la <span class="notranslate" translate="no">Mission</span> de cada <span class="notranslate" translate="no">King</span> se cumplirá.</span>',
+          hi: 'कोई भी भुलाया नहीं जाता।<br><span style="font-size: 0.82em; color: var(--ash); font-style: normal;">जैसे-जैसे <span class="notranslate" translate="no">Mission Fund</span> भरता है, हर <span class="notranslate" translate="no">King</span> की <span class="notranslate" translate="no">Mission</span> पूरी होगी।</span>',
+          vi: 'Không ai bị lãng quên.<br><span style="font-size: 0.82em; color: var(--ash); font-style: normal;">Khi <span class="notranslate" translate="no">Mission Fund</span> đầy lên, <span class="notranslate" translate="no">Mission</span> của mỗi <span class="notranslate" translate="no">King</span> sẽ được trao.</span>',
+          pt: 'Nenhum é esquecido.<br><span style="font-size: 0.82em; color: var(--ash); font-style: normal;">À medida que o <span class="notranslate" translate="no">Mission Fund</span> se enche, a <span class="notranslate" translate="no">Mission</span> de cada <span class="notranslate" translate="no">King</span> será concedida.</span>',
+          id: 'Tak seorang pun dilupakan.<br><span style="font-size: 0.82em; color: var(--ash); font-style: normal;">Seiring <span class="notranslate" translate="no">Mission Fund</span> terisi, <span class="notranslate" translate="no">Mission</span> setiap <span class="notranslate" translate="no">King</span> akan terkabul.</span>',
+          th: 'ไม่มีใครถูกลืม<br><span style="font-size: 0.82em; color: var(--ash); font-style: normal;">เมื่อ <span class="notranslate" translate="no">Mission Fund</span> เพิ่มขึ้น, <span class="notranslate" translate="no">Mission</span> ของ <span class="notranslate" translate="no">King</span> ทุกท่านจะได้รับการเติมเต็ม</span>',
+          fr: 'Aucun n\u2019est oublié.<br><span style="font-size: 0.82em; color: var(--ash); font-style: normal;">Au fur et à mesure que le <span class="notranslate" translate="no">Mission Fund</span> se remplit, la <span class="notranslate" translate="no">Mission</span> de chaque <span class="notranslate" translate="no">King</span> sera accordée.</span>',
+        },
+        fund_caption: {
+          en: 'This Fund accrues from every participant\u2019s ¥100 <span class="notranslate" translate="no">Bell</span>.<br>Every <span class="notranslate" translate="no">King</span>\u2019s <span class="notranslate" translate="no">Mission</span> will be granted once the Fund is sufficient.',
+          ja: 'この資金は、すべての参加者の ¥100 <span class="notranslate" translate="no">Bell</span> から積み上がる。<br><span class="notranslate" translate="no">King</span> の <span class="notranslate" translate="no">Mission</span> は、資金が満ちれば必ず叶えられる。',
+          ko: '이 자금은 모든 참가자의 ¥100 <span class="notranslate" translate="no">Bell</span>로부터 쌓인다.<br><span class="notranslate" translate="no">King</span>의 <span class="notranslate" translate="no">Mission</span>은 자금이 충분해지면 반드시 이뤄진다.',
+          es: 'Este Fondo se acumula con los ¥100 de cada <span class="notranslate" translate="no">Bell</span>.<br>La <span class="notranslate" translate="no">Mission</span> de cada <span class="notranslate" translate="no">King</span> se cumplirá cuando el Fondo sea suficiente.',
+          hi: 'यह कोष हर प्रतिभागी के ¥100 <span class="notranslate" translate="no">Bell</span> से जुड़ता है।<br>कोष पर्याप्त होते ही हर <span class="notranslate" translate="no">King</span> की <span class="notranslate" translate="no">Mission</span> पूरी की जाएगी।',
+          vi: 'Quỹ này tích lũy từ ¥100 <span class="notranslate" translate="no">Bell</span> của mỗi người tham gia.<br><span class="notranslate" translate="no">Mission</span> của mỗi <span class="notranslate" translate="no">King</span> sẽ được trao khi Quỹ đủ.',
+          pt: 'Este Fundo é acumulado a partir do <span class="notranslate" translate="no">Bell</span> de ¥100 de cada participante.<br>A <span class="notranslate" translate="no">Mission</span> de cada <span class="notranslate" translate="no">King</span> será concedida quando o Fundo for suficiente.',
+          id: 'Dana ini terkumpul dari <span class="notranslate" translate="no">Bell</span> ¥100 setiap peserta.<br><span class="notranslate" translate="no">Mission</span> setiap <span class="notranslate" translate="no">King</span> akan terwujud ketika Dana cukup.',
+          th: 'เงินทุนนี้สะสมจาก <span class="notranslate" translate="no">Bell</span> ¥100 ของผู้เข้าร่วมทุกคน<br><span class="notranslate" translate="no">Mission</span> ของ <span class="notranslate" translate="no">King</span> แต่ละท่านจะถูกเติมเต็มเมื่อเงินทุนเพียงพอ',
+          fr: 'Ce Fonds s\u2019accumule à partir du <span class="notranslate" translate="no">Bell</span> de ¥100 de chaque participant.<br>La <span class="notranslate" translate="no">Mission</span> de chaque <span class="notranslate" translate="no">King</span> sera accordée dès que le Fonds sera suffisant.',
+        },
+        regret_title: {
+          en: '"If only I had joined back then."',
+          ja: '"あの時、参加していれば。"',
+          ko: '"그때 참여했더라면."',
+          es: '"Si tan solo me hubiera unido entonces."',
+          hi: '"काश मैं तब शामिल हुआ होता।"',
+          vi: '"Giá như tôi đã tham gia khi ấy."',
+          pt: '"Se eu tivesse entrado naquela época."',
+          id: '"Andai saja aku ikut saat itu."',
+          th: '"ถ้าตอนนั้นฉันได้เข้าร่วมก็ดี"',
+          fr: '« Si seulement j\u2019avais rejoint à l\u2019époque. »',
+        },
+        regret_body: {
+          en: 'Participants in early <span class="notranslate" translate="no">Cycles</span> are forever recorded as <span class="notranslate" translate="no">Founding Members</span>.<br>Those who ring the <span class="notranslate" translate="no">Bell</span> when participants are few have higher odds of being chosen.<br><span style="color: var(--gold-deep); font-style: italic;">— The earliest Bells ring the loudest. —</span>',
+          ja: '早期 <span class="notranslate" translate="no">Cycle</span> の参加者は永久に「<span class="notranslate" translate="no">Founding Member</span>」として記録されます。<br>参加者が少ない時に <span class="notranslate" translate="no">Bell</span> を鳴らした者は、選ばれる確率が高い。<br><span style="color: var(--gold-deep); font-style: italic;">— The earliest Bells ring the loudest. —</span>',
+          ko: '초기 <span class="notranslate" translate="no">Cycles</span>의 참가자는 영원히 <span class="notranslate" translate="no">Founding Members</span>로 기록됩니다.<br>참가자가 적을 때 <span class="notranslate" translate="no">Bell</span>을 울린 자는 선택될 확률이 더 높다.<br><span style="color: var(--gold-deep); font-style: italic;">— The earliest Bells ring the loudest. —</span>',
+          es: 'Los participantes de los primeros <span class="notranslate" translate="no">Cycles</span> quedan registrados para siempre como <span class="notranslate" translate="no">Founding Members</span>.<br>Quienes hacen sonar la <span class="notranslate" translate="no">Bell</span> cuando los participantes son pocos tienen mayores probabilidades de ser elegidos.<br><span style="color: var(--gold-deep); font-style: italic;">— The earliest Bells ring the loudest. —</span>',
+          hi: 'प्रारंभिक <span class="notranslate" translate="no">Cycles</span> के प्रतिभागी हमेशा के लिए <span class="notranslate" translate="no">Founding Members</span> के रूप में दर्ज होते हैं।<br>जब प्रतिभागी कम हों तब <span class="notranslate" translate="no">Bell</span> बजाने वालों के चुने जाने की संभावना अधिक होती है।<br><span style="color: var(--gold-deep); font-style: italic;">— The earliest Bells ring the loudest. —</span>',
+          vi: 'Người tham gia các <span class="notranslate" translate="no">Cycles</span> đầu tiên được ghi nhận mãi mãi là <span class="notranslate" translate="no">Founding Members</span>.<br>Người rung <span class="notranslate" translate="no">Bell</span> khi còn ít người tham gia có cơ hội được chọn cao hơn.<br><span style="color: var(--gold-deep); font-style: italic;">— The earliest Bells ring the loudest. —</span>',
+          pt: 'Os participantes dos primeiros <span class="notranslate" translate="no">Cycles</span> ficam para sempre registrados como <span class="notranslate" translate="no">Founding Members</span>.<br>Aqueles que tocam a <span class="notranslate" translate="no">Bell</span> quando há poucos participantes têm maiores chances de serem escolhidos.<br><span style="color: var(--gold-deep); font-style: italic;">— The earliest Bells ring the loudest. —</span>',
+          id: 'Peserta <span class="notranslate" translate="no">Cycles</span> awal selamanya tercatat sebagai <span class="notranslate" translate="no">Founding Members</span>.<br>Mereka yang membunyikan <span class="notranslate" translate="no">Bell</span> ketika peserta masih sedikit memiliki peluang lebih tinggi untuk terpilih.<br><span style="color: var(--gold-deep); font-style: italic;">— The earliest Bells ring the loudest. —</span>',
+          th: 'ผู้เข้าร่วมใน <span class="notranslate" translate="no">Cycles</span> ต้น ๆ ถูกบันทึกในฐานะ <span class="notranslate" translate="no">Founding Members</span> ตลอดไป<br>ผู้ที่สั่น <span class="notranslate" translate="no">Bell</span> เมื่อมีผู้เข้าร่วมน้อยจะมีโอกาสถูกเลือกสูงกว่า<br><span style="color: var(--gold-deep); font-style: italic;">— The earliest Bells ring the loudest. —</span>',
+          fr: 'Les participants des premiers <span class="notranslate" translate="no">Cycles</span> sont à jamais inscrits comme <span class="notranslate" translate="no">Founding Members</span>.<br>Ceux qui font sonner la <span class="notranslate" translate="no">Bell</span> quand les participants sont peu nombreux ont plus de chances d\u2019être choisis.<br><span style="color: var(--gold-deep); font-style: italic;">— The earliest Bells ring the loudest. —</span>',
+        },
+        ring_now: {
+          en: 'Ring the <span class="notranslate" translate="no">Bell</span> now · ¥100',
+          ja: '今 <span class="notranslate" translate="no">Bell</span> を鳴らす · ¥100',
+          ko: '지금 <span class="notranslate" translate="no">Bell</span> 울리기 · ¥100',
+          es: 'Hacer sonar la <span class="notranslate" translate="no">Bell</span> ahora · ¥100',
+          hi: 'अभी <span class="notranslate" translate="no">Bell</span> बजाएँ · ¥100',
+          vi: 'Rung <span class="notranslate" translate="no">Bell</span> ngay · ¥100',
+          pt: 'Tocar a <span class="notranslate" translate="no">Bell</span> agora · ¥100',
+          id: 'Bunyikan <span class="notranslate" translate="no">Bell</span> sekarang · ¥100',
+          th: 'สั่น <span class="notranslate" translate="no">Bell</span> ตอนนี้ · ¥100',
+          fr: 'Sonner la <span class="notranslate" translate="no">Bell</span> maintenant · ¥100',
+        },
+        footer_howitworks: { en: 'How it works', ja: '仕組み', ko: '작동 방식', es: 'Cómo funciona', hi: 'यह कैसे काम करता है', vi: 'Cách hoạt động', pt: 'Como funciona', id: 'Cara kerjanya', th: 'วิธีการทำงาน', fr: 'Comment ça marche' },
+        footer_entry:      { en: 'Entry',         ja: 'エントリー', ko: '엔트리',     es: 'Entrada',     hi: 'प्रवेश',           vi: 'Tham gia',     pt: 'Entrada',     id: 'Pendaftaran', th: 'การเข้าร่วม', fr: 'Entrée' },
+        footer_rules:      { en: '<span class="notranslate" translate="no">Founding Bell</span> rules', ja: '<span class="notranslate" translate="no">Founding Bell</span> ルール', ko: '<span class="notranslate" translate="no">Founding Bell</span> 규칙', es: 'Reglas de <span class="notranslate" translate="no">Founding Bell</span>', hi: '<span class="notranslate" translate="no">Founding Bell</span> नियम', vi: 'Quy tắc <span class="notranslate" translate="no">Founding Bell</span>', pt: 'Regras de <span class="notranslate" translate="no">Founding Bell</span>', id: 'Aturan <span class="notranslate" translate="no">Founding Bell</span>', th: 'กฎ <span class="notranslate" translate="no">Founding Bell</span>', fr: 'Règles <span class="notranslate" translate="no">Founding Bell</span>' },
+        footer_risk:       { en: 'Important notices', ja: '重要事項', ko: '중요 안내', es: 'Avisos importantes', hi: 'महत्वपूर्ण सूचनाएँ', vi: 'Thông báo quan trọng', pt: 'Avisos importantes', id: 'Pemberitahuan penting', th: 'ประกาศสำคัญ', fr: 'Avis importants' },
+      };
+
+      function applyStaticI18n() {
+        const lang = getDisplayLang();
+        document.querySelectorAll('[data-static-i18n]').forEach(el => {
+          const key = el.getAttribute('data-static-i18n');
+          const dict = KINGS_STATIC_I18N[key];
+          if (!dict) return;
+          if (!el.dataset.staticI18nOriginal) el.dataset.staticI18nOriginal = el.innerHTML;
+          const t = dict[lang];
+          el.innerHTML = (t !== undefined) ? t : el.dataset.staticI18nOriginal;
+        });
+      }
+
+      setTimeout(applyStaticI18n, 0);
+      const staticObs = new MutationObserver(applyStaticI18n);
+      staticObs.observe(document.documentElement, { attributes: true, attributeFilter: ['data-display-lang'] });
 
       // Mission Fund running total banner
       fetch(API_BASE + '/game/mission-fund')
@@ -257,21 +392,25 @@
         .then(r => r.json())
         .then(data => {
           if (!data.success) throw new Error('Load failed');
+          window.__kingsData = data;
           render(data);
         })
         .catch(err => {
+          const lang = getDisplayLang();
+          const head = tr(KINGS_I18N.hall_loading_err_head, lang);
+          const body = tr(KINGS_I18N.hall_loading_err_body, lang);
+          const sub  = tr(KINGS_I18N.hall_loading_err_sub, lang);
           content.innerHTML = `<div class="empty-hall">
             <div class="glyph">⌛</div>
-            <h3>The Hall is being prepared.</h3>
-            <p>${isJa()
-              ? '最初の鐘の余韻が、まだここに記録されていません。'
-              : 'The echo of the first Bell has not yet been recorded here.'}<br>
-            <span style="color:var(--ash);">No Kings have been recorded yet. The first Cycle is approaching its close.</span></p>
+            <h3>${escapeHtml(head)}</h3>
+            <p>${escapeHtml(body)}<br>
+            <span style="color:var(--ash);">${escapeHtml(sub)}</span></p>
           </div>`;
           regret.style.display = 'block';
         });
 
       function render(data) {
+        const lang = getDisplayLang();
         const kings = data.kings || [];
         const cycleMap = {};
         kings.forEach(k => {
@@ -282,34 +421,33 @@
         const cycleNums = Object.keys(cycleMap).map(Number).sort((a, b) => b - a);
 
         if (cycleNums.length === 0) {
+          const head = tr(KINGS_I18N.hall_empty_head, lang);
+          const body = tr(KINGS_I18N.hall_empty_body, lang);
           content.innerHTML = `<div class="empty-hall">
             <div class="glyph">⌛</div>
-            <h3>The Hall awaits its first King.</h3>
-            <p>${isJa()
-              ? 'Cycle 1 が進行中です。最初の Bell が鳴った後、ここに王の記録が刻まれます。'
-              : 'Cycle 1 is in progress. After the first Bell rings, the first King\u2019s name will be inscribed here forever.'}</p>
+            <h3>${escapeHtml(head)}</h3>
+            <p>${escapeHtml(body)}</p>
           </div>`;
           regret.style.display = 'block';
           return;
         }
 
-        // Build participant-count lookup from cycleSummary
         const partMap = {};
         (data.cycleSummary || []).forEach(c => { partMap[c.cycle_number] = c.participants; });
 
-        const partLabel = isJa() ? '参加者' : 'participants';
+        const partLabel = tr(KINGS_I18N.partLabel, lang);
         let html = '';
         cycleNums.forEach(cn => {
           const isFounding = cn <= (data.foundingCohortMax || 3);
           const part = partMap[cn];
           html += `<section class="cycle-group">
             <div class="cycle-group-head">
-              <span class="cycle-num">Cycle ${cn}</span>
-              ${isFounding ? '<span class="cycle-founding-tag">Founding Cycle</span>' : ''}
-              ${part != null ? `<span class="cycle-meta">${part} ${partLabel}</span>` : ''}
+              <span class="cycle-num notranslate" translate="no">Cycle ${cn}</span>
+              ${isFounding ? '<span class="cycle-founding-tag notranslate" translate="no">Founding Cycle</span>' : ''}
+              ${part != null ? `<span class="cycle-meta">${part} ${escapeHtml(partLabel)}</span>` : ''}
             </div>
             <div class="king-grid">
-              ${cycleMap[cn].map(k => kingCard(k)).join('')}
+              ${cycleMap[cn].map(k => kingCard(k, lang)).join('')}
             </div>
           </section>`;
         });
@@ -317,32 +455,35 @@
         regret.style.display = 'block';
       }
 
-      function kingCard(k) {
+      function kingCard(k, lang) {
         const status = k.grant_status || 'awaiting_fund';
         const amt = k.grant_amount_jpy || 0;
         const isGranted = status === 'granted';
-        const ja = isJa();
-        const labelMap = ja
-          ? { granted: '✓ 達成', in_progress: '◐ 進行中', awaiting_fund: '○ 資金待ち' }
-          : { granted: '✓ Granted', in_progress: '◐ In Progress', awaiting_fund: '○ Awaiting Fund' };
-        const statusLabel = labelMap[status] || labelMap.awaiting_fund;
+        const statusKey = status === 'granted' ? 'status_granted' : status === 'in_progress' ? 'status_in_progress' : 'status_awaiting';
+        const statusLabel = tr(KINGS_I18N[statusKey], lang);
         const dotClass = status === 'granted' ? 'granted' : status === 'in_progress' ? 'progress' : 'awaiting';
-        const rankLabel = ja ? `第 ${k.rank} 位 · King` : `Rank ${k.rank} · King`;
-        const anonLabel = ja ? '匿名' : 'Anonymous';
-        const proofLabel = ja ? '↗ Mission の証跡' : '↗ Proof of Mission';
+        const rankLabel = KINGS_I18N.rankPrefix[lang] ? KINGS_I18N.rankPrefix[lang](k.rank) : KINGS_I18N.rankPrefix.en(k.rank);
+        const anonLabel = tr(KINGS_I18N.anonymous, lang);
+        const proofLabel = tr(KINGS_I18N.proof, lang);
         return `<article class="king-card ${isGranted ? 'is-granted' : ''}">
-          <div class="king-rank">${rankLabel}</div>
+          <div class="king-rank">${escapeHtml(rankLabel)}</div>
           <h3 class="king-mission">${escapeHtml(k.mission_name)}</h3>
           <div class="king-meta">${escapeHtml(k.country || '—')} · ${escapeHtml(k.display_handle || anonLabel)}</div>
           <p class="king-summary">${escapeHtml(k.mission_summary || '')}</p>
           <div class="king-status">
             <span class="dot ${dotClass}"></span>
-            <span>${statusLabel}</span>
+            <span>${escapeHtml(statusLabel)}</span>
             <span class="amt ${amt > 0 ? '' : 'unfunded'}">¥${(amt).toLocaleString()}</span>
           </div>
-          ${k.proof_url ? `<a class="proof-link" href="${escapeAttr(k.proof_url)}" target="_blank" rel="noopener">${proofLabel}</a>` : ''}
+          ${k.proof_url ? `<a class="proof-link" href="${escapeAttr(k.proof_url)}" target="_blank" rel="noopener">${escapeHtml(proofLabel)}</a>` : ''}
         </article>`;
       }
+
+      // Re-render dynamic JS output when the picker changes.
+      const renderObs = new MutationObserver(() => {
+        if (window.__kingsData) render(window.__kingsData);
+      });
+      renderObs.observe(document.documentElement, { attributes: true, attributeFilter: ['data-display-lang'] });
 
       function escapeHtml(s) {
         return String(s == null ? '' : s)
@@ -357,29 +498,17 @@
   <nav class="legal-footer-nav legal-footer-nav-primary">
     <a href="index.html" class="notranslate" translate="no">← KINGMAKER</a>
     <span class="sep">·</span>
-    <a href="how-it-works.html">
-      <span class="lang-en">How it works</span>
-      <span class="lang-ja">仕組み</span>
-    </a>
+    <a href="how-it-works.html" data-static-i18n="footer_howitworks">How it works</a>
     <span class="sep">·</span>
-    <a href="entry.html">
-      <span class="lang-en">Entry</span>
-      <span class="lang-ja">エントリー</span>
-    </a>
+    <a href="entry.html" data-static-i18n="footer_entry">Entry</a>
     <span class="sep">·</span>
     <a href="mypage.html" class="notranslate" translate="no">My Page</a>
     <span class="sep">·</span>
     <a href="kings.html" class="notranslate" translate="no">Hall of Kings</a>
     <span class="sep">·</span>
-    <a href="rules.html">
-      <span class="lang-en"><span class="notranslate" translate="no">Founding Bell</span> rules</span>
-      <span class="lang-ja"><span class="notranslate" translate="no">Founding Bell</span> ルール</span>
-    </a>
+    <a href="rules.html" data-static-i18n="footer_rules"><span class="notranslate" translate="no">Founding Bell</span> rules</a>
     <span class="sep">·</span>
-    <a href="risk.html">
-      <span class="lang-en">Important notices</span>
-      <span class="lang-ja">重要事項</span>
-    </a>
+    <a href="risk.html" data-static-i18n="footer_risk">Important notices</a>
   </nav>
   <div class="legal-footer-meta">
     <span class="meta-line">© 2026 · <span class="notranslate" translate="no">KINGMAKER 23:23</span> · Operated by <a href="https://tamjump.com/" target="_blank" rel="noopener" class="notranslate" translate="no">タムジ株式会社 / TAmJ</a></span>
