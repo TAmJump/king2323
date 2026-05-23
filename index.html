@@ -2886,6 +2886,26 @@ html:not([data-display-lang="ja"]) span[style*="--f-jp"]:not(.notranslate) {
   </div>
 </section>
 
+<!-- ============== MISSION FUND RUNNING TOTAL ============== -->
+<section style="padding: 56px var(--pad); background: var(--paper-2); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); text-align: center;">
+  <div style="max-width: 720px; margin: 0 auto;">
+    <div style="font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.32em; text-transform: uppercase; color: var(--gold); margin-bottom: 18px;">
+      Mission Fund · Live Total
+    </div>
+    <div style="font-family: var(--f-display); font-size: clamp(48px, 8vw, 88px); color: var(--ink); letter-spacing: -0.02em; line-height: 1; margin-bottom: 18px;">
+      ¥<span id="indexMfTotal">—</span>
+    </div>
+    <div style="font-family: var(--f-mono); font-size: 12px; letter-spacing: 0.22em; color: var(--ash); display: flex; justify-content: center; gap: 24px; flex-wrap: wrap; margin-bottom: 24px;">
+      <span><strong id="indexMfEntries" style="color: var(--gold-deep);">—</strong> BELLS RUNG</span>
+      <span><strong id="indexMfThreshold" style="color: var(--gold-deep);">— / 1,000</strong> THIS CYCLE</span>
+    </div>
+    <p style="font-family: var(--f-jp); font-size: 14px; color: var(--ash); line-height: 1.85; max-width: 540px; margin: 0 auto;">
+      鐘が鳴り、儀式が成立するには <strong style="color: var(--gold-deep);">最低 1,000 名</strong> の Bell が必要です。<br>
+      満たない週は儀式が保留され、参加者の Bell は次の Cycle へ持ち越されます。
+    </p>
+  </div>
+</section>
+
 <!-- ============== TICKER ============== -->
 <div class="ticker" aria-hidden="true">
   <div class="ticker-track">
@@ -4700,19 +4720,39 @@ html:not([data-display-lang="ja"]) span[style*="--f-jp"]:not(.notranslate) {
   const API = "https://tamjump-contact-api.animalb001.workers.dev";
   const navLink = document.getElementById("nav-play-link");
   const heroLink = document.getElementById("hero-play-link");
-  if (!navLink && !heroLink) return;
+  const mfTotal     = document.getElementById("indexMfTotal");
+  const mfEntries   = document.getElementById("indexMfEntries");
+  const mfThreshold = document.getElementById("indexMfThreshold");
 
   async function check() {
     try {
       const r = await fetch(API + "/game/bell-status", { credentials: "include" });
       const j = await r.json();
+      // Show play.html link during active phases (NOT dormant, NOT pre/post)
       const active = j && (j.phase === "phase1" || j.phase === "phase2" || j.phase === "phase3");
       if (navLink)  navLink.style.display  = active ? "inline-flex" : "none";
       if (heroLink) heroLink.style.display = active ? "inline-block" : "none";
+      // Current-cycle progress toward threshold
+      if (mfThreshold && j.participantCount != null && j.dormancyThreshold != null) {
+        mfThreshold.textContent = j.participantCount.toLocaleString() + " / " + j.dormancyThreshold.toLocaleString();
+      }
     } catch (e) { /* silent */ }
   }
+
+  async function loadFund() {
+    try {
+      const r = await fetch(API + "/game/mission-fund");
+      const j = await r.json();
+      if (!j.ok) return;
+      if (mfTotal)   mfTotal.textContent   = (j.totalCollectedJpy || 0).toLocaleString();
+      if (mfEntries) mfEntries.textContent = (j.totalPaidEntries  || 0).toLocaleString();
+    } catch (e) { /* silent */ }
+  }
+
   check();
+  loadFund();
   setInterval(check, 30000);
+  setInterval(loadFund, 60000);
 })();
 </script>
 </body>

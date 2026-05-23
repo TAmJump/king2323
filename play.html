@@ -570,6 +570,32 @@
     </div>
   </section>
 
+  <!-- STATE 7: Dormant — bell rang but participant threshold not met -->
+  <section id="state-dormant" class="hidden">
+    <div class="result-screen">
+      <div class="verdict-big" style="color: var(--gold); font-style: italic;">The Bell rang —<br>but it was too still</div>
+      <p class="verdict-sub">
+        この Cycle は <strong id="dormant-count">—</strong> 名の参加にとどまり、<br>
+        儀式が成立する最低人数 <strong id="dormant-threshold">—</strong> 名に届きませんでした。
+        <br><br>
+        あなたの Bell は失われません。<br>
+        ¥100 は次の Cycle に持ち越され、Mission Fund に蓄積されます。<br>
+        次に鐘が鳴るとき、人数が満ちていれば、あなたは自動で参加できます。
+      </p>
+      <div style="margin: 32px auto 0; padding: 20px 24px; border: 1px solid var(--line); background: var(--paper); max-width: 420px; text-align: left;">
+        <div style="font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold); margin-bottom: 12px;">Mission Fund (Total)</div>
+        <div style="font-family: var(--f-display); font-size: 28px; color: var(--ink);">¥<span id="dormant-fund">—</span></div>
+        <div style="font-family: var(--f-mono); font-size: 11px; color: var(--ash); margin-top: 6px;">
+          <span id="dormant-entries">—</span> Bells × ¥100
+        </div>
+      </div>
+      <div style="margin-top: 28px;">
+        <a href="kings.html" class="play-cta">→ Hall of Kings</a>
+        <a href="how-it-works.html" class="play-cta secondary" style="margin-left:10px;">→ なぜ保留?</a>
+      </div>
+    </div>
+  </section>
+
   <!-- STATE 0: Gate — not paid / not logged in -->
   <section id="state-gate" class="hidden">
     <div class="gate-msg">
@@ -623,6 +649,7 @@ const STATES = {
   PHASE2: "state-phase2",
   VOTE: "state-vote",
   POST: "state-post",
+  DORMANT: "state-dormant",
   GATE: "state-gate"
 };
 
@@ -702,6 +729,9 @@ function updateCountdownStrip() {
   } else if (bellInfo.phase === "post_bell") {
     el.textContent = "Bell closed";
     el.classList.remove("is-warning");
+  } else if (bellInfo.phase === "dormant") {
+    el.textContent = "DORMANT · " + (bellInfo.participantCount || 0) + " / " + (bellInfo.dormancyThreshold || 1000);
+    el.classList.remove("is-warning");
   } else {
     el.textContent = bellInfo.phase.toUpperCase() + " · " + formatHMS(bellInfo.secondsLeft || 0);
     el.classList.toggle("is-warning", (bellInfo.secondsLeft || 0) < 15);
@@ -737,7 +767,25 @@ async function tick() {
     return;
   }
 
-  // Bell just rang — play SFX once.
+  // Dormant Cycle — bell rang but participant threshold not met.
+  if (info.phase === "dormant" || info.isDormant) {
+    bellPlayed = true; // suppress later SFX
+    document.getElementById("dormant-count").textContent = info.participantCount || 0;
+    document.getElementById("dormant-threshold").textContent = info.dormancyThreshold || 1000;
+    // Fetch Mission Fund summary
+    try {
+      const r = await fetch(API + "/game/mission-fund");
+      const j = await r.json();
+      if (j.ok) {
+        document.getElementById("dormant-fund").textContent = (j.totalCollectedJpy || 0).toLocaleString();
+        document.getElementById("dormant-entries").textContent = j.totalPaidEntries || 0;
+      }
+    } catch (e) { /* silent */ }
+    showState(STATES.DORMANT);
+    return;
+  }
+
+  // Bell just rang (and not dormant) — play SFX once.
   if ((info.phase === "phase1" || info.phase === "phase2" || info.phase === "phase3") && !bellPlayed) {
     bellPlayed = true;
     playBellSfx();

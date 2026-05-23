@@ -172,6 +172,9 @@ var index_default = {
       if (url.pathname === "/game/phase3/finalize" && request.method === "POST") {
         return await handleGamePhase3Finalize(request, env, origin);
       }
+      if (url.pathname === "/game/mission-fund" && request.method === "GET") {
+        return await handleGameMissionFund(request, env, origin);
+      }
       return jsonResponse({ error: "Not Found" }, 404, origin);
     } catch (err) {
       console.error("Worker error:", err);
@@ -1485,7 +1488,17 @@ var GAME_CONFIG = {
   // Tie-break
   tieBreakMode: "sha-redraw",                // 'sha-redraw' | 'operator' | 'multi-king'
   // Languages allowed
-  allowedLanguages: ["ja", "en"]
+  allowedLanguages: ["ja", "en"],
+  // ─── Dormancy threshold (operator decision 2026-05-23) ───
+  // If fewer than this many paid participants are registered for the current
+  // Cycle at the moment the Bell rings (23:23:00 JST), the entire game is
+  // skipped — no quiz, no draw, no vote. The cycle is marked 'dormant' and
+  // participants' Bells carry over to the next Cycle without losing money.
+  // Their founding_cohort stays at the original cycle number (B option from
+  // session ⑩ planning), preserving the historical Founding Member record.
+  // The unspent ¥100 × N stays in the company account and is added to the
+  // Mission Fund running total (visible on kings.html / verify.html).
+  dormancyThreshold: 1000
 };
 
 function gameNowMs() { return Date.now(); }
@@ -1533,15 +1546,34 @@ async function handleGameBellStatus(request, env, origin) {
   const cnt = await env.DB.prepare(
     "SELECT COUNT(*) AS n FROM contacts WHERE paid = 1 AND founding_cohort = ?"
   ).bind(GAME_CONFIG.currentCycle).first();
+  const participantCount = cnt ? cnt.n : 0;
+
+  // ─── Dormancy override ─────────────────────────────────────────
+  // If the bell has rung but participant count is below threshold, override
+  // phase 'phase1/phase2/phase3' with 'dormant'. Pre-bell and post-bell
+  // states are not affected.
+  let effectivePhase = phase.phase;
+  let isDormant = false;
+  if (
+    (phase.phase === "phase1" || phase.phase === "phase2" || phase.phase === "phase3")
+    && participantCount < GAME_CONFIG.dormancyThreshold
+  ) {
+    effectivePhase = "dormant";
+    isDormant = true;
+  }
+
   return jsonResponse({
     ok: true,
     bellRingsAtIso: GAME_CONFIG.bellRingsAtIso,
     serverNowIso: new Date().toISOString(),
     cycle: GAME_CONFIG.currentCycle,
-    phase: phase.phase,
+    phase: effectivePhase,
+    rawPhase: phase.phase,                // unmasked phase, for diagnostics
     secondsLeft: phase.secondsLeft,
     secondsUntilBell: phase.secondsUntilBell,
-    participantCount: cnt ? cnt.n : 0,
+    participantCount,
+    dormancyThreshold: GAME_CONFIG.dormancyThreshold,
+    isDormant,
     config: {
       phase1DurationSec: GAME_CONFIG.phase1DurationSec,
       phase2DurationSec: GAME_CONFIG.phase2DurationSec,
@@ -1575,26 +1607,65 @@ async function handleGameQuizStart(request, env, origin) {
 
   let assignedGroupIds;
   if (!session) {
-    // Pick 3 questions: 1 easy + 1 medium + 1 hard, randomly, only active rows in this lang.
-    const easy = await env.DB.prepare(
-      "SELECT group_id FROM quiz_questions WHERE language = ? AND difficulty = 1 AND active = 1 ORDER BY RANDOM() LIMIT 1"
-    ).bind(lang).first();
-    const medium = await env.DB.prepare(
-      "SELECT group_id FROM quiz_questions WHERE language = ? AND difficulty = 2 AND active = 1 ORDER BY RANDOM() LIMIT 1"
-    ).bind(lang).first();
-    const hard = await env.DB.prepare(
-      "SELECT group_id FROM quiz_questions WHERE language = ? AND difficulty = 3 AND active = 1 ORDER BY RANDOM() LIMIT 1"
-    ).bind(lang).first();
+    // ─── Dormancy guard ─────────────────────────────────────────
+    // If the Cycle is dormant (paid < threshold), don't let the quiz start.
+    const cnt = await env.DB.prepare(
+      "SELECT COUNT(*) AS n FROM contacts WHERE paid = 1 AND founding_cohort = ?"
+    ).bind(GAME_CONFIG.currentCycle).first();
+    if (cnt && cnt.n < GAME_CONFIG.dormancyThreshold) {
+      return jsonResponse({
+        ok: false,
+        error: "dormant",
+        participantCount: cnt.n,
+        threshold: GAME_CONFIG.dormancyThreshold,
+        message: "Cycle is dormant — minimum participant threshold not reached."
+      }, 403, origin);
+    }
 
-    const groups = [easy, medium, hard].filter(Boolean).map(r => r.group_id);
-    if (groups.length < 3) {
-      // Fallback: any 3 distinct groups in language.
+    // ─── Past-question exclusion ───────────────────────────────────
+    // Get every group_id this participant has ever answered (across all Cycles).
+    // We will prefer unseen groups; only fall back to seen ones when the pool
+    // can't provide enough fresh questions at each difficulty.
+    const seenRes = await env.DB.prepare(
+      "SELECT DISTINCT group_id FROM quiz_attempts WHERE contact_ticket = ?"
+    ).bind(participant.ticket_number).all();
+    const seen = (seenRes.results || []).map(r => r.group_id);
+    const seenList = seen.length ? seen : [0];   // dummy so NOT IN never empty
+    const seenPlaceholders = seenList.map(() => "?").join(",");
+
+    // Pick 3 questions: 1 easy + 1 medium + 1 hard, preferring UNSEEN groups.
+    async function pickByDifficulty(diff) {
+      // First try: unseen
+      const fresh = await env.DB.prepare(
+        `SELECT group_id FROM quiz_questions
+         WHERE language = ? AND difficulty = ? AND active = 1
+           AND group_id NOT IN (${seenPlaceholders})
+         ORDER BY RANDOM() LIMIT 1`
+      ).bind(lang, diff, ...seenList).first();
+      if (fresh) return fresh.group_id;
+      // Fallback: pool exhausted at this difficulty — pick any (seen).
+      const any = await env.DB.prepare(
+        "SELECT group_id FROM quiz_questions WHERE language = ? AND difficulty = ? AND active = 1 ORDER BY RANDOM() LIMIT 1"
+      ).bind(lang, diff).first();
+      return any ? any.group_id : null;
+    }
+
+    const easyId = await pickByDifficulty(1);
+    const mediumId = await pickByDifficulty(2);
+    const hardId = await pickByDifficulty(3);
+
+    const groups = [easyId, mediumId, hardId].filter(g => g != null);
+    // Guard: no duplicates within a single quiz (rare but possible if all
+    // unseen are exhausted and RNG picks the same fallback twice).
+    const unique = Array.from(new Set(groups));
+    if (unique.length < 3) {
+      // Fallback: any 3 distinct active groups in language.
       const any = await env.DB.prepare(
         "SELECT DISTINCT group_id FROM quiz_questions WHERE language = ? AND active = 1 ORDER BY RANDOM() LIMIT 3"
       ).bind(lang).all();
       assignedGroupIds = (any.results || []).map(r => r.group_id);
     } else {
-      assignedGroupIds = groups;
+      assignedGroupIds = unique;
     }
 
     if (assignedGroupIds.length < 3) {
@@ -2031,6 +2102,54 @@ async function handleGamePhase3Finalize(request, env, origin) {
   }, 200, origin);
 }
 __name(handleGamePhase3Finalize, "handleGamePhase3Finalize");
+
+// GET /game/mission-fund — public summary of total Mission Fund accumulated.
+// Returns: total paid entries, total ¥ collected, ¥ already granted to Kings,
+// ¥ pending (awaiting_fund), counts per Cycle. Powers the running-total
+// display on kings.html / verify.html.
+async function handleGameMissionFund(request, env, origin) {
+  // Total paid entries (all cycles, paid=1).
+  const totalPaid = await env.DB.prepare(
+    "SELECT COUNT(*) AS n FROM contacts WHERE paid = 1"
+  ).first();
+  const totalPaidCount = totalPaid ? totalPaid.n : 0;
+  const totalCollectedJpy = totalPaidCount * 100;   // ¥100 per Bell
+
+  // Per-cycle breakdown.
+  const perCycle = await env.DB.prepare(
+    "SELECT founding_cohort AS cycle, COUNT(*) AS n FROM contacts WHERE paid = 1 GROUP BY founding_cohort ORDER BY founding_cohort ASC"
+  ).all();
+
+  // Granted total (Kings who have grant_status = 'granted').
+  const granted = await env.DB.prepare(
+    "SELECT COALESCE(SUM(grant_amount_jpy), 0) AS s FROM kings WHERE rank = 1 AND grant_status = 'granted'"
+  ).first();
+  const grantedJpy = granted ? granted.s : 0;
+
+  // Awaiting fund (Kings with grant_status = 'awaiting_fund').
+  const awaiting = await env.DB.prepare(
+    "SELECT COUNT(*) AS n FROM kings WHERE rank = 1 AND grant_status = 'awaiting_fund'"
+  ).first();
+  const awaitingCount = awaiting ? awaiting.n : 0;
+
+  // Available pool = collected − granted.
+  const availableJpy = Math.max(0, totalCollectedJpy - grantedJpy);
+
+  return jsonResponse({
+    ok: true,
+    totalPaidEntries: totalPaidCount,
+    totalCollectedJpy,
+    grantedJpy,
+    availableJpy,
+    awaitingKingCount: awaitingCount,
+    perCycle: (perCycle.results || []).map(r => ({
+      cycle: r.cycle,
+      paidEntries: r.n,
+      collectedJpy: r.n * 100
+    }))
+  }, 200, origin);
+}
+__name(handleGameMissionFund, "handleGameMissionFund");
 
 
 export {

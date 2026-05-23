@@ -157,6 +157,24 @@
     <span class="legend-item"><span class="legend-dot granted"></span>Granted · 達成</span>
   </div>
 
+  <!-- ─── Mission Fund running total banner (session ⑩) ─── -->
+  <div id="missionFundBanner" style="margin-bottom: 48px; padding: 32px 28px; border: 2px solid var(--gold); background: var(--paper-2); text-align: center;">
+    <div style="font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.32em; text-transform: uppercase; color: var(--gold); margin-bottom: 14px;">Mission Fund · Cumulative Total</div>
+    <div style="font-family: var(--f-display); font-size: clamp(40px, 6vw, 64px); color: var(--ink); letter-spacing: -0.01em; line-height: 1;">
+      ¥<span id="mfTotal">—</span>
+    </div>
+    <div style="font-family: var(--f-mono); font-size: 12px; letter-spacing: 0.22em; color: var(--ash); margin-top: 14px; display: flex; justify-content: center; gap: 32px; flex-wrap: wrap;">
+      <span><strong id="mfEntries" style="color: var(--gold-deep);">—</strong> BELLS</span>
+      <span><strong id="mfGranted" style="color: var(--gold-deep);">¥—</strong> GRANTED</span>
+      <span><strong id="mfAvailable" style="color: var(--gold-deep);">¥—</strong> AVAILABLE</span>
+      <span><strong id="mfAwaiting" style="color: var(--gold-deep);">—</strong> AWAITING KINGS</span>
+    </div>
+    <div style="font-family: var(--f-jp); font-size: 12px; color: var(--ash); margin-top: 16px; font-style: italic;">
+      この資金は、すべての参加者の ¥100 Bell から積み上がる。<br>
+      King の Mission は、資金が満ちれば必ず叶えられる。
+    </div>
+  </div>
+
   <div id="hallContent">
     <div class="empty-hall" id="hallLoading">
       <div class="glyph">⌛</div>
@@ -180,6 +198,19 @@
       const API_BASE = 'https://tamjump-contact-api.animalb001.workers.dev';
       const content  = document.getElementById('hallContent');
       const regret   = document.getElementById('regretBlock');
+
+      // Mission Fund running total banner
+      fetch(API_BASE + '/game/mission-fund')
+        .then(r => r.json())
+        .then(j => {
+          if (!j.ok) return;
+          document.getElementById('mfTotal').textContent     = (j.totalCollectedJpy || 0).toLocaleString();
+          document.getElementById('mfEntries').textContent   = (j.totalPaidEntries  || 0).toLocaleString();
+          document.getElementById('mfGranted').textContent   = '¥' + (j.grantedJpy   || 0).toLocaleString();
+          document.getElementById('mfAvailable').textContent = '¥' + (j.availableJpy || 0).toLocaleString();
+          document.getElementById('mfAwaiting').textContent  = (j.awaitingKingCount || 0).toLocaleString();
+        })
+        .catch(() => { /* keep dashes */ });
 
       fetch(API_BASE + '/kings/list?limit=200')
         .then(r => r.json())
