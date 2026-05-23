@@ -201,29 +201,42 @@ LIMIT 5;
 
 ### 5. Cron トリガー確認
 
-Phase 2 の SHA-256 ドロー(Fri 5/29 23:25 JST)は cron で自動発火する想定。
+Bell が鳴った後の Phase 3 確定処理(Fri 5/29 23:30 JST 想定)は Cloudflare Cron Trigger で自動発火させる。
 
-> **⚠️ 重要:** この worker には `scheduled(event, env, ctx)` ハンドラが**実装されていない**(2026-05-23 時点の `worker/index.js` を確認)。したがって **Cloudflare ダッシュボード上で Workers の Cron Triggers を設定しても何も起きない**。Cron Triggers は `scheduled` イベントを発火するだけで、HTTP リクエストを送らない。
+> **✅ v20260523r 以降:** worker に `scheduled(event, env, ctx)` ハンドラを実装済み。これにより **Cloudflare ダッシュボード上で Workers の Cron Triggers を設定すれば、Phase 3 自動確定が動く**。
 >
-> 実際にドローを発火させるには、以下のいずれかが必要:
-> - 外部 cron(例: `cron-job.org`、別 worker、サーバ上の crontab)から `/game/phase2/draw` に HTTP POST する
-> - `worker/index.js` に `scheduled` ハンドラを追加して、その中で `handleGamePhase2Draw` を内部呼び出しする
+> ハンドラの動作:
+> - Phase 2 が未ドローなら警告ログを出して何もしない。
+> - 既に確定済みなら何もしない(冪等)。
+> - Phase 2 がドロー済みで Phase 3 未確定なら、投票を集計し King を確定する。
 >
-> 現状どちらの構成になっているかはダッシュボード側を見ないと分からない。**Bell 当日までに必ず確認すること。**
+> **Phase 2 の SHA-256 ドローは自動化されていない**(市場データ入力が必要なため、後述)。
 
-時刻指定:
-- 推奨スケジュール: Fri 14:25 UTC = 23:25 JST(Bell が鳴ってから 2 分後)
-- crontab 表記なら `25 14 * * 5`(外部スケジューラ用)
+#### Cron Trigger 設定
 
-呼び出し方:
+Cloudflare ダッシュボード → Workers & Pages → `tamjump-contact-api` → Triggers → Cron Triggers → Add Cron Trigger:
+
+- スケジュール: `30 14 * * 5` (毎週金曜 14:30 UTC = 23:30 JST、Bell 終了の 2 分後)
+
+このハンドラは何回叩いても安全(冪等)なので、cron 頻度を上げてもよい。週次でなく、Cycle 2 のためだけに `30 14 29 5 *` といったワンショット指定でもよい。
+
+ログ確認:
+```
+wrangler tail tamjump-contact-api
+```
+で `[scheduled]` プレフィックスのログを観察。Phase 2 が drawn でない場合は警告のみ。drawn かつ未確定なら finalize → kingId をログ。
+
+#### Phase 2 SHA-256 ドロー(別途必要)
+
+Phase 2 は cron で自動化できない。市場データ入力(`btcHash` + `nikkeiClose` + `sp500Close`)が必要で、これは**人手で Bell 直前の Bitcoin ブロックハッシュと当日の市場終値を集めてから**初めて検証可能になるため。
+
 - **エンドポイントは `/game/phase2/draw`(`/admin/game/...` は存在しない)。**
 - **認証は `Authorization: Bearer ${ADMIN_TOKEN}`(`X-Admin-Token` ではない)。**
 - **v20260523p 以降、ドロー実行には公開シード入力が必須:** `btcHash`(Bell 直前の Bitcoin ブロックハッシュ)、`nikkeiClose`(同日の Nikkei 225 終値)、`sp500Close`(直近の S&P 500 終値)。3 つすべて欠けると `400 { error: "Public seed inputs required..." }` が返る。テスト時のみ `allowSyntheticSeed: true` でバイパス可。
 
-実行例(ドロー失敗時のフォールバック手動実行):
+実行例(本番):
 
 ```bash
-# 本番: 3 つの市場入力すべてを含める
 curl -X POST https://tamjump-contact-api.animalb001.workers.dev/game/phase2/draw \
   -H "Authorization: Bearer ${ADMIN_TOKEN}" \
   -H "Content-Type: application/json" \
@@ -233,18 +246,27 @@ curl -X POST https://tamjump-contact-api.animalb001.workers.dev/game/phase2/draw
     "nikkeiClose": "<5/29 の Nikkei 225 終値、例: 38500.42>",
     "sp500Close": "<直近の S&P 500 終値、例: 5847.91>"
   }'
+```
 
-# ドライラン / テスト用(本番では使わない)
+実行例(ドライラン / テスト用、本番では使わない):
+
+```bash
 curl -X POST https://tamjump-contact-api.animalb001.workers.dev/game/phase2/draw \
   -H "Authorization: Bearer ${ADMIN_TOKEN}" \
   -H "Content-Type: application/json" \
   -d '{"cycle": 2, "allowSyntheticSeed": true}'
 ```
 
-**cron 側の改修が必要:** 外部スケジューラが空ボディ `{}` や `{"cycle": 2}` のみで叩いている場合、v20260523p 以降は 400 になる。スケジューラ側を以下のいずれかに更新すること:
+#### Bell 当日の運営フロー
 
-- BTC ハッシュ + 市場終値を取得 → 3 つ揃ったボディを生成 → ドロー API を呼ぶラッパースクリプトに差し替える(推奨)
-- ボディに `allowSyntheticSeed: true` を含める(非推奨。公開検証性が失われる)
+1. **23:23 JST** Bell 鳴る → Phase 1 自動開始(クイズ 2 分間)
+2. **23:25 JST** Phase 1 終了 → Phase 2 wait → 運営は market data を集める
+3. **23:25-23:26 JST** 運営が手動で `/game/phase2/draw` を叩く(curl 例上記)
+4. **23:25:30 JST** Phase 3 投票開始(2.5 分間)
+5. **23:28 JST** Phase 3 投票終了
+6. **23:30 JST** Cron Trigger 自動発火 → `runPhase3Finalize` → King 確定
+
+ステップ 3 が遅れると Phase 3 投票画面に The Three が表示されないので、運営は market data を **23:23 より前に手元に揃えておく**こと。Bitcoin ブロックハッシュは [mempool.space](https://mempool.space/) などから 1 分以内に取れる。Nikkei は前日終値、S&P 500 はその日のうちの最後の close を使えばよい。
 
 ### 6. 当日のモニタリング
 

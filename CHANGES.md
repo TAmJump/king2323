@@ -75,7 +75,100 @@ The full content split:
 
 ---
 
-# KINGMAKER 23:23 — `v=20260523q` (Worker README — endpoint mismatches fixed, cron model documented honestly)
+# KINGMAKER 23:23 — `v=20260523r` (Worker — `scheduled()` handler added for Phase 3 auto-finalize)
+
+Session ⑮ continuation. The README in `v20260523q` honestly admitted
+that Cloudflare Cron Triggers wouldn't drive anything because the
+worker had no `scheduled` handler. This commit adds one.
+
+## Scope: Phase 3 auto-finalize only, NOT Phase 2 auto-draw
+
+The handler intentionally does NOT call `handleGamePhase2Draw`. The
+v20260523p public-seed-input guard requires the operator to supply
+the live Bitcoin block hash + Nikkei close + S&P 500 close at draw
+time — those are by definition unavailable to a cron-fired handler
+running blind. Auto-drawing with synthetic seeds would silently
+defeat the entire public-verifiability narrative.
+
+So Phase 2 stays manual (operator pastes market data → triggers the
+draw at ~23:25 JST). The new `scheduled` handler only takes the
+deterministic post-vote step: counting votes and updating
+`kings.rank` to declare the winning King. No external data needed —
+all inputs are in D1.
+
+## Code change
+
+Extracted the existing `handleGamePhase3Finalize` body into a new
+internal function `runPhase3Finalize(env, cycle)` that returns a
+plain object (not a Response). The HTTP handler now wraps the
+internal function. The new `scheduled` handler calls the same
+internal function. Both are idempotent — `state.finalized_at`
+short-circuits double-runs.
+
+The `scheduled` handler:
+
+- Logs `[scheduled] Fired at <iso> for Cycle N (cron: <expr>)`.
+- Resolves the current cycle via `resolveCurrentCycle(env)`.
+- Calls `runPhase3Finalize(env, cycle)`.
+- On success: logs `[scheduled] Cycle N finalized: kingId=X totalVotes=Y`.
+- On already-finalized: logs `[scheduled] Cycle N already finalized — no-op.`.
+- On Phase-2-not-drawn (most common pre-draw firing): logs
+  `[scheduled] Cycle N finalize blocked: Phase 2 not drawn.`
+- On thrown error: logs the error + stack.
+
+All log output uses `console.log` / `.warn` / `.error` so it surfaces
+in `wrangler tail tamjump-contact-api`.
+
+## Operator action — Cloudflare Cron Trigger setup
+
+In the Cloudflare dashboard:
+
+1. Workers & Pages → `tamjump-contact-api` → Triggers → Cron Triggers
+2. Add Cron Trigger with schedule: `30 14 * * 5`
+3. (= Friday 14:30 UTC = 23:30 JST, two minutes after the Bell closes)
+
+The handler is safe to fire at any time (no destructive side effects
+unless Phase 2 is drawn AND Phase 3 isn't finalized), so the cron
+frequency can be higher than weekly without risk. For Cycle 2 only,
+a one-shot trigger `30 14 29 5 *` also works.
+
+## Behavioral verification (offline)
+
+| Test                                        | Result                          |
+|---------------------------------------------|---------------------------------|
+| Phase 2 not drawn (no state row)            | ✓ warning logged, no DB write   |
+| Phase 2 row exists but no winner ids        | ✓ warning logged, no DB write   |
+| Already finalized                           | ✓ no-op log, no DB write        |
+| Ready to finalize with clear winner         | ✓ finalize ran, kingId logged   |
+| Ready to finalize with tie                  | (limited — node test harness    |
+|                                             | TextEncoder issue; production  |
+|                                             | runtime has it built in)        |
+
+`node --check worker/index.js` → OK.
+
+## README update
+
+`worker/README.md` §5 rewritten end-to-end to reflect the new
+state: `scheduled` handler exists, Cloudflare Cron Triggers will now
+work for Phase 3, Phase 2 still needs the operator to fetch + post
+market data. Includes the full Bell-day flow with timing.
+
+## ⚠️ OPERATOR ACTION REQUIRED (cumulative)
+
+1. **Re-deploy the Worker** via Cloudflare dashboard (manual paste
+   from `worker/index.js` at commit `<this commit's hash>` or
+   later). This picks up v20260523o + v20260523p + v20260523r in
+   one paste.
+2. **Set the Cron Trigger** in the Cloudflare dashboard as
+   described above.
+3. **Verify env vars** are configured per `worker/README.md` § 1
+   (especially `ADMIN_TOKEN`, `SQUARE_*`).
+4. **Update `api/cycle.json`** to `cycle: 2, phase: "live"` before
+   Wed 5/27 23:23 JST.
+5. **Plan the Bell-day flow** per `worker/README.md` § 5.
+
+---
+
 
 Session ⑮ continuation. Documentation-only commit (no code change),
 but the documentation errors here could have cost the operator real

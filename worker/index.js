@@ -187,6 +187,58 @@ var index_default = {
       console.error("Worker error:", err);
       return jsonResponse({ error: "Internal Server Error" }, 500, origin);
     }
+  },
+
+  // ── Cloudflare Cron Trigger handler ──
+  // Configured via the Cloudflare dashboard → Workers → Triggers → Cron.
+  // Recommended schedule: `30 14 * * 5` (Fri 14:30 UTC = 23:30 JST), which
+  // fires 2 minutes after the Bell closes (Phase 3 voting ends at 23:28
+  // JST per GAME_CONFIG.bellClosesAtOffsetSec=300). The handler is
+  // **safe to fire at any time** — it does nothing destructive unless
+  // Phase 2 has been drawn and Phase 3 hasn't been finalized yet.
+  //
+  // What this handler does NOT do:
+  //   - It does NOT auto-run the Phase 2 SHA-256 draw. That step needs
+  //     human-attested market data inputs (BTC hash + Nikkei close + S&P
+  //     close) per v20260523p — auto-draw with synthetic seeds would
+  //     defeat the public-verifiability guarantee. The operator must
+  //     trigger /game/phase2/draw manually (or via an external scheduler
+  //     that fetches the market data first).
+  //   - It does NOT modify any state if the current cycle is dormant
+  //     (handled by the Phase 2 draw refusing to insert kings) or if
+  //     Phase 3 has already been finalized (idempotency check inside
+  //     runPhase3Finalize).
+  //
+  // What this handler DOES do:
+  //   - Logs the trigger so operators can confirm cron wiring works.
+  //   - Calls runPhase3Finalize for the current cycle. If Phase 2 wasn't
+  //     drawn, the call returns { ok: false, error: "Phase 2 not drawn." }
+  //     and we log a warning so the operator notices on Bell day.
+  //   - If finalization succeeds, logs the winning king id + tally
+  //     summary.
+  //
+  // Cycle resolution uses resolveCurrentCycle(env) — same single source
+  // of truth as the HTTP handlers (see worker/README.md §5 and the
+  // session-⑮ handoff for the unified-resolution rationale).
+  async scheduled(event, env, ctx) {
+    const triggerIso = new Date(event.scheduledTime).toISOString();
+    const cycle = resolveCurrentCycle(env);
+    console.log(`[scheduled] Fired at ${triggerIso} for Cycle ${cycle} (cron expression: "${event.cron}")`);
+    try {
+      const result = await runPhase3Finalize(env, cycle);
+      if (result.ok && result.alreadyFinalized) {
+        console.log(`[scheduled] Cycle ${cycle} already finalized — no-op.`);
+      } else if (result.ok) {
+        console.log(`[scheduled] Cycle ${cycle} finalized: kingId=${result.finalKingId} totalVotes=${result.totalVotes} tieBreakUsed=${result.tieBreakUsed}`);
+      } else {
+        // Most common case at Bell + 7min: Phase 2 wasn't drawn (operator
+        // forgot the market-data step). Log loudly so it surfaces in
+        // `wrangler tail`.
+        console.warn(`[scheduled] Cycle ${cycle} finalize blocked: ${result.error}`);
+      }
+    } catch (err) {
+      console.error(`[scheduled] Cycle ${cycle} finalize threw:`, err.message, err.stack);
+    }
   }
 };
 
@@ -2096,15 +2148,28 @@ async function handleGamePhase3Finalize(request, env, origin) {
   }
   const body = await request.json().catch(() => ({}));
   const cycle = parseCycleOverride(body.cycle, env);
+  const result = await runPhase3Finalize(env, cycle);
+  if (!result.ok) {
+    return jsonResponse(result, result.statusCode || 400, origin);
+  }
+  // Strip statusCode before returning.
+  const { statusCode, ...payload } = result;
+  return jsonResponse(payload, 200, origin);
+}
+__name(handleGamePhase3Finalize, "handleGamePhase3Finalize");
 
+// Internal Phase 3 finalize — invoked by the HTTP handler above OR by the
+// scheduled() cron handler. Returns a plain object suitable for both.
+// Idempotent (the `state.finalized_at` check protects against double-runs).
+async function runPhase3Finalize(env, cycle) {
   const state = await env.DB.prepare(
     "SELECT * FROM cycle_state WHERE cycle_number = ?"
   ).bind(cycle).first();
   if (!state || !state.phase2_winner_king_ids) {
-    return jsonResponse({ ok: false, error: "Phase 2 not drawn." }, 400, origin);
+    return { ok: false, error: "Phase 2 not drawn.", statusCode: 400, cycle };
   }
   if (state.finalized_at) {
-    return jsonResponse({ ok: true, alreadyFinalized: true, state }, 200, origin);
+    return { ok: true, alreadyFinalized: true, state, cycle };
   }
 
   const candidates = JSON.parse(state.phase2_winner_king_ids);
@@ -2139,7 +2204,6 @@ async function handleGamePhase3Finalize(request, env, origin) {
 
   // Update ranks: winner = 1, others = 2 or 3 based on vote count desc.
   const sortedByVotes = candidates.slice().sort((a, b) => (tally[b] || 0) - (tally[a] || 0));
-  // Force final winner to rank 1.
   const ranks = {};
   ranks[finalKingId] = 1;
   let nextRank = 2;
@@ -2156,16 +2220,16 @@ async function handleGamePhase3Finalize(request, env, origin) {
     "UPDATE cycle_state SET finalized_at = ?, final_king_id = ?, vote_count = ? WHERE cycle_number = ?"
   ).bind(nowIso, finalKingId, total, cycle).run();
 
-  return jsonResponse({
+  return {
     ok: true,
     cycle,
     finalKingId,
     tally,
     totalVotes: total,
     tieBreakUsed: winners.length > 1
-  }, 200, origin);
+  };
 }
-__name(handleGamePhase3Finalize, "handleGamePhase3Finalize");
+__name(runPhase3Finalize, "runPhase3Finalize");
 
 // GET /game/mission-fund — public summary of total Mission Fund accumulated.
 // Returns: total paid entries, total ¥ collected, ¥ already granted to Kings,
