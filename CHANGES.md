@@ -1,4 +1,42 @@
-# KINGMAKER 23:23 — `v=20260523i` (play.html — full 10-language migration)
+# KINGMAKER 23:23 — `v=20260523j` (play.html — extend dynamic-value cache to all eta writers + session ⑪ handoff)
+
+Session ⑪ wrap-up. Two follow-ups to the v20260523i commit:
+
+1. **Extended `window.__playDynamic` cache to all four eta writers.**
+   The `applyPlayStaticI18n()` replay step introduced in v20260523i
+   only kicked in for cached IDs. v20260523i committed the cache for
+   the four dormant IDs but not the eta IDs (relying instead on the
+   2-second `tick()` to repaint after a lang switch). For visual
+   consistency with the dormant pattern, `phase2-eta`, `phase3-eta`,
+   and `vote-eta` are now also cached at their write points:
+   - `showQuizResult()` caches `phase2-eta` (already in working tree
+     pre-commit, now properly committed).
+   - `routePhase2()` caches `phase3-eta` (already in working tree
+     pre-commit, now properly committed).
+   - `showPhase2()` newly caches `phase3-eta`.
+   - `routePhase3()` newly caches `vote-eta`.
+   The result: switching the picker mid-countdown no longer shows a
+   sub-2-second `—` placeholder before the next `tick()` arrives.
+
+2. **Session ⑪ handoff document** committed —
+   `HANDOFF_2026-05-23_session11.md` records the four pushed commits
+   (v20260523e through v20260523i, plus this v20260523j), the
+   pattern reference for migrating the remaining six pages (`entry`,
+   `how-it-works`, `verify`, `rules`, `risk`, `money`), credential
+   roll-forward, Cycle 2 calendar, and a verification queue.
+
+Cache buster bumped to `?v=20260523j` on `play.html`.
+
+## Verification
+
+Same as v20260523i:
+- `grep -cE 'class="lang-en"|class="lang-ja"' play.html` → 0
+- `grep -c 'data-static-i18n=' play.html` → 23
+- `node -e "new Function(<script body>)"` → OK (58335 chars)
+
+---
+
+
 
 Session ⑪ continuation. Completes the migration of `play.html` from the
 legacy `.lang-en` / `.lang-ja` parallel-span pattern (which only ever

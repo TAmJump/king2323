@@ -20,7 +20,7 @@
 <meta name="robots" content="noindex, nofollow" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link rel="stylesheet" href="css/main.css?v=20260523i" />
+<link rel="stylesheet" href="css/main.css?v=20260523j" />
 <style>
   .play-page {
     max-width: 760px;
@@ -1377,6 +1377,8 @@ function showQuizResult() {
     (quizSession.correct_count || 0) + " / 3";
   // ETA to Phase 2 (= seconds until phase1 ends).
   const eta = bellInfo && bellInfo.phase === "phase1" ? bellInfo.secondsLeft : 0;
+  window.__playDynamic = window.__playDynamic || {};
+  window.__playDynamic['phase2-eta'] = String(eta);
   const etaEl = document.getElementById("phase2-eta");
   if (etaEl) etaEl.textContent = eta;
   showState(STATES.QUIZ_RESULT);
@@ -1425,6 +1427,8 @@ async function routePhase2() {
   document.getElementById("draw-hash").textContent = "—";
   document.getElementById("candidates-wrap").innerHTML =
     '<div class="gate-msg" style="grid-column:1/-1;">' + (RUNNING[lang] || RUNNING.en) + '</div>';
+  window.__playDynamic = window.__playDynamic || {};
+  window.__playDynamic['phase3-eta'] = String(bellInfo.secondsLeft);
   const ph3eta = document.getElementById("phase3-eta");
   if (ph3eta) ph3eta.textContent = bellInfo.secondsLeft;
 }
@@ -1446,6 +1450,8 @@ function showPhase2() {
     `;
     wrap.appendChild(card);
   });
+  window.__playDynamic = window.__playDynamic || {};
+  window.__playDynamic['phase3-eta'] = String(bellInfo.secondsLeft);
   document.getElementById("phase3-eta").textContent = bellInfo.secondsLeft;
 }
 
@@ -1480,6 +1486,8 @@ async function routePhase3() {
     card.addEventListener("click", () => castVote(c.kingId));
     wrap.appendChild(card);
   });
+  window.__playDynamic = window.__playDynamic || {};
+  window.__playDynamic['vote-eta'] = String(bellInfo.secondsLeft);
   document.getElementById("vote-eta").textContent = bellInfo.secondsLeft;
 }
 
@@ -1519,6 +1527,6 @@ tick();
 pollTimer = setInterval(tick, 2000);
 </script>
 
-<script src="js/i18n.js?v=20260523i"></script>
+<script src="js/i18n.js?v=20260523j"></script>
 </body>
 </html>
