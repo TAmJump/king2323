@@ -1,3 +1,137 @@
+# KINGMAKER 23:23 — `v=20260523s` (Phase 2 auto-draw helper + market-data timing docs corrected)
+
+Session ⑯. Removes the biggest manual step in the Cycle 2 launch
+runbook: pasting Bitcoin / Nikkei / S&P values into the Phase 2 draw
+endpoint at 23:25 JST sharp. A new helper script fetches them
+automatically. Also corrects two temporally-confused lines in
+`worker/README.md` about which day's S&P 500 close should be used.
+
+## 1. `scripts/phase2-auto-draw.js` (new)
+
+Node.js helper script for the operator's local PC. Run at ~23:24 JST
+on Bell day. It:
+
+1. Fetches the current Bitcoin block tip hash from `blockstream.info`
+   (with fallback to `mempool.space` if blockstream times out).
+2. Fetches the most recent Nikkei 225 close from Yahoo Finance
+   (`query1.finance.yahoo.com/v8/finance/chart/^N225`).
+3. Fetches the most recent settled S&P 500 close from Yahoo Finance
+   (`^GSPC`). Note: at draw time (Fri 14:25 UTC), the same-day S&P
+   close hasn't happened yet (S&P closes at 21:00 UTC), so Yahoo's
+   "most recent close" naturally returns Thursday's value — which is
+   the correct one to use anyway.
+4. Prints the three values + computed payload, asks for `yes`
+   confirmation, then POSTs to `/game/phase2/draw` with the
+   operator's `ADMIN_TOKEN`.
+
+If any data source fails, the script aborts BEFORE the POST and
+points the operator at the curl fallback in `worker/README.md §5`.
+v20260523p's seed-input guard still refuses synthetic zeros, so this
+script never silently lies about what data was used.
+
+Usage:
+```
+ADMIN_TOKEN=<token> node scripts/phase2-auto-draw.js --cycle 2
+```
+
+Options: `--cycle N`, `--dry-run`, `--yes` (skip prompt), `--help`.
+
+Why a local script and not a second Worker:
+- The contact-form Worker's network egress is configured for AWS SES
+  + Square + a small allowlist; reaching blockstream/mempool/Yahoo
+  would require expanding that, which is dashboard work the operator
+  may not want.
+- One Worker = one set of secrets to rotate. Two Workers = two.
+- The operator already runs `wrangler tail` from their laptop on
+  Bell day; running one extra Node script is no friction.
+
+Tested on this container: the script syntax-checks clean, all three
+fetches correctly fail with HTTP 403 (since blockstream/mempool/yahoo
+aren't in this container's egress allowlist) and the fatal-error
+fallback message displays correctly. The script is designed to run
+on the operator's unrestricted local PC.
+
+## 2. `worker/README.md` — market-data day-of-week corrections
+
+The previous version had this exact line at the bottom of the
+Phase-2 doc section:
+
+> Nikkei は前日終値、S&P 500 はその日のうちの最後の close を使えばよい。
+> ("Nikkei = previous day's close, S&P 500 = same-day close.")
+
+Both halves were temporally inverted relative to the Cycle's
+geography:
+
+- Bell rings Fri 23:23 JST = Fri 14:23 UTC.
+- Phase 2 draw fires at Fri 14:25 UTC = Fri 10:25 NY.
+- Nikkei 225 closed at Fri 15:00 JST = Fri 06:00 UTC, 8 HOURS
+  BEFORE the Bell. → use SAME-day Friday close, not previous-day.
+- S&P 500 closes at Fri 16:00 NY = Fri 21:00 UTC, ~7 HOURS AFTER
+  the draw fires. → must use PREVIOUS-day Thursday close, since
+  Friday's hasn't happened yet.
+
+The README now spells this out explicitly (in both the API docstring
+near the curl example and the Bell-day flow section).
+
+## 3. `worker/README.md` — helper script reference added
+
+New subsection under §5 documents `scripts/phase2-auto-draw.js`:
+- Why it runs on operator's PC, not the Worker.
+- The three data-source URLs.
+- Required Node.js version (18+ for built-in fetch).
+- The `--cycle` / `--dry-run` / `--yes` flags.
+- Explicit note that the script auto-handles the "Thursday's S&P"
+  issue because Yahoo's most-recent-settled-close fetch naturally
+  returns the correct value at Fri 14:25 UTC.
+
+Bell-day flow step 3 updated to recommend the helper as the primary
+path with curl as fallback.
+
+## Behavioral verification
+
+```
+node --check scripts/phase2-auto-draw.js          → OK
+node scripts/phase2-auto-draw.js --help           → prints usage
+node scripts/phase2-auto-draw.js (no token)       → clean error
+ADMIN_TOKEN=x node scripts/phase2-auto-draw.js \
+  --dry-run                                       → fetches abort
+                                                    cleanly in this
+                                                    container's
+                                                    sandboxed
+                                                    network; clear
+                                                    fallback message
+                                                    displayed.
+```
+
+The fetch behavior on the operator's unrestricted PC cannot be
+verified from this container — that's the operator's verification
+step. The script is defensive: if any source fails, it does NOT
+proceed to the POST.
+
+## What this does NOT change
+
+- The Worker code itself (`worker/index.js`) is unchanged. No
+  redeploy needed for this commit.
+- `api/cycle.json` operator-controlled state file unchanged.
+- The Phase 2 seed-input guard from v20260523p remains in force:
+  if you call `/game/phase2/draw` without market data and without
+  `allowSyntheticSeed: true`, you still get a 400. The helper
+  script just makes "with market data" the default automated path.
+
+## ⚠️ Cumulative operator action items (still required)
+
+Same as session ⑮ TL;DR:
+
+1. **Redeploy the Worker** via Cloudflare dashboard (one paste covers
+   all of v20260523o, v20260523p, v20260523r).
+2. **Set up the Cron Trigger** (`30 14 * * 5`).
+3. **Update `api/cycle.json`** to `cycle: 2, phase: "live"`.
+4. **Add this** (NEW): make sure Node.js 18+ is installed on the
+   operator's PC and verify the helper runs successfully from there
+   with `--dry-run` at least once before Bell day.
+
+---
+
 # KINGMAKER 23:23 — `v=20260523o` (Worker cycle-resolution foot-gun fix + worker README rewritten as Cycle 2 launch runbook)
 
 Session ⑭. Two related issues found in the Cycle 2 launch dry-run audit

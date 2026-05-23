@@ -232,7 +232,7 @@ Phase 2 は cron で自動化できない。市場データ入力(`btcHash` + `n
 
 - **エンドポイントは `/game/phase2/draw`(`/admin/game/...` は存在しない)。**
 - **認証は `Authorization: Bearer ${ADMIN_TOKEN}`(`X-Admin-Token` ではない)。**
-- **v20260523p 以降、ドロー実行には公開シード入力が必須:** `btcHash`(Bell 直前の Bitcoin ブロックハッシュ)、`nikkeiClose`(同日の Nikkei 225 終値)、`sp500Close`(直近の S&P 500 終値)。3 つすべて欠けると `400 { error: "Public seed inputs required..." }` が返る。テスト時のみ `allowSyntheticSeed: true` でバイパス可。
+- **v20260523p 以降、ドロー実行には公開シード入力が必須:** `btcHash`(Bell 直前の Bitcoin ブロックハッシュ)、`nikkeiClose`(Bell 当日の Nikkei 225 終値 — Bell の 8 時間前に確定済み)、`sp500Close`(**前日 Thursday** の S&P 500 終値 — その日の S&P close は Bell 後の Sat 06:00 JST にしか出ないため)。3 つすべて欠けると `400 { error: "Public seed inputs required..." }` が返る。テスト時のみ `allowSyntheticSeed: true` でバイパス可。
 
 実行例(本番):
 
@@ -244,7 +244,7 @@ curl -X POST https://tamjump-contact-api.animalb001.workers.dev/game/phase2/draw
     "cycle": 2,
     "btcHash": "<5/29 23:23 JST 直前の Bitcoin ブロックハッシュ>",
     "nikkeiClose": "<5/29 の Nikkei 225 終値、例: 38500.42>",
-    "sp500Close": "<直近の S&P 500 終値、例: 5847.91>"
+    "sp500Close": "<前日(Thursday)の S&P 500 終値、例: 5847.91>"
   }'
 ```
 
@@ -257,16 +257,51 @@ curl -X POST https://tamjump-contact-api.animalb001.workers.dev/game/phase2/draw
   -d '{"cycle": 2, "allowSyntheticSeed": true}'
 ```
 
+#### 補助スクリプト: `scripts/phase2-auto-draw.js`
+
+v20260523s で追加。運営の手元 PC で実行する helper script。BTC ブロックハッシュ + Nikkei + S&P を自動取得して `/game/phase2/draw` を叩く。Bell 当日に curl で手動入力するより早く、間違いも減る。
+
+**Cloudflare Worker 上ではなく必ず手元で動かすこと。** Worker からは blockstream.info / mempool.space / Yahoo Finance への egress allowlist が無いため動かない。手元 PC なら制約なく動く。
+
+実行(Bell 当日 23:24 JST 頃):
+
+```bash
+ADMIN_TOKEN=kingmaker-admin-tiger-2026 \
+  node scripts/phase2-auto-draw.js --cycle 2
+```
+
+オプション:
+- `--cycle N`: cycle 上書き(無ければ worker の GAME_CONFIG.currentCycle が使われる)
+- `--dry-run`: 取得した market data を表示するが POST しない
+- `--yes` / `-y`: 確認プロンプトをスキップ
+
+データソース:
+- BTC: blockstream.info(失敗時は mempool.space に fallback)
+- Nikkei 225: Yahoo Finance `^N225`
+- S&P 500: Yahoo Finance `^GSPC`(自動的に**前日 Thursday** の close を返す — 当日 Friday の close は Bell 後にしか出ないため)
+
+途中で 1 つでも fetch に失敗すると即座に abort し、運営に curl での手動 fallback を促す(`worker/README.md §5` の curl 例)。実行中は標準出力で各ステップの状態を表示するため、何が原因で失敗したか即座に分かる。
+
+実装上 Node.js 18+ の組み込み fetch を使うため、運営 PC に Node 18 以降がインストール済みであること。確認:
+
+```bash
+node --version  # v18.0.0 以上であること
+```
+
 #### Bell 当日の運営フロー
 
 1. **23:23 JST** Bell 鳴る → Phase 1 自動開始(クイズ 2 分間)
 2. **23:25 JST** Phase 1 終了 → Phase 2 wait → 運営は market data を集める
-3. **23:25-23:26 JST** 運営が手動で `/game/phase2/draw` を叩く(curl 例上記)
+3. **23:25-23:26 JST** 運営が `/game/phase2/draw` を叩く(推奨:`scripts/phase2-auto-draw.js`、手動なら curl 例上記)
 4. **23:25:30 JST** Phase 3 投票開始(2.5 分間)
 5. **23:28 JST** Phase 3 投票終了
 6. **23:30 JST** Cron Trigger 自動発火 → `runPhase3Finalize` → King 確定
 
-ステップ 3 が遅れると Phase 3 投票画面に The Three が表示されないので、運営は market data を **23:23 より前に手元に揃えておく**こと。Bitcoin ブロックハッシュは [mempool.space](https://mempool.space/) などから 1 分以内に取れる。Nikkei は前日終値、S&P 500 はその日のうちの最後の close を使えばよい。
+ステップ 3 が遅れると Phase 3 投票画面に The Three が表示されないので、運営は market data を **23:23 より前に手元に揃えておく**こと。それぞれの根拠時刻:
+
+- **Bitcoin ブロックハッシュ**: 23:23 JST の直前ブロック(あるいは Bell ringing と同時刻にできるだけ近いブロック)。[mempool.space](https://mempool.space/) などから 1 分以内に取れる。Bitcoin は約 10 分おきに新ブロックを生成するため、いつでも入手可能。
+- **Nikkei 225 終値**: 同じ Friday の終値(Nikkei は 15:00 JST に閉場、つまり Bell の 8 時間前に既に確定している)。
+- **S&P 500 終値**: 直近の Thursday の close を使う(S&P は 16:00 NY 時間に閉場、つまり Fri 21:00 UTC = Sat 06:00 JST に確定する。Bell の時点ではまだ Friday の close は出ていない。地理的な時差により、土日に持ち込む S&P 500 close は前日 Thursday の値となる)。
 
 ### 6. 当日のモニタリング
 
