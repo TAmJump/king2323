@@ -1,3 +1,80 @@
+# KINGMAKER 23:23 — `v=20260523o` (Worker cycle-resolution foot-gun fix + worker README rewritten as Cycle 2 launch runbook)
+
+Session ⑭. Two related issues found in the Cycle 2 launch dry-run audit
+of the Worker:
+
+1. **`/entry/pay` had a silent mis-classification foot-gun.** The
+   handler read `parseInt(env.CURRENT_CYCLE || "1", 10)` to decide the
+   `founding_cohort` column value. If the operator deployed the updated
+   `worker/index.js` for Cycle 2 (which has `GAME_CONFIG.currentCycle =
+   2`) but forgot to also set the Cloudflare env var `CURRENT_CYCLE=2`
+   in the dashboard, every Cycle-2 entry would silently be saved as
+   `founding_cohort=1` — pooled into the (empty) Cycle 1 test cohort.
+
+2. **`worker/README.md` was out of date and misleading.** It listed
+   only 7 of the 13 env vars the worker actually reads, gave a curl
+   example pointing at the legacy `/entry` endpoint (the current
+   entry.html uses `/entry/pay`), and had no operational runbook for
+   the Cycle 2 launch.
+
+## What changed
+
+### Code (`worker/index.js`)
+
+**Cycle resolution made safe.** The cycle number is now resolved as:
+```js
+parseInt(env.CURRENT_CYCLE || String(GAME_CONFIG.currentCycle) || "1", 10) || 1
+```
+Priority: `env.CURRENT_CYCLE` override > `GAME_CONFIG.currentCycle`
+(source of truth in this file) > `1` (paranoid floor). Behavioral
+verification:
+
+```
+env undefined / empty       → 2  (uses GAME_CONFIG.currentCycle=2)
+env="2"                     → 2  (env matches config)
+env="3"                     → 3  (env overrides config)
+env="garbage"               → 1  (parse-fail floor)
+env="0"                     → 1  (zero-floor)
+env="99"                    → 99 (operator override accepted)
+```
+7/7 test cases pass. The env var is now an *override hatch* for the
+case where the operator wants to flip cycles without redeploying code,
+not a required setting.
+
+### Documentation (`worker/README.md`)
+
+**Rewritten from a 92-line draft into a 252-line launch runbook.**
+The full content split:
+
+- All 13 env vars enumerated and categorized into "core (shared,
+  pre-set)" and "KINGMAKER-specific (must verify for Cycle 2)".
+- D1 binding (`DB`) and table columns explicitly documented.
+- All endpoints enumerated, organized by group (Mission Entry, My Page,
+  Game, Hall of Kings, Admin) with auth requirements.
+- **Cycle 2 launch checklist** (6 steps):
+  1. Env vars verification.
+  2. Worker source sync (with explicit line numbers to compare).
+  3. Health checks via curl.
+  4. Sandbox smoke test procedure with Square test card.
+  5. Cron trigger verification + manual fallback curl.
+  6. Day-of monitoring queries for D1.
+- Updated D1 `contacts` column mapping (including the new
+  `founding_cohort`, `paid`, `square_payment_id` columns added in the
+  integrated-payment refactor).
+
+## What did NOT change
+
+- `GAME_CONFIG.currentCycle = 2` (line 1480) stays as the source of
+  truth in `worker/index.js`. The operator must still bump this when
+  Cycle 3 begins.
+- `bellRingsAtIso: "2026-05-29T14:23:00Z"` (line 1481) unchanged.
+- `dormancyThreshold: 1000` (line 1508) unchanged.
+- The legacy `/entry` endpoint (line 91) still exists for backward
+  compatibility; entry.html stopped using it but it's not harmful to
+  leave in place.
+
+---
+
 # KINGMAKER 23:23 — `v=20260523n` (Cycle 2 state machine — cycle-bar JS upgraded for the live cycle)
 
 Session ⑬. Pre-Cycle-2 dry-run audit found that the homepage cycle-bar

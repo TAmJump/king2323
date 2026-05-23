@@ -824,9 +824,17 @@ async function handleEntryPay(request, env, origin) {
     return jsonResponse({ error: `決済に失敗しました / Payment failed: ${detail}` }, 402, origin);
   }
 
-  // ── Determine cycle number from cycle config (env var, falls back to 1) ──
-  // Operator sets env.CURRENT_CYCLE = "1" / "2" / etc.
-  const cycleNumber = parseInt(env.CURRENT_CYCLE || "1", 10) || 1;
+  // ── Determine cycle number ──
+  // Priority: env.CURRENT_CYCLE override > GAME_CONFIG.currentCycle (source of
+  // truth in this file) > 1 (paranoid floor).
+  //
+  // Before v20260523o this used `env.CURRENT_CYCLE || "1"` and ignored
+  // GAME_CONFIG.currentCycle entirely. That meant the operator had to
+  // remember to flip TWO settings every cycle bump: the env var AND the
+  // GAME_CONFIG.currentCycle constant. Forgetting the env var silently
+  // misclassified new entries into Cycle 1. Now GAME_CONFIG is canonical
+  // and the env var is just an override hatch.
+  const cycleNumber = parseInt(env.CURRENT_CYCLE || String(GAME_CONFIG.currentCycle) || "1", 10) || 1;
 
   // ── D1: save Mission Entry ──
   const ticketNumber = await generateTicketNumber(env, config.prefix);
