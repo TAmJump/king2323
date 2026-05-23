@@ -17,7 +17,7 @@
 <meta name="color-scheme" content="light" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link rel="stylesheet" href="css/main.css?v=20260522c" />
+<link rel="stylesheet" href="css/main.css?v=20260523c" />
 <style>
   .hall-page { max-width: 1100px; margin: 0 auto; padding: 56px var(--pad) 120px; }
   .hall-page h1 { font-family: var(--f-display); font-size: clamp(32px, 5vw, 56px); color: var(--bone); margin-bottom: 8px; letter-spacing: -0.01em; text-align: center; }
@@ -143,54 +143,88 @@
   <div class="lang-picker notranslate" translate="no"></div>
 </header>
 
-<main class="hall-page notranslate" translate="no" lang="ja">
-  <p class="hall-sub">— Permanent Record · Every King · Every Cycle —</p>
-  <h1>Hall of Kings</h1>
+<main class="hall-page" lang="en">
+  <p class="hall-sub notranslate" translate="no">— Permanent Record · Every King · Every Cycle —</p>
+  <h1 class="notranslate" translate="no">Hall of Kings</h1>
   <p class="hall-tagline">
-    None are forgotten.<br>
-    <span style="font-size: 0.82em; color: var(--ash); font-style: normal; font-family: var(--f-jp);">資金が貯まり次第、すべての王のMissionは叶えられる。</span>
+    <span class="lang-en">None are forgotten.<br>
+      <span style="font-size: 0.82em; color: var(--ash); font-style: normal;">As the <span class="notranslate" translate="no">Mission Fund</span> fills, every <span class="notranslate" translate="no">King</span>'s <span class="notranslate" translate="no">Mission</span> will be granted.</span>
+    </span>
+    <span class="lang-ja">忘れられる王は一人もいない。<br>
+      <span style="font-size: 0.82em; color: var(--ash); font-style: normal; font-family: var(--f-jp);">資金が貯まり次第、すべての王の <span class="notranslate" translate="no">Mission</span> は叶えられる。</span>
+    </span>
   </p>
 
   <div class="hall-legend">
-    <span class="legend-item"><span class="legend-dot awaiting"></span>Awaiting Fund · 資金待ち</span>
-    <span class="legend-item"><span class="legend-dot progress"></span>In Progress · 進行中</span>
-    <span class="legend-item"><span class="legend-dot granted"></span>Granted · 達成</span>
+    <span class="legend-item">
+      <span class="legend-dot awaiting"></span>
+      <span class="lang-en">Awaiting Fund</span>
+      <span class="lang-ja">資金待ち</span>
+    </span>
+    <span class="legend-item">
+      <span class="legend-dot progress"></span>
+      <span class="lang-en">In Progress</span>
+      <span class="lang-ja">進行中</span>
+    </span>
+    <span class="legend-item">
+      <span class="legend-dot granted"></span>
+      <span class="lang-en">Granted</span>
+      <span class="lang-ja">達成</span>
+    </span>
   </div>
 
   <!-- ─── Mission Fund running total banner (session ⑩) ─── -->
   <div id="missionFundBanner" style="margin-bottom: 48px; padding: 32px 28px; border: 2px solid var(--gold); background: var(--paper-2); text-align: center;">
-    <div style="font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.32em; text-transform: uppercase; color: var(--gold); margin-bottom: 14px;">Mission Fund · Cumulative Total</div>
+    <div class="notranslate" translate="no" style="font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.32em; text-transform: uppercase; color: var(--gold); margin-bottom: 14px;">Mission Fund · Cumulative Total</div>
     <div style="font-family: var(--f-display); font-size: clamp(40px, 6vw, 64px); color: var(--ink); letter-spacing: -0.01em; line-height: 1;">
       ¥<span id="mfTotal">—</span>
     </div>
-    <div style="font-family: var(--f-mono); font-size: 12px; letter-spacing: 0.22em; color: var(--ash); margin-top: 14px; display: flex; justify-content: center; gap: 32px; flex-wrap: wrap;">
+    <div class="notranslate" translate="no" style="font-family: var(--f-mono); font-size: 12px; letter-spacing: 0.22em; color: var(--ash); margin-top: 14px; display: flex; justify-content: center; gap: 32px; flex-wrap: wrap;">
       <span><strong id="mfEntries" style="color: var(--gold-deep);">—</strong> BELLS</span>
       <span><strong id="mfGranted" style="color: var(--gold-deep);">¥—</strong> GRANTED</span>
       <span><strong id="mfAvailable" style="color: var(--gold-deep);">¥—</strong> AVAILABLE</span>
       <span><strong id="mfAwaiting" style="color: var(--gold-deep);">—</strong> AWAITING KINGS</span>
     </div>
-    <div style="font-family: var(--f-jp); font-size: 12px; color: var(--ash); margin-top: 16px; font-style: italic;">
-      この資金は、すべての参加者の ¥100 Bell から積み上がる。<br>
-      King の Mission は、資金が満ちれば必ず叶えられる。
+    <div style="font-size: 12px; color: var(--ash); margin-top: 16px; font-style: italic;">
+      <span class="lang-en">This Fund accrues from every participant's ¥100 <span class="notranslate" translate="no">Bell</span>.<br>
+        Every <span class="notranslate" translate="no">King</span>'s <span class="notranslate" translate="no">Mission</span> will be granted once the Fund is sufficient.
+      </span>
+      <span class="lang-ja" style="font-family: var(--f-jp);">この資金は、すべての参加者の ¥100 <span class="notranslate" translate="no">Bell</span> から積み上がる。<br>
+        <span class="notranslate" translate="no">King</span> の <span class="notranslate" translate="no">Mission</span> は、資金が満ちれば必ず叶えられる。
+      </span>
     </div>
   </div>
 
   <div id="hallContent">
     <div class="empty-hall" id="hallLoading">
       <div class="glyph">⌛</div>
-      <h3>Loading Hall…</h3>
+      <h3>
+        <span class="lang-en">Loading <span class="notranslate" translate="no">Hall</span>…</span>
+        <span class="lang-ja"><span class="notranslate" translate="no">Hall</span> を読み込み中…</span>
+      </h3>
     </div>
   </div>
 
   <!-- Regret framing — shown after content -->
   <section class="regret-block" id="regretBlock" style="display:none;">
-    <p class="regret-title">"あの時、参加していれば。"</p>
-    <p class="regret-body">
-      早期Cycleの参加者は永久に「Founding Member」として記録されます。<br>
-      参加者が少ない時に Bell を鳴らした者は、選ばれる確率が高い。<br>
-      <span style="color: var(--gold-deep); font-style: italic;">— The earliest Bells ring the loudest. —</span>
+    <p class="regret-title">
+      <span class="lang-en">"If only I had joined back then."</span>
+      <span class="lang-ja">"あの時、参加していれば。"</span>
     </p>
-    <a href="entry.html" class="btn-regret">Ring the Bell now · ¥100</a>
+    <p class="regret-body">
+      <span class="lang-en">Participants in early <span class="notranslate" translate="no">Cycles</span> are forever recorded as <span class="notranslate" translate="no">Founding Members</span>.<br>
+        Those who ring the <span class="notranslate" translate="no">Bell</span> when participants are few have higher odds of being chosen.<br>
+        <span style="color: var(--gold-deep); font-style: italic;">— The earliest Bells ring the loudest. —</span>
+      </span>
+      <span class="lang-ja">早期 <span class="notranslate" translate="no">Cycle</span> の参加者は永久に「<span class="notranslate" translate="no">Founding Member</span>」として記録されます。<br>
+        参加者が少ない時に <span class="notranslate" translate="no">Bell</span> を鳴らした者は、選ばれる確率が高い。<br>
+        <span style="color: var(--gold-deep); font-style: italic;">— The earliest Bells ring the loudest. —</span>
+      </span>
+    </p>
+    <a href="entry.html" class="btn-regret">
+      <span class="lang-en">Ring the <span class="notranslate" translate="no">Bell</span> now · ¥100</span>
+      <span class="lang-ja">今 <span class="notranslate" translate="no">Bell</span> を鳴らす · ¥100</span>
+    </a>
   </section>
 
   <script>
@@ -198,6 +232,13 @@
       const API_BASE = 'https://tamjump-contact-api.animalb001.workers.dev';
       const content  = document.getElementById('hallContent');
       const regret   = document.getElementById('regretBlock');
+
+      // Language helper: English is the master, .lang-ja is the alternate.
+      // Read the same data-display-lang attribute that i18n.js maintains
+      // so dynamic JS-rendered text stays in sync with the picker.
+      function isJa() {
+        return document.documentElement.getAttribute('data-display-lang') === 'ja';
+      }
 
       // Mission Fund running total banner
       fetch(API_BASE + '/game/mission-fund')
@@ -222,7 +263,9 @@
           content.innerHTML = `<div class="empty-hall">
             <div class="glyph">⌛</div>
             <h3>The Hall is being prepared.</h3>
-            <p>最初の鐘の余韻が、まだここに記録されていません。<br>
+            <p>${isJa()
+              ? '最初の鐘の余韻が、まだここに記録されていません。'
+              : 'The echo of the first Bell has not yet been recorded here.'}<br>
             <span style="color:var(--ash);">No Kings have been recorded yet. The first Cycle is approaching its close.</span></p>
           </div>`;
           regret.style.display = 'block';
@@ -242,8 +285,9 @@
           content.innerHTML = `<div class="empty-hall">
             <div class="glyph">⌛</div>
             <h3>The Hall awaits its first King.</h3>
-            <p>Cycle 1 が進行中です。最初の Bell が鳴った後、ここに王の記録が刻まれます。<br>
-            <span style="color:var(--ash);">Cycle 1 is in progress. After the first Bell rings, the first King's name will be inscribed here forever.</span></p>
+            <p>${isJa()
+              ? 'Cycle 1 が進行中です。最初の Bell が鳴った後、ここに王の記録が刻まれます。'
+              : 'Cycle 1 is in progress. After the first Bell rings, the first King\u2019s name will be inscribed here forever.'}</p>
           </div>`;
           regret.style.display = 'block';
           return;
@@ -253,6 +297,7 @@
         const partMap = {};
         (data.cycleSummary || []).forEach(c => { partMap[c.cycle_number] = c.participants; });
 
+        const partLabel = isJa() ? '参加者' : 'participants';
         let html = '';
         cycleNums.forEach(cn => {
           const isFounding = cn <= (data.foundingCohortMax || 3);
@@ -261,7 +306,7 @@
             <div class="cycle-group-head">
               <span class="cycle-num">Cycle ${cn}</span>
               ${isFounding ? '<span class="cycle-founding-tag">Founding Cycle</span>' : ''}
-              ${part != null ? `<span class="cycle-meta">${part} participants</span>` : ''}
+              ${part != null ? `<span class="cycle-meta">${part} ${partLabel}</span>` : ''}
             </div>
             <div class="king-grid">
               ${cycleMap[cn].map(k => kingCard(k)).join('')}
@@ -276,19 +321,26 @@
         const status = k.grant_status || 'awaiting_fund';
         const amt = k.grant_amount_jpy || 0;
         const isGranted = status === 'granted';
-        const statusLabel = status === 'granted' ? '✓ Granted' : status === 'in_progress' ? '◐ In Progress' : '○ Awaiting Fund';
+        const ja = isJa();
+        const labelMap = ja
+          ? { granted: '✓ 達成', in_progress: '◐ 進行中', awaiting_fund: '○ 資金待ち' }
+          : { granted: '✓ Granted', in_progress: '◐ In Progress', awaiting_fund: '○ Awaiting Fund' };
+        const statusLabel = labelMap[status] || labelMap.awaiting_fund;
         const dotClass = status === 'granted' ? 'granted' : status === 'in_progress' ? 'progress' : 'awaiting';
+        const rankLabel = ja ? `第 ${k.rank} 位 · King` : `Rank ${k.rank} · King`;
+        const anonLabel = ja ? '匿名' : 'Anonymous';
+        const proofLabel = ja ? '↗ Mission の証跡' : '↗ Proof of Mission';
         return `<article class="king-card ${isGranted ? 'is-granted' : ''}">
-          <div class="king-rank">Rank ${k.rank} · King</div>
+          <div class="king-rank">${rankLabel}</div>
           <h3 class="king-mission">${escapeHtml(k.mission_name)}</h3>
-          <div class="king-meta">${escapeHtml(k.country || '—')} · ${escapeHtml(k.display_handle || 'Anonymous')}</div>
+          <div class="king-meta">${escapeHtml(k.country || '—')} · ${escapeHtml(k.display_handle || anonLabel)}</div>
           <p class="king-summary">${escapeHtml(k.mission_summary || '')}</p>
           <div class="king-status">
             <span class="dot ${dotClass}"></span>
             <span>${statusLabel}</span>
             <span class="amt ${amt > 0 ? '' : 'unfunded'}">¥${(amt).toLocaleString()}</span>
           </div>
-          ${k.proof_url ? `<a class="proof-link" href="${escapeAttr(k.proof_url)}" target="_blank" rel="noopener">↗ Proof of Mission</a>` : ''}
+          ${k.proof_url ? `<a class="proof-link" href="${escapeAttr(k.proof_url)}" target="_blank" rel="noopener">${proofLabel}</a>` : ''}
         </article>`;
       }
 
@@ -303,27 +355,39 @@
 
 <footer class="legal-footer">
   <nav class="legal-footer-nav legal-footer-nav-primary">
-    <a href="index.html">← KINGMAKER</a>
+    <a href="index.html" class="notranslate" translate="no">← KINGMAKER</a>
     <span class="sep">·</span>
-    <a href="how-it-works.html">仕組み</a>
+    <a href="how-it-works.html">
+      <span class="lang-en">How it works</span>
+      <span class="lang-ja">仕組み</span>
+    </a>
     <span class="sep">·</span>
-    <a href="entry.html">エントリー</a>
+    <a href="entry.html">
+      <span class="lang-en">Entry</span>
+      <span class="lang-ja">エントリー</span>
+    </a>
     <span class="sep">·</span>
-    <a href="mypage.html">My Page</a>
+    <a href="mypage.html" class="notranslate" translate="no">My Page</a>
     <span class="sep">·</span>
-    <a href="kings.html">Hall of Kings</a>
+    <a href="kings.html" class="notranslate" translate="no">Hall of Kings</a>
     <span class="sep">·</span>
-    <a href="rules.html">Founding Bell ルール</a>
+    <a href="rules.html">
+      <span class="lang-en"><span class="notranslate" translate="no">Founding Bell</span> rules</span>
+      <span class="lang-ja"><span class="notranslate" translate="no">Founding Bell</span> ルール</span>
+    </a>
     <span class="sep">·</span>
-    <a href="risk.html">重要事項</a>
+    <a href="risk.html">
+      <span class="lang-en">Important notices</span>
+      <span class="lang-ja">重要事項</span>
+    </a>
   </nav>
   <div class="legal-footer-meta">
-    <span class="meta-line">© 2026 · KINGMAKER 23:23 · Operated by <a href="https://tamjump.com/" target="_blank" rel="noopener">タムジ株式会社 / TAmJ</a></span>
+    <span class="meta-line">© 2026 · <span class="notranslate" translate="no">KINGMAKER 23:23</span> · Operated by <a href="https://tamjump.com/" target="_blank" rel="noopener" class="notranslate" translate="no">タムジ株式会社 / TAmJ</a></span>
   </div>
 </footer>
 
 </main>
 
-<script src="js/i18n.js?v=20260522c"></script>
+<script src="js/i18n.js?v=20260523c"></script>
 </body>
 </html>
