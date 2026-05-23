@@ -75,7 +75,121 @@ The full content split:
 
 ---
 
-# KINGMAKER 23:23 — `v=20260523n` (Cycle 2 state machine — cycle-bar JS upgraded for the live cycle)
+# KINGMAKER 23:23 — `v=20260523p` (Worker code audit: cycle resolution unified + SHA picker fix + seed-input guard)
+
+Session ⑮. Post-session-⑭ deeper code audit of `worker/index.js` found
+three correctness issues that all touch the Cycle 2 launch path. Fixed
+in this commit.
+
+## 1. Cycle resolution made consistent across read + write paths
+
+**The issue:** Session ⑭ fixed the write path (`/entry/pay`) to fall
+back to `GAME_CONFIG.currentCycle` when `env.CURRENT_CYCLE` is unset.
+But ~14 other call sites (game-bell-status, quiz-start, quiz-answer,
+quiz-result, phase2-draw, phase2-result, phase3-vote, phase3-finalize,
+etc.) were still reading `GAME_CONFIG.currentCycle` directly, ignoring
+the env override entirely. If the operator ever set
+`env.CURRENT_CYCLE=3` to stage-test Cycle 3 while keeping the source
+at Cycle 2, **new entries would write `founding_cohort=3` while game
+sessions would still look up against Cycle 2** — a silent mismatch
+that would leave paid participants unable to enter the quiz.
+
+**The fix:** Centralized in a new `resolveCurrentCycle(env)` helper
+near the game-config block. Every call site that previously read
+`GAME_CONFIG.currentCycle` now goes through the helper. Result: env
+override is honored consistently, or, if unset, the source-of-truth
+constant in `GAME_CONFIG.currentCycle` is used everywhere identically.
+
+**Bonus:** the previous chain `parseInt(env.CURRENT_CYCLE || "1", 10)
+|| 1` would accept negative numbers (e.g. `"-5"` → `-5`). The helper
+now floors at positive integers — `-5`, `0`, `"abc"`, `""`, `null`,
+`undefined` all collapse to the GAME_CONFIG fallback.
+
+## 2. Body-supplied `cycle` override hardened
+
+**The issue:** Admin endpoints (phase2/draw, phase3/finalize) and
+public read endpoints (phase2/result, phase3/result) accepted an
+override cycle from the request body or query string via
+`parseInt(body.cycle || GAME_CONFIG.currentCycle, 10)`. If a caller
+sent `body.cycle = "abc"`, `parseInt` returned `NaN` which then
+propagated into SQL bindings as `NaN`. The query would return no
+rows; the handler would respond with "Phase 2 not yet drawn" instead
+of a clear validation error, and an operator debugging the issue
+would have no signal that the input was malformed.
+
+**The fix:** New `parseCycleOverride(value, env)` helper that returns
+the parsed integer only if it's positive, otherwise falls back to
+`resolveCurrentCycle(env)`. Behavioral test: 11/11 input variants
+resolve to a sane positive integer or the configured fallback.
+
+## 3. Phase 2 SHA-256 draw — picker offset bug
+
+**The issue:** The 3-of-N winner pick in `handleGamePhase2Draw` used
+`hash.substring((i * 8) % 56, ((i * 8) % 56) + 8)` to sample 8-char
+windows from the 64-char hex hash. `% 56` makes the offsets cycle
+through `{0, 8, 16, 24, 32, 40, 48}` — only 7 distinct windows,
+never sampling offset 56 (which would yield the last 8 hex chars of
+the hash). The last 32 bits of every SHA-256 hash were therefore
+ignored. This isn't a security issue (the seed is publicly auditable
+and the resulting draw is still deterministic given the seed) but it
+silently reduces the effective entropy and is the kind of mistake
+that auditors will (rightly) flag.
+
+**The fix:** Use `% 57` so offsets cycle through `{0, 8, 16, 24, 32,
+40, 48, 56}` — all 8 possible 8-char windows. Verified by direct
+sampling of a known hash: new code finds 8 distinct windows, old
+code found 7.
+
+## 4. Phase 2 SHA-256 draw — seed-input guard
+
+**The issue:** The draw handler accepted optional `btcHash`,
+`nikkeiClose`, `sp500Close` in the request body. If any were missing,
+it silently filled in zeros (`0000...0000`, `0`, `0`) and ran the
+draw anyway. The seed would still be deterministic and the hash
+publicly verifiable, but it would **not** be bound to real-world
+market data — defeating the whole purpose of the public-verifiability
+narrative (Bell-day Bitcoin block hash + market closes can't be
+predicted in advance; zeros can).
+
+If the operator forgets to paste the live values when running the
+cron, every Cycle 2 winner can correctly point out that the seed
+inputs were placeholder zeros and the operator could have run the
+draw any time, choosing whichever seed they liked.
+
+**The fix:** The handler now returns `400 { error: "Public seed
+inputs required..." }` unless either (a) all three of `btcHash`,
+`nikkeiClose`, `sp500Close` are supplied OR (b) the caller explicitly
+sets `allowSyntheticSeed: true` (testing only). The
+`allowSyntheticSeed` hatch is documented in the error message so an
+operator who really does want a synthetic draw (e.g. a dry-run before
+the real Bell day) knows how to opt in.
+
+## ⚠️ OPERATOR ACTION REQUIRED (same as session ⑭)
+
+The Worker is **not auto-deployed**. To get these fixes live:
+
+1. https://dash.cloudflare.com/ → Workers & Pages →
+   `tamjump-contact-api`
+2. Top right → **Edit code**
+3. Ctrl+A → Delete → paste fresh `worker/index.js` from commit
+   `<this commit's hash>` or later
+4. Deploy
+
+Same step needed for session ⑭'s `v20260523o` if not yet done.
+
+## Behavioral verification (offline)
+
+- `resolveCurrentCycle()`: 9/9 input variants (undefined, empty,
+  valid, invalid, negative, zero, etc.) resolve correctly.
+- `parseCycleOverride()`: 11/11 combinations of body input + env
+  setting resolve correctly.
+- SHA picker: with a known 64-char hash, samples all 8 distinct
+  8-char windows (new behavior) vs only 7 (old behavior).
+- Seed-input guard: 6/6 input combinations correctly accept or
+  reject.
+
+---
+
 
 Session ⑬. Pre-Cycle-2 dry-run audit found that the homepage cycle-bar
 JS (`js/main.js`) was still hardcoded to Cycle 1's three-stage schedule

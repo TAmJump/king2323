@@ -825,16 +825,9 @@ async function handleEntryPay(request, env, origin) {
   }
 
   // ── Determine cycle number ──
-  // Priority: env.CURRENT_CYCLE override > GAME_CONFIG.currentCycle (source of
-  // truth in this file) > 1 (paranoid floor).
-  //
-  // Before v20260523o this used `env.CURRENT_CYCLE || "1"` and ignored
-  // GAME_CONFIG.currentCycle entirely. That meant the operator had to
-  // remember to flip TWO settings every cycle bump: the env var AND the
-  // GAME_CONFIG.currentCycle constant. Forgetting the env var silently
-  // misclassified new entries into Cycle 1. Now GAME_CONFIG is canonical
-  // and the env var is just an override hatch.
-  const cycleNumber = parseInt(env.CURRENT_CYCLE || String(GAME_CONFIG.currentCycle) || "1", 10) || 1;
+  // Use the single resolver `resolveCurrentCycle(env)` so the read and write
+  // paths always agree. See the function's docstring for the priority chain.
+  const cycleNumber = resolveCurrentCycle(env);
 
   // ── D1: save Mission Entry ──
   const ticketNumber = await generateTicketNumber(env, config.prefix);
@@ -1518,24 +1511,57 @@ var GAME_CONFIG = {
 
 function gameNowMs() { return Date.now(); }
 
+// ── Cycle resolution (single source of truth) ──
+// Returns the integer cycle number to use for THIS request. Priority order:
+//   1. env.CURRENT_CYCLE if present and parses to a positive integer
+//      (operator override hatch — useful for testing or staged rollover).
+//   2. GAME_CONFIG.currentCycle (the source of truth committed in this file).
+//   3. 1 (paranoid floor — should never be hit).
+//
+// Use this for EVERY cycle-aware operation in the Worker so that read and
+// write paths never disagree. Before v20260523p the entry-pay write path
+// used a different fallback chain from the game-state read paths, which
+// meant operator overrides could silently misclassify writes vs reads.
+function resolveCurrentCycle(env) {
+  const fromEnv = env && env.CURRENT_CYCLE ? parseInt(env.CURRENT_CYCLE, 10) : NaN;
+  if (Number.isInteger(fromEnv) && fromEnv > 0) return fromEnv;
+  const fromConfig = parseInt(GAME_CONFIG.currentCycle, 10);
+  if (Number.isInteger(fromConfig) && fromConfig > 0) return fromConfig;
+  return 1;
+}
+__name(resolveCurrentCycle, "resolveCurrentCycle");
+
+// Parse a caller-supplied cycle override (from body.cycle or
+// url.searchParams.get("cycle")). If the value is a positive integer, use
+// it; otherwise fall back to resolveCurrentCycle(env). This guards against
+// "abc", "-1", "0", "", null, undefined — none of which should reach a SQL
+// binding and confuse downstream queries.
+function parseCycleOverride(value, env) {
+  const n = parseInt(value, 10);
+  if (Number.isInteger(n) && n > 0) return n;
+  return resolveCurrentCycle(env);
+}
+__name(parseCycleOverride, "parseCycleOverride");
+
 function gameBellPhase(env) {
   const bellMs = new Date(GAME_CONFIG.bellRingsAtIso).getTime();
   const nowMs = gameNowMs();
   const offsetSec = Math.floor((nowMs - bellMs) / 1000);
+  const cycle = resolveCurrentCycle(env);
 
   if (offsetSec < 0) {
-    return { phase: "pre_bell", offsetSec, secondsUntilBell: -offsetSec, cycle: GAME_CONFIG.currentCycle };
+    return { phase: "pre_bell", offsetSec, secondsUntilBell: -offsetSec, cycle };
   }
   if (offsetSec < GAME_CONFIG.phase2StartOffsetSec) {
-    return { phase: "phase1", offsetSec, secondsLeft: GAME_CONFIG.phase2StartOffsetSec - offsetSec, cycle: GAME_CONFIG.currentCycle };
+    return { phase: "phase1", offsetSec, secondsLeft: GAME_CONFIG.phase2StartOffsetSec - offsetSec, cycle };
   }
   if (offsetSec < GAME_CONFIG.phase3StartOffsetSec) {
-    return { phase: "phase2", offsetSec, secondsLeft: GAME_CONFIG.phase3StartOffsetSec - offsetSec, cycle: GAME_CONFIG.currentCycle };
+    return { phase: "phase2", offsetSec, secondsLeft: GAME_CONFIG.phase3StartOffsetSec - offsetSec, cycle };
   }
   if (offsetSec < GAME_CONFIG.bellClosesAtOffsetSec) {
-    return { phase: "phase3", offsetSec, secondsLeft: GAME_CONFIG.bellClosesAtOffsetSec - offsetSec, cycle: GAME_CONFIG.currentCycle };
+    return { phase: "phase3", offsetSec, secondsLeft: GAME_CONFIG.bellClosesAtOffsetSec - offsetSec, cycle };
   }
-  return { phase: "post_bell", offsetSec, cycle: GAME_CONFIG.currentCycle };
+  return { phase: "post_bell", offsetSec, cycle };
 }
 __name(gameBellPhase, "gameBellPhase");
 
@@ -1547,7 +1573,7 @@ async function gameResolveParticipant(env, request) {
   if (email) {
     const row = await env.DB.prepare(
       "SELECT ticket_number, email, founding_cohort, paid FROM contacts WHERE email = ? AND paid = 1 AND founding_cohort = ? ORDER BY created_at DESC LIMIT 1"
-    ).bind(email, GAME_CONFIG.currentCycle).first();
+    ).bind(email, resolveCurrentCycle(env)).first();
     if (row) return { source: "session", row };
   }
   return { source: null, row: null };
@@ -1557,10 +1583,11 @@ __name(gameResolveParticipant, "gameResolveParticipant");
 // Public Bell status endpoint — drives the countdown on index.html / play.html.
 async function handleGameBellStatus(request, env, origin) {
   const phase = gameBellPhase(env);
+  const cycle = phase.cycle;  // already resolved through resolveCurrentCycle
   // Also expose paid-entry count for the current cycle (for play.html participant counter).
   const cnt = await env.DB.prepare(
     "SELECT COUNT(*) AS n FROM contacts WHERE paid = 1 AND founding_cohort = ?"
-  ).bind(GAME_CONFIG.currentCycle).first();
+  ).bind(cycle).first();
   const participantCount = cnt ? cnt.n : 0;
 
   // ─── Dormancy override ─────────────────────────────────────────
@@ -1581,7 +1608,7 @@ async function handleGameBellStatus(request, env, origin) {
     ok: true,
     bellRingsAtIso: GAME_CONFIG.bellRingsAtIso,
     serverNowIso: new Date().toISOString(),
-    cycle: GAME_CONFIG.currentCycle,
+    cycle,
     phase: effectivePhase,
     rawPhase: phase.phase,                // unmasked phase, for diagnostics
     secondsLeft: phase.secondsLeft,
@@ -1607,6 +1634,7 @@ async function handleGameQuizStart(request, env, origin) {
   if (phase.phase !== "phase1") {
     return jsonResponse({ ok: false, error: "Not in Phase 1.", phase: phase.phase }, 403, origin);
   }
+  const cycle = phase.cycle;
   const { row: participant } = await gameResolveParticipant(env, request);
   if (!participant) {
     return jsonResponse({ ok: false, error: "Not a paid participant of this Cycle." }, 401, origin);
@@ -1618,7 +1646,7 @@ async function handleGameQuizStart(request, env, origin) {
   // Idempotent: if session already exists, return it.
   let session = await env.DB.prepare(
     "SELECT * FROM game_sessions WHERE cycle_number = ? AND contact_ticket = ?"
-  ).bind(GAME_CONFIG.currentCycle, participant.ticket_number).first();
+  ).bind(cycle, participant.ticket_number).first();
 
   let assignedGroupIds;
   if (!session) {
@@ -1626,7 +1654,7 @@ async function handleGameQuizStart(request, env, origin) {
     // If the Cycle is dormant (paid < threshold), don't let the quiz start.
     const cnt = await env.DB.prepare(
       "SELECT COUNT(*) AS n FROM contacts WHERE paid = 1 AND founding_cohort = ?"
-    ).bind(GAME_CONFIG.currentCycle).first();
+    ).bind(cycle).first();
     if (cnt && cnt.n < GAME_CONFIG.dormancyThreshold) {
       return jsonResponse({
         ok: false,
@@ -1690,7 +1718,7 @@ async function handleGameQuizStart(request, env, origin) {
     const ins = await env.DB.prepare(
       "INSERT INTO game_sessions (cycle_number, contact_ticket, email, language, assigned_q_json, started_at) VALUES (?, ?, ?, ?, ?, ?)"
     ).bind(
-      GAME_CONFIG.currentCycle,
+      cycle,
       participant.ticket_number,
       participant.email,
       lang,
@@ -1784,7 +1812,7 @@ async function handleGameQuizAnswer(request, env, origin) {
   await env.DB.prepare(
     "INSERT INTO quiz_attempts (cycle_number, session_id, contact_ticket, question_id, group_id, chosen_index, is_correct, answered_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
   ).bind(
-    GAME_CONFIG.currentCycle, sessionId, participant.ticket_number,
+    resolveCurrentCycle(env), sessionId, participant.ticket_number,
     q.id, q.group_id, chosenIndex, isCorrect, new Date().toISOString()
   ).run();
 
@@ -1819,7 +1847,7 @@ async function handleGameQuizResult(request, env, origin) {
   }
   const session = await env.DB.prepare(
     "SELECT id, cycle_number, current_index, correct_count, phase, quiz_passed, quiz_done_at FROM game_sessions WHERE cycle_number = ? AND contact_ticket = ?"
-  ).bind(GAME_CONFIG.currentCycle, participant.ticket_number).first();
+  ).bind(resolveCurrentCycle(env), participant.ticket_number).first();
   return jsonResponse({ ok: true, session: session || null }, 200, origin);
 }
 __name(handleGameQuizResult, "handleGameQuizResult");
@@ -1832,7 +1860,7 @@ async function handleGamePhase2Draw(request, env, origin) {
     return jsonResponse({ ok: false, error: "Unauthorized." }, 401, origin);
   }
   const body = await request.json().catch(() => ({}));
-  const cycle = parseInt(body.cycle || GAME_CONFIG.currentCycle, 10);
+  const cycle = parseCycleOverride(body.cycle, env);
 
   // Idempotent: if already drawn, return existing state.
   let state = await env.DB.prepare(
@@ -1875,23 +1903,44 @@ async function handleGamePhase2Draw(request, env, origin) {
   }
 
   // Seed: caller-supplied (so operator can paste real BTC hash / Nikkei / S&P).
-  // If not supplied, fall back to a self-generated deterministic seed.
-  const btc = body.btcHash || "0000000000000000000000000000000000000000000000000000000000000000";
-  const nikkei = body.nikkeiClose || "0";
-  const sp500 = body.sp500Close || "0";
-  const seed = `cycle:${cycle}|btc:${btc}|nikkei:${nikkei}|sp500:${sp500}|n:${arr.length}`;
+  // The public-verifiability narrative requires that the seed be bound to
+  // real-world data the operator couldn't have known in advance. We REFUSE
+  // to draw with placeholder zeros unless the caller explicitly passes
+  // `allowSyntheticSeed: true` (operator must add this in the request body
+  // to override — useful only for dry-run testing where reproducibility
+  // matters more than public verifiability).
+  const btc    = body.btcHash      || "";
+  const nikkei = body.nikkeiClose  || "";
+  const sp500  = body.sp500Close   || "";
+  const hasSeedInputs = btc && nikkei && sp500;
+  if (!hasSeedInputs && !body.allowSyntheticSeed) {
+    return jsonResponse({
+      ok: false,
+      error: "Public seed inputs required. Pass btcHash, nikkeiClose, sp500Close in the request body. Or set allowSyntheticSeed:true to bypass (testing only)."
+    }, 400, origin);
+  }
+  const btcSafe    = btc    || "0000000000000000000000000000000000000000000000000000000000000000";
+  const nikkeiSafe = nikkei || "0";
+  const sp500Safe  = sp500  || "0";
+  const seed = `cycle:${cycle}|btc:${btcSafe}|nikkei:${nikkeiSafe}|sp500:${sp500Safe}|n:${arr.length}`;
   const hash = await sha256Hex(seed);
 
-  // Pick 3 distinct indices from hash. Take chunks of 8 hex chars at offsets and mod by length.
+  // Pick distinct indices from the hash. A SHA-256 hex string is 64 chars.
+  // We slide an 8-char window across the whole hash (offsets 0, 8, 16, ...,
+  // 56), giving 8 candidate indices on a single pass. If we need more
+  // (e.g. after collisions on small `arr`), the loop wraps modulo 64 - 8
+  // = 57 so we can re-sample at non-aligned offsets. Before v20260523p
+  // this loop used `% 56` which silently skipped offset 56 (the last 8
+  // hex chars of the hash), losing one chunk of entropy per cycle.
   const winners = [];
-  let attempts = 0;
-  for (let i = 0; winners.length < Math.min(3, arr.length) && i < 32; i++) {
-    const chunk = hash.substring((i * 8) % 56, ((i * 8) % 56) + 8);
+  for (let i = 0; winners.length < Math.min(3, arr.length) && i < 64; i++) {
+    const off = (i * 8) % 57;  // 0..56 inclusive — all 8-char windows
+    const chunk = hash.substring(off, off + 8);
     const idx = parseInt(chunk, 16) % arr.length;
     if (!winners.includes(idx)) winners.push(idx);
-    attempts++;
   }
-  // Fallback: linear scan.
+  // Fallback: linear scan (only reached if arr.length is small + hash had
+  // extreme collisions; near-impossible for real participant counts).
   while (winners.length < Math.min(3, arr.length)) {
     for (let i = 0; i < arr.length && winners.length < 3; i++) {
       if (!winners.includes(i)) winners.push(i);
@@ -1946,7 +1995,7 @@ __name(handleGamePhase2Draw, "handleGamePhase2Draw");
 // GET /game/phase2/result?cycle=N — public; returns the 3 candidates (anonymous Mission only by default)
 async function handleGamePhase2Result(request, env, origin) {
   const url = new URL(request.url);
-  const cycle = parseInt(url.searchParams.get("cycle") || GAME_CONFIG.currentCycle, 10);
+  const cycle = parseCycleOverride(url.searchParams.get("cycle"), env);
   const state = await env.DB.prepare(
     "SELECT * FROM cycle_state WHERE cycle_number = ?"
   ).bind(cycle).first();
@@ -1992,7 +2041,7 @@ async function handleGameVote(request, env, origin) {
   if (!GAME_CONFIG.voteRightsAll) {
     const sess = await env.DB.prepare(
       "SELECT quiz_passed FROM game_sessions WHERE cycle_number = ? AND contact_ticket = ?"
-    ).bind(GAME_CONFIG.currentCycle, participant.ticket_number).first();
+    ).bind(resolveCurrentCycle(env), participant.ticket_number).first();
     if (!sess || sess.quiz_passed !== 1) {
       return jsonResponse({ ok: false, error: "Only quiz passers may vote." }, 403, origin);
     }
@@ -2003,7 +2052,7 @@ async function handleGameVote(request, env, origin) {
   // Verify kingId is one of this cycle's 3 candidates.
   const state = await env.DB.prepare(
     "SELECT phase2_winner_king_ids FROM cycle_state WHERE cycle_number = ?"
-  ).bind(GAME_CONFIG.currentCycle).first();
+  ).bind(resolveCurrentCycle(env)).first();
   if (!state || !state.phase2_winner_king_ids) {
     return jsonResponse({ ok: false, error: "The Three not yet drawn." }, 400, origin);
   }
@@ -2016,7 +2065,7 @@ async function handleGameVote(request, env, origin) {
   await env.DB.prepare(
     "INSERT INTO votes (cycle_number, voter_contact_ticket, voted_for_king_id, voted_at) VALUES (?, ?, ?, ?) "
     + "ON CONFLICT (cycle_number, voter_contact_ticket) DO UPDATE SET voted_for_king_id = excluded.voted_for_king_id, voted_at = excluded.voted_at"
-  ).bind(GAME_CONFIG.currentCycle, participant.ticket_number, kingId, new Date().toISOString()).run();
+  ).bind(resolveCurrentCycle(env), participant.ticket_number, kingId, new Date().toISOString()).run();
 
   return jsonResponse({ ok: true, votedFor: kingId }, 200, origin);
 }
@@ -2025,7 +2074,7 @@ __name(handleGameVote, "handleGameVote");
 // GET /game/vote/results?cycle=N — tally (public after Phase 3 ends; live before that)
 async function handleGameVoteResults(request, env, origin) {
   const url = new URL(request.url);
-  const cycle = parseInt(url.searchParams.get("cycle") || GAME_CONFIG.currentCycle, 10);
+  const cycle = parseCycleOverride(url.searchParams.get("cycle"), env);
   const rows = await env.DB.prepare(
     "SELECT voted_for_king_id, COUNT(*) AS n FROM votes WHERE cycle_number = ? GROUP BY voted_for_king_id"
   ).bind(cycle).all();
@@ -2046,7 +2095,7 @@ async function handleGamePhase3Finalize(request, env, origin) {
     return jsonResponse({ ok: false, error: "Unauthorized." }, 401, origin);
   }
   const body = await request.json().catch(() => ({}));
-  const cycle = parseInt(body.cycle || GAME_CONFIG.currentCycle, 10);
+  const cycle = parseCycleOverride(body.cycle, env);
 
   const state = await env.DB.prepare(
     "SELECT * FROM cycle_state WHERE cycle_number = ?"
