@@ -140,6 +140,38 @@ var index_default = {
       if (url.pathname === "/mypage/check-password" && request.method === "POST") {
         return await handleMypageCheckPassword(request, env, origin);
       }
+      // ── v20260523 (session ⑨) additions: 5-minute game (THE FIVE) ──
+      // Phase 1: quiz (3 questions, must answer 3/3 correct to advance)
+      // Phase 2: SHA-256 draw of 3 from the passers
+      // Phase 3: open vote — most-voted Mission becomes King
+      // See docs/GAME_SPEC_v2.md for full spec.
+      if (url.pathname === "/game/bell-status" && request.method === "GET") {
+        return await handleGameBellStatus(request, env, origin);
+      }
+      if (url.pathname === "/game/quiz/start" && request.method === "POST") {
+        return await handleGameQuizStart(request, env, origin);
+      }
+      if (url.pathname === "/game/quiz/answer" && request.method === "POST") {
+        return await handleGameQuizAnswer(request, env, origin);
+      }
+      if (url.pathname === "/game/quiz/result" && request.method === "GET") {
+        return await handleGameQuizResult(request, env, origin);
+      }
+      if (url.pathname === "/game/phase2/draw" && request.method === "POST") {
+        return await handleGamePhase2Draw(request, env, origin);
+      }
+      if (url.pathname === "/game/phase2/result" && request.method === "GET") {
+        return await handleGamePhase2Result(request, env, origin);
+      }
+      if (url.pathname === "/game/vote" && request.method === "POST") {
+        return await handleGameVote(request, env, origin);
+      }
+      if (url.pathname === "/game/vote/results" && request.method === "GET") {
+        return await handleGameVoteResults(request, env, origin);
+      }
+      if (url.pathname === "/game/phase3/finalize" && request.method === "POST") {
+        return await handleGamePhase3Finalize(request, env, origin);
+      }
       return jsonResponse({ error: "Not Found" }, 404, origin);
     } catch (err) {
       console.error("Worker error:", err);
@@ -1416,6 +1448,570 @@ async function buildUserData(env, email) {
   };
 }
 __name(buildUserData, "buildUserData");
+
+// ══════════════════════════════════════════════════════════════════════
+// 5-MINUTE GAME — THE FIVE (Phase 1 quiz · Phase 2 SHA draw · Phase 3 vote)
+// ══════════════════════════════════════════════════════════════════════
+// All timestamps are JST. The Bell rings every Friday at 23:23 JST.
+// Window: 23:23:00 → 23:28:00. Defaults from docs/GAME_SPEC_v2.md § 7:
+//   - Q1 voting rights: all paid participants (passed or not).
+//   - Q2 timing: Phase1=120s, Phase2=30s, Phase3=150s (+ 0s buffer).
+//   - Q3 tie: SHA-256 redraw using the same Phase 2 seed.
+//   - Q4 source: operator-written pool (seeded in migration 0003).
+//   - Q5 languages: ja + en.
+//   - Q6 next Cycle: 2026-05-29 (Fri) 23:23 JST.
+//   - Q7 difficulty: balance 1 easy + 1 medium + 1 hard per quiz.
+//   - Q8 voting UI: Mission text only (anonymous), no handle.
+// Operator can override these by editing GAME_CONFIG below and redeploying.
+
+var GAME_CONFIG = {
+  // Cycle 2 opens at this moment (next Bell). Cycle 1 = 2026-05-22T14:23:00Z.
+  // After each Cycle's finalize, operator updates these manually.
+  currentCycle: 2,
+  bellRingsAtIso: "2026-05-29T14:23:00Z",   // 2026-05-29 (Fri) 23:23 JST
+  phase1DurationSec: 120,                    // quiz window
+  phase2DurationSec: 30,                     // SHA draw animation
+  phase3DurationSec: 150,                    // voting window
+  // Phase windows (sec offset from bell). End of Phase3 = end of 5 min.
+  phase1StartOffsetSec: 0,
+  phase2StartOffsetSec: 120,
+  phase3StartOffsetSec: 150,
+  bellClosesAtOffsetSec: 300,                // total 5 minutes
+  // Phase 1
+  questionsPerQuiz: 3,
+  requiredCorrect: 3,                        // 3/3 to pass
+  // Phase 3
+  voteRightsAll: true,                       // false = passers only
+  // Tie-break
+  tieBreakMode: "sha-redraw",                // 'sha-redraw' | 'operator' | 'multi-king'
+  // Languages allowed
+  allowedLanguages: ["ja", "en"]
+};
+
+function gameNowMs() { return Date.now(); }
+
+function gameBellPhase(env) {
+  const bellMs = new Date(GAME_CONFIG.bellRingsAtIso).getTime();
+  const nowMs = gameNowMs();
+  const offsetSec = Math.floor((nowMs - bellMs) / 1000);
+
+  if (offsetSec < 0) {
+    return { phase: "pre_bell", offsetSec, secondsUntilBell: -offsetSec, cycle: GAME_CONFIG.currentCycle };
+  }
+  if (offsetSec < GAME_CONFIG.phase2StartOffsetSec) {
+    return { phase: "phase1", offsetSec, secondsLeft: GAME_CONFIG.phase2StartOffsetSec - offsetSec, cycle: GAME_CONFIG.currentCycle };
+  }
+  if (offsetSec < GAME_CONFIG.phase3StartOffsetSec) {
+    return { phase: "phase2", offsetSec, secondsLeft: GAME_CONFIG.phase3StartOffsetSec - offsetSec, cycle: GAME_CONFIG.currentCycle };
+  }
+  if (offsetSec < GAME_CONFIG.bellClosesAtOffsetSec) {
+    return { phase: "phase3", offsetSec, secondsLeft: GAME_CONFIG.bellClosesAtOffsetSec - offsetSec, cycle: GAME_CONFIG.currentCycle };
+  }
+  return { phase: "post_bell", offsetSec, cycle: GAME_CONFIG.currentCycle };
+}
+__name(gameBellPhase, "gameBellPhase");
+
+// Look up the paid contact for an email; returns the contact row or null.
+// We trust an authenticated session (cookie) OR an email+ticket pair.
+async function gameResolveParticipant(env, request) {
+  // Path A: cookie session.
+  const email = await getSessionEmail(env, request);
+  if (email) {
+    const row = await env.DB.prepare(
+      "SELECT ticket_number, email, founding_cohort, paid FROM contacts WHERE email = ? AND paid = 1 AND founding_cohort = ? ORDER BY created_at DESC LIMIT 1"
+    ).bind(email, GAME_CONFIG.currentCycle).first();
+    if (row) return { source: "session", row };
+  }
+  return { source: null, row: null };
+}
+__name(gameResolveParticipant, "gameResolveParticipant");
+
+// Public Bell status endpoint — drives the countdown on index.html / play.html.
+async function handleGameBellStatus(request, env, origin) {
+  const phase = gameBellPhase(env);
+  // Also expose paid-entry count for the current cycle (for play.html participant counter).
+  const cnt = await env.DB.prepare(
+    "SELECT COUNT(*) AS n FROM contacts WHERE paid = 1 AND founding_cohort = ?"
+  ).bind(GAME_CONFIG.currentCycle).first();
+  return jsonResponse({
+    ok: true,
+    bellRingsAtIso: GAME_CONFIG.bellRingsAtIso,
+    serverNowIso: new Date().toISOString(),
+    cycle: GAME_CONFIG.currentCycle,
+    phase: phase.phase,
+    secondsLeft: phase.secondsLeft,
+    secondsUntilBell: phase.secondsUntilBell,
+    participantCount: cnt ? cnt.n : 0,
+    config: {
+      phase1DurationSec: GAME_CONFIG.phase1DurationSec,
+      phase2DurationSec: GAME_CONFIG.phase2DurationSec,
+      phase3DurationSec: GAME_CONFIG.phase3DurationSec,
+      bellClosesAtOffsetSec: GAME_CONFIG.bellClosesAtOffsetSec
+    }
+  }, 200, origin);
+}
+__name(handleGameBellStatus, "handleGameBellStatus");
+
+// POST /game/quiz/start — body: { language: 'ja'|'en' }
+// Auth: session cookie.
+// Creates a game_sessions row if none exists, returns the 3 questions.
+async function handleGameQuizStart(request, env, origin) {
+  const phase = gameBellPhase(env);
+  if (phase.phase !== "phase1") {
+    return jsonResponse({ ok: false, error: "Not in Phase 1.", phase: phase.phase }, 403, origin);
+  }
+  const { row: participant } = await gameResolveParticipant(env, request);
+  if (!participant) {
+    return jsonResponse({ ok: false, error: "Not a paid participant of this Cycle." }, 401, origin);
+  }
+  const body = await request.json().catch(() => ({}));
+  let lang = (body.language || "ja").toLowerCase();
+  if (!GAME_CONFIG.allowedLanguages.includes(lang)) lang = "ja";
+
+  // Idempotent: if session already exists, return it.
+  let session = await env.DB.prepare(
+    "SELECT * FROM game_sessions WHERE cycle_number = ? AND contact_ticket = ?"
+  ).bind(GAME_CONFIG.currentCycle, participant.ticket_number).first();
+
+  let assignedGroupIds;
+  if (!session) {
+    // Pick 3 questions: 1 easy + 1 medium + 1 hard, randomly, only active rows in this lang.
+    const easy = await env.DB.prepare(
+      "SELECT group_id FROM quiz_questions WHERE language = ? AND difficulty = 1 AND active = 1 ORDER BY RANDOM() LIMIT 1"
+    ).bind(lang).first();
+    const medium = await env.DB.prepare(
+      "SELECT group_id FROM quiz_questions WHERE language = ? AND difficulty = 2 AND active = 1 ORDER BY RANDOM() LIMIT 1"
+    ).bind(lang).first();
+    const hard = await env.DB.prepare(
+      "SELECT group_id FROM quiz_questions WHERE language = ? AND difficulty = 3 AND active = 1 ORDER BY RANDOM() LIMIT 1"
+    ).bind(lang).first();
+
+    const groups = [easy, medium, hard].filter(Boolean).map(r => r.group_id);
+    if (groups.length < 3) {
+      // Fallback: any 3 distinct groups in language.
+      const any = await env.DB.prepare(
+        "SELECT DISTINCT group_id FROM quiz_questions WHERE language = ? AND active = 1 ORDER BY RANDOM() LIMIT 3"
+      ).bind(lang).all();
+      assignedGroupIds = (any.results || []).map(r => r.group_id);
+    } else {
+      assignedGroupIds = groups;
+    }
+
+    if (assignedGroupIds.length < 3) {
+      return jsonResponse({ ok: false, error: "Insufficient question pool. Operator must seed more." }, 500, origin);
+    }
+
+    const ins = await env.DB.prepare(
+      "INSERT INTO game_sessions (cycle_number, contact_ticket, email, language, assigned_q_json, started_at) VALUES (?, ?, ?, ?, ?, ?)"
+    ).bind(
+      GAME_CONFIG.currentCycle,
+      participant.ticket_number,
+      participant.email,
+      lang,
+      JSON.stringify(assignedGroupIds),
+      new Date().toISOString()
+    ).run();
+    session = await env.DB.prepare(
+      "SELECT * FROM game_sessions WHERE id = ?"
+    ).bind(ins.meta.last_row_id).first();
+  } else {
+    assignedGroupIds = JSON.parse(session.assigned_q_json);
+  }
+
+  // Fetch the 3 questions (without correct_index).
+  const placeholders = assignedGroupIds.map(() => "?").join(",");
+  const qs = await env.DB.prepare(
+    `SELECT id, group_id, category, difficulty, question, choices_json
+     FROM quiz_questions WHERE group_id IN (${placeholders}) AND language = ? AND active = 1`
+  ).bind(...assignedGroupIds, lang).all();
+
+  // Preserve order according to assignedGroupIds.
+  const orderedQs = assignedGroupIds.map(gid => (qs.results || []).find(q => q.group_id === gid)).filter(Boolean);
+
+  return jsonResponse({
+    ok: true,
+    sessionId: session.id,
+    currentIndex: session.current_index,
+    correctCount: session.correct_count,
+    phase: session.phase,
+    quizPassed: session.quiz_passed,
+    questions: orderedQs.map(q => ({
+      id: q.id,
+      groupId: q.group_id,
+      category: q.category,
+      difficulty: q.difficulty,
+      question: q.question,
+      choices: JSON.parse(q.choices_json)
+    }))
+  }, 200, origin);
+}
+__name(handleGameQuizStart, "handleGameQuizStart");
+
+// POST /game/quiz/answer — body: { sessionId, questionId, chosenIndex }
+async function handleGameQuizAnswer(request, env, origin) {
+  const phase = gameBellPhase(env);
+  if (phase.phase !== "phase1") {
+    return jsonResponse({ ok: false, error: "Quiz window closed.", phase: phase.phase }, 403, origin);
+  }
+  const { row: participant } = await gameResolveParticipant(env, request);
+  if (!participant) {
+    return jsonResponse({ ok: false, error: "Not a paid participant." }, 401, origin);
+  }
+  const body = await request.json().catch(() => ({}));
+  const sessionId = parseInt(body.sessionId, 10);
+  const questionId = parseInt(body.questionId, 10);
+  const chosenIndex = parseInt(body.chosenIndex, 10);
+
+  const session = await env.DB.prepare(
+    "SELECT * FROM game_sessions WHERE id = ? AND contact_ticket = ?"
+  ).bind(sessionId, participant.ticket_number).first();
+  if (!session) {
+    return jsonResponse({ ok: false, error: "Session not found." }, 404, origin);
+  }
+  if (session.phase !== "quiz") {
+    return jsonResponse({ ok: false, error: "Quiz already finished for this session.", phase: session.phase }, 400, origin);
+  }
+  if (session.current_index >= GAME_CONFIG.questionsPerQuiz) {
+    return jsonResponse({ ok: false, error: "All 3 questions already answered." }, 400, origin);
+  }
+
+  const q = await env.DB.prepare(
+    "SELECT id, group_id, correct_index, explanation FROM quiz_questions WHERE id = ?"
+  ).bind(questionId).first();
+  if (!q) {
+    return jsonResponse({ ok: false, error: "Question not found." }, 404, origin);
+  }
+
+  // Verify questionId belongs to this session's assigned set + expected slot.
+  const assigned = JSON.parse(session.assigned_q_json);
+  const expectedGroupId = assigned[session.current_index];
+  if (q.group_id !== expectedGroupId) {
+    return jsonResponse({ ok: false, error: "Question out of order." }, 400, origin);
+  }
+
+  const isCorrect = chosenIndex === q.correct_index ? 1 : 0;
+  const newIndex = session.current_index + 1;
+  const newCorrect = session.correct_count + isCorrect;
+  const done = newIndex >= GAME_CONFIG.questionsPerQuiz;
+  const passed = done ? (newCorrect >= GAME_CONFIG.requiredCorrect ? 1 : 0) : null;
+
+  await env.DB.prepare(
+    "INSERT INTO quiz_attempts (cycle_number, session_id, contact_ticket, question_id, group_id, chosen_index, is_correct, answered_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
+  ).bind(
+    GAME_CONFIG.currentCycle, sessionId, participant.ticket_number,
+    q.id, q.group_id, chosenIndex, isCorrect, new Date().toISOString()
+  ).run();
+
+  if (done) {
+    await env.DB.prepare(
+      "UPDATE game_sessions SET current_index = ?, correct_count = ?, phase = 'phase2_wait', quiz_passed = ?, quiz_done_at = ? WHERE id = ?"
+    ).bind(newIndex, newCorrect, passed, new Date().toISOString(), sessionId).run();
+  } else {
+    await env.DB.prepare(
+      "UPDATE game_sessions SET current_index = ?, correct_count = ? WHERE id = ?"
+    ).bind(newIndex, newCorrect, sessionId).run();
+  }
+
+  return jsonResponse({
+    ok: true,
+    isCorrect: !!isCorrect,
+    correctIndex: q.correct_index,
+    explanation: q.explanation,
+    correctCount: newCorrect,
+    currentIndex: newIndex,
+    finished: done,
+    quizPassed: passed
+  }, 200, origin);
+}
+__name(handleGameQuizAnswer, "handleGameQuizAnswer");
+
+// GET /game/quiz/result — quick poll for own session status
+async function handleGameQuizResult(request, env, origin) {
+  const { row: participant } = await gameResolveParticipant(env, request);
+  if (!participant) {
+    return jsonResponse({ ok: false, error: "Not a paid participant." }, 401, origin);
+  }
+  const session = await env.DB.prepare(
+    "SELECT id, cycle_number, current_index, correct_count, phase, quiz_passed, quiz_done_at FROM game_sessions WHERE cycle_number = ? AND contact_ticket = ?"
+  ).bind(GAME_CONFIG.currentCycle, participant.ticket_number).first();
+  return jsonResponse({ ok: true, session: session || null }, 200, origin);
+}
+__name(handleGameQuizResult, "handleGameQuizResult");
+
+// POST /game/phase2/draw — admin-triggered SHA draw of The Three from passers.
+// Auth: Bearer ADMIN_TOKEN. Can also be called by a cron worker.
+async function handleGamePhase2Draw(request, env, origin) {
+  const auth = request.headers.get("Authorization") || "";
+  if (auth !== `Bearer ${env.ADMIN_TOKEN}`) {
+    return jsonResponse({ ok: false, error: "Unauthorized." }, 401, origin);
+  }
+  const body = await request.json().catch(() => ({}));
+  const cycle = parseInt(body.cycle || GAME_CONFIG.currentCycle, 10);
+
+  // Idempotent: if already drawn, return existing state.
+  let state = await env.DB.prepare(
+    "SELECT * FROM cycle_state WHERE cycle_number = ?"
+  ).bind(cycle).first();
+  if (state && state.phase2_winner_king_ids) {
+    return jsonResponse({ ok: true, alreadyDrawn: true, state }, 200, origin);
+  }
+
+  // Collect passers.
+  const passers = await env.DB.prepare(
+    "SELECT gs.contact_ticket, gs.email, gs.language, c.country, c.handle_name, c.mission_summary, c.mission_name "
+    + "FROM game_sessions gs LEFT JOIN contacts c ON gs.contact_ticket = c.ticket_number "
+    + "WHERE gs.cycle_number = ? AND gs.quiz_passed = 1 ORDER BY gs.quiz_done_at ASC"
+  ).bind(cycle).all();
+  const arr = passers.results || [];
+
+  if (arr.length === 0) {
+    return jsonResponse({ ok: false, error: "No passers in this cycle." }, 400, origin);
+  }
+
+  // Seed: caller-supplied (so operator can paste real BTC hash / Nikkei / S&P).
+  // If not supplied, fall back to a self-generated deterministic seed.
+  const btc = body.btcHash || "0000000000000000000000000000000000000000000000000000000000000000";
+  const nikkei = body.nikkeiClose || "0";
+  const sp500 = body.sp500Close || "0";
+  const seed = `cycle:${cycle}|btc:${btc}|nikkei:${nikkei}|sp500:${sp500}|n:${arr.length}`;
+  const hash = await sha256Hex(seed);
+
+  // Pick 3 distinct indices from hash. Take chunks of 8 hex chars at offsets and mod by length.
+  const winners = [];
+  let attempts = 0;
+  for (let i = 0; winners.length < Math.min(3, arr.length) && i < 32; i++) {
+    const chunk = hash.substring((i * 8) % 56, ((i * 8) % 56) + 8);
+    const idx = parseInt(chunk, 16) % arr.length;
+    if (!winners.includes(idx)) winners.push(idx);
+    attempts++;
+  }
+  // Fallback: linear scan.
+  while (winners.length < Math.min(3, arr.length)) {
+    for (let i = 0; i < arr.length && winners.length < 3; i++) {
+      if (!winners.includes(i)) winners.push(i);
+    }
+  }
+
+  // Insert into kings (rank=1 placeholder; King is set after Phase 3 finalize).
+  const nowIso = new Date().toISOString();
+  const winnerKingIds = [];
+  for (const idx of winners) {
+    const p = arr[idx];
+    const ins = await env.DB.prepare(
+      "INSERT INTO kings (cycle_number, rank, mission_name, country, mission_summary, display_handle, contact_ticket, participant_count, chosen_at, grant_status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'awaiting_fund')"
+    ).bind(
+      cycle, 999, // 999 = candidate; will be updated to 1 (winner) after Phase 3
+      p.mission_name || "(no mission name)",
+      p.country || null,
+      p.mission_summary || "",
+      p.handle_name || null,
+      p.contact_ticket,
+      arr.length,
+      nowIso
+    ).run();
+    winnerKingIds.push(ins.meta.last_row_id);
+  }
+
+  // Upsert cycle_state.
+  if (!state) {
+    await env.DB.prepare(
+      "INSERT INTO cycle_state (cycle_number, bell_rings_at, phase2_drawn_at, phase2_seed, phase2_hash, phase2_winner_king_ids, participant_count, passed_count) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
+    ).bind(
+      cycle, GAME_CONFIG.bellRingsAtIso, nowIso, seed, hash,
+      JSON.stringify(winnerKingIds), arr.length, arr.length
+    ).run();
+  } else {
+    await env.DB.prepare(
+      "UPDATE cycle_state SET phase2_drawn_at=?, phase2_seed=?, phase2_hash=?, phase2_winner_king_ids=?, passed_count=? WHERE cycle_number = ?"
+    ).bind(nowIso, seed, hash, JSON.stringify(winnerKingIds), arr.length, cycle).run();
+  }
+
+  return jsonResponse({
+    ok: true,
+    cycle,
+    seed,
+    hash,
+    winners: winnerKingIds,
+    passerCount: arr.length
+  }, 200, origin);
+}
+__name(handleGamePhase2Draw, "handleGamePhase2Draw");
+
+// GET /game/phase2/result?cycle=N — public; returns the 3 candidates (anonymous Mission only by default)
+async function handleGamePhase2Result(request, env, origin) {
+  const url = new URL(request.url);
+  const cycle = parseInt(url.searchParams.get("cycle") || GAME_CONFIG.currentCycle, 10);
+  const state = await env.DB.prepare(
+    "SELECT * FROM cycle_state WHERE cycle_number = ?"
+  ).bind(cycle).first();
+  if (!state || !state.phase2_winner_king_ids) {
+    return jsonResponse({ ok: false, error: "Phase 2 not yet drawn." }, 404, origin);
+  }
+  const ids = JSON.parse(state.phase2_winner_king_ids);
+  const placeholders = ids.map(() => "?").join(",");
+  const kingsRows = await env.DB.prepare(
+    `SELECT id, mission_name, mission_summary, country, display_handle FROM kings WHERE id IN (${placeholders})`
+  ).bind(...ids).all();
+  // Order by ids (preserve draw order).
+  const ordered = ids.map(id => (kingsRows.results || []).find(k => k.id === id)).filter(Boolean);
+  return jsonResponse({
+    ok: true,
+    cycle,
+    seed: state.phase2_seed,
+    hash: state.phase2_hash,
+    drawnAt: state.phase2_drawn_at,
+    candidates: ordered.map(k => ({
+      kingId: k.id,
+      // Q8 default: Mission text only (no handle / country)
+      missionName: k.mission_name,
+      missionSummary: k.mission_summary,
+      country: k.country,        // exposed but UI may hide
+      handle: k.display_handle   // exposed but UI may hide
+    }))
+  }, 200, origin);
+}
+__name(handleGamePhase2Result, "handleGamePhase2Result");
+
+// POST /game/vote — body: { kingId } — auth: cookie session
+async function handleGameVote(request, env, origin) {
+  const phase = gameBellPhase(env);
+  if (phase.phase !== "phase3") {
+    return jsonResponse({ ok: false, error: "Voting window not open.", phase: phase.phase }, 403, origin);
+  }
+  const { row: participant } = await gameResolveParticipant(env, request);
+  if (!participant) {
+    return jsonResponse({ ok: false, error: "Not a paid participant." }, 401, origin);
+  }
+  // Q1 default: all participants can vote.
+  if (!GAME_CONFIG.voteRightsAll) {
+    const sess = await env.DB.prepare(
+      "SELECT quiz_passed FROM game_sessions WHERE cycle_number = ? AND contact_ticket = ?"
+    ).bind(GAME_CONFIG.currentCycle, participant.ticket_number).first();
+    if (!sess || sess.quiz_passed !== 1) {
+      return jsonResponse({ ok: false, error: "Only quiz passers may vote." }, 403, origin);
+    }
+  }
+  const body = await request.json().catch(() => ({}));
+  const kingId = parseInt(body.kingId, 10);
+
+  // Verify kingId is one of this cycle's 3 candidates.
+  const state = await env.DB.prepare(
+    "SELECT phase2_winner_king_ids FROM cycle_state WHERE cycle_number = ?"
+  ).bind(GAME_CONFIG.currentCycle).first();
+  if (!state || !state.phase2_winner_king_ids) {
+    return jsonResponse({ ok: false, error: "The Three not yet drawn." }, 400, origin);
+  }
+  const valid = JSON.parse(state.phase2_winner_king_ids);
+  if (!valid.includes(kingId)) {
+    return jsonResponse({ ok: false, error: "Invalid candidate." }, 400, origin);
+  }
+
+  // Upsert vote (latest wins; UNIQUE on cycle+voter).
+  await env.DB.prepare(
+    "INSERT INTO votes (cycle_number, voter_contact_ticket, voted_for_king_id, voted_at) VALUES (?, ?, ?, ?) "
+    + "ON CONFLICT (cycle_number, voter_contact_ticket) DO UPDATE SET voted_for_king_id = excluded.voted_for_king_id, voted_at = excluded.voted_at"
+  ).bind(GAME_CONFIG.currentCycle, participant.ticket_number, kingId, new Date().toISOString()).run();
+
+  return jsonResponse({ ok: true, votedFor: kingId }, 200, origin);
+}
+__name(handleGameVote, "handleGameVote");
+
+// GET /game/vote/results?cycle=N — tally (public after Phase 3 ends; live before that)
+async function handleGameVoteResults(request, env, origin) {
+  const url = new URL(request.url);
+  const cycle = parseInt(url.searchParams.get("cycle") || GAME_CONFIG.currentCycle, 10);
+  const rows = await env.DB.prepare(
+    "SELECT voted_for_king_id, COUNT(*) AS n FROM votes WHERE cycle_number = ? GROUP BY voted_for_king_id"
+  ).bind(cycle).all();
+  const tally = {};
+  let total = 0;
+  for (const r of (rows.results || [])) {
+    tally[r.voted_for_king_id] = r.n;
+    total += r.n;
+  }
+  return jsonResponse({ ok: true, cycle, tally, total }, 200, origin);
+}
+__name(handleGameVoteResults, "handleGameVoteResults");
+
+// POST /game/phase3/finalize — admin/cron — picks winner, updates kings.rank.
+async function handleGamePhase3Finalize(request, env, origin) {
+  const auth = request.headers.get("Authorization") || "";
+  if (auth !== `Bearer ${env.ADMIN_TOKEN}`) {
+    return jsonResponse({ ok: false, error: "Unauthorized." }, 401, origin);
+  }
+  const body = await request.json().catch(() => ({}));
+  const cycle = parseInt(body.cycle || GAME_CONFIG.currentCycle, 10);
+
+  const state = await env.DB.prepare(
+    "SELECT * FROM cycle_state WHERE cycle_number = ?"
+  ).bind(cycle).first();
+  if (!state || !state.phase2_winner_king_ids) {
+    return jsonResponse({ ok: false, error: "Phase 2 not drawn." }, 400, origin);
+  }
+  if (state.finalized_at) {
+    return jsonResponse({ ok: true, alreadyFinalized: true, state }, 200, origin);
+  }
+
+  const candidates = JSON.parse(state.phase2_winner_king_ids);
+  const rows = await env.DB.prepare(
+    "SELECT voted_for_king_id, COUNT(*) AS n FROM votes WHERE cycle_number = ? GROUP BY voted_for_king_id"
+  ).bind(cycle).all();
+  const tally = {};
+  for (const c of candidates) tally[c] = 0;
+  for (const r of (rows.results || [])) tally[r.voted_for_king_id] = r.n;
+
+  // Find max.
+  let maxVotes = -1;
+  let winners = [];
+  for (const [id, n] of Object.entries(tally)) {
+    if (n > maxVotes) { maxVotes = n; winners = [parseInt(id, 10)]; }
+    else if (n === maxVotes) winners.push(parseInt(id, 10));
+  }
+
+  // Tie-break.
+  let finalKingId;
+  if (winners.length === 1) {
+    finalKingId = winners[0];
+  } else if (GAME_CONFIG.tieBreakMode === "sha-redraw") {
+    // Re-hash with a tie-break suffix.
+    const seed = state.phase2_seed + "|tie:" + winners.join(",");
+    const h = await sha256Hex(seed);
+    const idx = parseInt(h.substring(0, 8), 16) % winners.length;
+    finalKingId = winners[idx];
+  } else {
+    finalKingId = winners[0]; // default fallback
+  }
+
+  // Update ranks: winner = 1, others = 2 or 3 based on vote count desc.
+  const sortedByVotes = candidates.slice().sort((a, b) => (tally[b] || 0) - (tally[a] || 0));
+  // Force final winner to rank 1.
+  const ranks = {};
+  ranks[finalKingId] = 1;
+  let nextRank = 2;
+  for (const id of sortedByVotes) {
+    if (id !== finalKingId) ranks[id] = nextRank++;
+  }
+  for (const [id, rank] of Object.entries(ranks)) {
+    await env.DB.prepare("UPDATE kings SET rank = ? WHERE id = ?").bind(rank, parseInt(id, 10)).run();
+  }
+
+  const total = Object.values(tally).reduce((s, n) => s + n, 0);
+  const nowIso = new Date().toISOString();
+  await env.DB.prepare(
+    "UPDATE cycle_state SET finalized_at = ?, final_king_id = ?, vote_count = ? WHERE cycle_number = ?"
+  ).bind(nowIso, finalKingId, total, cycle).run();
+
+  return jsonResponse({
+    ok: true,
+    cycle,
+    finalKingId,
+    tally,
+    totalVotes: total,
+    tieBreakUsed: winners.length > 1
+  }, 200, origin);
+}
+__name(handleGamePhase3Finalize, "handleGamePhase3Finalize");
+
 
 export {
   index_default as default
