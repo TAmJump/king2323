@@ -1,10 +1,16 @@
 /* ============================================================
-   KINGMAKER 23:23 — Main JS  (v20260518e)
-   Cycle 1 three-stage schedule:
+   KINGMAKER 23:23 — Main JS  (v20260523n)
+   Cycle 1 (sealed test, 0 real participants) three-stage schedule:
      2026-05-20 (Wed) 23:23 JST · Bell opens
      2026-05-22 (Fri) 23:23 JST · Bell rings (receipt closes)
      2026-05-23 (Sat) 23:23 JST · The Three announced
-   After Cycle 1 completes, falls back to weekly-Wed cycles.
+   Cycle 2 (first live cycle) three-stage schedule:
+     2026-05-27 (Wed) 23:23 JST · Bell opens
+     2026-05-29 (Fri) 23:23 JST · Bell rings (receipt closes)
+     2026-05-30 (Sat) 23:23 JST · The Three announced
+   After Cycle 2 completes, falls back to generic weekly-Wed cycles.
+   CYCLE1_SEALED_AS_TEST=true skips the misleading pending_three state
+   tonight (5/23 23:23 JST) since there's no actual Three to announce.
    ============================================================ */
 
 (function () {
@@ -16,8 +22,27 @@
   const CYCLE1_RINGS_MS = Date.UTC(2026, 4, 22, 14, 23, 0); // Fri 5/22 23:23 JST
   const CYCLE1_THREE_MS = Date.UTC(2026, 4, 23, 14, 23, 0); // Sat 5/23 23:23 JST
 
+  // ---------- Cycle 1 disposition ----------
+  // Operator decision 2026-05-23: Cycle 1 was sealed as a test with 0 real
+  // participants. There is no "Three" to announce on Sat 5/23 23:23 JST.
+  // When this flag is true, the state machine skips the misleading
+  // 'pending_three' state and transitions directly to the Cycle 2 lookahead
+  // once the bell-rings moment (Fri 5/22 23:23 JST) has passed.
+  const CYCLE1_SEALED_AS_TEST = true;
+
+  // ---------- Cycle 2 three-stage schedule ----------
+  // Cycle 1 was sealed as a test (0 real participants per operator decision
+  // 2026-05-23). Cycle 2 is the first live cycle and follows the same
+  // Wed/Fri/Sat rhythm. The Fri 5/29 23:23 timestamp here MUST match
+  // worker/index.js GAME_CONFIG.bellRingsAtIso ("2026-05-29T14:23:00Z").
+  const CYCLE2_OPENS_MS = Date.UTC(2026, 4, 27, 14, 23, 0); // Wed 5/27 23:23 JST
+  const CYCLE2_RINGS_MS = Date.UTC(2026, 4, 29, 14, 23, 0); // Fri 5/29 23:23 JST
+  const CYCLE2_THREE_MS = Date.UTC(2026, 4, 30, 14, 23, 0); // Sat 5/30 23:23 JST
+
   // ---------- Preview mode (operator-only, never affects real visitors) ----------
   // Append ?preview=open / ?preview=pre / ?preview=pending / ?preview=complete
+  // (Cycle 1 preview states) or ?preview=c2_pre / ?preview=c2_open /
+  // ?preview=c2_pending / ?preview=c2_complete (Cycle 2 preview states)
   // to the URL to spoof the cycle phase for visual QA. The actual schedule
   // constants above are not touched, so this is safe: anyone without the
   // query string sees the real, time-driven state.
@@ -25,8 +50,12 @@
     try {
       const p = new URLSearchParams(window.location.search).get('preview');
       if (!p) return null;
-      const map = { 'pre': 'pre_open', 'open': 'open',
-                    'pending': 'pending_three', 'complete': 'cycle1_complete' };
+      const map = {
+        'pre': 'pre_open', 'open': 'open',
+        'pending': 'pending_three', 'complete': 'cycle1_complete',
+        'c2_pre': 'cycle2_pre_open', 'c2_open': 'cycle2_open',
+        'c2_pending': 'cycle2_pending_three', 'c2_complete': 'cycle2_complete'
+      };
       return map[p] || null;
     } catch (e) { return null; }
   }
@@ -36,25 +65,46 @@
     const day = 24 * 60 * 60 * 1000;
     switch (phase) {
       case 'pre_open':
-        return { phase, targetMs: nowMs + 2*day + 3*60*60*1000 + 17*60*1000,
+        return { phase, cycle: 1, targetMs: nowMs + 2*day + 3*60*60*1000 + 17*60*1000,
                  msUntilBell: 2*day + 3*60*60*1000 + 17*60*1000,
                  labelEn: 'Bell opens in', labelJa: '受付開始まで',
                  stageActive: 0, ctaEnabled: false };
       case 'open':
-        return { phase, targetMs: nowMs + 1*day + 19*60*60*1000 + 42*60*1000,
+        return { phase, cycle: 1, targetMs: nowMs + 1*day + 19*60*60*1000 + 42*60*1000,
                  msUntilClose: 1*day + 19*60*60*1000 + 42*60*1000,
                  msUntilBell: 1*day + 19*60*60*1000 + 42*60*1000,
                  labelEn: 'Bell rings in', labelJa: '受付終了まで',
                  stageActive: 1, ctaEnabled: true };
       case 'pending_three':
-        return { phase, targetMs: nowMs + 14*60*60*1000 + 8*60*1000,
+        return { phase, cycle: 1, targetMs: nowMs + 14*60*60*1000 + 8*60*1000,
                  msUntilBell: 14*60*60*1000 + 8*60*1000,
                  labelEn: 'The Three announced in', labelJa: 'The Three 発表まで',
                  stageActive: 2, ctaEnabled: false };
       case 'cycle1_complete':
-        return { phase, targetMs: nowMs + 3*day + 22*60*60*1000,
+        return { phase, cycle: 2, targetMs: nowMs + 3*day + 22*60*60*1000,
                  msUntilBell: 3*day + 22*60*60*1000,
                  labelEn: 'Cycle 2 opens in', labelJa: 'Cycle 2 開門まで',
+                 stageActive: 0, ctaEnabled: false };
+      case 'cycle2_pre_open':
+        return { phase, cycle: 2, targetMs: nowMs + 4*day + 3*60*60*1000 + 17*60*1000,
+                 msUntilBell: 4*day + 3*60*60*1000 + 17*60*1000,
+                 labelEn: 'Cycle 2 opens in', labelJa: 'Cycle 2 開門まで',
+                 stageActive: 0, ctaEnabled: false };
+      case 'cycle2_open':
+        return { phase, cycle: 2, targetMs: nowMs + 1*day + 19*60*60*1000 + 42*60*1000,
+                 msUntilClose: 1*day + 19*60*60*1000 + 42*60*1000,
+                 msUntilBell: 1*day + 19*60*60*1000 + 42*60*1000,
+                 labelEn: 'Bell rings in', labelJa: '受付終了まで',
+                 stageActive: 1, ctaEnabled: true };
+      case 'cycle2_pending_three':
+        return { phase, cycle: 2, targetMs: nowMs + 14*60*60*1000 + 8*60*1000,
+                 msUntilBell: 14*60*60*1000 + 8*60*1000,
+                 labelEn: 'The Three announced in', labelJa: 'The Three 発表まで',
+                 stageActive: 2, ctaEnabled: false };
+      case 'cycle2_complete':
+        return { phase, cycle: 3, targetMs: nowMs + 3*day + 22*60*60*1000,
+                 msUntilBell: 3*day + 22*60*60*1000,
+                 labelEn: 'Next Cycle opens in', labelJa: '次の Cycle 開門まで',
                  stageActive: 3, ctaEnabled: false };
     }
     return null;
@@ -96,7 +146,7 @@
         ctaEnabled: true
       };
     }
-    if (nowMs < CYCLE1_THREE_MS) {
+    if (nowMs < CYCLE1_THREE_MS && !CYCLE1_SEALED_AS_TEST) {
       return {
         phase: 'pending_three',
         targetMs: CYCLE1_THREE_MS,
@@ -108,7 +158,53 @@
       };
     }
 
-    // ----- Cycle 1 complete — show Cycle 2 (weekly Wed 23:23 JST) -----
+    // ----- Cycle 1 complete -> show Cycle 2 (sealed-test gap then 5/27→5/30) -----
+    // Cycle 1 was sealed as test with 0 real participants. Cycle 2 is the
+    // first live cycle. We don't pretend there's a "Three announcement" event
+    // tonight (5/23) — instead we immediately transition to Cycle 2 lookahead.
+
+    // Phase A: Cycle 1 fully done, Cycle 2 hasn't opened yet (Sat 5/23 23:23 -> Wed 5/27 23:23).
+    if (nowMs < CYCLE2_OPENS_MS) {
+      return {
+        phase: 'cycle2_pre_open',
+        cycle: 2,
+        targetMs: CYCLE2_OPENS_MS,
+        msUntilBell: CYCLE2_OPENS_MS - nowMs,
+        labelEn: 'Cycle 2 opens in',
+        labelJa: 'Cycle 2 開門まで',
+        stageActive: 0,
+        ctaEnabled: false
+      };
+    }
+    // Phase B: Cycle 2 open, receipt accepting (Wed 5/27 23:23 -> Fri 5/29 23:23).
+    if (nowMs < CYCLE2_RINGS_MS) {
+      return {
+        phase: 'cycle2_open',
+        cycle: 2,
+        targetMs: CYCLE2_RINGS_MS,
+        msUntilClose: CYCLE2_RINGS_MS - nowMs,
+        msUntilBell: CYCLE2_RINGS_MS - nowMs,
+        labelEn: 'Bell rings in',
+        labelJa: '受付終了まで',
+        stageActive: 1,
+        ctaEnabled: true
+      };
+    }
+    // Phase C: Cycle 2 bell-day, pending The Three (Fri 5/29 23:23 -> Sat 5/30 23:23).
+    if (nowMs < CYCLE2_THREE_MS) {
+      return {
+        phase: 'cycle2_pending_three',
+        cycle: 2,
+        targetMs: CYCLE2_THREE_MS,
+        msUntilBell: CYCLE2_THREE_MS - nowMs,
+        labelEn: 'The Three announced in',
+        labelJa: 'The Three 発表まで',
+        stageActive: 2,
+        ctaEnabled: false
+      };
+    }
+
+    // ----- Cycle 2 complete -> generic weekly-Wed fallback for Cycle 3+ -----
     const jstOffsetMs = 9 * 60 * 60 * 1000;
     const nowJst = new Date(nowMs + jstOffsetMs);
     const dow = nowJst.getUTCDay();
@@ -126,11 +222,12 @@
       nextWedUtcMs += 7 * 24 * 60 * 60 * 1000;
     }
     return {
-      phase: 'cycle1_complete',
+      phase: 'cycle2_complete',
+      cycle: 3,
       targetMs: nextWedUtcMs,
       msUntilBell: nextWedUtcMs - nowMs,
-      labelEn: 'Cycle 2 opens in',
-      labelJa: 'Cycle 2 開門まで',
+      labelEn: 'Next Cycle opens in',
+      labelJa: '次の Cycle 開門まで',
       stageActive: 3,
       ctaEnabled: false
     };
@@ -225,6 +322,32 @@
     const cbLabelJa = document.getElementById('cb-label-ja');
     if (cbLabelEn) cbLabelEn.textContent = state.labelEn || '';
     if (cbLabelJa) cbLabelJa.textContent = state.labelJa || '';
+
+    // Stage date / cycle-label refresh.
+    // The HTML ships with Cycle 1 dates (5/20, 5/22, 5/23). When the state
+    // machine transitions into Cycle 2 (or any post-Cycle-1 state), rewrite
+    // the .cb-date text in place so the user sees the upcoming cycle's
+    // dates, not last cycle's. The .cb-name text stays the same since the
+    // three stages ("Bell opens", "Bell rings", "The Three") are identical
+    // across cycles. Idempotent — safe to call every tick.
+    const cycleBarSection = document.getElementById('cycle-bar');
+    if (cycleBarSection) {
+      const wantCycle = state.cycle || 1;
+      const datesByCycle = {
+        1: ['5/20', '5/22', '5/23'],
+        2: ['5/27', '5/29', '5/30'],
+      };
+      // For Cycle 3+ (cycle2_complete fallback), keep the most-recent
+      // cycle's dates so the bar doesn't go blank — it still represents
+      // the historical timeline of the most recent completed cycle.
+      const dates = datesByCycle[wantCycle] || datesByCycle[2];
+      if (cycleBarSection.dataset.shownCycle !== String(wantCycle)) {
+        const ds = cycleBarSection.querySelectorAll('.cb-stage .cb-date');
+        ds.forEach((el, i) => { if (dates[i]) el.textContent = dates[i]; });
+        cycleBarSection.dataset.shownCycle = String(wantCycle);
+        cycleBarSection.setAttribute('aria-label', 'Cycle ' + wantCycle + ' status');
+      }
+    }
 
     // Stage indicator (1=opens, 2=rings, 3=Three).
     const stages = document.querySelectorAll('.cb-stage');
@@ -406,7 +529,7 @@
       setLiveAmount('reserve_jpy',    0);
       if (window.__fxApply) window.__fxApply();
       if (fundEls.cycleProgressFill) fundEls.cycleProgressFill.style.width = '0%';
-      if (fundEls.cycleProgressLabel) fundEls.cycleProgressLabel.textContent = 'Cycle 1 · Awaiting first ring';
+      if (fundEls.cycleProgressLabel) fundEls.cycleProgressLabel.textContent = 'Cycle 2 · Awaiting first ring';
       lastUpdateMs = Date.now();
       return;
     }
@@ -459,7 +582,7 @@
     const live = window.__live || FALLBACK_CYCLE;
     const cycle = live.cycle || FALLBACK_CYCLE.cycle;
     if (live.phase === 'pre-launch') {
-      const preMsg = '— Cycle 1 · Awaiting first ring · Friday 23:23 JST —';
+      const preMsg = '— Cycle 2 · Awaiting first ring · Friday 23:23 JST —';
       if (fundEls.label)     fundEls.label.textContent     = preMsg;
       if (fundEls.heroLabel) fundEls.heroLabel.textContent = preMsg;
       return;

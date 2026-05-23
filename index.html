@@ -2693,12 +2693,16 @@ html:not([data-display-lang="ja"]) span[style*="--f-jp"]:not(.notranslate) {
 
 <!-- ============== HERO — STAGE 1: FULL-SCREEN GORILLA ============== -->
 
-<!-- ============== CYCLE-1 STATUS BAR (countdown + three-stage timeline) ============== -->
-<!-- Added v20260518e. The site-wide visible countdown that doubles as a
-     schedule preview. JS (#main.js) fills the time fields every second
-     and flips data-active / data-done on .cb-stage to highlight where
-     in the cycle we are. -->
-<section class="cycle-bar notranslate" id="cycle-bar" translate="no" aria-label="Cycle 1 status">
+<!-- ============== CYCLE STATUS BAR (countdown + three-stage timeline) ============== -->
+<!-- Added v20260518e; cycle-aware in v20260523n. The site-wide visible
+     countdown that doubles as a schedule preview. JS (#main.js) fills
+     the time fields every second, flips data-active / data-done on
+     .cb-stage to highlight where in the cycle we are, and rewrites the
+     .cb-date text + aria-label as the cycle advances (5/20·5/22·5/23
+     for Cycle 1, 5/27·5/29·5/30 for Cycle 2, etc). The dates shipped
+     in this HTML are the Cycle 1 defaults; main.js overwrites them
+     when state.cycle !== 1. -->
+<section class="cycle-bar notranslate" id="cycle-bar" translate="no" aria-label="Cycle status">
   <div class="cycle-bar-inner">
     <div class="cycle-bar-label">
       <span class="cycle-bar-label-en brand-lock" id="cb-label-en">Bell opens in</span>
@@ -4687,7 +4691,7 @@ html:not([data-display-lang="ja"]) span[style*="--f-jp"]:not(.notranslate) {
 
 <script src="js/i18n.js?v=20260523m"></script>
 <script src="js/fx.js?v=20260522a"></script>
-<script src="js/main.js?v=20260523a"></script>
+<script src="js/main.js?v=20260523n"></script>
 <script>
 // Bell-active link revealer — shows play.html link only during the 5-minute window.
 (function() {

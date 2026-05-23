@@ -1,4 +1,106 @@
-# KINGMAKER 23:23 — `v=20260523m` (site-wide cache buster unification + i18n.js version banner refresh)
+# KINGMAKER 23:23 — `v=20260523n` (Cycle 2 state machine — cycle-bar JS upgraded for the live cycle)
+
+Session ⑬. Pre-Cycle-2 dry-run audit found that the homepage cycle-bar
+JS (`js/main.js`) was still hardcoded to Cycle 1's three-stage schedule
+(5/20 / 5/22 / 5/23) and would, **at the time of this commit**, be
+counting down to a "Three announced in" event tonight (Sat 5/23 23:23
+JST) — except Cycle 1 was sealed as a test with 0 real participants
+per the session-⑩ operator decision, so there is no actual Three to
+announce.
+
+This commit upgrades the client-side state machine to be cycle-aware
+and to skip the misleading `pending_three` state.
+
+## What changed
+
+1. **Cycle 2 timestamps added to `js/main.js`** alongside Cycle 1's:
+   - `CYCLE2_OPENS_MS` = Wed 2026-05-27 23:23 JST (Bell opens).
+   - `CYCLE2_RINGS_MS` = Fri 2026-05-29 23:23 JST (Bell rings). This
+     **must match** `worker/index.js` `GAME_CONFIG.bellRingsAtIso =
+     "2026-05-29T14:23:00Z"`, and now does.
+   - `CYCLE2_THREE_MS` = Sat 2026-05-30 23:23 JST (The Three announced).
+
+2. **`CYCLE1_SEALED_AS_TEST` flag added.** When `true`, the state
+   machine skips the `pending_three` branch tonight (Sat 5/23) and
+   transitions directly to Cycle 2 lookahead the moment Cycle 1's bell
+   rang (Fri 5/22 23:23 JST). For Cycle 1 this is set to `true` (per
+   operator decision). For future cycles, the flag stays `false`
+   (default not added — the constant is Cycle-1-specific).
+
+3. **`getBellState()` extended with three new Cycle 2 phases**, mirroring
+   the Cycle 1 phase set:
+   - `cycle2_pre_open` — Sat 5/23 23:23 → Wed 5/27 23:23.
+     Label: "Cycle 2 opens in" / "Cycle 2 開門まで".
+   - `cycle2_open` — Wed 5/27 23:23 → Fri 5/29 23:23. CTA enabled.
+     Label: "Bell rings in" / "受付終了まで".
+   - `cycle2_pending_three` — Fri 5/29 23:23 → Sat 5/30 23:23.
+     Label: "The Three announced in" / "The Three 発表まで".
+
+   After Cycle 2 completes (Sat 5/30 23:23 onward), the existing
+   weekly-Wed generic fallback kicks in, now labeled "Next Cycle opens
+   in" / "次の Cycle 開門まで" instead of the stale "Cycle 2 opens in".
+
+4. **`.cb-stage .cb-date` text becomes dynamic.** The three date pills
+   in the cycle-bar (`5/20`, `5/22`, `5/23` in the HTML) are now
+   rewritten by JS the moment the state machine reports a `cycle` other
+   than 1. For Cycle 2 the dates become `5/27`, `5/29`, `5/30`. The
+   `aria-label` on `#cycle-bar` follows the same rewrite, going from
+   `"Cycle 1 status"` (HTML default) to `"Cycle 2 status"` etc.
+   Idempotent — only fires once per cycle change.
+
+5. **Preview mode (`?preview=…`) extended.** Four new query values:
+   - `?preview=c2_pre` → cycle2_pre_open
+   - `?preview=c2_open` → cycle2_open
+   - `?preview=c2_pending` → cycle2_pending_three
+   - `?preview=c2_complete` → cycle2_complete
+   The existing `pre / open / pending / complete` values continue to
+   work as before but now carry `cycle: 1` (or `cycle: 2` for the
+   `complete` alias, which is the pre-Cycle-2 lookahead state).
+
+6. **Stale "Cycle 1 · Awaiting first ring" labels updated.** Two
+   places in `js/main.js` (the live-numbers progress bar at
+   `cycleProgressLabel` and the per-second updated banner at `preMsg`)
+   were hardcoded to "Cycle 1". Both now say "Cycle 2".
+
+7. **`index.html` cycle-bar HTML comment + aria-label** generalized.
+   The HTML still ships with Cycle 1's dates as the default; JS
+   overwrites them within ~1 second of page load when the current
+   time is post Cycle 1 (i.e. now and going forward).
+
+8. **Version banner in `js/main.js` bumped** from `v20260518e` to
+   `v20260523n`. Cache buster on every `<script src="js/main.js">`
+   reference (in `index.html`, `money.html`, `verify.html`) bumped
+   to `?v=20260523n`.
+
+## Behavioral verification (offline, via Node harness)
+
+```
+Tue 5/19            → pre_open              (cycle 1, stageActive=0)
+Wed 5/20 23:24      → open                  (cycle 1, stageActive=1)
+Sat 5/23 10:00      → cycle2_pre_open       (cycle 2, stageActive=0)   ← skips pending_three
+Sat 5/23 14:24      → cycle2_pre_open       (cycle 2, stageActive=0)   ← post-was-Three moment
+Wed 5/27 23:24      → cycle2_open           (cycle 2, stageActive=1)
+Fri 5/29 23:24      → cycle2_pending_three  (cycle 2, stageActive=2)
+Sat 5/30 23:24      → cycle2_complete       (cycle 3, stageActive=3)
+```
+
+7 / 7 transition points pass.
+
+## What did NOT change
+
+- Worker (`worker/index.js`) game config was already correct
+  (`currentCycle: 2`, `bellRingsAtIso: "2026-05-29T14:23:00Z"`,
+  `dormancyThreshold: 1000`); not touched.
+- `api/cycle.json` stays at `cycle: 0, phase: "pre-launch"`. That file
+  controls the live-numbers dashboard (Mission Fund running total,
+  patron inflow, etc.) and remains in pre-launch posture until the
+  operator manually flips it when Cycle 2 actually goes live.
+- Game-play screens (`play.html` etc.) read phase state from the
+  Worker, not from `getBellState()` — so they were already correct.
+  This commit only fixes the homepage marketing chrome.
+
+---
+
 
 Operational cleanup, no behavior change. Every HTML page that references
 `css/main.css` or `js/i18n.js` now does so with the unified cache-buster
