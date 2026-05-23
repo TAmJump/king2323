@@ -1757,12 +1757,32 @@ async function handleGamePhase2Draw(request, env, origin) {
   }
 
   // Collect passers.
+  // contacts table is a shared inquiry-form schema where:
+  //   name     = mission_name
+  //   category = country
+  //   message  = mission_summary (with optional trailing "[Website/SNS] ..." line)
+  // There is no separate handle_name column; we use display_handle = null
+  // and fall back to ticket_number for identification.
   const passers = await env.DB.prepare(
-    "SELECT gs.contact_ticket, gs.email, gs.language, c.country, c.handle_name, c.mission_summary, c.mission_name "
+    "SELECT gs.contact_ticket, gs.email, gs.language, "
+    + "c.category AS country, c.name AS mission_name, c.message AS mission_summary_raw "
     + "FROM game_sessions gs LEFT JOIN contacts c ON gs.contact_ticket = c.ticket_number "
     + "WHERE gs.cycle_number = ? AND gs.quiz_passed = 1 ORDER BY gs.quiz_done_at ASC"
   ).bind(cycle).all();
-  const arr = passers.results || [];
+  const arr = (passers.results || []).map(p => {
+    // Strip the "[Website/SNS] ..." suffix from message to get clean mission_summary
+    let summary = p.mission_summary_raw || "";
+    const snsMatch = summary.match(/\n\n\[Website\/SNS\]\s+(.+)$/);
+    if (snsMatch) summary = summary.replace(snsMatch[0], "");
+    return {
+      contact_ticket: p.contact_ticket,
+      email: p.email,
+      language: p.language,
+      country: p.country,
+      mission_name: p.mission_name,
+      mission_summary: summary
+    };
+  });
 
   if (arr.length === 0) {
     return jsonResponse({ ok: false, error: "No passers in this cycle." }, 400, origin);
@@ -1804,7 +1824,7 @@ async function handleGamePhase2Draw(request, env, origin) {
       p.mission_name || "(no mission name)",
       p.country || null,
       p.mission_summary || "",
-      p.handle_name || null,
+      null, // display_handle: not stored in contacts; can be set later by operator
       p.contact_ticket,
       arr.length,
       nowIso
