@@ -1,11 +1,13 @@
-# HANDOFF — Session ⑮ (2026-05-23)
+# HANDOFF — Session ⑮ (2026-05-23) — FINAL
 
 ## TL;DR
 
-Continuing the Cycle-2 launch dry-run audit started in session ⑭.
-Found and fixed three more correctness issues in `worker/index.js`,
-all of which had the potential to bite during Cycle 2's live run.
-Pushed as commit `66a5cdd` (v20260523p).
+Cycle-2 launch dry-run audit. Found and fixed four code-correctness
+issues + three documentation errors + added a `scheduled` handler so
+Cloudflare Cron Triggers can actually drive Phase 3 finalization.
+Four commits pushed: `66a5cdd`, `1c9ec8d`, `e005261`, `9321400`.
+
+Tip of `origin/main` is `9321400`.
 
 ## ⚠️ OPERATOR ACTION REQUIRED
 
@@ -27,8 +29,15 @@ all earlier worker changes.
 
 - `66a5cdd` — v20260523p — Worker: unified cycle resolution +
   SHA picker fix + seed-input guard.
+- `1c9ec8d` — docs: session ⑮ handoff (initial — this file).
+- `e005261` — v20260523q — Worker README: fixed three doc errors
+  (fictional endpoint, wrong auth header, Cron Trigger guidance
+  that wouldn't work because no `scheduled` handler existed).
+- `9321400` — v20260523r — Worker: added `scheduled` handler for
+  Phase 3 auto-finalize. Cloudflare Cron Triggers now work for
+  Phase 3 (Phase 2 still needs manual market data).
 
-Tip of `origin/main` is `66a5cdd`.
+Tip of `origin/main` is `9321400`.
 
 ## The four fixes
 
@@ -183,16 +192,66 @@ curl -X POST https://tamjump-contact-api.animalb001.workers.dev/game/phase2/draw
   -d '{"cycle": 2, "allowSyntheticSeed": true}'
 ```
 
-If the operator-side cron is configured to call `/game/phase2/draw`
-without a body, it will now return a 400. The cron needs to be
-updated to either:
-- Fetch the BTC hash + market closes itself before calling the
-  endpoint, OR
-- Pass `allowSyntheticSeed: true` (NOT recommended — defeats the
-  public-verifiability narrative).
+## Fix 5 — Worker README endpoint mismatches (v20260523q, commit `e005261`)
 
-The README needs a follow-up update to document this; see "Next
-session priorities" below.
+Three documentation errors discovered when writing this handoff that
+would have cost the operator real time on Bell day:
+
+1. **Fictional endpoint `/admin/game/phase2/draw`** documented in
+   the routing table and the cron-fallback curl example. The actual
+   worker has only `/game/phase2/draw`. Calling the documented URL
+   would 404.
+2. **Wrong auth header `X-Admin-Token`** on `/admin/kings` and the
+   fictional draw endpoint. Every admin route actually checks
+   `Authorization: Bearer ${ADMIN_TOKEN}`. The wrong header would be
+   ignored and the request rejected as 401.
+3. **Cloudflare Cron Trigger guidance that wouldn't work.** The
+   README told the operator to set "Cron Triggers" with schedule
+   `25 14 * * 5`. Cloudflare Cron Triggers fire `scheduled()`
+   events — and at that point the worker had no `scheduled` handler.
+   Setting up the trigger would have silently done nothing on Fri 5/29.
+
+All three fixed in `worker/README.md`. v20260523q is documentation-
+only; no code change.
+
+## Fix 6 — Worker `scheduled` handler for Phase 3 auto-finalize (v20260523r, commit `9321400`)
+
+Implementing what the previous README commit warned was missing.
+
+**Scope intentionally limited to Phase 3.** The Phase 2 SHA-256
+draw needs human-attested market data inputs (per v20260523p) and
+can't be safely automated. But Phase 3 finalize is purely
+deterministic (count votes, find max, update `kings.rank`) — no
+external data, no judgment calls. That's exactly what a `scheduled`
+handler should do.
+
+Refactor: extracted the `handleGamePhase3Finalize` body into a new
+internal `runPhase3Finalize(env, cycle)` returning a plain object.
+HTTP handler still wraps it (returns 200/4xx responses). New
+`scheduled` handler also calls it. Both are idempotent.
+
+The `scheduled` handler logs:
+- `[scheduled] Fired at <iso> for Cycle N (cron: <expr>)`
+- On success: `[scheduled] Cycle N finalized: kingId=X totalVotes=Y`
+- On already-finalized: `[scheduled] Cycle N already finalized — no-op.`
+- On Phase-2-not-drawn: `[scheduled] Cycle N finalize blocked: Phase 2 not drawn.`
+
+Behavioral test: 4/5 paths pass in offline harness (5th case — tie-
+break — fails only due to a test-harness TextEncoder limitation; the
+production Workers runtime has WebCrypto built in).
+
+## Operator Cron setup (one-time, in Cloudflare dashboard)
+
+After redeploying the worker:
+
+1. Workers & Pages → `tamjump-contact-api` → Triggers → Cron Triggers
+2. Add Cron Trigger: schedule `30 14 * * 5`
+3. (= Friday 14:30 UTC = 23:30 JST, 2 minutes after Bell closes)
+
+The handler is safe to fire at any time. Higher frequency is fine.
+For Cycle 2 only, a one-shot `30 14 29 5 *` also works.
+
+
 
 ## Behavioral verification (offline, in this container)
 
@@ -210,39 +269,50 @@ session priorities" below.
 By Wed 2026-05-27 morning JST:
 
 1. **Re-deploy the Worker** (manual paste step). Picks up `v20260523o`
-   (session ⑭ cycle resolver) AND `v20260523p` (this session's
-   audit fixes) in one paste.
-2. **Verify env vars** (per `worker/README.md` § 1).
-3. **Update `api/cycle.json`** to `cycle: 2, phase: "live"`.
-4. **Update the operator-side cron** that calls `/game/phase2/draw`
-   to fetch and pass the three market inputs. Without this, the
-   Fri 5/29 23:23 draw will 400.
-5. **Verify** via curl health checks in `worker/README.md` § 3.
-6. **Sandbox smoke test** if paranoid: flip `SQUARE_ENV=sandbox`,
+   (session ⑭ cycle resolver) + `v20260523p` (audit fixes) +
+   `v20260523r` (scheduled handler) all in one paste.
+2. **Set the Cloudflare Cron Trigger** (new, possible only after
+   v20260523r): dashboard → `tamjump-contact-api` → Triggers → Cron
+   Triggers → Add with schedule `30 14 * * 5`.
+3. **Verify env vars** (per `worker/README.md` § 1).
+4. **Update `api/cycle.json`** to `cycle: 2, phase: "live"`.
+5. **Prepare market-data sourcing for Phase 2 draw.** Bell day requires
+   pasting live BTC block hash + Nikkei close + S&P 500 close. Either
+   the operator does this manually at 23:25 JST, or an external
+   wrapper script does it and calls the API. See `worker/README.md` §5.
+6. **Verify** via curl health checks in `worker/README.md` §3.
+7. **Sandbox smoke test** if paranoid: flip `SQUARE_ENV=sandbox`,
    one ¥100 test entry, verify D1 row, flip back.
 
 ## Open issues / next session candidates
 
-1. **Update `worker/README.md` for v20260523p.** The README's curl
-   example for `/game/phase2/draw` needs to include the new
-   required body fields. The "draw with zeros" path should be
-   documented as deprecated / testing-only.
-2. **Operator-side cron audit.** If a cron exists in the Cloudflare
-   dashboard that calls `/game/phase2/draw` without a body, it
-   needs to either be updated to pass the three market inputs or
-   replaced with a wrapper that fetches them before forwarding the
-   call. Without dashboard access I can't see what's actually
-   configured.
-3. **Translate doctrine pages.** `money.html` (Money Logic v1.0) and
+1. **Operator-side cron audit.** If there's an existing external
+   scheduler (cron-job.org, etc.) that calls `/game/phase2/draw`
+   without market-data inputs, v20260523p will start 400'ing it.
+   Operator-only visibility — without dashboard access I can't see
+   what's configured.
+2. **Translate doctrine pages.** `money.html` (Money Logic v1.0) and
    `verify.html` (Provably Fair) are EN+JP-only by design. Operator
    may want broader access — translation/copy decision.
-4. **TIER-2 language regression check.** Google Translate cookie
-   hijack hasn't been spot-checked in a browser since the session
-   ⑪ `i18n.js` rebuild.
-5. **End-to-end Cycle 2 dry-run.** With Worker redeployed and
-   `api/cycle.json` flipped, run one ¥100 entry from a personal
-   account in sandbox mode and walk through quiz → wait → vote on
-   the staged date.
+3. **TIER-2 language regression check.** Google Translate cookie
+   hijack hasn't been spot-checked in a browser since session ⑪.
+4. **End-to-end Cycle 2 dry-run.** With worker redeployed +
+   `api/cycle.json` flipped + Cron Trigger set + market-data flow
+   established: run one ¥100 entry from a personal account in
+   sandbox mode and walk through quiz → wait → vote on a staged
+   date.
+5. **Optional: external market-data fetcher worker.** A small
+   helper worker that fetches BTC/Nikkei/SP500 and POSTs to
+   `/game/phase2/draw` for the operator. Would let Cloudflare Cron
+   Triggers drive Phase 2 too. Design considerations: which APIs
+   are reachable from the worker's restricted network egress (the
+   contact-form worker can talk to AWS SES and Square but the
+   allowlist for other domains is unknown), and how to handle the
+   case where market data isn't available (e.g. weekend Phase 2
+   reschedule). Not blocking for Cycle 2 — operator can do it
+   manually for the first few cycles.
+
+
 
 ## Credentials (unchanged)
 
