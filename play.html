@@ -742,14 +742,261 @@ let bellPlayed = false;
 let soundEnabled = (localStorage.getItem("bell_sfx_enabled") !== "0");
 
 // ─── Language helper: current display language (from <html data-display-lang>) ─
-// English is the source of truth; .lang-ja blocks supply Japanese alternates.
-// JS-generated dynamic text (vote button labels, gate messages, result subs)
-// branches on this single helper so all dynamic text stays in sync with
-// what the i18n.js picker has set on <html>.
 function currentLang() {
   return document.documentElement.getAttribute("data-display-lang") || "en";
 }
 function isJa() { return currentLang() === "ja"; }
+
+// ─── 10-language helper. pick(table) returns the translation for the
+// active picker, falling back to en if the language isn't present.
+function pick(table) {
+  const lang = currentLang();
+  return (table && table[lang] !== undefined) ? table[lang] : (table && table.en);
+}
+
+// ─── PLAY_I18N: every dynamic string produced by JS, 10 TIER-1 languages.
+// Brand tokens (Bell, Cycle, Phase, King, Mission, The Three, SHA-256,
+// KYC, AML, Hall of Kings, Claude, 23:23, 5:00) stay English and are
+// wrapped in <span class="notranslate" translate="no"> so the Google
+// Translate fallback path (TIER-2 ~98 langs) leaves them alone.
+const PLAY_I18N = {
+  gate_signin_title:   { en: 'Sign in required', ja: 'ログインしてください', ko: '로그인 필요', es: 'Inicio de sesión requerido', hi: 'साइन-इन आवश्यक', vi: 'Yêu cầu đăng nhập', pt: 'É necessário entrar', id: 'Perlu masuk', th: 'ต้องเข้าสู่ระบบ', fr: 'Connexion requise' },
+  gate_signin_text:    {
+    en: 'Open <span class="notranslate" translate="no">My Page</span> and sign in with your <span class="notranslate" translate="no">Mission Entry</span> email and password to play.',
+    ja: '参加するには <span class="notranslate" translate="no">My Page</span> から <span class="notranslate" translate="no">Mission Entry</span> のメールアドレスとパスワードでログインしてください。',
+    ko: '<span class="notranslate" translate="no">My Page</span>를 열어 <span class="notranslate" translate="no">Mission Entry</span> 이메일과 비밀번호로 로그인하세요.',
+    es: 'Abre <span class="notranslate" translate="no">My Page</span> e inicia sesión con tu correo y contraseña de <span class="notranslate" translate="no">Mission Entry</span>.',
+    hi: '<span class="notranslate" translate="no">My Page</span> खोलें और अपनी <span class="notranslate" translate="no">Mission Entry</span> ईमेल और पासवर्ड से साइन इन करें।',
+    vi: 'Mở <span class="notranslate" translate="no">My Page</span> và đăng nhập bằng email và mật khẩu <span class="notranslate" translate="no">Mission Entry</span>.',
+    pt: 'Abra <span class="notranslate" translate="no">My Page</span> e entre com seu e-mail e senha de <span class="notranslate" translate="no">Mission Entry</span>.',
+    id: 'Buka <span class="notranslate" translate="no">My Page</span> dan masuk dengan email serta kata sandi <span class="notranslate" translate="no">Mission Entry</span> Anda.',
+    th: 'เปิด <span class="notranslate" translate="no">My Page</span> และเข้าสู่ระบบด้วยอีเมลและรหัสผ่าน <span class="notranslate" translate="no">Mission Entry</span>',
+    fr: 'Ouvrez <span class="notranslate" translate="no">My Page</span> et connectez-vous avec votre e-mail et mot de passe <span class="notranslate" translate="no">Mission Entry</span>.',
+  },
+  gate_noentry_title:  { en: 'Cannot participate', ja: '参加できません', ko: '참가 불가', es: 'No se puede participar', hi: 'भाग नहीं ले सकते', vi: 'Không thể tham gia', pt: 'Não pode participar', id: 'Tidak bisa berpartisipasi', th: 'ไม่สามารถเข้าร่วม', fr: 'Impossible de participer' },
+  gate_noentry_text:   { en: 'Not entered or not paid for this Cycle.', ja: '未エントリーまたは未決済です。', ko: '미참가 또는 미결제 상태입니다.', es: 'No has entrado o pagado este Cycle.', hi: 'इस Cycle में प्रवेश नहीं किया या भुगतान नहीं किया।', vi: 'Chưa đăng ký hoặc chưa thanh toán Cycle này.', pt: 'Sem entrada ou pagamento para este Cycle.', id: 'Belum mendaftar atau membayar untuk Cycle ini.', th: 'ยังไม่ได้สมัครหรือชำระเงินสำหรับ Cycle นี้', fr: 'Non inscrit ou non payé pour ce Cycle.' },
+  err_vote_failed:     { en: 'Vote failed', ja: '投票に失敗しました', ko: '투표 실패', es: 'Voto fallido', hi: 'मतदान विफल', vi: 'Bỏ phiếu thất bại', pt: 'Falha ao votar', id: 'Pemungutan suara gagal', th: 'การโหวตล้มเหลว', fr: 'Échec du vote' },
+  verdict_correct:     { en: 'Correct', ja: '正解', ko: '정답', es: 'Correcto', hi: 'सही', vi: 'Đúng', pt: 'Correto', id: 'Benar', th: 'ถูก', fr: 'Correct' },
+  verdict_wrong:       { en: 'Wrong', ja: '不正解', ko: '오답', es: 'Incorrecto', hi: 'गलत', vi: 'Sai', pt: 'Errado', id: 'Salah', th: 'ผิด', fr: 'Faux' },
+  res_passed_title:    { en: 'Passed', ja: '通過', ko: '통과', es: 'Aprobado', hi: 'उत्तीर्ण', vi: 'Vượt qua', pt: 'Aprovado', id: 'Lulus', th: 'ผ่าน', fr: 'Réussi' },
+  res_passed_sub: {
+    en: 'You advance to the <span class="notranslate" translate="no">The Three</span> drawing pool.',
+    ja: '<span class="notranslate" translate="no">The Three</span> の抽選プールへ進みました。',
+    ko: '<span class="notranslate" translate="no">The Three</span> 추첨 풀로 진출했습니다.',
+    es: 'Pasas al sorteo de <span class="notranslate" translate="no">The Three</span>.',
+    hi: 'आप <span class="notranslate" translate="no">The Three</span> ड्रॉइंग पूल में पहुँचे।',
+    vi: 'Bạn đã vào nhóm rút thăm <span class="notranslate" translate="no">The Three</span>.',
+    pt: 'Você avança ao sorteio <span class="notranslate" translate="no">The Three</span>.',
+    id: 'Anda maju ke undian <span class="notranslate" translate="no">The Three</span>.',
+    th: 'คุณผ่านเข้าสู่การจับฉลาก <span class="notranslate" translate="no">The Three</span>',
+    fr: 'Tu passes au tirage <span class="notranslate" translate="no">The Three</span>.',
+  },
+  res_failed_title:    { en: 'The Bell remains', ja: 'Bell は残る', ko: 'Bell은 남는다', es: 'La Bell permanece', hi: 'Bell बना रहता है', vi: 'Bell vẫn còn', pt: 'A Bell permanece', id: 'Bell tetap', th: 'Bell ยังอยู่', fr: 'La Bell demeure' },
+  res_failed_sub: {
+    en: 'Your <span class="notranslate" translate="no">Bell</span> is preserved; only this Cycle\u2019s <span class="notranslate" translate="no">King</span> candidacy is lost.',
+    ja: 'あなたの <span class="notranslate" translate="no">Bell</span> は失われません。今 <span class="notranslate" translate="no">Cycle</span> の <span class="notranslate" translate="no">King</span> 候補資格のみ失います。',
+    ko: '당신의 <span class="notranslate" translate="no">Bell</span>은 사라지지 않습니다. 이번 <span class="notranslate" translate="no">Cycle</span>의 <span class="notranslate" translate="no">King</span> 후보 자격만 잃습니다.',
+    es: 'Tu <span class="notranslate" translate="no">Bell</span> se conserva; solo pierdes la candidatura a <span class="notranslate" translate="no">King</span> de este Cycle.',
+    hi: 'आपका <span class="notranslate" translate="no">Bell</span> सुरक्षित है; केवल इस Cycle की <span class="notranslate" translate="no">King</span> उम्मीदवारी जाती है।',
+    vi: '<span class="notranslate" translate="no">Bell</span> của bạn được giữ lại; chỉ tư cách ứng viên <span class="notranslate" translate="no">King</span> của Cycle này bị mất.',
+    pt: 'Sua <span class="notranslate" translate="no">Bell</span> é preservada; apenas a candidatura a <span class="notranslate" translate="no">King</span> deste Cycle é perdida.',
+    id: '<span class="notranslate" translate="no">Bell</span> Anda tetap; hanya kandidatur <span class="notranslate" translate="no">King</span> di Cycle ini yang hilang.',
+    th: '<span class="notranslate" translate="no">Bell</span> ของคุณยังคงอยู่; เสียเฉพาะคุณสมบัติผู้สมัคร <span class="notranslate" translate="no">King</span> ของ Cycle นี้',
+    fr: 'Ta <span class="notranslate" translate="no">Bell</span> est préservée; seule la candidature de <span class="notranslate" translate="no">King</span> de ce Cycle est perdue.',
+  },
+  diff: {
+    1: { en: 'Easy',   ja: 'やさしい',     ko: '쉬움',   es: 'Fácil',   hi: 'आसान', vi: 'Dễ',   pt: 'Fácil',   id: 'Mudah',  th: 'ง่าย',     fr: 'Facile' },
+    2: { en: 'Medium', ja: 'ふつう',       ko: '보통',   es: 'Medio',   hi: 'मध्यम', vi: 'Vừa', pt: 'Médio',   id: 'Sedang', th: 'ปานกลาง', fr: 'Moyen' },
+    3: { en: 'Hard',   ja: 'むずかしい',   ko: '어려움', es: 'Difícil', hi: 'कठिन',  vi: 'Khó',  pt: 'Difícil', id: 'Sulit',  th: 'ยาก',     fr: 'Difficile' },
+  },
+  vote_btn:   { en: 'Vote',  ja: 'これに投票', ko: '투표하기', es: 'Votar',  hi: 'मत दें',  vi: 'Bỏ phiếu',     pt: 'Votar',  id: 'Pilih',         th: 'โหวต',    fr: 'Voter' },
+  voted:      { en: 'Voted', ja: '投票済み',   ko: '투표 완료', es: 'Votado', hi: 'मत दिया', vi: 'Đã bỏ phiếu', pt: 'Votado', id: 'Sudah memilih', th: 'โหวตแล้ว', fr: 'Voté' },
+};
+
+// ─── PLAY_STATIC_I18N: every translatable static block in play.html,
+// targeted by data-static-i18n="key" on a single wrapper element.
+const PLAY_STATIC_I18N = {
+  pre_sub: {
+    en: 'The 5-minute ritual.<br>When the <span class="notranslate" translate="no">Bell</span> rings at <span class="notranslate" translate="no">23:23</span>, three questions begin.',
+    ja: '5 分間の儀式。<br><span class="notranslate" translate="no">23:23</span> に鐘が鳴ったら、3 つの問いが始まる。',
+    ko: '<span class="notranslate" translate="no">5-minute</span> 의식.<br><span class="notranslate" translate="no">23:23</span>에 <span class="notranslate" translate="no">Bell</span>이 울리면 세 가지 질문이 시작된다.',
+    es: 'El ritual de <span class="notranslate" translate="no">5-minute</span>.<br>Cuando la <span class="notranslate" translate="no">Bell</span> suena a las <span class="notranslate" translate="no">23:23</span>, comienzan tres preguntas.',
+    hi: '<span class="notranslate" translate="no">5-minute</span> अनुष्ठान।<br><span class="notranslate" translate="no">23:23</span> पर <span class="notranslate" translate="no">Bell</span> बजने पर तीन प्रश्न शुरू होते हैं।',
+    vi: 'Nghi thức <span class="notranslate" translate="no">5-minute</span>.<br>Khi <span class="notranslate" translate="no">Bell</span> reo lúc <span class="notranslate" translate="no">23:23</span>, ba câu hỏi bắt đầu.',
+    pt: 'O ritual de <span class="notranslate" translate="no">5-minute</span>.<br>Quando a <span class="notranslate" translate="no">Bell</span> soa às <span class="notranslate" translate="no">23:23</span>, três perguntas começam.',
+    id: 'Ritual <span class="notranslate" translate="no">5-minute</span>.<br>Saat <span class="notranslate" translate="no">Bell</span> berbunyi pukul <span class="notranslate" translate="no">23:23</span>, tiga pertanyaan dimulai.',
+    th: 'พิธี <span class="notranslate" translate="no">5-minute</span><br>เมื่อ <span class="notranslate" translate="no">Bell</span> ดังที่ <span class="notranslate" translate="no">23:23</span> คำถามสามข้อจะเริ่มต้น',
+    fr: 'Le rituel de <span class="notranslate" translate="no">5-minute</span>.<br>Quand la <span class="notranslate" translate="no">Bell</span> sonne à <span class="notranslate" translate="no">23:23</span>, trois questions commencent.',
+  },
+  pre_label: {
+    en: 'Time until <span class="notranslate" translate="no">Bell</span>',
+    ja: '<span class="notranslate" translate="no">Bell</span> まで',
+    ko: '<span class="notranslate" translate="no">Bell</span>까지',
+    es: 'Tiempo hasta la <span class="notranslate" translate="no">Bell</span>',
+    hi: '<span class="notranslate" translate="no">Bell</span> तक',
+    vi: 'Đến <span class="notranslate" translate="no">Bell</span>',
+    pt: 'Tempo até a <span class="notranslate" translate="no">Bell</span>',
+    id: 'Hingga <span class="notranslate" translate="no">Bell</span>',
+    th: 'ถึง <span class="notranslate" translate="no">Bell</span>',
+    fr: 'Avant la <span class="notranslate" translate="no">Bell</span>',
+  },
+  pre_desc: {
+    en: 'Keep this screen open. The moment the clock hits <span class="notranslate" translate="no">23:23:00</span>, <span class="notranslate" translate="no">Phase 1</span> (the quiz) begins automatically.',
+    ja: 'この画面のままお待ちください。<br><span class="notranslate" translate="no">23:23:00</span> になった瞬間、自動的に <span class="notranslate" translate="no">Phase 1</span>(クイズ)が始まります。',
+    ko: '이 화면을 열어 두세요. <span class="notranslate" translate="no">23:23:00</span>이 되는 순간 <span class="notranslate" translate="no">Phase 1</span>(퀴즈)이 자동으로 시작됩니다.',
+    es: 'Mantén esta pantalla abierta. En el momento en que el reloj marque <span class="notranslate" translate="no">23:23:00</span>, <span class="notranslate" translate="no">Phase 1</span> (el quiz) comenzará automáticamente.',
+    hi: 'इस स्क्रीन को खुला रखें। जैसे ही समय <span class="notranslate" translate="no">23:23:00</span> होगा, <span class="notranslate" translate="no">Phase 1</span> (क्विज़) स्वतः शुरू हो जाएगा।',
+    vi: 'Giữ màn hình này mở. Ngay khi đồng hồ chỉ <span class="notranslate" translate="no">23:23:00</span>, <span class="notranslate" translate="no">Phase 1</span> (quiz) sẽ tự động bắt đầu.',
+    pt: 'Mantenha esta tela aberta. No instante em que o relógio marcar <span class="notranslate" translate="no">23:23:00</span>, a <span class="notranslate" translate="no">Phase 1</span> (o quiz) começará automaticamente.',
+    id: 'Biarkan layar ini terbuka. Saat jam menunjukkan <span class="notranslate" translate="no">23:23:00</span>, <span class="notranslate" translate="no">Phase 1</span> (kuis) akan otomatis dimulai.',
+    th: 'ให้หน้าจอนี้เปิดไว้ เมื่อนาฬิกาแสดง <span class="notranslate" translate="no">23:23:00</span> <span class="notranslate" translate="no">Phase 1</span> (ควิซ) จะเริ่มอัตโนมัติ',
+    fr: 'Garde cet écran ouvert. Au moment où l\u2019horloge atteint <span class="notranslate" translate="no">23:23:00</span>, la <span class="notranslate" translate="no">Phase 1</span> (le quiz) commence automatiquement.',
+  },
+  quiz_h:  { en: '3 Questions', ja: '3 つの問い', ko: '3가지 질문', es: '3 Preguntas', hi: '3 प्रश्न', vi: '3 Câu hỏi', pt: '3 Perguntas', id: '3 Pertanyaan', th: '3 คำถาม', fr: '3 Questions' },
+  quiz_sub: {
+    en: 'Answer all 3 correctly to advance to <span class="notranslate" translate="no">The Three</span> drawing pool.',
+    ja: '3 問すべて正解すれば、<span class="notranslate" translate="no">The Three</span> の抽選プールへ。',
+    ko: '3문제 모두 맞히면 <span class="notranslate" translate="no">The Three</span> 추첨 풀로.',
+    es: 'Responde las 3 correctamente para avanzar al sorteo <span class="notranslate" translate="no">The Three</span>.',
+    hi: 'सभी 3 सही उत्तर देकर <span class="notranslate" translate="no">The Three</span> ड्रॉइंग पूल में पहुँचें।',
+    vi: 'Trả lời đúng cả 3 để vào nhóm rút thăm <span class="notranslate" translate="no">The Three</span>.',
+    pt: 'Acerte as 3 para avançar ao sorteio <span class="notranslate" translate="no">The Three</span>.',
+    id: 'Jawab ke-3 dengan benar untuk maju ke undian <span class="notranslate" translate="no">The Three</span>.',
+    th: 'ตอบถูกทั้ง 3 ข้อเพื่อเข้าสู่การจับฉลาก <span class="notranslate" translate="no">The Three</span>',
+    fr: 'Réponds correctement aux 3 pour passer au tirage <span class="notranslate" translate="no">The Three</span>.',
+  },
+  phase2_eta: {
+    en: '<span class="notranslate" translate="no">Phase 2</span> in <span id="phase2-eta">—</span> sec',
+    ja: '<span class="notranslate" translate="no">Phase 2</span> まで <span id="phase2-eta">—</span> 秒',
+    ko: '<span class="notranslate" translate="no">Phase 2</span>까지 <span id="phase2-eta">—</span>초',
+    es: '<span class="notranslate" translate="no">Phase 2</span> en <span id="phase2-eta">—</span> s',
+    hi: '<span class="notranslate" translate="no">Phase 2</span> में <span id="phase2-eta">—</span> सेक',
+    vi: '<span class="notranslate" translate="no">Phase 2</span> sau <span id="phase2-eta">—</span> giây',
+    pt: '<span class="notranslate" translate="no">Phase 2</span> em <span id="phase2-eta">—</span> s',
+    id: '<span class="notranslate" translate="no">Phase 2</span> dalam <span id="phase2-eta">—</span> detik',
+    th: '<span class="notranslate" translate="no">Phase 2</span> ใน <span id="phase2-eta">—</span> วินาที',
+    fr: '<span class="notranslate" translate="no">Phase 2</span> dans <span id="phase2-eta">—</span> s',
+  },
+  phase2_h: { en: 'The machine chooses 3', ja: '機械が 3 人を選ぶ', ko: '기계가 3인을 선택한다', es: 'La máquina elige 3', hi: 'मशीन 3 चुनती है', vi: 'Máy chọn 3', pt: 'A máquina escolhe 3', id: 'Mesin memilih 3', th: 'เครื่องเลือก 3 คน', fr: 'La machine en choisit 3' },
+  phase2_sub: {
+    en: 'Selection of <span class="notranslate" translate="no">The Three</span> by <span class="notranslate" translate="no">SHA-256</span>.<br>Neither operator nor <span class="notranslate" translate="no">Claude</span> can intervene.',
+    ja: '<span class="notranslate" translate="no">SHA-256</span> 抽出による <span class="notranslate" translate="no">The Three</span> の選定。<br>運営も <span class="notranslate" translate="no">Claude</span> も介入できない。',
+    ko: '<span class="notranslate" translate="no">SHA-256</span> 추출에 의한 <span class="notranslate" translate="no">The Three</span> 선정.<br>운영자도 <span class="notranslate" translate="no">Claude</span>도 개입할 수 없다.',
+    es: 'Selección de <span class="notranslate" translate="no">The Three</span> por <span class="notranslate" translate="no">SHA-256</span>.<br>Ni el operador ni <span class="notranslate" translate="no">Claude</span> pueden intervenir.',
+    hi: '<span class="notranslate" translate="no">SHA-256</span> द्वारा <span class="notranslate" translate="no">The Three</span> का चयन।<br>न ऑपरेटर, न <span class="notranslate" translate="no">Claude</span> हस्तक्षेप कर सकते हैं।',
+    vi: 'Chọn <span class="notranslate" translate="no">The Three</span> bằng <span class="notranslate" translate="no">SHA-256</span>.<br>Cả người vận hành lẫn <span class="notranslate" translate="no">Claude</span> đều không thể can thiệp.',
+    pt: 'Seleção de <span class="notranslate" translate="no">The Three</span> por <span class="notranslate" translate="no">SHA-256</span>.<br>Nem o operador nem <span class="notranslate" translate="no">Claude</span> podem intervir.',
+    id: 'Pemilihan <span class="notranslate" translate="no">The Three</span> dengan <span class="notranslate" translate="no">SHA-256</span>.<br>Operator maupun <span class="notranslate" translate="no">Claude</span> tidak dapat ikut campur.',
+    th: 'การคัดเลือก <span class="notranslate" translate="no">The Three</span> ด้วย <span class="notranslate" translate="no">SHA-256</span><br>ทั้งผู้ดำเนินการและ <span class="notranslate" translate="no">Claude</span> ไม่สามารถแทรกแซง',
+    fr: 'Sélection des <span class="notranslate" translate="no">The Three</span> par <span class="notranslate" translate="no">SHA-256</span>.<br>Ni l\u2019opérateur ni <span class="notranslate" translate="no">Claude</span> ne peuvent intervenir.',
+  },
+  phase3_eta: {
+    en: 'Voting opens in <span id="phase3-eta">—</span> sec',
+    ja: '投票開始まで <span id="phase3-eta">—</span> 秒',
+    ko: '투표 시작까지 <span id="phase3-eta">—</span>초',
+    es: 'Apertura de la votación en <span id="phase3-eta">—</span> s',
+    hi: 'मतदान खुलने में <span id="phase3-eta">—</span> सेक',
+    vi: 'Bỏ phiếu mở sau <span id="phase3-eta">—</span> giây',
+    pt: 'Votação abre em <span id="phase3-eta">—</span> s',
+    id: 'Pemungutan suara dibuka dalam <span id="phase3-eta">—</span> detik',
+    th: 'เปิดโหวตใน <span id="phase3-eta">—</span> วินาที',
+    fr: 'Ouverture du vote dans <span id="phase3-eta">—</span> s',
+  },
+  vote_h:  { en: 'The desire you want fulfilled', ja: 'あなたが叶えたい欲望', ko: '당신이 이루고 싶은 욕망', es: 'El deseo que quieres cumplir', hi: 'जो इच्छा आप पूरी करना चाहते हैं', vi: 'Khát vọng bạn muốn thành sự thật', pt: 'O desejo que você quer ver realizado', id: 'Hasrat yang ingin Anda kabulkan', th: 'ความปรารถนาที่คุณต้องการให้สำเร็จ', fr: 'Le désir que tu veux voir se réaliser' },
+  vote_sub: {
+    en: 'Choose only one. The desire with the most votes wins; that person becomes <span class="notranslate" translate="no">King</span>.<br>Voting closes at <span class="notranslate" translate="no">5:00</span>.',
+    ja: '1 つだけ選ぶ。最も多く選ばれた欲望の人が <span class="notranslate" translate="no">King</span> になる。<br><span class="notranslate" translate="no">5:00</span> で投票締切。',
+    ko: '하나만 선택. 가장 많은 표를 받은 욕망의 주인이 <span class="notranslate" translate="no">King</span>이 된다.<br><span class="notranslate" translate="no">5:00</span>에 투표 마감.',
+    es: 'Elige solo uno. El deseo con más votos gana; esa persona se convierte en <span class="notranslate" translate="no">King</span>.<br>La votación cierra a las <span class="notranslate" translate="no">5:00</span>.',
+    hi: 'केवल एक चुनें। सबसे अधिक मत पाने वाली इच्छा जीतती है; वह व्यक्ति <span class="notranslate" translate="no">King</span> बनता है।<br>मतदान <span class="notranslate" translate="no">5:00</span> पर बंद होता है।',
+    vi: 'Chỉ chọn một. Khát vọng có nhiều phiếu nhất thắng; người ấy trở thành <span class="notranslate" translate="no">King</span>.<br>Đóng phiếu lúc <span class="notranslate" translate="no">5:00</span>.',
+    pt: 'Escolha apenas um. O desejo com mais votos vence; essa pessoa se torna <span class="notranslate" translate="no">King</span>.<br>A votação encerra às <span class="notranslate" translate="no">5:00</span>.',
+    id: 'Pilih hanya satu. Hasrat dengan suara terbanyak menang; orang itu menjadi <span class="notranslate" translate="no">King</span>.<br>Pemungutan suara ditutup pukul <span class="notranslate" translate="no">5:00</span>.',
+    th: 'เลือกเพียงหนึ่งเดียว ความปรารถนาที่ได้คะแนนสูงสุดชนะ และคน ๆ นั้นจะเป็น <span class="notranslate" translate="no">King</span><br>ปิดโหวตเวลา <span class="notranslate" translate="no">5:00</span>',
+    fr: 'Choisis un seul. Le désir avec le plus de votes gagne ; cette personne devient <span class="notranslate" translate="no">King</span>.<br>Fermeture du vote à <span class="notranslate" translate="no">5:00</span>.',
+  },
+  post_h: {
+    en: 'The <span class="notranslate" translate="no">Bell</span> has closed',
+    ja: '<span class="notranslate" translate="no">Bell</span> が閉じました',
+    ko: '<span class="notranslate" translate="no">Bell</span>이 닫혔습니다',
+    es: 'La <span class="notranslate" translate="no">Bell</span> se ha cerrado',
+    hi: '<span class="notranslate" translate="no">Bell</span> बंद हो गई',
+    vi: '<span class="notranslate" translate="no">Bell</span> đã đóng',
+    pt: 'A <span class="notranslate" translate="no">Bell</span> se fechou',
+    id: '<span class="notranslate" translate="no">Bell</span> telah ditutup',
+    th: '<span class="notranslate" translate="no">Bell</span> ได้ปิดลงแล้ว',
+    fr: 'La <span class="notranslate" translate="no">Bell</span> est close',
+  },
+  post_sub: {
+    en: 'The 5 minutes are over.<br>After operator review (<span class="notranslate" translate="no">KYC + AML</span> + legal compliance), <span class="notranslate" translate="no">The Three</span> and the <span class="notranslate" translate="no">King</span> will be permanently recorded in the <span class="notranslate" translate="no">Hall of Kings</span> within 24 hours.',
+    ja: '5 分間が終わりました。<br>運営審査(<span class="notranslate" translate="no">KYC + AML</span> + 法令確認)を経て、24 時間以内に <span class="notranslate" translate="no">The Three</span> と <span class="notranslate" translate="no">King</span> が <span class="notranslate" translate="no">Hall of Kings</span> に永続記録されます。',
+    ko: '5분이 끝났습니다.<br>운영자 검토(<span class="notranslate" translate="no">KYC + AML</span> + 법령 준수) 후, 24시간 이내에 <span class="notranslate" translate="no">The Three</span>와 <span class="notranslate" translate="no">King</span>이 <span class="notranslate" translate="no">Hall of Kings</span>에 영구 기록됩니다.',
+    es: 'Los 5 minutos terminaron.<br>Tras la revisión del operador (<span class="notranslate" translate="no">KYC + AML</span> + cumplimiento legal), <span class="notranslate" translate="no">The Three</span> y el <span class="notranslate" translate="no">King</span> serán registrados permanentemente en el <span class="notranslate" translate="no">Hall of Kings</span> en 24 horas.',
+    hi: '5 मिनट समाप्त हुए।<br>ऑपरेटर समीक्षा (<span class="notranslate" translate="no">KYC + AML</span> + कानूनी अनुपालन) के बाद, <span class="notranslate" translate="no">The Three</span> और <span class="notranslate" translate="no">King</span> 24 घंटे में <span class="notranslate" translate="no">Hall of Kings</span> में स्थायी रूप से दर्ज होंगे।',
+    vi: '5 phút đã kết thúc.<br>Sau khi người vận hành xem xét (<span class="notranslate" translate="no">KYC + AML</span> + tuân thủ pháp lý), <span class="notranslate" translate="no">The Three</span> và <span class="notranslate" translate="no">King</span> sẽ được ghi lại vĩnh viễn vào <span class="notranslate" translate="no">Hall of Kings</span> trong vòng 24 giờ.',
+    pt: 'Os 5 minutos terminaram.<br>Após revisão do operador (<span class="notranslate" translate="no">KYC + AML</span> + conformidade legal), <span class="notranslate" translate="no">The Three</span> e o <span class="notranslate" translate="no">King</span> serão registrados permanentemente no <span class="notranslate" translate="no">Hall of Kings</span> em 24 horas.',
+    id: '5 menit berakhir.<br>Setelah ditinjau operator (<span class="notranslate" translate="no">KYC + AML</span> + kepatuhan hukum), <span class="notranslate" translate="no">The Three</span> dan <span class="notranslate" translate="no">King</span> akan dicatat permanen di <span class="notranslate" translate="no">Hall of Kings</span> dalam 24 jam.',
+    th: '5 นาทีจบลงแล้ว<br>หลังการตรวจสอบของผู้ดำเนินการ (<span class="notranslate" translate="no">KYC + AML</span> + ความสอดคล้องทางกฎหมาย) <span class="notranslate" translate="no">The Three</span> และ <span class="notranslate" translate="no">King</span> จะถูกบันทึกถาวรใน <span class="notranslate" translate="no">Hall of Kings</span> ภายใน 24 ชั่วโมง',
+    fr: 'Les 5 minutes sont terminées.<br>Après l\u2019examen de l\u2019opérateur (<span class="notranslate" translate="no">KYC + AML</span> + conformité légale), <span class="notranslate" translate="no">The Three</span> et le <span class="notranslate" translate="no">King</span> seront enregistrés à jamais dans le <span class="notranslate" translate="no">Hall of Kings</span> sous 24 heures.',
+  },
+  dormant_h: {
+    en: 'The <span class="notranslate" translate="no">Bell</span> rang —<br>but it was too still',
+    ja: '<span class="notranslate" translate="no">Bell</span> は鳴った —<br>されど、静かすぎた',
+    ko: '<span class="notranslate" translate="no">Bell</span>은 울렸으나 —<br>너무 고요했다',
+    es: 'La <span class="notranslate" translate="no">Bell</span> sonó —<br>pero estaba demasiado quieto',
+    hi: '<span class="notranslate" translate="no">Bell</span> बजी —<br>लेकिन सन्नाटा बहुत था',
+    vi: '<span class="notranslate" translate="no">Bell</span> đã reo —<br>nhưng quá tĩnh lặng',
+    pt: 'A <span class="notranslate" translate="no">Bell</span> tocou —<br>mas estava silenciosa demais',
+    id: '<span class="notranslate" translate="no">Bell</span> berbunyi —<br>tetapi terlalu sunyi',
+    th: '<span class="notranslate" translate="no">Bell</span> ดังขึ้น —<br>แต่เงียบเกินไป',
+    fr: 'La <span class="notranslate" translate="no">Bell</span> a sonné —<br>mais c\u2019était trop calme',
+  },
+  dormant_body: {
+    en: 'This <span class="notranslate" translate="no">Cycle</span> drew only <strong id="dormant-count">—</strong> participants —<br>short of the minimum <strong id="dormant-threshold">—</strong> for the ritual to be valid.<br><br>Your <span class="notranslate" translate="no">Bell</span> is not lost.<br>Your <span class="notranslate" translate="no">¥100</span> carries forward into the next <span class="notranslate" translate="no">Cycle</span> and accrues to the <span class="notranslate" translate="no">Mission Fund</span>.<br>When the bell next rings — if enough have gathered — you are entered automatically.',
+    ja: 'この <span class="notranslate" translate="no">Cycle</span> は <strong id="dormant-count">—</strong> 名の参加にとどまり、<br>儀式が成立する最低人数 <strong id="dormant-threshold">—</strong> 名に届きませんでした。<br><br>あなたの <span class="notranslate" translate="no">Bell</span> は失われません。<br><span class="notranslate" translate="no">¥100</span> は次の <span class="notranslate" translate="no">Cycle</span> に持ち越され、<span class="notranslate" translate="no">Mission Fund</span> に蓄積されます。<br>次に鐘が鳴るとき、人数が満ちていれば、あなたは自動で参加できます。',
+    ko: '이 <span class="notranslate" translate="no">Cycle</span>은 <strong id="dormant-count">—</strong>명만 참여하여,<br>의식 성립 최소 인원 <strong id="dormant-threshold">—</strong>명에 미치지 못했습니다.<br><br>당신의 <span class="notranslate" translate="no">Bell</span>은 사라지지 않습니다.<br><span class="notranslate" translate="no">¥100</span>은 다음 <span class="notranslate" translate="no">Cycle</span>로 이월되어 <span class="notranslate" translate="no">Mission Fund</span>에 누적됩니다.<br>다음 종이 울릴 때 인원이 충분하면 자동으로 참가됩니다.',
+    es: 'Este <span class="notranslate" translate="no">Cycle</span> solo atrajo a <strong id="dormant-count">—</strong> participantes —<br>menos del mínimo de <strong id="dormant-threshold">—</strong> para que el ritual sea válido.<br><br>Tu <span class="notranslate" translate="no">Bell</span> no se pierde.<br>Tus <span class="notranslate" translate="no">¥100</span> se trasladan al próximo <span class="notranslate" translate="no">Cycle</span> y se suman al <span class="notranslate" translate="no">Mission Fund</span>.<br>Cuando la campana suene de nuevo — si se han reunido suficientes — entrarás automáticamente.',
+    hi: 'इस <span class="notranslate" translate="no">Cycle</span> में केवल <strong id="dormant-count">—</strong> प्रतिभागी आए —<br>अनुष्ठान वैध होने के लिए न्यूनतम <strong id="dormant-threshold">—</strong> से कम।<br><br>आपका <span class="notranslate" translate="no">Bell</span> खोया नहीं है।<br>आपके <span class="notranslate" translate="no">¥100</span> अगले <span class="notranslate" translate="no">Cycle</span> में जाते हैं और <span class="notranslate" translate="no">Mission Fund</span> में जुड़ते हैं।<br>जब अगली बार घंटी बजेगी — पर्याप्त लोग जुटे होंगे तो — आप स्वतः शामिल हो जाएंगे।',
+    vi: '<span class="notranslate" translate="no">Cycle</span> này chỉ thu hút <strong id="dormant-count">—</strong> người tham gia —<br>chưa đạt mức tối thiểu <strong id="dormant-threshold">—</strong> để nghi thức có hiệu lực.<br><br><span class="notranslate" translate="no">Bell</span> của bạn không mất.<br><span class="notranslate" translate="no">¥100</span> của bạn chuyển sang <span class="notranslate" translate="no">Cycle</span> tiếp và cộng vào <span class="notranslate" translate="no">Mission Fund</span>.<br>Lần tới chuông reo — nếu đủ người — bạn sẽ tự động tham gia.',
+    pt: 'Este <span class="notranslate" translate="no">Cycle</span> atraiu apenas <strong id="dormant-count">—</strong> participantes —<br>abaixo do mínimo de <strong id="dormant-threshold">—</strong> para o ritual ser válido.<br><br>Sua <span class="notranslate" translate="no">Bell</span> não é perdida.<br>Seus <span class="notranslate" translate="no">¥100</span> são levados para o próximo <span class="notranslate" translate="no">Cycle</span> e somados ao <span class="notranslate" translate="no">Mission Fund</span>.<br>Quando o sino tocar novamente — se houver gente suficiente — você entrará automaticamente.',
+    id: '<span class="notranslate" translate="no">Cycle</span> ini hanya menarik <strong id="dormant-count">—</strong> peserta —<br>kurang dari minimum <strong id="dormant-threshold">—</strong> agar ritual sah.<br><br><span class="notranslate" translate="no">Bell</span> Anda tidak hilang.<br><span class="notranslate" translate="no">¥100</span> Anda diteruskan ke <span class="notranslate" translate="no">Cycle</span> berikutnya dan masuk ke <span class="notranslate" translate="no">Mission Fund</span>.<br>Saat lonceng berikutnya berbunyi — jika cukup — Anda akan masuk otomatis.',
+    th: '<span class="notranslate" translate="no">Cycle</span> นี้มีผู้เข้าร่วมเพียง <strong id="dormant-count">—</strong> คน —<br>ต่ำกว่าขั้นต่ำ <strong id="dormant-threshold">—</strong> คน ที่จะทำให้พิธีมีผล<br><br><span class="notranslate" translate="no">Bell</span> ของคุณไม่หายไป<br><span class="notranslate" translate="no">¥100</span> ของคุณจะถูกยกไปยัง <span class="notranslate" translate="no">Cycle</span> ถัดไปและสะสมใน <span class="notranslate" translate="no">Mission Fund</span><br>เมื่อระฆังดังอีกครั้ง หากมีผู้คนพอเพียง คุณจะเข้าร่วมอัตโนมัติ',
+    fr: 'Ce <span class="notranslate" translate="no">Cycle</span> n\u2019a attiré que <strong id="dormant-count">—</strong> participants —<br>en dessous du minimum de <strong id="dormant-threshold">—</strong> pour que le rituel soit valable.<br><br>Ta <span class="notranslate" translate="no">Bell</span> n\u2019est pas perdue.<br>Tes <span class="notranslate" translate="no">¥100</span> sont reportés au prochain <span class="notranslate" translate="no">Cycle</span> et s\u2019ajoutent au <span class="notranslate" translate="no">Mission Fund</span>.<br>Au prochain coup de cloche — si suffisamment de monde s\u2019est rassemblé — tu seras inscrit automatiquement.',
+  },
+  dormant_why: { en: '→ Why dormant?', ja: '→ なぜ保留?', ko: '→ 왜 보류?', es: '→ ¿Por qué dormido?', hi: '→ क्यों निष्क्रिय?', vi: '→ Tại sao đóng băng?', pt: '→ Por que dormente?', id: '→ Mengapa tertahan?', th: '→ ทำไมถึงพัก?', fr: '→ Pourquoi dormant ?' },
+  gate_signin_btn: { en: '→ Sign in on <span class="notranslate" translate="no">My Page</span>', ja: '→ <span class="notranslate" translate="no">My Page</span> でログイン', ko: '→ <span class="notranslate" translate="no">My Page</span>에서 로그인', es: '→ Iniciar sesión en <span class="notranslate" translate="no">My Page</span>', hi: '→ <span class="notranslate" translate="no">My Page</span> पर साइन इन करें', vi: '→ Đăng nhập tại <span class="notranslate" translate="no">My Page</span>', pt: '→ Entrar em <span class="notranslate" translate="no">My Page</span>', id: '→ Masuk di <span class="notranslate" translate="no">My Page</span>', th: '→ เข้าสู่ระบบที่ <span class="notranslate" translate="no">My Page</span>', fr: '→ Se connecter sur <span class="notranslate" translate="no">My Page</span>' },
+  gate_entry_btn:  { en: '→ <span class="notranslate" translate="no">Mission Entry</span>', ja: '→ <span class="notranslate" translate="no">Mission Entry</span>', ko: '→ <span class="notranslate" translate="no">Mission Entry</span>', es: '→ <span class="notranslate" translate="no">Mission Entry</span>', hi: '→ <span class="notranslate" translate="no">Mission Entry</span>', vi: '→ <span class="notranslate" translate="no">Mission Entry</span>', pt: '→ <span class="notranslate" translate="no">Mission Entry</span>', id: '→ <span class="notranslate" translate="no">Mission Entry</span>', th: '→ <span class="notranslate" translate="no">Mission Entry</span>', fr: '→ <span class="notranslate" translate="no">Mission Entry</span>' },
+  footer_howitworks: { en: 'How it works', ja: '仕組み', ko: '작동 방식', es: 'Cómo funciona', hi: 'यह कैसे काम करता है', vi: 'Cách hoạt động', pt: 'Como funciona', id: 'Cara kerjanya', th: 'วิธีการทำงาน', fr: 'Comment ça marche' },
+  footer_entry:      { en: 'Entry', ja: 'エントリー', ko: '엔트리', es: 'Entrada', hi: 'प्रवेश', vi: 'Tham gia', pt: 'Entrada', id: 'Pendaftaran', th: 'การเข้าร่วม', fr: 'Entrée' },
+  footer_rules:      { en: '<span class="notranslate" translate="no">Founding Bell</span> rules', ja: '<span class="notranslate" translate="no">Founding Bell</span> ルール', ko: '<span class="notranslate" translate="no">Founding Bell</span> 규칙', es: 'Reglas de <span class="notranslate" translate="no">Founding Bell</span>', hi: '<span class="notranslate" translate="no">Founding Bell</span> नियम', vi: 'Quy tắc <span class="notranslate" translate="no">Founding Bell</span>', pt: 'Regras de <span class="notranslate" translate="no">Founding Bell</span>', id: 'Aturan <span class="notranslate" translate="no">Founding Bell</span>', th: 'กฎ <span class="notranslate" translate="no">Founding Bell</span>', fr: 'Règles <span class="notranslate" translate="no">Founding Bell</span>' },
+  footer_disclaimer: {
+    en: 'Not a lottery · Not an investment · Not gambling · The <span class="notranslate" translate="no">Bell</span> is a right, not money',
+    ja: '富くじではない · 投資ではない · 賭博ではない · <span class="notranslate" translate="no">Bell</span> は権利、金ではない',
+    ko: '복권이 아님 · 투자가 아님 · 도박이 아님 · <span class="notranslate" translate="no">Bell</span>은 권리이지 돈이 아님',
+    es: 'No es una lotería · No es una inversión · No es apuesta · La <span class="notranslate" translate="no">Bell</span> es un derecho, no dinero',
+    hi: 'लॉटरी नहीं · निवेश नहीं · जुआ नहीं · <span class="notranslate" translate="no">Bell</span> एक अधिकार है, पैसा नहीं',
+    vi: 'Không phải xổ số · Không phải đầu tư · Không phải cờ bạc · <span class="notranslate" translate="no">Bell</span> là quyền, không phải tiền',
+    pt: 'Não é loteria · Não é investimento · Não é jogo · A <span class="notranslate" translate="no">Bell</span> é um direito, não dinheiro',
+    id: 'Bukan lotere · Bukan investasi · Bukan judi · <span class="notranslate" translate="no">Bell</span> adalah hak, bukan uang',
+    th: 'ไม่ใช่หวย · ไม่ใช่การลงทุน · ไม่ใช่การพนัน · <span class="notranslate" translate="no">Bell</span> คือสิทธิ์ ไม่ใช่เงิน',
+    fr: 'Pas une loterie · Pas un investissement · Pas un pari · La <span class="notranslate" translate="no">Bell</span> est un droit, pas de l\u2019argent',
+  },
+};
+
+function applyPlayStaticI18n() {
+  const lang = currentLang();
+  document.querySelectorAll('[data-static-i18n]').forEach(el => {
+    const key = el.getAttribute('data-static-i18n');
+    const dict = PLAY_STATIC_I18N[key];
+    if (!dict) return;
+    if (!el.dataset.staticI18nOriginal) el.dataset.staticI18nOriginal = el.innerHTML;
+    const t = dict[lang];
+    el.innerHTML = (t !== undefined) ? t : el.dataset.staticI18nOriginal;
+  });
+}
+setTimeout(applyPlayStaticI18n, 0);
+const playStaticObs = new MutationObserver(applyPlayStaticI18n);
+playStaticObs.observe(document.documentElement, { attributes: true, attributeFilter: ['data-display-lang'] });
 
 // ─── State transition helper ────────────────────────────────────
 function showState(stateId) {
