@@ -1,3 +1,82 @@
+# KINGMAKER 23:23 — `v=20260523i` (play.html — full 10-language migration)
+
+Session ⑪ continuation. Completes the migration of `play.html` from the
+legacy `.lang-en` / `.lang-ja` parallel-span pattern (which only ever
+displayed two languages) to the same `data-static-i18n` + per-file dict
+pattern already in place for `kings.html` and `mypage.html`. After this
+commit, `play.html` shows every visible string in all 10 TIER-1
+languages (en, ja, ko, es, hi, vi, pt, id, th, fr) the moment the
+shared language picker is toggled — no reload required.
+
+## What changed
+
+1. **All 11 lang-en/lang-ja span pairs in `play.html` body retired.**
+   Replaced with single `<span data-static-i18n="key">` wrappers that
+   carry the English source text as fallback; the runtime swaps the
+   `innerHTML` against `PLAY_STATIC_I18N[key][lang]`.
+   - Pre-Bell section: `pre_sub`, `pre_label`, `pre_desc`.
+   - Quiz section: `quiz_h`, `quiz_sub`.
+   - Quiz-result countdown line: `phase2_eta` (single span; the inner
+     `<span id="phase2-eta">` is reproduced inside every language's
+     template so the 2-second `tick()` loop continues to find the ID).
+   - Phase 2 section: `phase2_h`, `phase2_sub`, `phase3_eta` (same
+     pattern for the inner `#phase3-eta`).
+   - Vote section: `vote_h`, `vote_sub`.
+   - Post-bell section: `post_h`, `post_sub`.
+   - Dormant section: `dormant_h`, `dormant_body` (with embedded
+     `#dormant-count` / `#dormant-threshold` reproduced per language).
+   - Gate section: `gate_signin_btn`, `gate_entry_btn`.
+   - Footer nav: `footer_howitworks`, `footer_entry`, `footer_rules`.
+   - Footer disclaimer meta-line: `footer_disclaimer`.
+
+2. **Stale `-ja` element IDs removed.** The old markup duplicated four
+   IDs with a `-ja` suffix so the bilingual swap could write values
+   into both copies. With the single-element pattern, those duplicates
+   are gone:
+   - `#phase2-eta-ja` (was line 549, dropped).
+   - `#phase3-eta-ja` (was line 577, dropped, plus the writer at
+     `showPhase2()` line 1462–1463 that paired it with `#phase3-eta`).
+   - `#dormant-count-ja` / `#dormant-threshold-ja` (was lines 633–634,
+     dropped, plus the paired writers in the dormant handler).
+
+3. **`applyPlayStaticI18n()` now replays cached dynamic values.**
+   Because `innerHTML` swapping during a language change rebuilds the
+   inner IDs from the dict template (which contains a placeholder
+   `—`), any one-shot dynamic write to e.g. `#dormant-count` would be
+   lost the moment the user flipped the picker. The applier now reads
+   `window.__playDynamic` (a `{ id: value }` cache) and re-applies
+   every cached value after the static swap, so dormant counts /
+   fund / entries survive language changes. The countdown ETAs
+   (`#phase2-eta`, `#phase3-eta`, `#vote-eta`) don't need this — the
+   `tick()` poll refreshes them every 2s — so they remain on the
+   live write path, with at most a sub-2-second placeholder flicker
+   on language switch.
+
+4. **Cache buster bumped to `?v=20260523i`** on `play.html` only
+   (other pages remain on prior version stamps). CSS and `i18n.js`
+   imports updated; the new dict and applier upgrade are inline.
+
+## Verification
+
+```
+grep -cE 'class="lang-en"|class="lang-ja"' play.html  →  0
+grep -c 'data-static-i18n=' play.html                  →  23
+grep -c 'phase2-eta-ja\|phase3-eta-ja' play.html        →  0
+grep -c 'dormant-count-ja\|dormant-threshold-ja' play.html → 0
+node -e "new Function(<inline script>)"                → OK
+```
+
+## Still on legacy pattern (next sessions)
+
+`entry.html`, `how-it-works.html`, `risk.html`, `rules.html`,
+`money.html`, `verify.html` still use the bilingual span pattern (some
+also use `data-i18n-html` keys). They render correctly today because
+the CSS-driven `.lang-en` / `.lang-ja` show/hide rules in `main.css`
+remain in place; they just don't extend beyond en/ja. Migration to the
+10-language pattern is mechanical and can be done page-by-page.
+
+---
+
 # KINGMAKER 23:23 — `v=20260523e` (Preview Discoverability + 10-Language Preview UI)
 
 Session ⑪ continuation. Responds to operator's two complaints from 2026-05-23

@@ -20,7 +20,7 @@
 <meta name="robots" content="noindex, nofollow" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link rel="stylesheet" href="css/main.css?v=20260523d" />
+<link rel="stylesheet" href="css/main.css?v=20260523i" />
 <style>
   .play-page {
     max-width: 760px;
@@ -491,19 +491,16 @@
       <div class="phase-eyebrow notranslate" translate="no">Awaiting the Bell</div>
       <h1 class="notranslate" translate="no">The Five</h1>
       <p class="phase-sub">
-        <span class="lang-en">The 5-minute ritual.<br>When the <span class="notranslate" translate="no">Bell</span> rings at <span class="notranslate" translate="no">23:23</span>, three questions begin.</span>
-        <span class="lang-ja">5 分間の儀式。<br>23:23 に鐘が鳴ったら、3 つの問いが始まる。</span>
+        <span data-static-i18n="pre_sub">The 5-minute ritual.<br>When the <span class="notranslate" translate="no">Bell</span> rings at <span class="notranslate" translate="no">23:23</span>, three questions begin.</span>
       </p>
     </div>
     <div class="pre-bell">
       <div class="label">
-        <span class="lang-en">Time until <span class="notranslate" translate="no">Bell</span></span>
-        <span class="lang-ja"><span class="notranslate" translate="no">Bell</span> まで</span>
+        <span data-static-i18n="pre_label">Time until <span class="notranslate" translate="no">Bell</span></span>
       </div>
       <div class="timer" id="pre-bell-timer">— <span class="sep">:</span> — <span class="sep">:</span> —</div>
       <p class="desc">
-        <span class="lang-en">Keep this screen open. The moment the clock hits <span class="notranslate" translate="no">23:23:00</span>, <span class="notranslate" translate="no">Phase 1</span> (the quiz) begins automatically.</span>
-        <span class="lang-ja">この画面のままお待ちください。<br>23:23:00 になった瞬間、自動的に <span class="notranslate" translate="no">Phase 1</span>(クイズ)が始まります。</span>
+        <span data-static-i18n="pre_desc">Keep this screen open. The moment the clock hits <span class="notranslate" translate="no">23:23:00</span>, <span class="notranslate" translate="no">Phase 1</span> (the quiz) begins automatically.</span>
       </p>
     </div>
   </section>
@@ -513,12 +510,10 @@
     <div class="phase-header">
       <div class="phase-eyebrow notranslate" translate="no">Phase 1 · The Trial</div>
       <h1>
-        <span class="lang-en">3 Questions</span>
-        <span class="lang-ja">3 つの問い</span>
+        <span data-static-i18n="quiz_h">3 Questions</span>
       </h1>
       <p class="phase-sub">
-        <span class="lang-en">Answer all 3 correctly to advance to <span class="notranslate" translate="no">The Three</span> drawing pool.</span>
-        <span class="lang-ja">3 問すべて正解すれば、<span class="notranslate" translate="no">The Three</span> の抽選プールへ。</span>
+        <span data-static-i18n="quiz_sub">Answer all 3 correctly to advance to <span class="notranslate" translate="no">The Three</span> drawing pool.</span>
       </p>
     </div>
     <div class="quiz-progress" id="quiz-progress">
@@ -545,8 +540,7 @@
       <p class="verdict-sub" id="result-sub">—</p>
       <div class="score" id="result-score">— / 3</div>
       <div style="margin-top:24px; font-family:var(--f-mono); font-size:11px; letter-spacing:0.22em; text-transform:uppercase; color:var(--gold-deep);">
-        <span class="lang-en"><span class="notranslate" translate="no">Phase 2</span> in <span id="phase2-eta">—</span> sec</span>
-        <span class="lang-ja"><span class="notranslate" translate="no">Phase 2</span> まで <span id="phase2-eta-ja">—</span> 秒</span>
+        <span data-static-i18n="phase2_eta"><span class="notranslate" translate="no">Phase 2</span> in <span id="phase2-eta">—</span> sec</span>
       </div>
     </div>
   </section>
@@ -556,12 +550,10 @@
     <div class="phase-header">
       <div class="phase-eyebrow notranslate" translate="no">Phase 2 · The Three</div>
       <h1>
-        <span class="lang-en">The machine chooses 3</span>
-        <span class="lang-ja">機械が 3 人を選ぶ</span>
+        <span data-static-i18n="phase2_h">The machine chooses 3</span>
       </h1>
       <p class="phase-sub">
-        <span class="lang-en">Selection of <span class="notranslate" translate="no">The Three</span> by <span class="notranslate" translate="no">SHA-256</span>.<br>Neither operator nor <span class="notranslate" translate="no">Claude</span> can intervene.</span>
-        <span class="lang-ja"><span class="notranslate" translate="no">SHA-256</span> 抽出による <span class="notranslate" translate="no">The Three</span> の選定。<br>運営も <span class="notranslate" translate="no">Claude</span> も介入できない。</span>
+        <span data-static-i18n="phase2_sub">Selection of <span class="notranslate" translate="no">The Three</span> by <span class="notranslate" translate="no">SHA-256</span>.<br>Neither operator nor <span class="notranslate" translate="no">Claude</span> can intervene.</span>
       </p>
     </div>
     <div class="draw-screen">
@@ -573,8 +565,7 @@
       </div>
       <div id="candidates-wrap" class="candidates"></div>
       <div style="margin-top:32px; font-family:var(--f-mono); font-size:11px; letter-spacing:0.22em; text-transform:uppercase; color:var(--gold-deep); text-align:center;">
-        <span class="lang-en">Voting opens in <span id="phase3-eta">—</span> sec</span>
-        <span class="lang-ja">投票開始まで <span id="phase3-eta-ja">—</span> 秒</span>
+        <span data-static-i18n="phase3_eta">Voting opens in <span id="phase3-eta">—</span> sec</span>
       </div>
     </div>
   </section>
@@ -584,12 +575,10 @@
     <div class="phase-header">
       <div class="phase-eyebrow notranslate" translate="no">Phase 3 · The Vote</div>
       <h1>
-        <span class="lang-en">The desire you want fulfilled</span>
-        <span class="lang-ja">あなたが叶えたい欲望</span>
+        <span data-static-i18n="vote_h">The desire you want fulfilled</span>
       </h1>
       <p class="phase-sub">
-        <span class="lang-en">Choose only one. The desire with the most votes wins; that person becomes <span class="notranslate" translate="no">King</span>.<br>Voting closes at <span class="notranslate" translate="no">5:00</span>.</span>
-        <span class="lang-ja">1 つだけ選ぶ。最も多く選ばれた欲望の人が <span class="notranslate" translate="no">King</span> になる。<br>5:00 で投票締切。</span>
+        <span data-static-i18n="vote_sub">Choose only one. The desire with the most votes wins; that person becomes <span class="notranslate" translate="no">King</span>.<br>Voting closes at <span class="notranslate" translate="no">5:00</span>.</span>
       </p>
     </div>
     <div id="vote-candidates-wrap" class="candidates"></div>
@@ -602,12 +591,10 @@
   <section id="state-post" class="hidden">
     <div class="result-screen">
       <div class="verdict-big" style="color: var(--gold);">
-        <span class="lang-en">The <span class="notranslate" translate="no">Bell</span> has closed</span>
-        <span class="lang-ja"><span class="notranslate" translate="no">Bell</span> が閉じました</span>
+        <span data-static-i18n="post_h">The <span class="notranslate" translate="no">Bell</span> has closed</span>
       </div>
       <p class="verdict-sub">
-        <span class="lang-en">The 5 minutes are over.<br>After operator review (<span class="notranslate" translate="no">KYC + AML</span> + legal compliance), <span class="notranslate" translate="no">The Three</span> and the <span class="notranslate" translate="no">King</span> will be permanently recorded in the <span class="notranslate" translate="no">Hall of Kings</span> within 24 hours.</span>
-        <span class="lang-ja">5 分間が終わりました。<br>運営審査(<span class="notranslate" translate="no">KYC + AML</span> + 法令確認)を経て、24 時間以内に <span class="notranslate" translate="no">The Three</span> と <span class="notranslate" translate="no">King</span> が <span class="notranslate" translate="no">Hall of Kings</span> に永続記録されます。</span>
+        <span data-static-i18n="post_sub">The 5 minutes are over.<br>After operator review (<span class="notranslate" translate="no">KYC + AML</span> + legal compliance), <span class="notranslate" translate="no">The Three</span> and the <span class="notranslate" translate="no">King</span> will be permanently recorded in the <span class="notranslate" translate="no">Hall of Kings</span> within 24 hours.</span>
       </p>
       <a href="kings.html" class="play-cta">→ <span class="notranslate" translate="no">Hall of Kings</span></a>
     </div>
@@ -617,26 +604,15 @@
   <section id="state-dormant" class="hidden">
     <div class="result-screen">
       <div class="verdict-big" style="color: var(--gold); font-style: italic;">
-        <span class="lang-en">The <span class="notranslate" translate="no">Bell</span> rang —<br>but it was too still</span>
-        <span class="lang-ja"><span class="notranslate" translate="no">Bell</span> は鳴った —<br>されど、静かすぎた</span>
+        <span data-static-i18n="dormant_h">The <span class="notranslate" translate="no">Bell</span> rang —<br>but it was too still</span>
       </div>
-      <p class="verdict-sub">
-        <span class="lang-en">
-          This <span class="notranslate" translate="no">Cycle</span> drew only <strong id="dormant-count">—</strong> participants —<br>
-          short of the minimum <strong id="dormant-threshold">—</strong> for the ritual to be valid.
-          <br><br>
-          Your <span class="notranslate" translate="no">Bell</span> is not lost.<br>
-          Your <span class="notranslate" translate="no">¥100</span> carries forward into the next <span class="notranslate" translate="no">Cycle</span> and accrues to the <span class="notranslate" translate="no">Mission Fund</span>.<br>
-          When the bell next rings — if enough have gathered — you are entered automatically.
-        </span>
-        <span class="lang-ja">
-          この <span class="notranslate" translate="no">Cycle</span> は <strong id="dormant-count-ja">—</strong> 名の参加にとどまり、<br>
-          儀式が成立する最低人数 <strong id="dormant-threshold-ja">—</strong> 名に届きませんでした。
-          <br><br>
-          あなたの <span class="notranslate" translate="no">Bell</span> は失われません。<br>
-          ¥100 は次の <span class="notranslate" translate="no">Cycle</span> に持ち越され、<span class="notranslate" translate="no">Mission Fund</span> に蓄積されます。<br>
-          次に鐘が鳴るとき、人数が満ちていれば、あなたは自動で参加できます。
-        </span>
+      <p class="verdict-sub" data-static-i18n="dormant_body">
+        This <span class="notranslate" translate="no">Cycle</span> drew only <strong id="dormant-count">—</strong> participants —<br>
+        short of the minimum <strong id="dormant-threshold">—</strong> for the ritual to be valid.
+        <br><br>
+        Your <span class="notranslate" translate="no">Bell</span> is not lost.<br>
+        Your <span class="notranslate" translate="no">¥100</span> carries forward into the next <span class="notranslate" translate="no">Cycle</span> and accrues to the <span class="notranslate" translate="no">Mission Fund</span>.<br>
+        When the bell next rings — if enough have gathered — you are entered automatically.
       </p>
       <div style="margin: 32px auto 0; padding: 20px 24px; border: 1px solid var(--line); background: var(--paper); max-width: 420px; text-align: left;">
         <div class="notranslate" translate="no" style="font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold); margin-bottom: 12px;">Mission Fund (Total)</div>
@@ -647,10 +623,7 @@
       </div>
       <div style="margin-top: 28px;">
         <a href="kings.html" class="play-cta">→ <span class="notranslate" translate="no">Hall of Kings</span></a>
-        <a href="how-it-works.html" class="play-cta secondary" style="margin-left:10px;">
-          <span class="lang-en">→ Why dormant?</span>
-          <span class="lang-ja">→ なぜ保留?</span>
-        </a>
+        <a href="how-it-works.html" class="play-cta secondary" style="margin-left:10px;" data-static-i18n="dormant_why">→ Why dormant?</a>
       </div>
     </div>
   </section>
@@ -661,14 +634,8 @@
       <span class="gate-title" id="gate-title">—</span>
       <p id="gate-text">—</p>
       <div style="margin-top:20px;">
-        <a href="mypage.html" class="play-cta">
-          <span class="lang-en">→ Sign in on <span class="notranslate" translate="no">My Page</span></span>
-          <span class="lang-ja">→ <span class="notranslate" translate="no">My Page</span> でログイン</span>
-        </a>
-        <a href="entry.html" class="play-cta secondary" style="margin-left:10px;">
-          <span class="lang-en">→ <span class="notranslate" translate="no">Mission Entry</span></span>
-          <span class="lang-ja">→ <span class="notranslate" translate="no">Mission Entry</span></span>
-        </a>
+        <a href="mypage.html" class="play-cta" data-static-i18n="gate_signin_btn">→ Sign in on <span class="notranslate" translate="no">My Page</span></a>
+        <a href="entry.html" class="play-cta secondary" style="margin-left:10px;" data-static-i18n="gate_entry_btn">→ <span class="notranslate" translate="no">Mission Entry</span></a>
       </div>
     </div>
   </section>
@@ -685,31 +652,19 @@
   <nav class="legal-footer-nav legal-footer-nav-primary">
     <a href="index.html" class="notranslate" translate="no">← KINGMAKER</a>
     <span class="sep">·</span>
-    <a href="how-it-works.html">
-      <span class="lang-en">How it works</span>
-      <span class="lang-ja">仕組み</span>
-    </a>
+    <a href="how-it-works.html" data-static-i18n="footer_howitworks">How it works</a>
     <span class="sep">·</span>
-    <a href="entry.html">
-      <span class="lang-en">Entry</span>
-      <span class="lang-ja">エントリー</span>
-    </a>
+    <a href="entry.html" data-static-i18n="footer_entry">Entry</a>
     <span class="sep">·</span>
     <a href="mypage.html" class="notranslate" translate="no">My Page</a>
     <span class="sep">·</span>
     <a href="kings.html" class="notranslate" translate="no">Hall of Kings</a>
     <span class="sep">·</span>
-    <a href="rules.html">
-      <span class="lang-en"><span class="notranslate" translate="no">Founding Bell</span> rules</span>
-      <span class="lang-ja"><span class="notranslate" translate="no">Founding Bell</span> ルール</span>
-    </a>
+    <a href="rules.html" data-static-i18n="footer_rules"><span class="notranslate" translate="no">Founding Bell</span> rules</a>
   </nav>
   <div class="legal-footer-meta">
     <span class="meta-line">© 2026 · <span class="notranslate" translate="no">KINGMAKER 23:23</span> · Operated by <a href="https://tamjump.com/" target="_blank" rel="noopener" class="notranslate" translate="no">タムジ株式会社 / TAmJ</a></span>
-    <span class="meta-line">
-      <span class="lang-en">Not a lottery · Not an investment · Not gambling · The <span class="notranslate" translate="no">Bell</span> is a right, not money</span>
-      <span class="lang-ja">富くじではない · 投資ではない · 賭博ではない · <span class="notranslate" translate="no">Bell</span> は権利、金ではない</span>
-    </span>
+    <span class="meta-line" data-static-i18n="footer_disclaimer">Not a lottery · Not an investment · Not gambling · The <span class="notranslate" translate="no">Bell</span> is a right, not money</span>
     <span class="meta-line" style="opacity:0.55;"><a href="preview.html" rel="nofollow noindex" style="color:var(--dust); font-size:11px; letter-spacing:0.18em;" data-i18n-html="footer.preview_link">↳ Quiz preview (operator)</a></span>
   </div>
 </footer>
@@ -993,6 +948,14 @@ function applyPlayStaticI18n() {
     const t = dict[lang];
     el.innerHTML = (t !== undefined) ? t : el.dataset.staticI18nOriginal;
   });
+  // Replay cached dynamic values into any IDs the lang-swap may have just rebuilt.
+  const dyn = window.__playDynamic;
+  if (dyn) {
+    Object.keys(dyn).forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = dyn[id];
+    });
+  }
 }
 setTimeout(applyPlayStaticI18n, 0);
 const playStaticObs = new MutationObserver(applyPlayStaticI18n);
@@ -1098,11 +1061,24 @@ function updateCountdownStrip() {
   if (!bellInfo) return;
   const el = document.getElementById("bell-countdown");
   const ja = isJa();
+  const lang = currentLang();
+  // Inline 10-lang prefix/closed labels — these are very small and
+  // shared only with this strip widget. Brand token Bell stays English.
+  const PHASE_PREFIX = {
+    en: 'Bell in ',  ja: 'Bell まで ', ko: 'Bell까지 ', es: 'Bell en ',
+    hi: 'Bell में ', vi: 'Bell sau ',  pt: 'Bell em ',  id: 'Bell dalam ',
+    th: 'Bell ใน ',  fr: 'Bell dans ',
+  };
+  const PHASE_CLOSED = {
+    en: 'Bell closed', ja: 'Bell 終了', ko: 'Bell 종료', es: 'Bell cerrada',
+    hi: 'Bell बंद',   vi: 'Bell đã đóng', pt: 'Bell fechada', id: 'Bell ditutup',
+    th: 'Bell ปิดแล้ว', fr: 'Bell fermée',
+  };
   if (bellInfo.phase === "pre_bell") {
-    el.textContent = (ja ? "Bell まで " : "Bell in ") + formatCountdown(bellInfo.secondsUntilBell, ja);
+    el.textContent = (PHASE_PREFIX[lang] || PHASE_PREFIX.en) + formatCountdown(bellInfo.secondsUntilBell, ja);
     el.classList.remove("is-warning");
   } else if (bellInfo.phase === "post_bell") {
-    el.textContent = ja ? "Bell 終了" : "Bell closed";
+    el.textContent = PHASE_CLOSED[lang] || PHASE_CLOSED.en;
     el.classList.remove("is-warning");
   } else if (bellInfo.phase === "dormant") {
     el.textContent = "DORMANT · " + (bellInfo.participantCount || 0) + " / " + (bellInfo.dormancyThreshold || 1000);
@@ -1143,19 +1119,22 @@ async function tick() {
     bellPlayed = true; // suppress later SFX
     const countStr = String(info.participantCount || 0);
     const threshStr = String(info.dormancyThreshold || 1000);
-    document.getElementById("dormant-count").textContent = countStr;
-    document.getElementById("dormant-threshold").textContent = threshStr;
-    const cJa = document.getElementById("dormant-count-ja");
-    const tJa = document.getElementById("dormant-threshold-ja");
-    if (cJa) cJa.textContent = countStr;
-    if (tJa) tJa.textContent = threshStr;
+    window.__playDynamic = window.__playDynamic || {};
+    window.__playDynamic['dormant-count'] = countStr;
+    window.__playDynamic['dormant-threshold'] = threshStr;
+    const _c = document.getElementById("dormant-count"); if (_c) _c.textContent = countStr;
+    const _t = document.getElementById("dormant-threshold"); if (_t) _t.textContent = threshStr;
     // Fetch Mission Fund summary
     try {
       const r = await fetch(API + "/game/mission-fund");
       const j = await r.json();
       if (j.ok) {
-        document.getElementById("dormant-fund").textContent = (j.totalCollectedJpy || 0).toLocaleString();
-        document.getElementById("dormant-entries").textContent = j.totalPaidEntries || 0;
+        const fund = (j.totalCollectedJpy || 0).toLocaleString();
+        const entries = String(j.totalPaidEntries || 0);
+        window.__playDynamic['dormant-fund'] = fund;
+        window.__playDynamic['dormant-entries'] = entries;
+        const _f = document.getElementById("dormant-fund"); if (_f) _f.textContent = fund;
+        const _e = document.getElementById("dormant-entries"); if (_e) _e.textContent = entries;
       }
     } catch (e) { /* silent */ }
     showState(STATES.DORMANT);
@@ -1172,10 +1151,8 @@ async function tick() {
   const sess = await checkSession();
   if (!sess) {
     showGate(
-      isJa() ? "ログインしてください" : "Sign in required",
-      isJa()
-        ? "この Cycle に Mission Entry 済みのメールアドレスでログインが必要です。"
-        : "You must sign in with an email that has a paid Mission Entry for this Cycle."
+      pick(PLAY_I18N.gate_signin_title),
+      pick(PLAY_I18N.gate_signin_text)
     );
     return;
   }
@@ -1192,8 +1169,9 @@ async function tick() {
 }
 
 function showGate(title, text) {
-  document.getElementById("gate-title").textContent = title;
-  document.getElementById("gate-text").textContent = text;
+  // title/text may contain notranslate spans for brand tokens.
+  document.getElementById("gate-title").innerHTML = title;
+  document.getElementById("gate-text").innerHTML = text;
   showState(STATES.GATE);
 }
 
@@ -1226,8 +1204,8 @@ async function routePhase1(sess) {
     const j = await r.json();
     if (!j.ok) {
       showGate(
-        isJa() ? "参加できません" : "Cannot participate",
-        j.error || (isJa() ? "未エントリーまたは未決済です。" : "Not entered or not paid for this Cycle.")
+        pick(PLAY_I18N.gate_noentry_title),
+        j.error || pick(PLAY_I18N.gate_noentry_text)
       );
       return;
     }
@@ -1277,12 +1255,11 @@ function renderCurrentQuestion() {
     if (i === idx) d.classList.add("is-active");
   });
 
-  const ja = isJa();
-  const diffLabel = ja
-    ? ({ 1: "やさしい", 2: "ふつう", 3: "むずかしい" }[currentQ.difficulty] || currentQ.difficulty)
-    : ({ 1: "Easy",    2: "Medium",  3: "Hard"        }[currentQ.difficulty] || currentQ.difficulty);
+  const lang = currentLang();
+  const diffMap = PLAY_I18N.diff[currentQ.difficulty] || PLAY_I18N.diff[2];
+  const diffLabel = diffMap[lang] || diffMap.en || currentQ.difficulty;
   document.getElementById("q-cat").innerHTML =
-    `Q${idx + 1} / 3 <span class="dot-sep">·</span> ${escapeHtml(currentQ.category || '')} <span class="dot-sep">·</span> ${diffLabel}`;
+    `Q${idx + 1} / 3 <span class="dot-sep">·</span> ${escapeHtml(currentQ.category || '')} <span class="dot-sep">·</span> ${escapeHtml(diffLabel)}`;
   document.getElementById("q-text").textContent = currentQ.question;
 
   const choicesEl = document.getElementById("choices");
@@ -1357,10 +1334,9 @@ async function answerQuestion(chosenIndex, btnEl) {
     const fb = document.getElementById("feedback");
     fb.classList.remove("hidden", "is-correct", "is-wrong");
     fb.classList.add(j.isCorrect ? "is-correct" : "is-wrong");
-    const ja = isJa();
     document.getElementById("feedback-verdict").textContent = j.isCorrect
-      ? (ja ? "正解" : "Correct")
-      : (ja ? "不正解" : "Wrong");
+      ? pick(PLAY_I18N.verdict_correct)
+      : pick(PLAY_I18N.verdict_wrong);
     document.getElementById("feedback-text").textContent = j.explanation || "";
 
     quizSession.current_index = j.currentIndex;
@@ -1390,25 +1366,19 @@ async function answerQuestion(chosenIndex, btnEl) {
 
 function showQuizResult() {
   const passed = quizSession && quizSession.quiz_passed === 1;
-  const ja = isJa();
-  document.getElementById("result-verdict").textContent = passed
-    ? (ja ? "通過" : "Passed")
-    : (ja ? "今 Cycle はここまで" : "The Bell remains");
+  document.getElementById("result-verdict").innerHTML = passed
+    ? pick(PLAY_I18N.res_passed_title)
+    : pick(PLAY_I18N.res_failed_title);
   document.getElementById("result-verdict").className = "verdict-big " + (passed ? "passed" : "failed");
-  document.getElementById("result-sub").textContent = passed
-    ? (ja
-      ? "あなたは Phase 2 の抽選プールに進みました。3 人の選定をお待ちください。"
-      : "You advance to the Phase 2 drawing pool. Wait for The Three to be chosen.")
-    : (ja
-      ? "今 Cycle の King 候補資格は失われました。Bell は永続です。来週もう一度。"
-      : "This Cycle's King candidacy is lost. Your Bell endures. Try again next week.");
+  document.getElementById("result-sub").innerHTML = passed
+    ? pick(PLAY_I18N.res_passed_sub)
+    : pick(PLAY_I18N.res_failed_sub);
   document.getElementById("result-score").textContent =
     (quizSession.correct_count || 0) + " / 3";
   // ETA to Phase 2 (= seconds until phase1 ends).
   const eta = bellInfo && bellInfo.phase === "phase1" ? bellInfo.secondsLeft : 0;
-  document.getElementById("phase2-eta").textContent = eta;
-  const etaJa = document.getElementById("phase2-eta-ja");
-  if (etaJa) etaJa.textContent = eta;
+  const etaEl = document.getElementById("phase2-eta");
+  if (etaEl) etaEl.textContent = eta;
   showState(STATES.QUIZ_RESULT);
 }
 
@@ -1426,18 +1396,37 @@ async function routePhase2() {
   } catch (e) {}
   // Not yet drawn — show waiting screen with placeholder.
   showState(STATES.PHASE2);
-  const ja = isJa();
-  document.getElementById("draw-seed").textContent = ja
-    ? "(運営の抽出を待っています…)"
-    : "(awaiting operator draw...)";
+  const lang = currentLang();
+  const SEED_WAIT = {
+    en: '(awaiting operator draw...)',
+    ja: '(運営の抽出を待っています…)',
+    ko: '(운영자 추출을 기다리는 중…)',
+    es: '(esperando el sorteo del operador…)',
+    hi: '(ऑपरेटर के ड्रॉ की प्रतीक्षा…)',
+    vi: '(đang chờ người vận hành rút thăm…)',
+    pt: '(aguardando sorteio do operador…)',
+    id: '(menunggu undian operator…)',
+    th: '(กำลังรอผู้ดำเนินการจับฉลาก…)',
+    fr: '(en attente du tirage de l\u2019opérateur…)',
+  };
+  const RUNNING = {
+    en: 'Operator is running the SHA-256 draw...',
+    ja: '運営が SHA-256 抽出を実行中…',
+    ko: '운영자가 SHA-256 추첨을 진행 중…',
+    es: 'El operador está ejecutando el sorteo SHA-256…',
+    hi: 'ऑपरेटर SHA-256 ड्रॉ चला रहा है…',
+    vi: 'Người vận hành đang chạy rút thăm SHA-256…',
+    pt: 'O operador está realizando o sorteio SHA-256…',
+    id: 'Operator sedang menjalankan undian SHA-256…',
+    th: 'ผู้ดำเนินการกำลังจับฉลาก SHA-256…',
+    fr: 'L\u2019opérateur effectue le tirage SHA-256…',
+  };
+  document.getElementById("draw-seed").textContent = SEED_WAIT[lang] || SEED_WAIT.en;
   document.getElementById("draw-hash").textContent = "—";
   document.getElementById("candidates-wrap").innerHTML =
-    '<div class="gate-msg" style="grid-column:1/-1;">' +
-    (ja ? "運営が SHA 抽出を実行中…" : "Operator is running the SHA-256 draw...") +
-    "</div>";
-  document.getElementById("phase3-eta").textContent = bellInfo.secondsLeft;
-  const etaJa = document.getElementById("phase3-eta-ja");
-  if (etaJa) etaJa.textContent = bellInfo.secondsLeft;
+    '<div class="gate-msg" style="grid-column:1/-1;">' + (RUNNING[lang] || RUNNING.en) + '</div>';
+  const ph3eta = document.getElementById("phase3-eta");
+  if (ph3eta) ph3eta.textContent = bellInfo.secondsLeft;
 }
 
 function showPhase2() {
@@ -1458,8 +1447,6 @@ function showPhase2() {
     wrap.appendChild(card);
   });
   document.getElementById("phase3-eta").textContent = bellInfo.secondsLeft;
-  const etaJa = document.getElementById("phase3-eta-ja");
-  if (etaJa) etaJa.textContent = bellInfo.secondsLeft;
 }
 
 // ─── Phase 3 — Vote ────────────────────────────────────────────
@@ -1476,9 +1463,8 @@ async function routePhase3() {
     return;
   }
   showState(STATES.VOTE);
-  const ja = isJa();
-  const voteLabel = ja ? "この欲望に投票" : "Vote for this desire";
-  const votedLabel = ja ? "✓ 投票済" : "✓ Voted";
+  const voteLabel  = pick(PLAY_I18N.vote_btn);
+  const votedLabel = '✓ ' + pick(PLAY_I18N.voted);
   const wrap = document.getElementById("vote-candidates-wrap");
   wrap.innerHTML = "";
   phase2Data.candidates.forEach((c, i) => {
@@ -1507,7 +1493,7 @@ async function castVote(kingId) {
     });
     const j = await r.json();
     if (!j.ok) {
-      alert(j.error || (isJa() ? "投票に失敗しました" : "Vote failed"));
+      alert(j.error || pick(PLAY_I18N.err_vote_failed));
       return;
     }
     myVoteKingId = kingId;
@@ -1533,6 +1519,6 @@ tick();
 pollTimer = setInterval(tick, 2000);
 </script>
 
-<script src="js/i18n.js?v=20260523e"></script>
+<script src="js/i18n.js?v=20260523i"></script>
 </body>
 </html>
