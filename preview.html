@@ -8,7 +8,7 @@
 <meta name="robots" content="noindex, nofollow" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link rel="stylesheet" href="css/main.css?v=20260523d" />
+<link rel="stylesheet" href="css/main.css?v=20260523e" />
 <style>
   .preview-page {
     max-width: 760px;
@@ -29,6 +29,14 @@
     line-height: 1.6;
   }
   .preview-banner strong { color: var(--gold); font-weight: 700; }
+  .preview-banner .sub-jp {
+    display: block;
+    margin-top: 6px;
+    color: var(--dust);
+    font-family: var(--f-jp);
+    text-transform: none;
+    letter-spacing: 0.04em;
+  }
 
   .preview-controls {
     display: flex;
@@ -242,34 +250,33 @@
 <main class="preview-page notranslate" translate="no">
 
   <div class="preview-banner">
-    <strong>▸ Preview Mode</strong><br>
-    This is a <strong>demonstration</strong> of the 5-minute quiz UI.<br>
-    No data is recorded · No participation required · 30 question pool sampled at random.<br>
-    <span style="color: var(--dust);">これは 5 分間ゲームのクイズ UI の<strong style="color: var(--gold-deep);">プレビュー</strong>です。データベースには記録されません。</span>
+    <strong data-i18n-html="preview.banner_label">▸ Preview Mode</strong><br>
+    <span data-i18n-html="preview.banner_body">This is a <strong>demonstration</strong> of the 5-minute quiz UI. No data is recorded · No participation required · 30 question pool sampled at random.</span>
+    <span class="sub-jp" data-i18n-html="preview.banner_jp">これは 5 分間ゲームのクイズ UI の<strong style="color: var(--gold-deep);">プレビュー</strong>です。データベースには記録されません。</span>
   </div>
 
   <div class="preview-controls">
-    <span class="lbl">Language:</span>
-    <select id="langPicker">
+    <span class="lbl" data-i18n-html="preview.lbl_quiz_lang">Quiz language:</span>
+    <select id="quizLangPicker">
       <option value="en">English</option>
       <option value="ja">日本語</option>
     </select>
-    <span class="lbl" style="margin-left:14px;">Difficulty mix:</span>
+    <span class="lbl" style="margin-left:14px;" data-i18n-html="preview.lbl_difficulty">Difficulty mix:</span>
     <select id="diffPicker">
-      <option value="balanced">1 easy + 1 medium + 1 hard</option>
-      <option value="easy">3 easy</option>
-      <option value="medium">3 medium</option>
-      <option value="hard">3 hard</option>
-      <option value="random">Random 3</option>
+      <option value="balanced" data-i18n-html="preview.diff_balanced">1 easy + 1 medium + 1 hard</option>
+      <option value="easy" data-i18n-html="preview.diff_easy">3 easy</option>
+      <option value="medium" data-i18n-html="preview.diff_medium">3 medium</option>
+      <option value="hard" data-i18n-html="preview.diff_hard">3 hard</option>
+      <option value="random" data-i18n-html="preview.diff_random">Random 3</option>
     </select>
-    <button id="restartBtn">▸ New Quiz</button>
-    <span class="stats" id="poolStats">— questions in pool</span>
+    <button id="restartBtn" data-i18n-html="preview.btn_new">▸ New Quiz</button>
+    <span class="stats" id="poolStats" data-pool-stats="—">— questions in pool</span>
   </div>
 
   <!-- Quiz state -->
   <section id="state-quiz" class="hidden">
     <div class="phase-header">
-      <div class="phase-eyebrow">Phase 1 · The Trial</div>
+      <div class="phase-eyebrow" data-i18n-html="preview.phase_eyebrow">Phase 1 · The Trial</div>
       <h1 id="quizHeader">3 Questions</h1>
       <p class="phase-sub" id="quizSub">Answer all 3 correctly to advance to The Three drawing pool.</p>
     </div>
@@ -296,13 +303,13 @@
       <p style="font-family: var(--f-jp); color: var(--ash); margin-bottom: 24px; line-height: 1.75;" id="resultSub">—</p>
       <div class="score" id="resultScore">— / 3</div>
       <br>
-      <button class="preview-cta" id="restartBtn2">▸ Try another quiz</button>
+      <button class="preview-cta" id="restartBtn2" data-i18n-html="preview.btn_try_again">▸ Try another quiz</button>
     </div>
   </section>
 
   <!-- Empty / loading state -->
   <section id="state-loading">
-    <div style="text-align: center; padding: 80px 20px; color: var(--ash); font-family: var(--f-mono); font-size: 12px; letter-spacing: 0.2em;">
+    <div style="text-align: center; padding: 80px 20px; color: var(--ash); font-family: var(--f-mono); font-size: 12px; letter-spacing: 0.2em;" data-i18n-html="preview.loading">
       Loading quiz pool from Worker...
     </div>
   </section>
@@ -311,11 +318,11 @@
 
 <footer class="legal-footer">
   <nav class="legal-footer-nav legal-footer-nav-primary">
-    <a href="index.html">← KINGMAKER</a>
+    <a href="index.html" data-i18n-html="preview.foot_home">← KINGMAKER</a>
     <span class="sep">·</span>
-    <a href="how-it-works.html">仕組み</a>
+    <a href="how-it-works.html" data-i18n-html="preview.foot_how">How it works</a>
     <span class="sep">·</span>
-    <a href="play.html">→ play.html (real game)</a>
+    <a href="play.html" data-i18n-html="preview.foot_play">→ play.html (real game)</a>
   </nav>
   <div class="legal-footer-meta">
     <span class="meta-line">© 2026 · KINGMAKER 23:23 · operator preview tool</span>
@@ -330,6 +337,127 @@ let allQuestions = [];
 let currentQuiz = [];        // [{group_id, lang, q...}, ...] selected for this run
 let currentIndex = 0;
 let correctCount = 0;
+
+// ─── Localized strings for preview-only dynamic text (stats line,
+// question category, easy/med/hard labels, verdicts, result subtitles).
+// Mirrors I18N_CONTENT structure; English is the master.
+// ───────────────────────────────────────────────────────────────
+const PREVIEW_I18N = {
+  stats: {
+    en: (n, e, m, h) => `${n} total · ${e} easy · ${m} medium · ${h} hard`,
+    ja: (n, e, m, h) => `合計 ${n} 問 · やさしい ${e} · ふつう ${m} · むずかしい ${h}`,
+    ko: (n, e, m, h) => `총 ${n}개 · 쉬움 ${e} · 보통 ${m} · 어려움 ${h}`,
+    es: (n, e, m, h) => `Total ${n} · Fácil ${e} · Medio ${m} · Difícil ${h}`,
+    hi: (n, e, m, h) => `कुल ${n} · आसान ${e} · मध्यम ${m} · कठिन ${h}`,
+    vi: (n, e, m, h) => `Tổng ${n} · Dễ ${e} · Trung bình ${m} · Khó ${h}`,
+    pt: (n, e, m, h) => `Total ${n} · Fácil ${e} · Médio ${m} · Difícil ${h}`,
+    id: (n, e, m, h) => `Total ${n} · Mudah ${e} · Sedang ${m} · Sulit ${h}`,
+    th: (n, e, m, h) => `รวม ${n} · ง่าย ${e} · ปานกลาง ${m} · ยาก ${h}`,
+    fr: (n, e, m, h) => `Total ${n} · Facile ${e} · Moyen ${m} · Difficile ${h}`,
+  },
+  header: {
+    en: '3 Questions',
+    ja: '3 つの問い',
+    ko: '3가지 질문',
+    es: '3 Preguntas',
+    hi: '3 प्रश्न',
+    vi: '3 Câu hỏi',
+    pt: '3 Perguntas',
+    id: '3 Pertanyaan',
+    th: '3 คำถาม',
+    fr: '3 Questions',
+  },
+  sub: {
+    en: 'Answer all 3 correctly to advance to The Three drawing pool.',
+    ja: '3 問すべて正解すれば <span class="notranslate" translate="no">The Three</span> の抽選プールへ進める。',
+    ko: '3문제 모두 맞히면 <span class="notranslate" translate="no">The Three</span> 추첨 풀로 진출한다.',
+    es: 'Responde las 3 correctamente para avanzar al sorteo de <span class="notranslate" translate="no">The Three</span>.',
+    hi: 'सभी 3 सही उत्तर देकर <span class="notranslate" translate="no">The Three</span> ड्रॉइंग पूल में पहुँचें।',
+    vi: 'Trả lời đúng cả 3 để vào nhóm rút thăm <span class="notranslate" translate="no">The Three</span>.',
+    pt: 'Acerte as 3 para avançar ao sorteio <span class="notranslate" translate="no">The Three</span>.',
+    id: 'Jawab ke-3 dengan benar untuk maju ke undian <span class="notranslate" translate="no">The Three</span>.',
+    th: 'ตอบถูกทั้ง 3 ข้อเพื่อเข้าสู่การจับฉลาก <span class="notranslate" translate="no">The Three</span>',
+    fr: 'Réponds correctement aux 3 pour passer au tirage <span class="notranslate" translate="no">The Three</span>.',
+  },
+  difflabel: {
+    1: { en: 'Easy',    ja: 'やさしい', ko: '쉬움',   es: 'Fácil',   hi: 'आसान',  vi: 'Dễ',     pt: 'Fácil',   id: 'Mudah',  th: 'ง่าย',     fr: 'Facile' },
+    2: { en: 'Medium',  ja: 'ふつう',   ko: '보통',   es: 'Medio',   hi: 'मध्यम', vi: 'Trung bình', pt: 'Médio', id: 'Sedang', th: 'ปานกลาง', fr: 'Moyen' },
+    3: { en: 'Hard',    ja: 'むずかしい', ko: '어려움', es: 'Difícil', hi: 'कठिन',  vi: 'Khó',    pt: 'Difícil', id: 'Sulit',  th: 'ยาก',    fr: 'Difficile' },
+  },
+  correct: {
+    en: 'Correct',  ja: '正解',  ko: '정답',  es: 'Correcto', hi: 'सही',  vi: 'Đúng',   pt: 'Correto', id: 'Benar',  th: 'ถูก',  fr: 'Correct',
+  },
+  wrong: {
+    en: 'Wrong',    ja: '不正解', ko: '오답', es: 'Incorrecto', hi: 'गलत', vi: 'Sai',    pt: 'Errado', id: 'Salah', th: 'ผิด',  fr: 'Faux',
+  },
+  passed: {
+    en: 'Passed',
+    ja: '通過',
+    ko: '통과',
+    es: 'Aprobado',
+    hi: 'उत्तीर्ण',
+    vi: 'Vượt qua',
+    pt: 'Aprovado',
+    id: 'Lulus',
+    th: 'ผ่าน',
+    fr: 'Réussi',
+  },
+  bell_remains: {
+    en: 'The Bell remains',
+    ja: '<span class="notranslate" translate="no">Bell</span> は残る',
+    ko: '<span class="notranslate" translate="no">Bell</span>은 남는다',
+    es: 'La <span class="notranslate" translate="no">Bell</span> permanece',
+    hi: '<span class="notranslate" translate="no">Bell</span> बना रहता है',
+    vi: '<span class="notranslate" translate="no">Bell</span> vẫn còn',
+    pt: 'A <span class="notranslate" translate="no">Bell</span> permanece',
+    id: '<span class="notranslate" translate="no">Bell</span> tetap ada',
+    th: '<span class="notranslate" translate="no">Bell</span> ยังคงอยู่',
+    fr: 'La <span class="notranslate" translate="no">Bell</span> demeure',
+  },
+  result_pass_sub: {
+    en: 'In a real Cycle, you would now advance to <span class="notranslate" translate="no">Phase 2</span> (<span class="notranslate" translate="no">The Three</span> drawing) and <span class="notranslate" translate="no">Phase 3</span> (the vote).',
+    ja: '本番では、ここから <span class="notranslate" translate="no">Phase 2</span>(<span class="notranslate" translate="no">The Three</span> 抽選)と <span class="notranslate" translate="no">Phase 3</span>(投票)に進みます。',
+    ko: '실제 <span class="notranslate" translate="no">Cycle</span>에서는 이제 <span class="notranslate" translate="no">Phase 2</span>(<span class="notranslate" translate="no">The Three</span> 추첨)과 <span class="notranslate" translate="no">Phase 3</span>(투표)로 진출합니다.',
+    es: 'En un <span class="notranslate" translate="no">Cycle</span> real, ahora avanzarías a <span class="notranslate" translate="no">Phase 2</span> (sorteo de <span class="notranslate" translate="no">The Three</span>) y <span class="notranslate" translate="no">Phase 3</span> (la votación).',
+    hi: 'असली <span class="notranslate" translate="no">Cycle</span> में, अब आप <span class="notranslate" translate="no">Phase 2</span> (<span class="notranslate" translate="no">The Three</span> ड्रॉइंग) और <span class="notranslate" translate="no">Phase 3</span> (वोट) में जाएंगे।',
+    vi: 'Trong <span class="notranslate" translate="no">Cycle</span> thật, bạn sẽ tiến vào <span class="notranslate" translate="no">Phase 2</span> (rút thăm <span class="notranslate" translate="no">The Three</span>) và <span class="notranslate" translate="no">Phase 3</span> (bỏ phiếu).',
+    pt: 'Em um <span class="notranslate" translate="no">Cycle</span> real, você avançaria agora para <span class="notranslate" translate="no">Phase 2</span> (sorteio de <span class="notranslate" translate="no">The Three</span>) e <span class="notranslate" translate="no">Phase 3</span> (a votação).',
+    id: 'Dalam <span class="notranslate" translate="no">Cycle</span> sungguhan, kamu akan maju ke <span class="notranslate" translate="no">Phase 2</span> (undian <span class="notranslate" translate="no">The Three</span>) dan <span class="notranslate" translate="no">Phase 3</span> (pemungutan suara).',
+    th: 'ใน <span class="notranslate" translate="no">Cycle</span> จริง คุณจะเข้าสู่ <span class="notranslate" translate="no">Phase 2</span> (จับฉลาก <span class="notranslate" translate="no">The Three</span>) และ <span class="notranslate" translate="no">Phase 3</span> (โหวต)',
+    fr: 'Dans un vrai <span class="notranslate" translate="no">Cycle</span>, tu passerais à <span class="notranslate" translate="no">Phase 2</span> (tirage <span class="notranslate" translate="no">The Three</span>) puis <span class="notranslate" translate="no">Phase 3</span> (le vote).',
+  },
+  result_fail_sub: {
+    en: 'In a real Cycle, your <span class="notranslate" translate="no">Bell</span> remains; only this Cycle\u2019s <span class="notranslate" translate="no">King</span> candidacy is lost.',
+    ja: '本番では <span class="notranslate" translate="no">Bell</span> は失われず、今 <span class="notranslate" translate="no">Cycle</span> の <span class="notranslate" translate="no">King</span> 候補資格のみ失います。',
+    ko: '실제 <span class="notranslate" translate="no">Cycle</span>에서는 <span class="notranslate" translate="no">Bell</span>은 사라지지 않고 이번 <span class="notranslate" translate="no">Cycle</span>의 <span class="notranslate" translate="no">King</span> 후보 자격만 잃습니다.',
+    es: 'En un <span class="notranslate" translate="no">Cycle</span> real, tu <span class="notranslate" translate="no">Bell</span> permanece; solo pierdes la candidatura a <span class="notranslate" translate="no">King</span> de este <span class="notranslate" translate="no">Cycle</span>.',
+    hi: 'असली <span class="notranslate" translate="no">Cycle</span> में, आपका <span class="notranslate" translate="no">Bell</span> बना रहता है; केवल इस <span class="notranslate" translate="no">Cycle</span> की <span class="notranslate" translate="no">King</span> उम्मीदवारी जाती है।',
+    vi: 'Trong <span class="notranslate" translate="no">Cycle</span> thật, <span class="notranslate" translate="no">Bell</span> của bạn vẫn còn; chỉ tư cách ứng viên <span class="notranslate" translate="no">King</span> của <span class="notranslate" translate="no">Cycle</span> này bị mất.',
+    pt: 'Em um <span class="notranslate" translate="no">Cycle</span> real, sua <span class="notranslate" translate="no">Bell</span> permanece; apenas a candidatura a <span class="notranslate" translate="no">King</span> deste <span class="notranslate" translate="no">Cycle</span> é perdida.',
+    id: 'Dalam <span class="notranslate" translate="no">Cycle</span> sungguhan, <span class="notranslate" translate="no">Bell</span>-mu tetap; hanya kandidatur <span class="notranslate" translate="no">King</span> di <span class="notranslate" translate="no">Cycle</span> ini yang hilang.',
+    th: 'ใน <span class="notranslate" translate="no">Cycle</span> จริง <span class="notranslate" translate="no">Bell</span> ของคุณยังอยู่ จะเสียเฉพาะคุณสมบัติผู้สมัคร <span class="notranslate" translate="no">King</span> ของ <span class="notranslate" translate="no">Cycle</span> นี้',
+    fr: 'Dans un vrai <span class="notranslate" translate="no">Cycle</span>, ta <span class="notranslate" translate="no">Bell</span> demeure ; seule la candidature de <span class="notranslate" translate="no">King</span> de ce <span class="notranslate" translate="no">Cycle</span> est perdue.',
+  },
+  insufficient: {
+    en: 'Not enough questions at this difficulty. Try another setting.',
+    ja: 'この難易度では問題が足りません。別の設定をお試しください。',
+    ko: '이 난이도에서는 문제가 부족합니다. 다른 설정을 시도하세요.',
+    es: 'No hay suficientes preguntas en esta dificultad. Prueba otra configuración.',
+    hi: 'इस कठिनाई पर पर्याप्त प्रश्न नहीं हैं। दूसरी सेटिंग आज़माएँ।',
+    vi: 'Không đủ câu hỏi ở mức độ này. Hãy thử cài đặt khác.',
+    pt: 'Não há perguntas suficientes nesta dificuldade. Tente outra configuração.',
+    id: 'Tidak cukup pertanyaan pada tingkat ini. Coba pengaturan lain.',
+    th: 'คำถามไม่พอที่ระดับนี้ ลองตั้งค่าอื่น',
+    fr: 'Pas assez de questions à cette difficulté. Essayez un autre réglage.',
+  },
+};
+
+// Current UI language. Initially read from html[data-display-lang], then
+// kept in sync by listening for the i18n.js setLang event (cookie change).
+function uiLang() {
+  const v = document.documentElement.getAttribute('data-display-lang') || 'en';
+  return PREVIEW_I18N.stats[v] ? v : 'en';
+}
 
 // ─── State transition helper ────────────────────────────────────
 function show(id) {
@@ -358,20 +486,21 @@ async function loadPool() {
 }
 
 function updateStats() {
-  const lang = document.getElementById('langPicker').value;
-  const langQs = allQuestions.filter(q => q.language === lang);
+  const qLang = document.getElementById('quizLangPicker').value;
+  const langQs = allQuestions.filter(q => q.language === qLang);
   const easy = langQs.filter(q => q.difficulty === 1).length;
   const med  = langQs.filter(q => q.difficulty === 2).length;
   const hard = langQs.filter(q => q.difficulty === 3).length;
+  const u = uiLang();
   document.getElementById('poolStats').textContent =
-    langQs.length + ' total · ' + easy + ' easy · ' + med + ' medium · ' + hard + ' hard';
+    PREVIEW_I18N.stats[u](langQs.length, easy, med, hard);
 }
 
 // ─── Pick a new quiz based on current settings ──────────────────
 function pickNewQuiz() {
-  const lang = document.getElementById('langPicker').value;
+  const qLang = document.getElementById('quizLangPicker').value;
   const diff = document.getElementById('diffPicker').value;
-  const langQs = allQuestions.filter(q => q.language === lang);
+  const langQs = allQuestions.filter(q => q.language === qLang);
 
   function randPick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
 
@@ -395,20 +524,17 @@ function pickNewQuiz() {
 
   if (currentQuiz.length < 3) {
     show('state-loading');
+    const u = uiLang();
     document.getElementById('state-loading').innerHTML =
       '<div style="padding: 60px 20px; text-align:center; color: var(--crimson); font-family: var(--f-mono); font-size: 13px;">' +
-      'Not enough questions at this difficulty. Try another setting.</div>';
+      (PREVIEW_I18N.insufficient[u] || PREVIEW_I18N.insufficient.en) + '</div>';
     return;
   }
 
-  // Localize the quiz "header" text
-  if (lang === 'ja') {
-    document.getElementById('quizHeader').textContent = '3 つの問い';
-    document.getElementById('quizSub').textContent = '3 問すべて正解すれば The Three の抽選プールへ進める。';
-  } else {
-    document.getElementById('quizHeader').textContent = '3 Questions';
-    document.getElementById('quizSub').textContent = 'Answer all 3 correctly to advance to The Three drawing pool.';
-  }
+  // Localize the quiz "header" text based on UI language
+  const u = uiLang();
+  document.getElementById('quizHeader').textContent = PREVIEW_I18N.header[u] || PREVIEW_I18N.header.en;
+  document.getElementById('quizSub').innerHTML       = PREVIEW_I18N.sub[u]    || PREVIEW_I18N.sub.en;
 
   currentIndex = 0;
   correctCount = 0;
@@ -438,13 +564,11 @@ function renderQuestion() {
     if (i === currentIndex) d.classList.add('is-active');
   });
 
-  const lang = q.language;
-  const diffLabel = { 1: lang === 'ja' ? 'やさしい' : 'Easy',
-                      2: lang === 'ja' ? 'ふつう' : 'Medium',
-                      3: lang === 'ja' ? 'むずかしい' : 'Hard' }[q.difficulty];
+  const u = uiLang();
+  const diffLabel = (PREVIEW_I18N.difflabel[q.difficulty] || {})[u] || (PREVIEW_I18N.difflabel[q.difficulty] || {}).en || '';
   document.getElementById('q-cat').innerHTML =
     'Q' + (currentIndex + 1) + ' / 3 <span class="dot-sep">·</span> ' +
-    escapeHtml(q.category) + ' <span class="dot-sep">·</span> ' + diffLabel;
+    escapeHtml(q.category) + ' <span class="dot-sep">·</span> ' + escapeHtml(diffLabel);
   document.getElementById('q-text').textContent = q.question;
 
   const choicesEl = document.getElementById('choices');
@@ -483,10 +607,10 @@ function answer(idx, btnEl) {
   const fb = document.getElementById('feedback');
   fb.classList.remove('hidden', 'is-correct', 'is-wrong');
   fb.classList.add(isCorrect ? 'is-correct' : 'is-wrong');
-  const lang = q.language;
+  const u = uiLang();
   document.getElementById('feedback-verdict').textContent = isCorrect
-    ? (lang === 'ja' ? '正解' : 'Correct')
-    : (lang === 'ja' ? '不正解' : 'Wrong');
+    ? (PREVIEW_I18N.correct[u] || PREVIEW_I18N.correct.en)
+    : (PREVIEW_I18N.wrong[u]   || PREVIEW_I18N.wrong.en);
   document.getElementById('feedback-text').textContent = q.explanation || '';
 
   if (isCorrect) correctCount++;
@@ -503,18 +627,14 @@ function answer(idx, btnEl) {
 
 function showResult() {
   const passed = correctCount === 3;
-  const lang = document.getElementById('langPicker').value;
-  document.getElementById('resultVerdict').textContent = passed
-    ? (lang === 'ja' ? '通過' : 'Passed')
-    : (lang === 'ja' ? '今 Cycle はここまで' : 'The Bell remains');
+  const u = uiLang();
+  document.getElementById('resultVerdict').innerHTML = passed
+    ? (PREVIEW_I18N.passed[u]       || PREVIEW_I18N.passed.en)
+    : (PREVIEW_I18N.bell_remains[u] || PREVIEW_I18N.bell_remains.en);
   document.getElementById('resultVerdict').className = 'verdict-big' + (passed ? '' : ' failed');
-  document.getElementById('resultSub').textContent = passed
-    ? (lang === 'ja'
-      ? '本番ではこの後、Phase 2 (The Three 抽選) と Phase 3 (投票) に進みます。'
-      : 'In a real Cycle, you would now advance to Phase 2 (The Three drawing) and Phase 3 (the vote).')
-    : (lang === 'ja'
-      ? '本番では Bell は失われず、今 Cycle の King 候補資格のみ失います。'
-      : 'In a real Cycle, your Bell remains; only this Cycle\u2019s King candidacy is lost.');
+  document.getElementById('resultSub').innerHTML = passed
+    ? (PREVIEW_I18N.result_pass_sub[u] || PREVIEW_I18N.result_pass_sub.en)
+    : (PREVIEW_I18N.result_fail_sub[u] || PREVIEW_I18N.result_fail_sub.en);
   document.getElementById('resultScore').textContent = correctCount + ' / 3';
   show('state-result');
 }
@@ -530,15 +650,40 @@ function escapeHtml(s) {
 }
 
 // ─── Event hooks ────────────────────────────────────────────────
-document.getElementById('langPicker').addEventListener('change', () => { updateStats(); pickNewQuiz(); });
+document.getElementById('quizLangPicker').addEventListener('change', () => { updateStats(); pickNewQuiz(); });
 document.getElementById('diffPicker').addEventListener('change', () => { pickNewQuiz(); });
 document.getElementById('restartBtn').addEventListener('click', () => { pickNewQuiz(); });
 document.getElementById('restartBtn2').addEventListener('click', () => { pickNewQuiz(); });
+
+// ─── When site i18n (header lang-picker) changes, re-render dynamic
+// strings (stats line, quiz header, current question's diff label).
+// We listen for the storage event the i18n bootstrap fires on cookie
+// flips, but a simpler trigger is: poll data-display-lang once per
+// second. With only a few elements it's cheap. ─────
+let lastUiLang = uiLang();
+setInterval(() => {
+  const cur = uiLang();
+  if (cur !== lastUiLang) {
+    lastUiLang = cur;
+    updateStats();
+    // Re-localize active screen labels if a quiz is in progress.
+    if (!document.getElementById('state-quiz').classList.contains('hidden')) {
+      document.getElementById('quizHeader').textContent = PREVIEW_I18N.header[cur] || PREVIEW_I18N.header.en;
+      document.getElementById('quizSub').innerHTML       = PREVIEW_I18N.sub[cur]    || PREVIEW_I18N.sub.en;
+      // Re-render the current question to refresh the diff label.
+      if (currentQuiz.length) renderQuestion();
+    }
+    if (!document.getElementById('state-result').classList.contains('hidden')) {
+      // Re-render result.
+      showResult();
+    }
+  }
+}, 600);
 
 // ─── Boot ───────────────────────────────────────────────────────
 loadPool();
 </script>
 
-<script src="js/i18n.js?v=20260523d"></script>
+<script src="js/i18n.js?v=20260523e"></script>
 </body>
 </html>

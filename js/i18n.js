@@ -2562,6 +2562,18 @@
       th: 'ผู้ดำเนินการ · TAmJ ↗',
       fr: 'Opérateur · TAmJ ↗',
     },
+    'footer.preview_link': {
+      en: '↳ Quiz preview (operator)',
+      ja: '↳ クイズプレビュー(運営)',
+      ko: '↳ 퀴즈 미리보기(운영자)',
+      es: '↳ Vista previa del quiz (operador)',
+      hi: '↳ क्विज़ पूर्वावलोकन (ऑपरेटर)',
+      vi: '↳ Xem trước quiz (vận hành)',
+      pt: '↳ Pré-visualização do quiz (operador)',
+      id: '↳ Pratinjau kuis (operator)',
+      th: '↳ ดูตัวอย่างควิซ (ผู้ดำเนินการ)',
+      fr: '↳ Aperçu du quiz (opérateur)',
+    },
     'footer.apply': {
       ja: '応募',
       en: 'Apply',
@@ -3244,7 +3256,195 @@
       th: 'Bell Entry คือบันทึกการเข้าร่วม ไม่สามารถแลกเป็นเงินสดหรือโอนได้ การจ่าย Grant เกิดขึ้นหลังจากการตรวจสอบตัวตน, Mission และ AML เท่านั้น ตามดุลพินิจของผู้ดำเนินการ ในการตรวจสอบหมายเลขใบเสร็จของคุณกับ The Three ที่เผยแพร่ต่อสาธารณะ ดู <a href="verify.html">verify.html</a>',
       fr: 'Bell Entry est un enregistrement de participation. Il ne peut être encaissé ni transféré. Le versement du Grant n\'a lieu qu\'après vérification d\'identité, de Mission et AML, à la discrétion de l\'opérateur. Pour vérifier votre numéro de Reçu par rapport à The Three publié, voir <a href="verify.html">verify.html</a>.',
     },
-  
+
+    // ============================================================
+    //   PREVIEW.HTML — operator-only quiz preview tool
+    // ============================================================
+    // Brand-locked terms (KINGMAKER, Bell, Cycle, Phase, The Three, King)
+    // are wrapped in notranslate spans inside each translation so Google
+    // Translate never mangles them when a user enables auto-translate.
+    'preview.banner_label': {
+      en: '▸ Preview Mode',
+      ja: '▸ プレビューモード',
+      ko: '▸ 미리보기 모드',
+      es: '▸ Modo de vista previa',
+      hi: '▸ पूर्वावलोकन मोड',
+      vi: '▸ Chế độ xem trước',
+      pt: '▸ Modo de pré-visualização',
+      id: '▸ Mode pratinjau',
+      th: '▸ โหมดดูตัวอย่าง',
+      fr: '▸ Mode aperçu',
+    },
+    'preview.banner_body': {
+      en: 'This is a <strong>demonstration</strong> of the 5-minute quiz UI. No data is recorded · No participation required · 30 question pool sampled at random.',
+      ja: 'これは <span class="notranslate" translate="no">5-minute</span> ゲームのクイズ UI の<strong>デモ</strong>です。データは記録されません · 参加不要 · 30 問プールからランダムに抽出。',
+      ko: '<span class="notranslate" translate="no">5-minute</span> 게임 퀴즈 UI의 <strong>데모</strong>입니다. 데이터는 기록되지 않습니다 · 참여 불필요 · 30개 문제 풀에서 무작위 추출.',
+      es: 'Esta es una <strong>demostración</strong> de la UI del juego <span class="notranslate" translate="no">5-minute</span>. No se registran datos · No se requiere participación · Muestra aleatoria de 30 preguntas.',
+      hi: 'यह <span class="notranslate" translate="no">5-minute</span> क्विज़ UI का <strong>प्रदर्शन</strong> है। कोई डेटा रिकॉर्ड नहीं होता · भागीदारी आवश्यक नहीं · 30 प्रश्न पूल से यादृच्छिक चयन।',
+      vi: 'Đây là bản <strong>trình diễn</strong> giao diện quiz <span class="notranslate" translate="no">5-minute</span>. Không lưu dữ liệu · Không cần tham gia · Lấy mẫu ngẫu nhiên từ 30 câu hỏi.',
+      pt: 'Esta é uma <strong>demonstração</strong> da UI do jogo <span class="notranslate" translate="no">5-minute</span>. Nenhum dado é registrado · Sem necessidade de participação · Amostra aleatória de 30 perguntas.',
+      id: 'Ini adalah <strong>demonstrasi</strong> UI kuis <span class="notranslate" translate="no">5-minute</span>. Tidak ada data yang direkam · Tidak perlu berpartisipasi · Sampel acak dari 30 pertanyaan.',
+      th: 'นี่คือ<strong>การสาธิต</strong> UI ของควิซ <span class="notranslate" translate="no">5-minute</span> ไม่บันทึกข้อมูล · ไม่ต้องเข้าร่วม · สุ่มจากคำถาม 30 ข้อ',
+      fr: 'Ceci est une <strong>démonstration</strong> de l\'interface du quiz <span class="notranslate" translate="no">5-minute</span>. Aucune donnée enregistrée · Aucune participation requise · Échantillon aléatoire parmi 30 questions.',
+    },
+    'preview.banner_jp': {
+      // This was originally Japanese-only sublabel. Keep it visible in JA
+      // and hide (empty) in other languages so the banner doesn't repeat.
+      en: '',
+      ja: 'これは <span class="notranslate" translate="no">5-minute</span> ゲームのクイズ UI の<strong style="color: var(--gold-deep);">プレビュー</strong>です。データベースには記録されません。',
+      ko: '',
+      es: '',
+      hi: '',
+      vi: '',
+      pt: '',
+      id: '',
+      th: '',
+      fr: '',
+    },
+    'preview.lbl_quiz_lang': {
+      en: 'Quiz language:',
+      ja: 'クイズ言語:',
+      ko: '퀴즈 언어:',
+      es: 'Idioma del quiz:',
+      hi: 'क्विज़ भाषा:',
+      vi: 'Ngôn ngữ quiz:',
+      pt: 'Idioma do quiz:',
+      id: 'Bahasa kuis:',
+      th: 'ภาษาของควิซ:',
+      fr: 'Langue du quiz :',
+    },
+    'preview.lbl_difficulty': {
+      en: 'Difficulty mix:',
+      ja: '難易度ミックス:',
+      ko: '난이도 조합:',
+      es: 'Mezcla de dificultad:',
+      hi: 'कठिनाई मिश्रण:',
+      vi: 'Độ khó:',
+      pt: 'Mistura de dificuldade:',
+      id: 'Campuran tingkat kesulitan:',
+      th: 'ระดับความยาก:',
+      fr: 'Difficulté :',
+    },
+    'preview.diff_balanced': {
+      en: '1 easy + 1 medium + 1 hard',
+      ja: 'やさしい 1 + ふつう 1 + むずかしい 1',
+      ko: '쉬움 1 + 보통 1 + 어려움 1',
+      es: '1 fácil + 1 medio + 1 difícil',
+      hi: '1 आसान + 1 मध्यम + 1 कठिन',
+      vi: '1 dễ + 1 trung bình + 1 khó',
+      pt: '1 fácil + 1 médio + 1 difícil',
+      id: '1 mudah + 1 sedang + 1 sulit',
+      th: 'ง่าย 1 + ปานกลาง 1 + ยาก 1',
+      fr: '1 facile + 1 moyen + 1 difficile',
+    },
+    'preview.diff_easy':   { en: '3 easy',   ja: 'やさしい 3',  ko: '쉬움 3',  es: '3 fáciles',  hi: '3 आसान',  vi: '3 dễ',     pt: '3 fáceis',   id: '3 mudah',  th: 'ง่าย 3',   fr: '3 faciles' },
+    'preview.diff_medium': { en: '3 medium', ja: 'ふつう 3',    ko: '보통 3',  es: '3 medios',   hi: '3 मध्यम', vi: '3 trung bình', pt: '3 médios',   id: '3 sedang', th: 'ปานกลาง 3', fr: '3 moyens' },
+    'preview.diff_hard':   { en: '3 hard',   ja: 'むずかしい 3', ko: '어려움 3', es: '3 difíciles', hi: '3 कठिन', vi: '3 khó',    pt: '3 difíceis', id: '3 sulit',  th: 'ยาก 3',   fr: '3 difficiles' },
+    'preview.diff_random': { en: 'Random 3', ja: 'ランダム 3',  ko: '랜덤 3',  es: '3 al azar',  hi: 'यादृच्छिक 3', vi: 'Ngẫu nhiên 3', pt: '3 aleatórias', id: '3 acak', th: 'สุ่ม 3', fr: '3 aléatoires' },
+    'preview.btn_new': {
+      en: '▸ New Quiz',
+      ja: '▸ 新しいクイズ',
+      ko: '▸ 새 퀴즈',
+      es: '▸ Nuevo quiz',
+      hi: '▸ नया क्विज़',
+      vi: '▸ Quiz mới',
+      pt: '▸ Novo quiz',
+      id: '▸ Kuis baru',
+      th: '▸ ควิซใหม่',
+      fr: '▸ Nouveau quiz',
+    },
+    'preview.btn_try_again': {
+      en: '▸ Try another quiz',
+      ja: '▸ もう一度試す',
+      ko: '▸ 다시 시도',
+      es: '▸ Probar otro quiz',
+      hi: '▸ दूसरा क्विज़ आज़माएँ',
+      vi: '▸ Thử quiz khác',
+      pt: '▸ Tentar outro quiz',
+      id: '▸ Coba kuis lain',
+      th: '▸ ลองอีกควิซ',
+      fr: '▸ Essayer un autre quiz',
+    },
+    'preview.phase_eyebrow': {
+      en: '<span class="notranslate" translate="no">Phase 1</span> · <span class="notranslate" translate="no">The Trial</span>',
+      ja: '<span class="notranslate" translate="no">Phase 1</span> · <span class="notranslate" translate="no">The Trial</span>',
+      ko: '<span class="notranslate" translate="no">Phase 1</span> · <span class="notranslate" translate="no">The Trial</span>',
+      es: '<span class="notranslate" translate="no">Phase 1</span> · <span class="notranslate" translate="no">The Trial</span>',
+      hi: '<span class="notranslate" translate="no">Phase 1</span> · <span class="notranslate" translate="no">The Trial</span>',
+      vi: '<span class="notranslate" translate="no">Phase 1</span> · <span class="notranslate" translate="no">The Trial</span>',
+      pt: '<span class="notranslate" translate="no">Phase 1</span> · <span class="notranslate" translate="no">The Trial</span>',
+      id: '<span class="notranslate" translate="no">Phase 1</span> · <span class="notranslate" translate="no">The Trial</span>',
+      th: '<span class="notranslate" translate="no">Phase 1</span> · <span class="notranslate" translate="no">The Trial</span>',
+      fr: '<span class="notranslate" translate="no">Phase 1</span> · <span class="notranslate" translate="no">The Trial</span>',
+    },
+    'preview.loading': {
+      en: 'Loading quiz pool from Worker...',
+      ja: 'クイズプールを読み込み中...',
+      ko: '퀴즈 풀을 불러오는 중...',
+      es: 'Cargando el banco de preguntas...',
+      hi: 'क्विज़ पूल लोड हो रहा है...',
+      vi: 'Đang tải bộ câu hỏi...',
+      pt: 'Carregando banco de perguntas...',
+      id: 'Memuat bank pertanyaan...',
+      th: 'กำลังโหลดคลังคำถาม...',
+      fr: 'Chargement de la banque de questions...',
+    },
+    'preview.foot_home': {
+      en: '← <span class="notranslate" translate="no">KINGMAKER</span>',
+      ja: '← <span class="notranslate" translate="no">KINGMAKER</span>',
+      ko: '← <span class="notranslate" translate="no">KINGMAKER</span>',
+      es: '← <span class="notranslate" translate="no">KINGMAKER</span>',
+      hi: '← <span class="notranslate" translate="no">KINGMAKER</span>',
+      vi: '← <span class="notranslate" translate="no">KINGMAKER</span>',
+      pt: '← <span class="notranslate" translate="no">KINGMAKER</span>',
+      id: '← <span class="notranslate" translate="no">KINGMAKER</span>',
+      th: '← <span class="notranslate" translate="no">KINGMAKER</span>',
+      fr: '← <span class="notranslate" translate="no">KINGMAKER</span>',
+    },
+    'preview.foot_how': {
+      en: 'How it works',
+      ja: '仕組み',
+      ko: '작동 방식',
+      es: 'Cómo funciona',
+      hi: 'यह कैसे काम करता है',
+      vi: 'Cách hoạt động',
+      pt: 'Como funciona',
+      id: 'Cara kerjanya',
+      th: 'วิธีการทำงาน',
+      fr: 'Comment ça marche',
+    },
+    'preview.foot_play': {
+      en: '→ <span class="notranslate" translate="no">play.html</span> (real game)',
+      ja: '→ <span class="notranslate" translate="no">play.html</span>(本番)',
+      ko: '→ <span class="notranslate" translate="no">play.html</span> (실제 게임)',
+      es: '→ <span class="notranslate" translate="no">play.html</span> (juego real)',
+      hi: '→ <span class="notranslate" translate="no">play.html</span> (असली खेल)',
+      vi: '→ <span class="notranslate" translate="no">play.html</span> (trò chơi thật)',
+      pt: '→ <span class="notranslate" translate="no">play.html</span> (jogo real)',
+      id: '→ <span class="notranslate" translate="no">play.html</span> (game asli)',
+      th: '→ <span class="notranslate" translate="no">play.html</span> (เกมจริง)',
+      fr: '→ <span class="notranslate" translate="no">play.html</span> (vrai jeu)',
+    },
+
+    // ============================================================
+    //   FOOTER OPERATOR-PORTAL HINT
+    // ============================================================
+    // Tiny link in the main footer to reveal preview.html exists.
+    // operator-only flavor, written so a public visitor sees it but
+    // recognizes it isn't part of the player flow.
+    'footer.operator_preview': {
+      en: 'operator',
+      ja: '運営',
+      ko: '운영자',
+      es: 'operador',
+      hi: 'ऑपरेटर',
+      vi: 'người vận hành',
+      pt: 'operador',
+      id: 'operator',
+      th: 'ผู้ดำเนินการ',
+      fr: 'opérateur',
+    },
+
   };
 
   function applyContentTranslations(lang) {
@@ -3253,6 +3453,7 @@
     // Single source of truth for display-language CSS rules.
     document.documentElement.setAttribute('data-display-lang', lang);
 
+    // ── data-i18n-html: innerHTML swap (rich content, may contain markup) ──
     document.querySelectorAll('[data-i18n-html]').forEach(el => {
       const key = el.getAttribute('data-i18n-html');
       const entry = I18N_CONTENT[key];
@@ -3261,6 +3462,33 @@
       if (!el.dataset.i18nOriginal) el.dataset.i18nOriginal = el.innerHTML;
       const translated = entry[lang];
       el.innerHTML = (translated !== undefined) ? translated : el.dataset.i18nOriginal;
+    });
+
+    // ── data-i18n (legacy + new dual-purpose): textContent or innerHTML swap.
+    // First checks MENU_TRANSLATIONS (legacy menu lookup), then falls back
+    // to I18N_CONTENT for any key the page declares. This lets pages like
+    // preview.html / mypage.html declare data-i18n="preview.banner_title"
+    // and have it translated from I18N_CONTENT without using -html form.
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      // Legacy MENU_TRANSLATIONS path (already handled by applyMenuTranslations).
+      // We skip if the key exists in MENU_TRANSLATIONS to avoid double-write.
+      if (MENU_TRANSLATIONS[key]) return;
+      const entry = I18N_CONTENT[key];
+      if (!entry) return;
+      if (!el.dataset.i18nOriginalText) el.dataset.i18nOriginalText = el.textContent;
+      const translated = entry[lang];
+      // For textContent path, prefer text-only values; if the dictionary
+      // entry contains markup, use innerHTML so brand-lock spans render.
+      if (translated !== undefined) {
+        if (/<[a-z][\s\S]*>/i.test(translated)) {
+          el.innerHTML = translated;
+        } else {
+          el.textContent = translated;
+        }
+      } else {
+        el.textContent = el.dataset.i18nOriginalText;
+      }
     });
   }
 

@@ -1,3 +1,95 @@
+# KINGMAKER 23:23 — `v=20260523e` (Preview Discoverability + 10-Language Preview UI)
+
+Session ⑪ continuation. Responds to operator's two complaints from 2026-05-23
+afternoon: (1) "翻訳機能を徹底的に設計して" — translation surface still ad-hoc
+across pages, especially preview.html which had only its own en/ja toggle;
+(2) "preview.html の導線が分からない。トップページからどうやってはいるのか?"
+— there was literally no link to preview.html anywhere on the site. The page
+was orphaned; operator could only reach it by typing the URL.
+
+## What changed
+
+1. **`preview.html` rebuilt to share the site-wide i18n system.**
+   - Removed the local `<select id="langPicker">` that toggled only en/ja.
+   - Added the shared `.lang-picker` (10 TIER-1 languages) in the header.
+   - All static UI strings (banner, control labels, difficulty options,
+     buttons, phase headings, loading message, footer links) now carry
+     `data-i18n-html="preview.*"` and are translated from `I18N_CONTENT`.
+   - Dynamic strings (pool stats line, quiz question header / subtitle,
+     easy/medium/hard difficulty labels, correct/wrong verdicts, pass /
+     fail result subtitles, insufficient-pool warning) are localized via
+     a new in-page `PREVIEW_I18N` dictionary covering en, ja, ko, es, hi,
+     vi, pt, id, th, fr. The page polls `data-display-lang` once per
+     ~600ms and re-renders any visible dynamic text when the user flips
+     the picker, so language changes mid-quiz update immediately.
+   - Quiz content language remains separate — DB only contains en/ja
+     questions, so the "Quiz language" dropdown is correctly limited to
+     those two. UI chrome around it is the one translated 9-way.
+   - All brand-locked terms (KINGMAKER, Bell, Cycle, Phase, The Three,
+     King, play.html, 5-minute, The Trial) wrapped in
+     `<span class="notranslate" translate="no">` inside every translation
+     so Google Translate never mangles them if the user enables it.
+
+2. **`js/i18n.js` `applyContentTranslations` extended to handle `data-i18n`
+   (textContent swap) in addition to `data-i18n-html` (innerHTML swap).**
+   Previously `data-i18n` was only consumed by `applyMenuTranslations`'
+   five-key `MENU_TRANSLATIONS` table. Now any key declared in
+   `I18N_CONTENT` is also resolvable via `data-i18n="key"` — the function
+   skips keys already covered by MENU_TRANSLATIONS to avoid double-write,
+   caches the original textContent for clean restore, and auto-detects
+   whether the translated value contains HTML markup (uses innerHTML if
+   so, textContent otherwise). This means pages like preview.html /
+   mypage.html / verify.html can mix `data-i18n` (lighter / safer for
+   plain text) and `data-i18n-html` (when brand-lock spans are needed)
+   in the same document and have both work from one dictionary.
+
+3. **`I18N_CONTENT` gained 16 new keys for preview.html in all 10 languages**:
+   `preview.banner_label`, `preview.banner_body`, `preview.banner_jp`,
+   `preview.lbl_quiz_lang`, `preview.lbl_difficulty`, `preview.diff_*`
+   (5 difficulty options), `preview.btn_new`, `preview.btn_try_again`,
+   `preview.phase_eyebrow`, `preview.loading`, `preview.foot_home`,
+   `preview.foot_how`, `preview.foot_play`. Plus
+   `footer.preview_link` for the operator-discovery link added below.
+
+4. **Operator-discovery links added to every public page footer.**
+   New entry on every footer: `↳ Quiz preview (operator)` —
+   small, dust-coloured, `rel="nofollow noindex"` so search engines
+   ignore it. Visible to humans who scroll the footer; ignored by
+   crawlers. Added to: index.html (in Legal · Operator column),
+   how-it-works.html, mypage.html, verify.html, kings.html,
+   play.html, entry.html, risk.html, rules.html, money.html.
+   This is the answer to "トップページからどうやってはいるのか" —
+   bottom of any page's footer, smallest link, 10-language label
+   via `footer.preview_link` dictionary entry.
+
+5. **Cache-buster unified across every HTML file**: `js/i18n.js?v=20260523e`.
+   Previously a mix of `?v=20260522c`, `?v=20260523d`, and stragglers
+   could leave stale i18n behavior. Now one version per release.
+
+## Why preview.html stays operator-only
+
+Banner still reads "▸ Preview Mode · No data is recorded · No participation
+required" and the footer links read "play.html (real game)" — it's clearly
+a tool, not a player onboarding page. The Quiz Preview link is dust-coloured
+at footer bottom with `rel="nofollow noindex"`, deliberately undiscoverable
+through normal browsing flow but trivially findable for anyone who looks.
+`<meta name="robots" content="noindex, nofollow">` already in the head means
+the page never enters search indices regardless of inbound link.
+
+## Not in this release
+
+- `mypage.html` / `verify.html` / `play.html` / `kings.html` still use the
+  legacy `.lang-en` / `.lang-ja` parallel-span pattern (44 / 5 / 44 / 26
+  occurrences). They work today because CSS swaps display under
+  `[data-display-lang="ja"]`. Operator can request 9-language migration
+  separately when prioritized — it's mechanical but voluminous and
+  English-fallback on non-en/ja picker is the current acceptable behavior.
+- Quiz question pool itself remains en + ja only (DB-level, separate
+  from UI chrome). Migrating the 30-question pool to all 10 languages is
+  a different operator decision tied to the language rollout for Cycle 3+.
+
+---
+
 # KINGMAKER 23:23 — `v=20260522a` (v2: Integrated Payment + Hall of Kings + Magic-Link MyPage)
 
 Major restructure responding to operator's feedback (2026-05-22, Cycle 1 day 3): "現状の決済はIDを求められたり意味が分からない / マイページは存在するのか / app.htmlは何 / Kingの履歴は必ず残して、資金が溜まり次第その人の欲望を叶える / 少人数の時に参加した人は特になるようにしてほしい"
