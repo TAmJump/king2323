@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "cycle": 0,
-  "phase": "pre-launch",
+  "cycle": 2,
+  "phase": "live",
   "baseline": {
     "grant_fund_jpy": 0,
     "patron_7d_jpy": 0,
@@ -14,7 +14,7 @@
     "members": 0,
     "patrons": 0
   },
-  "first_bell_at": "TBA",
-  "updated": "2026-05-13T04:30:00Z",
-  "note": "Pre-launch state. cycle=0 signals the UI to show 'Cycle 1 has not yet begun' instead of live numbers. Once the platform legally launches in Japan and Cycle 1 opens, the operator updates this file with cycle=1, the real first-Friday timestamp, and accumulating baselines. Until then, every dashboard says 'awaiting first ring' rather than fabricating activity."
+  "first_bell_at": "2026-05-29T14:23:00Z",
+  "updated": "2026-05-24T00:06:06Z",
+  "note": "Cycle 2 active. Bell rings 2026-05-29 23:23 JST (= 14:23 UTC Friday). Operator should update 'updated' field to the actual timestamp when this file is committed, and set baseline.grant_fund_jpy / members_total to actual D1 values at the moment of commit."
 }
