@@ -3711,18 +3711,6 @@
       th: '',
       fr: '',
     },
-    'preview.lbl_quiz_lang': {
-      en: 'Quiz language:',
-      ja: 'クイズ言語:',
-      ko: '퀴즈 언어:',
-      es: 'Idioma del quiz:',
-      hi: 'क्विज़ भाषा:',
-      vi: 'Ngôn ngữ quiz:',
-      pt: 'Idioma do quiz:',
-      id: 'Bahasa kuis:',
-      th: 'ภาษาของควิซ:',
-      fr: 'Langue du quiz :',
-    },
     'preview.lbl_difficulty': {
       en: 'Difficulty mix:',
       ja: '難易度ミックス:',

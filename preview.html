@@ -256,12 +256,7 @@
   </div>
 
   <div class="preview-controls">
-    <span class="lbl" data-i18n-html="preview.lbl_quiz_lang">Quiz language:</span>
-    <select id="quizLangPicker">
-      <option value="en">English</option>
-      <option value="ja">日本語</option>
-    </select>
-    <span class="lbl" style="margin-left:14px;" data-i18n-html="preview.lbl_difficulty">Difficulty mix:</span>
+    <span class="lbl" data-i18n-html="preview.lbl_difficulty">Difficulty mix:</span>
     <select id="diffPicker">
       <option value="balanced" data-i18n-html="preview.diff_balanced">1 easy + 1 medium + 1 hard</option>
       <option value="easy" data-i18n-html="preview.diff_easy">3 easy</option>
@@ -459,6 +454,15 @@ function uiLang() {
   return PREVIEW_I18N.stats[v] ? v : 'en';
 }
 
+// Map the UI language to the quiz question-pool language. The question pool
+// currently exists only in 'en' and 'ja'; every other UI language falls back
+// to English questions. (Previously this was a manual <select id="quizLangPicker">
+// next to Difficulty, but it was redundant with the header language picker
+// — selecting Korean UI but English quiz made no sense — so it was removed.)
+function quizLang() {
+  return uiLang() === 'ja' ? 'ja' : 'en';
+}
+
 // ─── State transition helper ────────────────────────────────────
 function show(id) {
   ['state-quiz', 'state-result', 'state-loading'].forEach(s => {
@@ -486,7 +490,7 @@ async function loadPool() {
 }
 
 function updateStats() {
-  const qLang = document.getElementById('quizLangPicker').value;
+  const qLang = quizLang();
   const langQs = allQuestions.filter(q => q.language === qLang);
   const easy = langQs.filter(q => q.difficulty === 1).length;
   const med  = langQs.filter(q => q.difficulty === 2).length;
@@ -498,7 +502,7 @@ function updateStats() {
 
 // ─── Pick a new quiz based on current settings ──────────────────
 function pickNewQuiz() {
-  const qLang = document.getElementById('quizLangPicker').value;
+  const qLang = quizLang();
   const diff = document.getElementById('diffPicker').value;
   const langQs = allQuestions.filter(q => q.language === qLang);
 
@@ -650,7 +654,6 @@ function escapeHtml(s) {
 }
 
 // ─── Event hooks ────────────────────────────────────────────────
-document.getElementById('quizLangPicker').addEventListener('change', () => { updateStats(); pickNewQuiz(); });
 document.getElementById('diffPicker').addEventListener('change', () => { pickNewQuiz(); });
 document.getElementById('restartBtn').addEventListener('click', () => { pickNewQuiz(); });
 document.getElementById('restartBtn2').addEventListener('click', () => { pickNewQuiz(); });
@@ -661,11 +664,22 @@ document.getElementById('restartBtn2').addEventListener('click', () => { pickNew
 // flips, but a simpler trigger is: poll data-display-lang once per
 // second. With only a few elements it's cheap. ─────
 let lastUiLang = uiLang();
+let lastQuizLang = quizLang();
 setInterval(() => {
   const cur = uiLang();
   if (cur !== lastUiLang) {
     lastUiLang = cur;
     updateStats();
+    // If the UI language change also flipped the quiz pool language
+    // (ja ↔ non-ja), regenerate the current quiz from the new pool.
+    // Otherwise (e.g. en ↔ ko, both map to English questions), keep
+    // the current quiz; only the surrounding chrome relabels.
+    const curQuizLang = quizLang();
+    const quizLangChanged = curQuizLang !== lastQuizLang;
+    lastQuizLang = curQuizLang;
+    if (quizLangChanged && allQuestions.length) {
+      pickNewQuiz();
+    }
     // Re-localize active screen labels if a quiz is in progress.
     if (!document.getElementById('state-quiz').classList.contains('hidden')) {
       document.getElementById('quizHeader').textContent = PREVIEW_I18N.header[cur] || PREVIEW_I18N.header.en;
