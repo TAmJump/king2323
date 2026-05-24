@@ -234,9 +234,128 @@
   .preview-cta:hover { background: var(--gold-deep); }
 
   .hidden { display: none !important; }
+
+  /* ──────────────────────────────────────────────────────────────
+   * Password gate (operator-only access).
+   * Hash kept in JS as SHA-256; password itself never appears in
+   * source. Client-side only — protects from casual visitors,
+   * not from someone who reads the JS and brute-forces the hash.
+   * That's fine: preview.html has no secrets and writes no data.
+   * ────────────────────────────────────────────────────────────── */
+  #pw-gate {
+    position: fixed;
+    inset: 0;
+    background: var(--bg, #f6f1e8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    padding: 20px;
+  }
+  #pw-gate.hidden { display: none !important; }
+  .pw-card {
+    width: 100%;
+    max-width: 420px;
+    border: 1px solid var(--line, #d6cdb9);
+    background: rgba(255, 255, 255, 0.4);
+    padding: 36px 28px;
+    text-align: center;
+  }
+  .pw-card .pw-brand {
+    font-family: var(--f-display, serif);
+    font-size: 18px;
+    letter-spacing: 0.22em;
+    color: var(--ink, #2a2418);
+    margin-bottom: 4px;
+  }
+  .pw-card .pw-brand .pw-time {
+    font-family: var(--f-mono, monospace);
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    color: var(--gold, #b8862d);
+    margin-left: 8px;
+  }
+  .pw-card .pw-title {
+    font-family: var(--f-mono, monospace);
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--gold-deep, #8a6420);
+    margin: 18px 0 22px;
+  }
+  .pw-card input[type="password"] {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid var(--line, #d6cdb9);
+    background: rgba(255, 255, 255, 0.7);
+    font-family: var(--f-mono, monospace);
+    font-size: 14px;
+    letter-spacing: 0.1em;
+    color: var(--ink, #2a2418);
+    text-align: center;
+    box-sizing: border-box;
+  }
+  .pw-card input[type="password"]:focus {
+    outline: 1px solid var(--gold, #b8862d);
+    outline-offset: 2px;
+  }
+  .pw-card button {
+    margin-top: 16px;
+    padding: 11px 28px;
+    background: var(--gold, #b8862d);
+    color: #fff;
+    border: none;
+    font-family: var(--f-mono, monospace);
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+  .pw-card button:hover { background: var(--gold-deep, #8a6420); }
+  .pw-card button:disabled {
+    background: var(--ash, #9a907e);
+    cursor: not-allowed;
+  }
+  .pw-card .pw-error {
+    margin-top: 14px;
+    font-family: var(--f-mono, monospace);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--crimson, #8b2c2c);
+    min-height: 14px;
+  }
+  .pw-card .pw-note {
+    margin-top: 22px;
+    font-family: var(--f-mono, monospace);
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--dust, #9a907e);
+    opacity: 0.7;
+    line-height: 1.6;
+  }
 </style>
 </head>
 <body>
+
+<!-- ────────── Operator-only password gate ──────────
+     Hashed-PW check below; once correct, sets a flag in
+     localStorage so the user isn't re-prompted on every reload.
+     "Lock" link at the bottom of the page clears the flag. -->
+<div id="pw-gate" aria-label="Password required">
+  <div class="pw-card">
+    <div class="pw-brand">KINGMAKER<span class="pw-time">23:23</span></div>
+    <div class="pw-title">Operator Access</div>
+    <input type="password" id="pw-input" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="••••••••" />
+    <br>
+    <button type="button" id="pw-submit">Unlock</button>
+    <div class="pw-error" id="pw-error">&nbsp;</div>
+    <div class="pw-note">This preview is restricted.<br>If you don't have the key, return to <a href="index.html" style="color: var(--gold-deep, #8a6420);">the main site</a>.</div>
+  </div>
+</div>
+
+<div id="protected" style="display:none;">
 
 <header class="site-header notranslate" translate="no" style="display:flex; justify-content:space-between; align-items:center; padding:18px 24px; border-bottom:1px solid var(--line);">
   <a href="index.html" class="brand-link notranslate" translate="no" style="display:flex; align-items:center; gap:12px; text-decoration:none;">
@@ -321,6 +440,7 @@
   </nav>
   <div class="legal-footer-meta">
     <span class="meta-line">© 2026 · KINGMAKER 23:23 · operator preview tool</span>
+    <span class="meta-line" style="opacity:0.55;"><a href="#" id="pw-lock-link" style="color:var(--dust); font-size:10px; letter-spacing:0.18em; text-transform:uppercase;">🔒 Lock preview</a></span>
   </div>
 </footer>
 
@@ -695,7 +815,112 @@ setInterval(() => {
 }, 600);
 
 // ─── Boot ───────────────────────────────────────────────────────
-loadPool();
+// loadPool() is now called by the password gate (unlockSite()) instead
+// of immediately, so we don't waste a /quiz/pool fetch when the visitor
+// can't unlock.
+window.__startPreview = function startPreview() {
+  if (window.__previewStarted) return;
+  window.__previewStarted = true;
+  loadPool();
+};
+</script>
+
+</div><!-- /#protected -->
+
+<!-- ────────── Password gate logic ────────── -->
+<script>
+(function() {
+  // SHA-256 hash of the operator password. The password itself is never
+  // stored or transmitted; only this hash sits in the source. Even if
+  // the source is public, recovering the password from this hash
+  // requires brute-forcing SHA-256, which is infeasible for any
+  // non-trivial password.
+  const EXPECTED_HASH = '956eee35ac9b8694add72bcbe3282da316f76827dc71e87317e7dcfa5d072f7e';
+
+  // Versioned localStorage key. If we ever rotate the password, bumping
+  // this version invalidates every existing unlocked session.
+  const UNLOCK_KEY = 'kingmaker_preview_unlocked_v1';
+  const EXPECTED_FLAG = 'ok-' + EXPECTED_HASH.slice(0, 12);
+
+  const gateEl = document.getElementById('pw-gate');
+  const protectedEl = document.getElementById('protected');
+  const inputEl = document.getElementById('pw-input');
+  const submitEl = document.getElementById('pw-submit');
+  const errorEl = document.getElementById('pw-error');
+  const lockLinkEl = document.getElementById('pw-lock-link');
+
+  function reveal() {
+    gateEl.classList.add('hidden');
+    protectedEl.style.display = '';
+    // Start the quiz pool fetch (deferred until unlocked).
+    if (typeof window.__startPreview === 'function') {
+      window.__startPreview();
+    }
+  }
+
+  async function sha256Hex(text) {
+    const buf = new TextEncoder().encode(text);
+    const hashBuf = await crypto.subtle.digest('SHA-256', buf);
+    return Array.from(new Uint8Array(hashBuf))
+      .map(b => b.toString(16).padStart(2, '0'))
+      .join('');
+  }
+
+  async function tryUnlock() {
+    submitEl.disabled = true;
+    errorEl.textContent = '';
+    const pw = inputEl.value || '';
+    if (!pw) {
+      errorEl.textContent = 'Enter the key';
+      submitEl.disabled = false;
+      return;
+    }
+    let hash;
+    try {
+      hash = await sha256Hex(pw);
+    } catch (e) {
+      errorEl.textContent = 'Crypto unavailable';
+      submitEl.disabled = false;
+      return;
+    }
+    if (hash === EXPECTED_HASH) {
+      try { localStorage.setItem(UNLOCK_KEY, EXPECTED_FLAG); } catch (e) { /* private mode: ignore */ }
+      inputEl.value = '';
+      reveal();
+    } else {
+      errorEl.textContent = 'Incorrect key';
+      inputEl.select();
+    }
+    submitEl.disabled = false;
+  }
+
+  // Already unlocked?
+  let alreadyUnlocked = false;
+  try {
+    alreadyUnlocked = localStorage.getItem(UNLOCK_KEY) === EXPECTED_FLAG;
+  } catch (e) { /* private mode or storage disabled */ }
+
+  if (alreadyUnlocked) {
+    reveal();
+  } else {
+    // Show gate, focus input.
+    setTimeout(() => { try { inputEl.focus(); } catch (e) {} }, 50);
+  }
+
+  submitEl.addEventListener('click', tryUnlock);
+  inputEl.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') { e.preventDefault(); tryUnlock(); }
+  });
+
+  // "Lock preview" link in the footer clears the unlock flag and reloads.
+  if (lockLinkEl) {
+    lockLinkEl.addEventListener('click', (e) => {
+      e.preventDefault();
+      try { localStorage.removeItem(UNLOCK_KEY); } catch (err) {}
+      location.reload();
+    });
+  }
+})();
 </script>
 
 <script src="js/i18n.js?v=20260523m"></script>
