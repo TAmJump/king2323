@@ -151,17 +151,17 @@ cat HANDOFF_2026-05-23_session17_MASTER.md  # このファイル再読
 
 **現役 PAT(セッション⑱・2026-05-23 発行):**
 ```
-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
+<PAT削除済み>
 ```
 
 **旧 PAT(セッション⑱開始時点で GitHub Secret Scanning により自動 revoke 済):**
 ```
-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  ← 使うな、401 になる
+<PAT削除済み>  ← 使うな、401 になる
 ```
 
 clone コマンド(コンテナ起動時に必要なら):
 ```bash
-git clone "https://x-access-token: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@github.com/TAmJump/king2323.git" /home/claude/repo
+git clone "https://x-access-token:<PAT削除済み>@github.com/TAmJump/king2323.git" /home/claude/repo
 ```
 
 push 時の remote URL 確認:
@@ -172,7 +172,7 @@ cd /home/claude/repo && git remote -v
 
 埋まってなかったら:
 ```bash
-git remote set-url origin "https://x-access-token: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@github.com/TAmJump/king2323.git"
+git remote set-url origin "https://x-access-token:<PAT削除済み>@github.com/TAmJump/king2323.git"
 ```
 
 #### ⚠️ PAT 有効性の判定方法(セッション⑱で確立した正しい手順)
@@ -912,7 +912,7 @@ MASTER ファイル `HANDOFF_2026-05-23_MASTER.md` を上書きせず、別フ�
    「旧 PAT は revoke 済」記述を見て、「現在の PAT は ghp_Mm6K... 系統で、
     §1-2 の PAT は古い」と推測
 5. 運営に「新 PAT を貼ってくれ」と要求
-6. 運営が「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」を貼り直す
+6. 運営が「<PAT削除済み>」を貼り直す
 7. 別 Claude は再度 API 認証を試して 401 → 「やはり失効」と再判定
 8. 運営がこのチャットに戻ってきて「新規 chat で添付したこと言われて進まない」と訴え
 

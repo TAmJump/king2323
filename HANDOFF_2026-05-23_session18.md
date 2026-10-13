@@ -28,7 +28,7 @@
 ## 2. このセッションで発覚した PAT 事故(超重要)
 
 ### 何が起きたか
-1. セッション⑰末で前任 Claude が `HANDOFF_2026-05-23_session17_MASTER.md` の §1-2 に PAT `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` を平文記載
+1. セッション⑰末で前任 Claude が `HANDOFF_2026-05-23_session17_MASTER.md` の §1-2 に PAT `<PAT削除済み>` を平文記載
 2. その handoff をローカル commit したが **push する前にセッションが終わった**(運営が `present_files` 経由でファイルを受け取って終了)
 3. セッション⑱開始時、Claude(私)が同じ PAT で push 試行 → **401 Bad credentials**
 4. 切り分け検証:
@@ -44,7 +44,7 @@
 
 ### 新 PAT の発行
 運営が `https://github.com/settings/tokens` から再発行:
-- 新 PAT: `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`
+- 新 PAT: `<PAT削除済み>`
 - スコープ: `repo`、有効期限 90 日(2026-08-22 頃まで)
 
 ### Secret Scanning Bypass
