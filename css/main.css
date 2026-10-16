@@ -1012,7 +1012,7 @@ body.lang-panel-open { overflow: hidden; }
   letter-spacing: 0.15em;
 }
 /* Visual separator in lang dropdown between TIER 1 (10 priority
-   languages per TAmJ translation design) and the rest. */
+   languages per translation design) and the rest. */
 .lang-tier-separator {
   padding: 14px 22px 8px;
   font-family: var(--f-mono);
@@ -1028,7 +1028,7 @@ body.lang-panel-open { overflow: hidden; }
 /* ============================================================
    PRICE DISPLAY (brand-locked, never translated, never localized)
    ============================================================
-   Per TAmJ display contract (v20260513):
+   Per display contract (v20260513):
      - JPY is the source of truth (data-jpy attr = JPY amount).
      - USD is computed at render time from /js/fx.json and shown PRIMARY.
      - JPY is shown SECONDARY beneath the USD value.

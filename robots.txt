@@ -1,5 +1,5 @@
 # KINGMAKER 23:23 — robots.txt
-# Operator: TAmJ (タムジ株式会社)
+# Operator: Tiger.J.Bob
 
 User-agent: *
 Allow: /

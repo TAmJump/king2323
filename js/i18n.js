@@ -15,7 +15,7 @@
               document.cookie || '(none)');
 
   // Full Google Translate language list (108 languages).
-  // First 10 entries = TIER 1 priority (per TAmJ translation design):
+  // First 10 entries = TIER 1 priority (per translation design):
   //   English, Japanese, Spanish, Hindi, Korean, Vietnamese,
   //   Portuguese, Indonesian, Thai, French.
   // These cover US, Japan, India, Korea, Vietnam, Mexico, Brazil,
@@ -215,7 +215,7 @@
   }
 
   // ---- localStorage persistence + browser language auto-detect ----
-  // Per TAmJ translation design §4:
+  // Per translation design §4:
   //   1. Browser language is read on first visit
   //   2. If supported (in LANGS), auto-set picker to that language
   //   3. Otherwise default to English
@@ -331,7 +331,7 @@
       const q = (filter || '').toLowerCase().trim();
       listEl.innerHTML = '';
       let count = 0;
-      const TIER1_COUNT = 10;  // First 10 in LANGS are TAmJ priority
+      const TIER1_COUNT = 10;  // First 10 in LANGS are priority
       // v20260518n: only show TIER 1 in the picker. TIER 2 (the other
       // 98 languages) used to be listed too, but for those languages
       // only the Google Translate auto-translation kicks in — UI labels
@@ -391,7 +391,7 @@
   // ============================================================
   // BRAND LOCK (never translated, in any language, ever)
   // ============================================================
-  // Per TAmJ translation design:
+  // Per translation design:
   //   "翻訳していい部分" / "Never Translate" lists.
   //
   // The page already uses class="notranslate" translate="no" on
@@ -426,7 +426,7 @@
   // ============================================================
   // LEGAL DISCLAIMER (for Legal pages: Terms, Privacy, etc.)
   // ============================================================
-  // Per TAmJ translation design §7. Available globally for any
+  // Per translation design §7. Available globally for any
   // Legal page in tamjump.com to render at the top of localized
   // legal content. Site uses bilingual official model:
   //   English + Japanese = official governing text
@@ -1266,16 +1266,16 @@
 
     // --- Corporate footer label (used on legal pages) ---
     'corp.label': {
-      ja: 'タムジ株式会社 ↗',
-      en: 'TAmJ Corporate ↗',
-      ko: 'TAmJ 법인 ↗',
-      es: 'TAmJ Corporativo ↗',
-      hi: 'TAmJ कॉर्पोरेट ↗',
-      vi: 'TAmJ Doanh nghiệp ↗',
-      pt: 'TAmJ Corporativo ↗',
-      id: 'TAmJ Korporat ↗',
-      th: 'TAmJ องค์กร ↗',
-      fr: 'TAmJ Corporate ↗',
+      ja: 'Tiger.J.Bob ↗',
+      en: 'Tiger.J.Bob ↗',
+      ko: 'Tiger.J.Bob ↗',
+      es: 'Tiger.J.Bob ↗',
+      hi: 'Tiger.J.Bob ↗',
+      vi: 'Tiger.J.Bob ↗',
+      pt: 'Tiger.J.Bob ↗',
+      id: 'Tiger.J.Bob ↗',
+      th: 'Tiger.J.Bob ↗',
+      fr: 'Tiger.J.Bob ↗',
     },
 
     // --- Homepage hero "tap to watch" overlay on the gorilla play frame ---
@@ -2937,16 +2937,16 @@
       fr: 'Avis de Transactions Commerciales (JP)',
     },
     'footer.operator': {
-      ja: '運営 · TAmJ ↗',
-      en: 'Operator · TAmJ ↗',
-      ko: '운영자 · TAmJ ↗',
-      es: 'Operador · TAmJ ↗',
-      hi: 'संचालक · TAmJ ↗',
-      vi: 'Đơn vị vận hành · TAmJ ↗',
-      pt: 'Operador · TAmJ ↗',
-      id: 'Operator · TAmJ ↗',
-      th: 'ผู้ดำเนินการ · TAmJ ↗',
-      fr: 'Opérateur · TAmJ ↗',
+      ja: '運営 · Tiger.J.Bob',
+      en: 'Operator · Tiger.J.Bob',
+      ko: '운영자 · Tiger.J.Bob',
+      es: 'Operador · Tiger.J.Bob',
+      hi: 'संचालक · Tiger.J.Bob',
+      vi: 'Đơn vị vận hành · Tiger.J.Bob',
+      pt: 'Operador · Tiger.J.Bob',
+      id: 'Operator · Tiger.J.Bob',
+      th: 'ผู้ดำเนินการ · Tiger.J.Bob',
+      fr: 'Opérateur · Tiger.J.Bob',
     },
     'footer.preview_link': {
       en: '↳ Quiz preview (operator)',
@@ -2997,16 +2997,16 @@
       fr: 'Règles du Bord',
     },
     'footer.copy': {
-      ja: '© 2026 · KINGMAKER 23:23 · TAmJ 運営 · 東京、日本',
-      en: '© 2026 · KINGMAKER 23:23 · Operated by TAmJ · Tokyo, Japan',
-      ko: '© 2026 · KINGMAKER 23:23 · TAmJ 운영 · 도쿄, 일본',
-      es: '© 2026 · KINGMAKER 23:23 · Operado por TAmJ · Tokio, Japón',
-      hi: '© 2026 · KINGMAKER 23:23 · TAmJ द्वारा संचालित · टोक्यो, जापान',
-      vi: '© 2026 · KINGMAKER 23:23 · Vận hành bởi TAmJ · Tokyo, Nhật Bản',
-      pt: '© 2026 · KINGMAKER 23:23 · Operado por TAmJ · Tóquio, Japão',
-      id: '© 2026 · KINGMAKER 23:23 · Dioperasikan oleh TAmJ · Tokyo, Jepang',
-      th: '© 2026 · KINGMAKER 23:23 · ดำเนินการโดย TAmJ · โตเกียว ญี่ปุ่น',
-      fr: '© 2026 · KINGMAKER 23:23 · Exploité par TAmJ · Tokyo, Japon',
+      ja: '© 2026 Tiger.J.Bob · KINGMAKER 23:23',
+      en: '© 2026 Tiger.J.Bob · KINGMAKER 23:23',
+      ko: '© 2026 Tiger.J.Bob · KINGMAKER 23:23',
+      es: '© 2026 Tiger.J.Bob · KINGMAKER 23:23',
+      hi: '© 2026 Tiger.J.Bob · KINGMAKER 23:23',
+      vi: '© 2026 Tiger.J.Bob · KINGMAKER 23:23',
+      pt: '© 2026 Tiger.J.Bob · KINGMAKER 23:23',
+      id: '© 2026 Tiger.J.Bob · KINGMAKER 23:23',
+      th: '© 2026 Tiger.J.Bob · KINGMAKER 23:23',
+      fr: '© 2026 Tiger.J.Bob · KINGMAKER 23:23',
     },
     'footer.disclaimer': {
       ja: '宝くじではない · 投資ではない · 賭けではない · Bellは資格、お金ではない',
@@ -3309,16 +3309,16 @@
       fr: 'Avis Importants',
     },
     'footer.corp_link': {
-      ja: 'タムジ株式会社 ↗',
-      en: 'TAmJ Corporate ↗',
-      ko: 'TAmJ 법인 ↗',
-      es: 'TAmJ Corporativo ↗',
-      hi: 'TAmJ कॉर्पोरेट ↗',
-      vi: 'TAmJ Doanh nghiệp ↗',
-      pt: 'TAmJ Corporativo ↗',
-      id: 'TAmJ Korporat ↗',
-      th: 'TAmJ องค์กร ↗',
-      fr: 'TAmJ Corporate ↗',
+      ja: 'Tiger.J.Bob ↗',
+      en: 'Tiger.J.Bob ↗',
+      ko: 'Tiger.J.Bob ↗',
+      es: 'Tiger.J.Bob ↗',
+      hi: 'Tiger.J.Bob ↗',
+      vi: 'Tiger.J.Bob ↗',
+      pt: 'Tiger.J.Bob ↗',
+      id: 'Tiger.J.Bob ↗',
+      th: 'Tiger.J.Bob ↗',
+      fr: 'Tiger.J.Bob ↗',
     },
     'footer.howitworks_link': {
       ja: '仕組み',
