@@ -35,10 +35,10 @@ var PROJECT_CONFIG = {
     prefix: "TAMJ",
     adminEmail: null,       // env.ADMIN_EMAIL を使う
     fromEmail: null,        // env.FROM_EMAIL を使う
-    subjectPrefix: "【タムジ】",
-    companyName: "タムジ株式会社",
+    subjectPrefix: "【Tiger.J.Bob】",
+    companyName: "Tiger.J.Bob",
     siteUrl: "https://tamjump.com",
-    contactEmail: "info@tamjump.com"
+    contactEmail: "animalb001@gmail.com"
   },
   scsgo: {
     prefix: "SCS",
