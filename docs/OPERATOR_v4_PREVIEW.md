@@ -61,7 +61,7 @@
 
 ### Step 3. preview.html を開いてクイズを目視確認
 
-1. https://king2323.tamjump.com/preview.html を開く
+1. https://king2323.115en.com/preview.html を開く
 2. 上部の **Pool stats** に `60 total · 10 easy · 10 medium · 10 hard` 等が出ているか確認
 3. ▸ New Quiz ボタンを何度か押して、問題が変わるか確認
 4. **Language: 日本語** に切り替えて、問題が ja で表示されるか確認

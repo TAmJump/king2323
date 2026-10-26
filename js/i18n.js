@@ -427,7 +427,7 @@
   // LEGAL DISCLAIMER (for Legal pages: Terms, Privacy, etc.)
   // ============================================================
   // Per translation design §7. Available globally for any
-  // Legal page in tamjump.com to render at the top of localized
+  // Legal page in 115en.com to render at the top of localized
   // legal content. Site uses bilingual official model:
   //   English + Japanese = official governing text
   //   Other languages    = reference translations only

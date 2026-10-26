@@ -72,7 +72,7 @@ session 5 時点の `LAUNCH_RUNBOOK.md` は陳腐化していた:
 | Formspree でフォーム | Worker + D1 + SES に置換済み |
 | Square 商品作成手順 | `bc9p0BET` で確定済み(作成不要、確認のみ) |
 | WAF expression に bot 通過なし | `not cf.client.bot` 追加が必須 |
-| `特商法 placeholder 埋め` | DEPRECATED 済(tamjump.com 親に集約) |
+| `特商法 placeholder 埋め` | DEPRECATED 済(115en.com 親に集約) |
 
 **旧版は `docs/archived/LAUNCH_RUNBOOK_session5_5-15.md` に退避**(歴史記録、実行禁止)。新版は session 6 引き継ぎ書の launch ブロッカー 11 項目と 1:1 対応する 12 セクションに再構成。
 

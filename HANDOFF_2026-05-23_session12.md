@@ -101,7 +101,7 @@ so navigation and orientation work cleanly in every TIER-1 language.
 
 Tip of `origin/main` is `bed2091`. Cloudflare Pages auto-deploys on
 push. Container egress is locked to the github/npm allowlist so this
-session cannot directly fetch `king2323.tamjump.com` to verify the
+session cannot directly fetch `king2323.115en.com` to verify the
 deploy went green — that confirmation needs to be eyeballed in a
 browser. The push log returning `… → main` is the authoritative
 confirmation that GitHub accepted the commit; deploys typically take
@@ -180,7 +180,7 @@ git log origin/main..main                          →  empty (in sync)
   `tamjump_contact_db`, UUID
   `ba5cf621-d8c7-49db-90cd-e1fe8ece8437`).
 - ADMIN_TOKEN: `kingmaker-admin-tiger-2026`.
-- Operator: `tiger@tamjump.com` (password in
+- Operator: `tiger@115en.com` (password in
   `HANDOFF_2026-05-23_session10_FINAL.md` § 1).
 
 ## Cycle 2 calendar

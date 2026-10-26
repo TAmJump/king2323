@@ -31,11 +31,11 @@ Until each foreign jurisdiction has been reviewed by counsel, KINGMAKER 23:23 mu
 
 ```bash
 # From a JP IP (should pass)
-curl -sI https://king2323.tamjump.com/index.html
+curl -sI https://king2323.115en.com/index.html
 # Expect: HTTP/2 200
 
 # From a non-JP IP (use a VPN to e.g. US)
-curl -sI https://king2323.tamjump.com/index.html
+curl -sI https://king2323.115en.com/index.html
 # Expect: HTTP/2 451
 ```
 

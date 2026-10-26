@@ -129,7 +129,7 @@ KINGMAKER テーマの 404 を置くことで:
 - ライトボックス(myth 4 + legend 7)
 - ショートムービー(KingMaker2323.mp4)
 - 言語切替(171 keys × 10 langs)、Cookie ベース
-- legal 統合(terms/privacy/commerce は tamjump.com 側)
+- legal 統合(terms/privacy/commerce は 115en.com 側)
 - Cloudflare Worker(`tamjump-contact-api`、`/entry` エンドポイント)
 - フォーム送信 → AWS SES → メール 2 通
 
@@ -142,12 +142,12 @@ KINGMAKER テーマの 404 を置くことで:
 
 session5 Step 3 で大下さんが Cloudflare WAF に追加するルール:
 ```
-(http.host eq "king2323.tamjump.com" and ip.geoip.country ne "JP")
+(http.host eq "king2323.115en.com" and ip.geoip.country ne "JP")
 ```
 
 **この expression のままだと Search Engine クローラもブロックされる。**
 Google・Bing・X(Twitter)・Facebook のクローラは US/EU IP から
-来るので、現状の expression では 451 を返してしまい、`king2323.tamjump.com`
+来るので、現状の expression では 451 を返してしまい、`king2323.115en.com`
 は **launch 後 Google・Bing にインデックスされない**。
 
 修正版を `WAF_SEO_BYPASS.md` に詳述。大下さんに**必ず**修正版を使って

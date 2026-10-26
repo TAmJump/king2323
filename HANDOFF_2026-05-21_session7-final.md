@@ -24,7 +24,7 @@ session ⑦ で起きた最大の出来事:
 
 | 項目 | 状態 |
 |---|---|
-| サイト URL | https://king2323.tamjump.com |
+| サイト URL | https://king2323.115en.com |
 | 最新コミット(コード) | `ea8ef45` (v20260521c) |
 | 最新コミット(fx 自動更新) | `8d87d35` (USD/JPY = 158.92 on 2026-05-21) |
 | Cycle 1 schedule | **5/20 (水) 23:23 JST 開門 → 5/22 (金) 23:23 JST 受付終了 → 5/23 (土) 23:23 JST The Three 発表** |
@@ -542,14 +542,14 @@ git fetch origin main
 # (a) Worker /entry/lookup が動いているか
 curl -X POST https://tamjump-contact-api.animalb001.workers.dev/entry/lookup \
   -H 'Content-Type: application/json' \
-  -H 'Origin: https://king2323.tamjump.com' \
+  -H 'Origin: https://king2323.115en.com' \
   -d '{"email":"nonexistent@test.com","ticket_number":"KM-20260101-0001"}'
 # 期待: {"error":"該当する Mission Entry が見つかりません / No matching Mission Entry"}
 
 # (b) サイト本体が見えるか
-curl -sI https://king2323.tamjump.com/ | head -3
-curl -sI https://king2323.tamjump.com/how-it-works.html | head -3
-curl -sI https://king2323.tamjump.com/mypage.html | head -3
+curl -sI https://king2323.115en.com/ | head -3
+curl -sI https://king2323.115en.com/how-it-works.html | head -3
+curl -sI https://king2323.115en.com/mypage.html | head -3
 # 期待: HTTP/2 200
 
 # (c) D1 にエントリーが入っているか(operator に依頼)

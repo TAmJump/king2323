@@ -11,7 +11,7 @@
 
 ### 0-0. このファイルの存在意義
 
-運営(tiger@tamjump.com)はセッション⑰の最後で次のように言った:
+運営(tiger@115en.com)はセッション⑰の最後で次のように言った:
 
 > 引継書を過去のは消さない、今回の会話は全て詳細に記載。
 > PATなども必ず記載。
@@ -243,13 +243,13 @@ URL は commit hash に紐付くので、新しい commit が PAT を含むた�
 - ⚠️ `X-Admin-Token: ...` ではない(セッション⑮の README 修正で正した点)
 
 ### 1-5. 運営アカウント
-- Email: `tiger@tamjump.com`
+- Email: `tiger@115en.com`
 - パスワード: `HANDOFF_2026-05-23_session10_FINAL.md` の §1 を参照
   (GitHub の secret scanning に引っかからないように、本ファイルには複製しない。
    `git log session10` の commit と中身で取れる)
 
 ### 1-6. Cloudflare Pages
-- カスタムドメイン: `king2323.tamjump.com`
+- カスタムドメイン: `king2323.115en.com`
 - main への push で自動デプロイ(数秒〜90秒)
 - ただし **Worker は自動デプロイされない**(後述§5-1)
 
@@ -703,10 +703,10 @@ node --check scripts/phase2-auto-draw.js
 
 ### 7-7. Cycle Bar プレビュー(運営の URL バーで)
 本番サイトで Cycle 2 の各フェーズの見た目をテスト:
-- `https://king2323.tamjump.com/?preview=c2_pre` — Cycle 2 開門前
-- `https://king2323.tamjump.com/?preview=c2_open` — Cycle 2 受付中
-- `https://king2323.tamjump.com/?preview=c2_pending` — Bell 鳴った直後
-- `https://king2323.tamjump.com/?preview=c2_complete` — Cycle 2 終了後
+- `https://king2323.115en.com/?preview=c2_pre` — Cycle 2 開門前
+- `https://king2323.115en.com/?preview=c2_open` — Cycle 2 受付中
+- `https://king2323.115en.com/?preview=c2_pending` — Bell 鳴った直後
+- `https://king2323.115en.com/?preview=c2_complete` — Cycle 2 終了後
 
 ---
 

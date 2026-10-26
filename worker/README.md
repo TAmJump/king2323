@@ -13,7 +13,7 @@ Wed 2026-05-27 23:23 JST に Cycle 2 が開門する前に、この文書のチ�
 |---|---|
 | Worker 名 | `tamjump-contact-api` |
 | URL | `https://tamjump-contact-api.animalb001.workers.dev` |
-| 共用先 | tamjump.com(contact)、scsgo.co.jp(contact)、**king2323.tamjump.com(entry+game)** |
+| 共用先 | 115en.com(contact)、scsgo.co.jp(contact)、**king2323.115en.com(entry+game)** |
 | カスタムドメイン予定 | `api.tamjump.com`(未設定) |
 | D1 binding | `DB`(`tamjump_contact_db`, UUID `ba5cf621-d8c7-49db-90cd-e1fe8ece8437`) |
 
@@ -37,7 +37,7 @@ Worker は 13 個の環境変数を読みます。`Plain text` か `Secret` か�
 
 | 名前 | 種別 | 用途 |
 |---|---|---|
-| `ADMIN_EMAIL` | Plain | 運営宛通知メール宛先(`info@tamjump.com`) |
+| `ADMIN_EMAIL` | Plain | 運営宛通知メール宛先(`info@115en.com`) |
 | `FROM_EMAIL` | Plain | SES 送信元(SES verified domain のアドレス) |
 | `AWS_ACCESS_KEY_ID` | Secret | SES 認証 |
 | `AWS_SECRET_ACCESS_KEY` | Secret | SES 認証 |
@@ -179,7 +179,7 @@ curl https://tamjump-contact-api.animalb001.workers.dev/entry/config
 `SQUARE_ENV=sandbox` で別 Worker(または同 Worker を一時的にサンドボックスに切替)にデプロイして、Square Sandbox テストカード `4111 1111 1111 1111` で `/entry/pay` を一周させる。
 
 ```bash
-# (1) entry.html を king2323.tamjump.com 上で開く
+# (1) entry.html を king2323.115en.com 上で開く
 # (2) 開発者ツールで Network タブを開く
 # (3) Mission を入力、テストカードを入力、送信
 # (4) /entry/pay のレスポンスが {"success":true,"ticketNumber":"KM-2026MMDD-NNNN",...} になること

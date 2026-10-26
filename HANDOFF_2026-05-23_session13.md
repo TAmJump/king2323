@@ -82,7 +82,7 @@ states quickly.
 Run these on Wed 2026-05-27 morning (JST), before Cycle 2's Bell
 opens at 23:23 JST:
 
-1. **Open https://king2323.tamjump.com/?preview=c2_open** and confirm
+1. **Open https://king2323.115en.com/?preview=c2_open** and confirm
    the cycle-bar shows: dates `5/27 5/29 5/30`, label "Bell rings in",
    stage 1 highlighted, CTA "Enter the Bell" enabled. (No preview
    needed in actual operation since wall-clock will hit cycle2_open

@@ -11,7 +11,7 @@
 `HANDOFF_2026-05-14_session5.md` の Step 3(Cloudflare WAF)で示されている expression:
 
 ```
-(http.host eq "king2323.tamjump.com" and ip.geoip.country ne "JP")
+(http.host eq "king2323.115en.com" and ip.geoip.country ne "JP")
 ```
 
 これを `Block` アクションでデプロイすると:
@@ -19,7 +19,7 @@
 - **海外IP のユーザー** → 451 ページ ✓(これは意図通り、法的に必要)
 - **Google/Bing/Twitter/Facebook のクローラ** → 451 ページ ✗(意図せず)
 
-クローラはほぼ全て US/EU データセンターから来る。`king2323.tamjump.com` を WAF で完全に JP-only にすると、**launch 後 Google・Bing は永遠にインデックスを作れない**。検索流入はゼロ。
+クローラはほぼ全て US/EU データセンターから来る。`king2323.115en.com` を WAF で完全に JP-only にすると、**launch 後 Google・Bing は永遠にインデックスを作れない**。検索流入はゼロ。
 
 X(Twitter)に URL を貼っても、Twitter のクローラが metadata を取得できないので、せっかく session6 で追加した OGP も活かせず、URL がプレーンに展開される(画像・タイトル・description が表示されない)。
 
@@ -28,7 +28,7 @@ X(Twitter)に URL を貼っても、Twitter のクローラが metadata を取�
 ## 修正版 expression
 
 ```
-(http.host eq "king2323.tamjump.com" and ip.geoip.country ne "JP" and not cf.client.bot)
+(http.host eq "king2323.115en.com" and ip.geoip.country ne "JP" and not cf.client.bot)
 ```
 
 追加した部分:`and not cf.client.bot`
@@ -43,12 +43,12 @@ X(Twitter)に URL を貼っても、Twitter のクローラが metadata を取�
 
 | アクセス元 | host | bot? | 結果 |
 |---|---|---|---|
-| 国内 Mac | king2323.tamjump.com | no | ✓ 通常表示 |
-| 海外スマホ(個人) | king2323.tamjump.com | no | ✗ 451 ページ |
-| Googlebot(US IP) | king2323.tamjump.com | yes | ✓ 通過(インデックス可能) |
-| Twitterbot(US IP) | king2323.tamjump.com | yes | ✓ 通過(OGP 取得可能) |
-| 海外 IP 偽装Googlebot UA | king2323.tamjump.com | no | ✗ 451 ページ(偽装は弾く) |
-| 親ドメイン tamjump.com | tamjump.com | -    | ✓ 一切影響なし |
+| 国内 Mac | king2323.115en.com | no | ✓ 通常表示 |
+| 海外スマホ(個人) | king2323.115en.com | no | ✗ 451 ページ |
+| Googlebot(US IP) | king2323.115en.com | yes | ✓ 通過(インデックス可能) |
+| Twitterbot(US IP) | king2323.115en.com | yes | ✓ 通過(OGP 取得可能) |
+| 海外 IP 偽装Googlebot UA | king2323.115en.com | no | ✗ 451 ページ(偽装は弾く) |
+| 親ドメイン 115en.com | 115en.com | -    | ✓ 一切影響なし |
 
 ---
 
@@ -62,7 +62,7 @@ X(Twitter)に URL を貼っても、Twitter のクローラが metadata を取�
 
 この導線は、海外ユーザーに「日本でこういうことをやっている」という認知を与えつつ、**実際の参加はブロックする**ので、法務的に問題ない。むしろ、海外プレスや関係者が internal で読めるので、認知拡大には有利。
 
-**逆にやってはいけないのは、Googlebot をブロックして「インデックス自体ができない」状態にすること。** これだと国内ユーザーも検索で辿り着けなくなる(`site:king2323.tamjump.com` が 0 件になる)。
+**逆にやってはいけないのは、Googlebot をブロックして「インデックス自体ができない」状態にすること。** これだと国内ユーザーも検索で辿り着けなくなる(`site:king2323.115en.com` が 0 件になる)。
 
 ---
 
@@ -73,11 +73,11 @@ session5.md の手順をベースに、**expression と Response body だけ** �
 ### Expression(「Edit expression」モード)
 
 ```
-(http.host eq "king2323.tamjump.com" and ip.geoip.country ne "JP" and not cf.client.bot)
+(http.host eq "king2323.115en.com" and ip.geoip.country ne "JP" and not cf.client.bot)
 ```
 
-⚠️ `http.host eq "king2323.tamjump.com"` を必ず含める。抜くと
-tamjump.com 親ドメイン全体が JP-only になり、コーポレートサイトを
+⚠️ `http.host eq "king2323.115en.com"` を必ず含める。抜くと
+115en.com 親ドメイン全体が JP-only になり、コーポレートサイトを
 殺します(session5.md の同じ警告)。
 
 ### Response body(英語と日本語の両方を表示する版に強化)
@@ -119,15 +119,15 @@ em { color:#d4af37; font-style:italic; }
 
 ## デプロイ後の動作確認(必須)
 
-1. **国内 IP で動作確認**(自宅・オフィス):`king2323.tamjump.com` 普通に開ける ✓
+1. **国内 IP で動作確認**(自宅・オフィス):`king2323.115en.com` 普通に開ける ✓
 2. **VPN で米国経由**(NordVPN や proxysite.com): 451 ページ表示 ✓
-3. **Google Search Console** に king2323.tamjump.com を property 登録:
+3. **Google Search Console** に king2323.115en.com を property 登録:
    - sitemap.xml を送信
-   - URL 検査ツールで `https://king2323.tamjump.com/` を fetch
+   - URL 検査ツールで `https://king2323.115en.com/` を fetch
    - **「Live URL is on Google」** で 200 OK が返ればクローラ bypass 成功
    - 「Couldn't fetch」が出たら `cf.client.bot` の expression が動いてない → 要再確認
 4. **Twitter Card Validator**(https://cards-dev.twitter.com/validator):
-   - `https://king2323.tamjump.com/` を入力
+   - `https://king2323.115en.com/` を入力
    - 画像・タイトル・description が表示されればOK
    - 「Unable to render Card」なら facebookexternalhit 等の bot bypass が効いてない
 
@@ -150,7 +150,7 @@ em { color:#d4af37; font-style:italic; }
 - Google Search Console で「カバレッジ」レポート確認
   - インデックス済み: index, money, verify, app, rules, risk(計 6 ページ)
   - entry.html は robots.txt で disallow しているので未インデックスでOK
-- `site:king2323.tamjump.com` で検索 → 6 件出ればOK
+- `site:king2323.115en.com` で検索 → 6 件出ればOK
 - 出ない場合は WAF の bot bypass が効いていない or sitemap が読まれていない
 
 ---

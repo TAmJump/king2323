@@ -383,7 +383,7 @@
   // CRITICAL: .nav-menu contains hrefs of three kinds —
   //   1. in-page anchors: "#why", "#bell", "#three", etc.
   //   2. other-page links: "money.html", "verify.html", "entry.html"
-  //   3. external absolute URLs: "https://tamjump.com/terms.html" etc.
+  //   3. external absolute URLs: "https://115en.com/terms.html" etc.
   //
   // Passing #2 or #3 to document.querySelector() is wrong:
   //   - #2 returns null silently (interpreted as nonexistent tag.class).

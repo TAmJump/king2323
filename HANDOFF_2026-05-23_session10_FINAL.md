@@ -27,7 +27,7 @@
 |---|---|
 | Repository | https://github.com/TAmJump/king2323 |
 | Branch | main |
-| Pages URL | https://king2323.tamjump.com |
+| Pages URL | https://king2323.115en.com |
 | Owner GitHub アカウント | TAmJump |
 | **Current PAT (session ⑧ で operator 発行、有効期限内)** | `ghp_REDACTED_SESSION8` |
 | PAT 期限 | 2026-08-20 (90 days from 2026-05-22) |
@@ -49,12 +49,12 @@ git config user.name "Claude"
 
 | 項目 | 値 |
 |---|---|
-| Email (主用途) | tiger@tamjump.com |
+| Email (主用途) | tiger@115en.com |
 | Password (operator 自身が指示) | `REDACTED_PASSWORD` |
 
 このパスワードが使われている場所:
 - KINGMAKER の マイページ (mypage_users テーブル、設定済)
-- Gmail (tiger@tamjump.com)
+- Gmail (tiger@115en.com)
 - その他 operator のみ把握
 
 **セキュリティ警告**: 同一パスワード使い回しは漏洩時のリスクが大きい。session ⑪ で operator に複数パスワード分離を改めて提案すること。
@@ -74,7 +74,7 @@ git config user.name "Claude"
 
 | Name | Type | Value |
 |---|---|---|
-| ADMIN_EMAIL | Plaintext | info@tamjump.com |
+| ADMIN_EMAIL | Plaintext | info@115en.com |
 | ADMIN_TOKEN | Secret | `kingmaker-admin-REDACTED` |
 | AWS_ACCESS_KEY_ID | Secret | (encrypted, operator のみ把握) |
 | AWS_REGION | Plaintext | ap-northeast-1 |
@@ -119,17 +119,17 @@ git config user.name "Claude"
 | Region | ap-northeast-1 |
 | FROM_EMAIL | noreply@tamjump.com |
 | 用途 | Mission Entry 受領メール、管理者通知、My Page magic link |
-| Verified Domain | tamjump.com |
+| Verified Domain | 115en.com |
 | Access Key | Cloudflare Worker の AWS_ACCESS_KEY_ID secret に格納(encrypted、operator のみ把握) |
 
 ## 1-6. ドメイン
 
 | ドメイン | サービス |
 |---|---|
-| king2323.tamjump.com | KINGMAKER メインサイト(GitHub Pages) |
-| tamjump.com | コーポレート / 利用規約 / プライバシー / 特商法 |
+| king2323.115en.com | KINGMAKER メインサイト(GitHub Pages) |
+| 115en.com | コーポレート / 利用規約 / プライバシー / 特商法 |
 | tamjump-contact-api.animalb001.workers.dev | Cloudflare Worker (API) |
-| carepass.tamjump.com | CarePass(別プロジェクト、shared Worker) |
+| carepass.115en.com | CarePass(別プロジェクト、shared Worker) |
 | scsgo.co.jp | さかえケアサービス(別プロジェクト、shared Worker) |
 
 ---
@@ -138,12 +138,12 @@ git config user.name "Claude"
 
 | 項目 | 状態 |
 |---|---|
-| サイト URL | https://king2323.tamjump.com |
+| サイト URL | https://king2323.115en.com |
 | 最新コミット | `6808d92` (CSP fix for Worker domain) |
 | Worker | v20260523b デプロイ済(全 9 個の /game/* ルート稼働) |
 | D1 schema | マイグレーション 0001 + 0002 + 0003a〜f + 0004a〜b 適用済 |
 | 環境 | **Sandbox**(本番化はまだ) |
-| Cycle 1 paid 参加者 | 1 件 (`KM-20260522-0001`, tiger@tamjump.com, "Pre-launch sanity test") |
+| Cycle 1 paid 参加者 | 1 件 (`KM-20260522-0001`, tiger@115en.com, "Pre-launch sanity test") |
 | Cycle 1 状態 | **試走 King として密封済**(kings テーブル rank=1, granted ¥0) |
 | Cycle 2 開門予定 | **2026-05-29 (金) 23:23 JST**(あと約 6 日) |
 | Cycle 2 paid 参加者 | 0 件(まだ誰もエントリーしてない) |
@@ -514,10 +514,10 @@ operator に「① 0003a を別タブで開いて中身コピペ → Execute」�
 ## Turn 17
 **Operator:** Cycle 1 データのスクショ送付。実データ判明:
 - ticket_number: KM-20260522-0001
-- email: tiger@tamjump.com
+- email: tiger@115en.com
 - name: "Pre-launch sanity test"
 - category: "Japan"
-- message: "テストテスト...(超長文)... [Website/SNS] https://tamjump.com/"
+- message: "テストテスト...(超長文)... [Website/SNS] https://115en.com/"
 - founding_cohort: 1, paid: 1
 - square_payment_id: hseSZgVr4uBo1ZHmmFTRh7ejJXWZY
 

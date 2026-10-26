@@ -28,7 +28,7 @@ Session ⑧ で達成:
 
 | 項目 | 状態 |
 |---|---|
-| サイト URL | https://king2323.tamjump.com |
+| サイト URL | https://king2323.115en.com |
 | 最新コミット | v20260522a |
 | 全 HTML ページ数 | **10**(index, entry, money, verify, rules, risk, how-it-works, mypage, kings, 404) — app.html **削除済** |
 | 新規ページ | **kings.html** 追加、entry.html + mypage.html 全面書き換え |
@@ -45,8 +45,8 @@ Session ⑧ で達成:
 
 operator が DevTools Console から `/admin/contacts?project=kingmaker` を叩き、**ADMIN_TOKEN を rotate して新値 `kingmaker-admin-tiger-2026` で認証**。結果:
 
-- id=20 (2026-05-20): tiger@tamjump.com / mission="Pre-launch s..." / IP=2400:2410:3f...
-- id=19 (2026-05-14): tiger@tamjump.com / mission="Pre-launch s..."
+- id=20 (2026-05-20): tiger@115en.com / mission="Pre-launch s..." / IP=2400:2410:3f...
+- id=19 (2026-05-14): tiger@115en.com / mission="Pre-launch s..."
 - **Total: 2 件、両方 operator のテスト**
 
 → Cycle 1 は事実上「無人」と確定。

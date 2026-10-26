@@ -146,7 +146,7 @@ wrangler d1 execute <DB-name> --file=worker/migrations/0001_kingmaker_v2.sql --r
 
 `<DB-name>` は Cloudflare D1 上の DB 名(`wrangler d1 list` で確認可)。
 
-### 既存 tiger@tamjump.com のテストエントリーに founding_cohort をつける(任意)
+### 既存 tiger@115en.com のテストエントリーに founding_cohort をつける(任意)
 
 過去の 2 件(2026-05-14, 2026-05-20)を「Founding Cycle」として記録するには:
 
@@ -180,7 +180,7 @@ GitHub のコードと Cloudflare Worker の実行コードは **自動同期さ
 
 ### 6-1 · 新しいエントリーフォームの確認
 
-1. https://king2323.tamjump.com/entry.html を開く
+1. https://king2323.115en.com/entry.html を開く
 2. カード入力欄が表示されることを確認(下に「✓ Card form ready」と出る)
 3. **Sandbox の場合**:
    - メアド: 適当な test 用
@@ -193,15 +193,15 @@ GitHub のコードと Cloudflare Worker の実行コードは **自動同期さ
 
 ### 6-2 · マイページ確認
 
-1. https://king2323.tamjump.com/mypage.html を開く
+1. https://king2323.115en.com/mypage.html を開く
 2. 上のテストで使ったメアドを入力 → 「ログインリンクを送る」
-3. メールが届く(info@tamjump.com 宛の自動返信 BCC か、ユーザー自身のメアド)
+3. メールが届く(info@115en.com 宛の自動返信 BCC か、ユーザー自身のメアド)
 4. メール内のリンクをクリック → 履歴一覧が表示される
 5. Founding Cycle 1 のバッジが表示されること(Cycle 1 なので)
 
 ### 6-3 · Hall of Kings 確認
 
-1. https://king2323.tamjump.com/kings.html を開く
+1. https://king2323.115en.com/kings.html を開く
 2. まだ King は登録されていないので「The Hall awaits its first King」表示が出るはず
 3. 「あの時、参加していれば」セクションが表示される
 
@@ -281,7 +281,7 @@ fetch('https://tamjump-contact-api.animalb001.workers.dev/admin/kings', {
 
 ### マイページのログインリンクが届かない
 
-**原因**: 該当メアドのエントリーが D1 に存在しない、または SES (`info@tamjump.com`) からの送信が止まってる。
+**原因**: 該当メアドのエントリーが D1 に存在しない、または SES (`info@115en.com`) からの送信が止まってる。
 **対応**: D1 Console で `SELECT * FROM contacts WHERE email = '...'` を確認。SES の Sending Statistics をチェック。
 
 ### Hall of Kings に何も表示されない

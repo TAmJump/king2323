@@ -11,7 +11,7 @@
 A. D1 マイグレーション (ゲーム用テーブル + 30 問の問題シード)   …  3 分
 B. Worker 再デプロイ (新 8 ルート: /game/*)                     …  3 分
 C. Cycle 1 後処理 (D1 で Cycle 1 を試走 King として密封)       …  5 分
-D. 動作確認 (https://king2323.tamjump.com/play.html)           …  3 分
+D. 動作確認 (https://king2323.115en.com/play.html)           …  3 分
 E. Square Production 化 (本番カードでテストしたい場合のみ)     …  5 分
 F. Cycle 2 設定 (29 (金) 23:23 に向けて事前準備)               …  2 分
 ```
@@ -100,7 +100,7 @@ F. Cycle 2 設定 (29 (金) 23:23 に向けて事前準備)               …  2
 5. Console で実行
 
 6. 確認:
-   - https://king2323.tamjump.com/kings.html を開いて、Cycle 1 の King が表示されることを確認
+   - https://king2323.115en.com/kings.html を開いて、Cycle 1 の King が表示されることを確認
 
 ---
 
@@ -108,14 +108,14 @@ F. Cycle 2 設定 (29 (金) 23:23 に向けて事前準備)               …  2
 
 ### Cycle 2 (今は pre_bell) の動作
 
-1. https://king2323.tamjump.com/ を開く
+1. https://king2323.115en.com/ を開く
    - ヒーロー下に `→ Enter the 5 Minutes` リンクは **見えない**(まだ Bell 鳴ってないので正しい)
    - カウントダウンは 5/29 (金) 23:23 までを表示
 
-2. https://king2323.tamjump.com/play.html を開く
+2. https://king2323.115en.com/play.html を開く
    - "Awaiting the Bell" 画面が出て、5/29 までの残り時間を表示
 
-3. https://king2323.tamjump.com/entry.html を開く
+3. https://king2323.115en.com/entry.html を開く
    - Mission Entry はそのまま動く(Cycle 2 用)
 
 ---
@@ -190,10 +190,10 @@ var GAME_CONFIG = {
 ### play.html で "ログインしてください" が出る
 
 - Cycle 2 にまだ entry してない可能性。
-- まず https://king2323.tamjump.com/entry.html で Cycle 2 用に entry → そのアドレスでログイン
+- まず https://king2323.115en.com/entry.html で Cycle 2 用に entry → そのアドレスでログイン
 - `founding_cohort` が `currentCycle` と一致しているかを D1 で確認:
   ```sql
-  SELECT email, founding_cohort, paid FROM contacts WHERE email = 'tiger@tamjump.com';
+  SELECT email, founding_cohort, paid FROM contacts WHERE email = 'tiger@115en.com';
   ```
 
 ### クイズが「参加できません」を返す

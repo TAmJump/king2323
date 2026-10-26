@@ -13,7 +13,7 @@
 セッション⑥前任Claudeは、最初の引き継ぎ書で **THE TRIAL(クイズ)機能 / King 選出メカニズム / Mission 報告ループ** などの**重要な未実装機能を完全に省略**してしまった。大下さん(以下「運営者」)から「ゲーム構成がごっそり抜けている」と指摘を受け、この完全版を作成した。
 
 **読み手は次のことを理解すべき**:
-1. 現在のサイト(king2323.tamjump.com)は **Cycle 1(Founding Bell)用の最小実装**である
+1. 現在のサイト(king2323.115en.com)は **Cycle 1(Founding Bell)用の最小実装**である
 2. サイト上には **完成版KINGMAKER の全仕様**が言語化されているが、**機能としては Mission Entry フォーム + Square 決済 + メール通知しか動いていない**
 3. THE TRIAL、Standing、Crown Slot、Royal Proof、自動 King 選出 — すべて Cycle 2 以降に実装が必要
 4. **法務的にはこの「未実装」は問題ない** — `rules.html` L90-92 と `risk.html` で「予定機能・段階的公開」をカバー済み
@@ -29,8 +29,8 @@
 | 項目 | 値 |
 |---|---|
 | Repo | `TAmJump/king2323`(GitHub) |
-| Hosting | GitHub Pages(`CNAME` = `king2323.tamjump.com`) |
-| DNS | Cloudflare(`tamjump.com` ゾーン下のサブドメイン) |
+| Hosting | GitHub Pages(`CNAME` = `king2323.115en.com`) |
+| DNS | Cloudflare(`115en.com` ゾーン下のサブドメイン) |
 | 最新コミット | `7c12e7a` v20260514ae (Schedule Option B′) |
 | Worker | `tamjump-contact-api`(Cloudflare Workers、共用) |
 | 決済 | Square Checkout Link: `https://square.link/u/bc9p0BET`(¥100、本物確認済み) |
@@ -55,7 +55,7 @@
 
 ### 2-1. v20260514ab が最重要である理由(絶対に把握すべき)
 
-`js/main.js` の Line 161 にあった `.nav-menu a` の href を `document.querySelector` に渡す処理が、`https://tamjump.com/terms.html` のような絶対URL href で **SyntaxError** を投げて、IIFE全体が停止していた。
+`js/main.js` の Line 161 にあった `.nav-menu a` の href を `document.querySelector` に渡す処理が、`https://115en.com/terms.html` のような絶対URL href で **SyntaxError** を投げて、IIFE全体が停止していた。
 
 その結果、**v20260514i(legal統合)以降10日間、以下の全機能が死んでいた**:
 - ハンバーガーメニュー(クリックしても開かない)
@@ -342,9 +342,9 @@ Cycle 2 以降で「受付期間中バナー」「発表まで残り時間」を
 ```
 [User Browser]
      ↓
-[Cloudflare DNS (tamjump.com zone)]
+[Cloudflare DNS (115en.com zone)]
      ↓
-king2323.tamjump.com = CNAME → tamjump.github.io (GitHub Pages)
+king2323.115en.com = CNAME → tamjump.github.io (GitHub Pages)
      ↓
 [GitHub Pages: tamjump/king2323 (main branch)]
    ├── /index.html, /money.html, /verify.html, /app.html
@@ -364,7 +364,7 @@ king2323.tamjump.com = CNAME → tamjump.github.io (GitHub Pages)
    ├── Turnstile 検証
    ├── D1 DB に挿入(contacts テーブル、project='kingmaker')
    ├── AWS SES 経由でメール2通送信
-   │   ├── To: info@tamjump.com(運営宛通知)
+   │   ├── To: info@115en.com(運営宛通知)
    │   └── To: 入力アドレス(自動返信)
    └── Receipt 番号生成(KM-YYYYMMDD-NNNN)
 ```
@@ -375,7 +375,7 @@ king2323.tamjump.com = CNAME → tamjump.github.io (GitHub Pages)
 |---|---|
 | Worker 名 | `tamjump-contact-api` |
 | URL | `https://tamjump-contact-api.animalb001.workers.dev` |
-| 共用先 | tamjump.com(contact)、scsgo.co.jp(contact)、**king2323.tamjump.com(entry)** |
+| 共用先 | 115en.com(contact)、scsgo.co.jp(contact)、**king2323.115en.com(entry)** |
 | エンドポイント | `/contact`(POST) `/entry`(POST) `/admin/contacts`(GET、要 Bearer) |
 
 **重要な運用ルール**:
@@ -387,7 +387,7 @@ king2323.tamjump.com = CNAME → tamjump.github.io (GitHub Pages)
 - ✅ Mission Entry Received UI 表示
 - ✅ 受付番号 `KM-20260514-0001` 発番
 - ✅ 参加者宛 自動返信メール 受信
-- ✅ 運営宛 管理通知メール(`info@tamjump.com`)受信
+- ✅ 運営宛 管理通知メール(`info@115en.com`)受信
 - → Step 2.5(Worker疎通)完了
 
 ---
@@ -396,9 +396,9 @@ king2323.tamjump.com = CNAME → tamjump.github.io (GitHub Pages)
 
 ## 12. legal-footer 統合構造
 
-- `terms.html` / `privacy.html` / `commerce.html`(特商法)/ `cookie.html` / `disclaimer.html` / `security.html` は **`tamjump.com` 親ドメイン側**に統合済み
+- `terms.html` / `privacy.html` / `commerce.html`(特商法)/ `cookie.html` / `disclaimer.html` / `security.html` は **`115en.com` 親ドメイン側**に統合済み
 - king2323 リポにはこれらの html ファイル**なし**
-- 全ページのフッターから `https://tamjump.com/*.html` リンクで参照
+- 全ページのフッターから `https://115en.com/*.html` リンクで参照
 
 ## 13. Founding Bell 限定の法務カバー
 
@@ -422,7 +422,7 @@ king2323.tamjump.com = CNAME → tamjump.github.io (GitHub Pages)
 ### 14-1. 正しい expression(SEO bot bypass 含む)
 
 ```
-(http.host eq "king2323.tamjump.com" and ip.geoip.country ne "JP" and not cf.client.bot)
+(http.host eq "king2323.115en.com" and ip.geoip.country ne "JP" and not cf.client.bot)
 ```
 
 `and not cf.client.bot` を**絶対に忘れない**。これがないと Googlebot / Twitterbot がブロックされて、SNS拡散時の OGP プレビューも出ず、検索インデックスもされない。
@@ -928,7 +928,7 @@ Cycle 1 は Pool が小さい想定で大丈夫だが、Cycle 2 以降で規模�
 - **タイポグラフィ**: Cinzel + Noto Serif JP + EB Garamond + JetBrains Mono
 - **配色**: 古紙クリーム(#F1E8D2) + インク墨(#1C1812) + 古金(#A6802A)
 - **特記**: Flyer 1 のみ「⌘ CHOSEN HOUR」金箔ラベル + 少し濃いめのクリーム背景
-- **共通フッター**: `BELL RINGS · 2026.05.22 (Fri) 23:23 JST · king2323.tamjump.com`
+- **共通フッター**: `BELL RINGS · 2026.05.22 (Fri) 23:23 JST · king2323.115en.com`
 - **運営者の追加要望**: 「**どっかにゴリラlogo入れて欲しいな。影のlogoでいいから**」
 - **採用**: 右下に opacity 0.10 で透かしロゴ配置(全9枚共通)
 

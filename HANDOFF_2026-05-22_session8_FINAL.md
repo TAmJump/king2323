@@ -35,7 +35,7 @@ Cycle 1 は **operator 1 人のテスト走行で実質終了**(参加者ゼロ�
 
 | 項目 | 状態 |
 |---|---|
-| サイト URL | https://king2323.tamjump.com |
+| サイト URL | https://king2323.115en.com |
 | 最新コミット | `17fa8ee` (v20260522c) |
 | Worker | デプロイ済(v20260522b、auth + payment) |
 | D1 schema | 全 5 マイグレーション適用済(`contacts`+3 列, `kings`, `magic_tokens`, `mypage_users`, `mypage_sessions`) |
@@ -305,7 +305,7 @@ worker/migrations/0002_mypage_auth.sql
 **Operator:** [Square Checkout 画面のスクショ + carepass zip 添付]
 KingMakerにマイページは存在するのか?
 決済の機能設計は添付したcarepassのサイトと同様の仕組みにしてほしい。現状の決済はIDを求められたり意味が分からない。
-サイトの中の「https://king2323.tamjump.com/app.html」このページは何?
+サイトの中の「https://king2323.115en.com/app.html」このページは何?
 開催時間になったら、ゲームは開始されるのか?そもそもマイページが無ければ、ゲームも参加できない。
 ちなみに、本日から開始される予定だけど、たぶん殆ど参加しないと思う。
 その場合、kingになる確率は高いが、欲望を叶えられる資金は集まらない。
@@ -319,7 +319,7 @@ Kingの履歴は必ず残して、資金が溜まり次第、その人の欲望�
 
 ### Turn 3 — 14:15 頃
 **Operator:** Q: Cycle 1 の進行中に何を最優先しますか?(他のものは後回し)
-A: 参加者がいるかcmd?で調べてみれば?俺は参加したけどIDとか覚えてない。(tiger@tamjump.com)。いなければ作りこんじゃおうよ。
+A: 参加者がいるかcmd?で調べてみれば?俺は参加したけどIDとか覚えてない。(tiger@115en.com)。いなければ作りこんじゃおうよ。
 
 **Claude:** D1 直接アクセス不可(Cloudflare ドメインが network allowlist 外)を説明、`/admin/contacts` 経由で確認する 3 通りの方法(ブラウザ Console、wrangler CLI、Claude 代理)を提示。ADMIN_TOKEN が encrypted Secret なので確認不可、rotate するしかないと案内。
 
@@ -558,7 +558,7 @@ EAAAl7SmfGw3aqSi0R48X18ZWqHqykN7ICVsqWhdFKjC2_hnqTzuEZZBBXie_Qqu
 ### Turn 34
 **Operator:** どこにマイページの入口があるの?
 
-**Claude:** マイページの 5 つの入口を列挙(ナビメニュー / フッター / エントリー完了画面 / 直接 URL / メール内なし)、直接 URL `https://king2323.tamjump.com/mypage.html` を案内。「ヒーローや上部ナビにもっと目立つ動線を入れたければ言ってください。今は儀式性を優先して控えめにしてあります」と添える。
+**Claude:** マイページの 5 つの入口を列挙(ナビメニュー / フッター / エントリー完了画面 / 直接 URL / メール内なし)、直接 URL `https://king2323.115en.com/mypage.html` を案内。「ヒーローや上部ナビにもっと目立つ動線を入れたければ言ってください。今は儀式性を優先して控えめにしてあります」と添える。
 
 ---
 

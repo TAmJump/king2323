@@ -92,14 +92,14 @@ ls docs/ 2>&1
 
 このステップは**不要**になりました。
 
-設計変更により、特商法表記は **tamjump.com/commerce.html**(コーポレートサイト)に集約。
+設計変更により、特商法表記は **115en.com/commerce.html**(コーポレートサイト)に集約。
 king2323/commerce.html は **削除済み**(v20260514i)。
 
-tamjump.com 側には:
+115en.com 側には:
 - 販売事業者:タムジ株式会社
 - 運営責任者:代表取締役 大下 甚
 - 所在地:東京都中央区東日本橋3-3-17 Re-Know4B
-- メール:info@tamjump.com
+- メール:info@115en.com
 
 が既に記載済み。Founding Bell 用の補足(商品名・価格 ¥100・性質・提供開始)も別途追記済(commit 657351d on TAmJump/TAmj)。
 
@@ -124,7 +124,7 @@ Claude が用意した `worker_v2_kingmaker.js` を Cloudflare ダッシュボ�
 7. 「Success」表示を確認
 
 **変更点:**
-- `ALLOWED_ORIGINS` に `https://king2323.tamjump.com` 追加
+- `ALLOWED_ORIGINS` に `https://king2323.115en.com` 追加
 - `PROJECT_CONFIG.kingmaker` 追加(prefix=KM、件名【KINGMAKER 23:23】等)
 - **新規エンドポイント `POST /entry`**(handleEntry)
 - KingMaker 用の英日 bilingual メール文面(運営宛 + 自動返信)
@@ -138,7 +138,7 @@ Claude が用意した `worker_v2_kingmaker.js` を Cloudflare ダッシュボ�
 ```bash
 curl -X POST https://tamjump-contact-api.animalb001.workers.dev/entry \
   -H 'Content-Type: application/json' \
-  -H 'Origin: https://king2323.tamjump.com' \
+  -H 'Origin: https://king2323.115en.com' \
   -d '{
     "payment_email":"test@example.com",
     "receipt_id":"TEST-001",
@@ -155,7 +155,7 @@ curl -X POST https://tamjump-contact-api.animalb001.workers.dev/entry \
 {"success":true,"message":"Mission Entry を受け付けました / Mission Entry received","ticketNumber":"KM-20260514-0001"}
 ```
 
-加えて、`info@tamjump.com` にテストメールが届くこと、自動返信が `test@example.com` に送られたことを SES のログ等で確認。
+加えて、`info@115en.com` にテストメールが届くこと、自動返信が `test@example.com` に送られたことを SES のログ等で確認。
 
 ### 2.3 entry.html はすでに更新済み(v20260514j 以降)
 
@@ -186,7 +186,7 @@ curl -X POST https://tamjump-contact-api.animalb001.workers.dev/entry \
 ### 3.1 ダッシュボードへ
 
 1. https://dash.cloudflare.com/ にログイン
-2. `king2323.tamjump.com` のドメインを選択(または `tamjump.com` の管理画面で「king2323」サブドメインを選ぶ)
+2. `king2323.115en.com` のドメインを選択(または `115en.com` の管理画面で「king2323」サブドメインを選ぶ)
 
 ### 3.2 ルール作成
 
@@ -200,10 +200,10 @@ Rule name:    Geo restriction — JP only (king2323 subdomain)
 When incoming requests match:
   → "Edit expression" を押して以下を貼り付け:
   
-  (http.host eq "king2323.tamjump.com" and ip.geoip.country ne "JP")
+  (http.host eq "king2323.115en.com" and ip.geoip.country ne "JP")
 
   ⚠️ ホスト名フィルタ (http.host eq ...) を必ず含めること。
-     これを抜くと tamjump.com 親ドメイン全体が JP-only になり、
+     これを抜くと 115en.com 親ドメイン全体が JP-only になり、
      他のサブドメイン (運営者所有の別サイト) を巻き込んで殺します。
 
 Then:
@@ -289,9 +289,9 @@ It is not currency, not points, not crypto, not stored value,
 not investment product, and not exchangeable for cash.
 Grant disbursement is not guaranteed and requires review.
 
-Rules:  https://king2323.tamjump.com/rules.html
-Terms:  https://king2323.tamjump.com/terms.html
-特商法: https://king2323.tamjump.com/commerce.html
+Rules:  https://king2323.115en.com/rules.html
+Terms:  https://king2323.115en.com/terms.html
+特商法: https://king2323.115en.com/commerce.html
 ```
 
 ### 4.3 オンラインリンク作成 (Checkout Link)
@@ -301,7 +301,7 @@ Terms:  https://king2323.tamjump.com/terms.html
 3. 上で作った商品を選択
 4. **オプション設定** で:
    - 在庫数: 無制限
-   - 支払い完了後のリダイレクト先: `https://king2323.tamjump.com/entry.html`
+   - 支払い完了後のリダイレクト先: `https://king2323.115en.com/entry.html`
    - 配送先住所収集: **オフ**(デジタルなので)
    - メールアドレス収集: **オン**(必須)
 5. リンクが生成される(例: `https://square.link/u/xxxxxx`)
@@ -315,7 +315,7 @@ Founding Bell へのご参加ありがとうございます。
 Square 領収書を保管してください。
 
 Mission Entry はこちら:
-https://king2323.tamjump.com/entry.html
+https://king2323.115en.com/entry.html
 
 Bell Entry は参加記録です。換金・譲渡はできません。
 Grant 支給には別途審査が必要です。
@@ -456,7 +456,7 @@ The Founding Bell is now live.
 ¥100 does not buy a prize. It records a will.
 To be chosen, you must choose.
 
-https://king2323.tamjump.com
+https://king2323.115en.com
 ```
 
 日本語:
@@ -467,7 +467,7 @@ Founding Bell が鳴りました。
 100円で賞金を買うのではない。意思を記録する。
 選ばれたいなら、誰かを選べ。
 
-https://king2323.tamjump.com
+https://king2323.115en.com
 ```
 
 スクリーンショット案: Bell strike が画面全体を覆ったその瞬間の写真。
@@ -486,7 +486,7 @@ https://king2323.tamjump.com
 
 - Cloudflare WAF Custom Rule を確認
 - VPN を ON にしていないか確認(自宅の VPN が海外サーバー経由になっているケース)
-- ルール式 `(http.host eq "king2323.tamjump.com" and ip.geoip.country ne "JP")` が正確かを確認(`!=` ではない、ホスト名フィルタも忘れない)
+- ルール式 `(http.host eq "king2323.115en.com" and ip.geoip.country ne "JP")` が正確かを確認(`!=` ではない、ホスト名フィルタも忘れない)
 
 ### Square で「日本円が選べない」
 

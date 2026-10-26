@@ -1087,7 +1087,7 @@ Code is committed. Operator must complete 5 steps from `docs/OPERATOR_v2_SETUP.m
 
 ## Why Cycle 1 was sandbox
 
-D1 audit on 2026-05-22 showed only 2 entries in `contacts` for project=kingmaker, both `tiger@tamjump.com` (operator's own SANITY-TEST). Cycle 1 had zero real participants. Operator's stated direction: treat Cycle 1 as a test run, ship Cycle 2 properly with all the features above in place. Early Cycle participants get the permanent "Founding Member" badge to honor the operator's request: "少人数の時に参加した人は特になるようにしてほしい".
+D1 audit on 2026-05-22 showed only 2 entries in `contacts` for project=kingmaker, both `tiger@115en.com` (operator's own SANITY-TEST). Cycle 1 had zero real participants. Operator's stated direction: treat Cycle 1 as a test run, ship Cycle 2 properly with all the features above in place. Early Cycle participants get the permanent "Founding Member" badge to honor the operator's request: "少人数の時に参加した人は特になるようにしてほしい".
 
 ---
 
@@ -1556,7 +1556,7 @@ Three additions to close the multilingual loop:
   - §5-bis — reply-handling policy for the 8-language posts. Short
     rule: do not reply in the target language unless you read it
     natively. Legal / regulatory questions in any language go to
-    info@tamjump.com. Liking and emoji reactions OK; substantive
+    info@115en.com. Liking and emoji reactions OK; substantive
     answers in English only.
 
   - §5-ter — translation native-review request template (English).

@@ -13,4 +13,4 @@ Disallow: /entry.html
 Disallow: /api/
 Disallow: /worker/
 
-Sitemap: https://king2323.tamjump.com/sitemap.xml
+Sitemap: https://king2323.115en.com/sitemap.xml

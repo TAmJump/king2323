@@ -36,7 +36,7 @@ KINGMAKER 23:23 — 開門。
 Bell rings · 5/22 (金) 23:23
 The Three · 5/23 (土) 23:23
 
-https://king2323.tamjump.com
+https://king2323.115en.com
 ```
 
 ## 1-2. X・英語・短文
@@ -53,7 +53,7 @@ Other regions coming after legal review.
 Bell rings · Fri 5/22 · 23:23 JST
 The Three · Sat 5/23 · 23:23 JST
 
-https://king2323.tamjump.com
+https://king2323.115en.com
 ```
 
 ## 1-3. X・日本語・中文(280字スレッド向け)
@@ -74,7 +74,7 @@ KINGMAKER 23:23 が開門しました。
 
 NOT A LOTTERY · NOT AN INVESTMENT · NOT A WAGER · BELL IS A RIGHT, NEVER CASH
 
-https://king2323.tamjump.com
+https://king2323.115en.com
 ```
 
 ## 1-4. Threads・日本語
@@ -92,7 +92,7 @@ KINGMAKER 23:23 が開門しました。
 宝くじではない。投資ではない。賭けでもない。
 五分間の儀式です。
 
-https://king2323.tamjump.com
+https://king2323.115en.com
 ```
 
 ## 1-5. Instagram キャプション(画像投稿用、フライヤー画像と組み合わせ)
@@ -163,7 +163,7 @@ Cycle 1이 일본에서 열렸습니다.
 다른 지역도 법적 검토 후 곧 시작됩니다.
 계속 지켜봐 주세요.
 
-https://king2323.tamjump.com
+https://king2323.115en.com
 #KINGMAKER2323
 ```
 
@@ -178,7 +178,7 @@ El Cycle 1 está abierto en Japón.
 Otras regiones llegarán tras revisión legal.
 Manténganse atentos.
 
-https://king2323.tamjump.com
+https://king2323.115en.com
 #KINGMAKER2323
 ```
 
@@ -193,7 +193,7 @@ Cycle 1 जापान में खुला है।
 अन्य क्षेत्र कानूनी समीक्षा के बाद आएंगे।
 हमारे साथ बने रहें।
 
-https://king2323.tamjump.com
+https://king2323.115en.com
 #KINGMAKER2323
 ```
 
@@ -208,7 +208,7 @@ Cycle 1 đã mở tại Nhật Bản.
 Các khu vực khác sẽ đến sau khi rà soát pháp lý.
 Hãy tiếp tục theo dõi.
 
-https://king2323.tamjump.com
+https://king2323.115en.com
 #KINGMAKER2323
 ```
 
@@ -223,7 +223,7 @@ O Cycle 1 está aberto no Japão.
 Outras regiões virão após análise legal.
 Fiquem atentos.
 
-https://king2323.tamjump.com
+https://king2323.115en.com
 #KINGMAKER2323
 ```
 
@@ -238,7 +238,7 @@ Cycle 1 dibuka di Jepang.
 Wilayah lain akan menyusul setelah peninjauan hukum.
 Tetap pantau kami.
 
-https://king2323.tamjump.com
+https://king2323.115en.com
 #KINGMAKER2323
 ```
 
@@ -253,7 +253,7 @@ Cycle 1 เปิดในประเทศญี่ปุ่น
 ภูมิภาคอื่นจะตามมาหลังการตรวจสอบทางกฎหมาย
 ติดตามเราต่อไป
 
-https://king2323.tamjump.com
+https://king2323.115en.com
 #KINGMAKER2323
 ```
 
@@ -268,7 +268,7 @@ Le Cycle 1 est ouvert au Japon.
 D'autres régions arriveront après examen juridique.
 Restez avec nous.
 
-https://king2323.tamjump.com
+https://king2323.115en.com
 #KINGMAKER2323
 ```
 
@@ -286,7 +286,7 @@ Receipt は閉じた。
 
 世界が選んだ三人は、明日 5/23 (土) 23:23 JST に発表される。
 
-https://king2323.tamjump.com/verify.html
+https://king2323.115en.com/verify.html
 ```
 
 ## 2-2. X・英語・短文
@@ -300,7 +300,7 @@ The five minutes are complete.
 The Three chosen by the world will be announced
 tomorrow, Sat 5/23 · 23:23 JST.
 
-https://king2323.tamjump.com/verify.html
+https://king2323.115en.com/verify.html
 ```
 
 ## 2-3. X・日本語・中文(振り返り投稿、5/22 23:30 頃)
@@ -321,7 +321,7 @@ Public Seed が確定しました:
 
 明日 5/23 (土) 23:23 JST に発表します。
 
-https://king2323.tamjump.com/verify.html
+https://king2323.115en.com/verify.html
 ```
 
 ## 2-4. Threads・日本語
@@ -372,7 +372,7 @@ The world will see The Three tomorrow at 23:23 JST.
 A regional bell is coming for everyone outside Japan.
 The first bell was here.
 
-https://king2323.tamjump.com/verify.html
+https://king2323.115en.com/verify.html
 #KINGMAKER2323 #BellRings
 ```
 
@@ -393,7 +393,7 @@ KINGMAKER 23:23 · Cycle 1 — The Three.
 
 Public Seed と SHA-256 の検証は verify.html で。
 
-https://king2323.tamjump.com/verify.html
+https://king2323.115en.com/verify.html
 ```
 
 ## 3-2. X・英語・短文
@@ -408,7 +408,7 @@ Chosen by the world:
 👑 Receipt #KM-20260522-XXXX
 
 Verify the Public Seed and SHA-256 hash at:
-https://king2323.tamjump.com/verify.html
+https://king2323.115en.com/verify.html
 ```
 
 ## 3-3. X・日本語・中文(発表詳細、5/23 23:30 頃)
@@ -435,7 +435,7 @@ SHA-256:
 
 次の Bell:Cycle 2 · 5/27 (水) 23:23 JST · 開門。
 
-https://king2323.tamjump.com
+https://king2323.115en.com
 ```
 
 ## 3-4. Threads・日本語
@@ -497,7 +497,7 @@ The Three が発表された後、5/20 開門時と同じ 8 言語で「Cycle 1 
 세계 최초의 종이 일본에서 울렸습니다.
 다음 종은 곧 다른 지역에도 도달합니다.
 
-https://king2323.tamjump.com/verify.html
+https://king2323.115en.com/verify.html
 #KINGMAKER2323 #TheThree
 ```
 
@@ -509,7 +509,7 @@ https://king2323.tamjump.com/verify.html
 La primera campana del mundo ha sonado en Japón.
 La próxima campana llegará pronto a otras regiones.
 
-https://king2323.tamjump.com/verify.html
+https://king2323.115en.com/verify.html
 #KINGMAKER2323 #TheThree
 ```
 
@@ -521,7 +521,7 @@ https://king2323.tamjump.com/verify.html
 दुनिया की पहली घंटी जापान में बजी।
 अगली घंटी जल्द ही अन्य क्षेत्रों तक पहुंचेगी।
 
-https://king2323.tamjump.com/verify.html
+https://king2323.115en.com/verify.html
 #KINGMAKER2323 #TheThree
 ```
 
@@ -533,7 +533,7 @@ https://king2323.tamjump.com/verify.html
 Chiếc chuông đầu tiên của thế giới đã reo tại Nhật Bản.
 Chiếc chuông tiếp theo sẽ sớm đến các khu vực khác.
 
-https://king2323.tamjump.com/verify.html
+https://king2323.115en.com/verify.html
 #KINGMAKER2323 #TheThree
 ```
 
@@ -545,7 +545,7 @@ https://king2323.tamjump.com/verify.html
 O primeiro sino do mundo tocou no Japão.
 O próximo sino chegará em breve a outras regiões.
 
-https://king2323.tamjump.com/verify.html
+https://king2323.115en.com/verify.html
 #KINGMAKER2323 #TheThree
 ```
 
@@ -557,7 +557,7 @@ https://king2323.tamjump.com/verify.html
 Lonceng pertama dunia telah berbunyi di Jepang.
 Lonceng berikutnya akan segera tiba di wilayah lain.
 
-https://king2323.tamjump.com/verify.html
+https://king2323.115en.com/verify.html
 #KINGMAKER2323 #TheThree
 ```
 
@@ -569,7 +569,7 @@ https://king2323.tamjump.com/verify.html
 ระฆังใบแรกของโลกได้ดังขึ้นในประเทศญี่ปุ่น
 ระฆังใบถัดไปจะมาถึงภูมิภาคอื่นในไม่ช้า
 
-https://king2323.tamjump.com/verify.html
+https://king2323.115en.com/verify.html
 #KINGMAKER2323 #TheThree
 ```
 
@@ -581,7 +581,7 @@ https://king2323.tamjump.com/verify.html
 La première cloche du monde a sonné au Japon.
 La prochaine cloche arrivera bientôt dans d'autres régions.
 
-https://king2323.tamjump.com/verify.html
+https://king2323.115en.com/verify.html
 #KINGMAKER2323 #TheThree
 ```
 
@@ -626,13 +626,13 @@ The following process will begin for Mission Fund disbursement:
 48時間以内に折り返しご連絡します。
 We will follow up within 48 hours.
 
-ご質問は info@tamjump.com まで。
-For questions: info@tamjump.com
+ご質問は info@115en.com まで。
+For questions: info@115en.com
 
 NOT A LOTTERY · NOT AN INVESTMENT · NOT A WAGER · BELL IS A RIGHT, NEVER CASH
 
 — KINGMAKER 23:23
-https://king2323.tamjump.com/verify.html
+https://king2323.115en.com/verify.html
 ```
 
 ---
@@ -654,7 +654,7 @@ KINGMAKER は「あなたが誰かを選ぶ意思を記録する」仕組みで�
 受賞者の Mission を実行するために使われます。
 
 宝くじ法・賭博法・景品表示法に該当しないよう設計されています。
-詳しくは https://king2323.tamjump.com/rules.html
+詳しくは https://king2323.115en.com/rules.html
 ```
 
 ## Q2. 「100円で何が買えるのですか?」
@@ -666,7 +666,7 @@ KINGMAKER は「あなたが誰かを選ぶ意思を記録する」仕組みで�
 賞金ではなく Mission Fund — 三人が表明した Mission を、運営が
 実行するための資金 — に流れます。
 
-詳しくは https://king2323.tamjump.com/money.html
+詳しくは https://king2323.115en.com/money.html
 ```
 
 ## Q3. 「途中で参加できますか?」
@@ -698,7 +698,7 @@ Crown Flame、Eternal、Royal Duty、Royal Proof、Mission Report 等)を
 Cycle 2 以降で段階的に実装していきます。
 
 Cycle 1 はあくまで「Founding Bell」— 最初の鐘です。
-https://king2323.tamjump.com/rules.html L90-92 に詳細記載。
+https://king2323.115en.com/rules.html L90-92 に詳細記載。
 ```
 
 ## 5-bis. 多言語リプライへの対応方針
@@ -709,8 +709,8 @@ https://king2323.tamjump.com/rules.html L90-92 に詳細記載。
 |---|---|
 | 短い反応(👏 / 🔔 / 「いいね!」相当) | Like / 軽い絵文字返しで OK |
 | 質問が来た(英語以外) | **無理に翻訳して答えない**。「Thanks for following. We'll have a region-specific FAQ when your region's bell opens.」と英語で返す(Cycle 2 以降の各国展開の準備中であることを前提に) |
-| 法的・規制関連の質問 | **絶対に当該言語で回答しない**。英語で「This question requires careful answer in your jurisdiction. Please email info@tamjump.com.」と返す |
-| メディア / 公式アカウントからの照会 | info@tamjump.com に誘導、即答しない |
+| 法的・規制関連の質問 | **絶対に当該言語で回答しない**。英語で「This question requires careful answer in your jurisdiction. Please email info@115en.com.」と返す |
+| メディア / 公式アカウントからの照会 | info@115en.com に誘導、即答しない |
 
 **「翻訳して回答」は誤訳が法的問題に直結するため絶対 NG**。launch 期間中、operator が即答できない言語の質問はすべてメール誘導が安全。
 
@@ -812,8 +812,8 @@ X (Twitter) は §1-7 / §3-6 で 8 言語化されましたが、Threads と In
 
 - **誹謗中傷 / FUD**: 通報、必要に応じてミュート
 - **本気で誤解しているリプライ**: §5 のテンプレで返信(法的に誤った認識を放置しない)
-- **規制当局からの DM や引用 RT**: 即座に info@tamjump.com に転送、応答前に弁護士・運営者で確認
-- **メディアからの取材依頼**: info@tamjump.com に誘導、即答しない
+- **規制当局からの DM や引用 RT**: 即座に info@115en.com に転送、応答前に弁護士・運営者で確認
+- **メディアからの取材依頼**: info@115en.com に誘導、即答しない
 
 ---
 

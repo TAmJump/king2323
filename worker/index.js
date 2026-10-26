@@ -7,10 +7,10 @@ var __name = (target, value) => __defProp(target, "name", { value, configurable:
 // 【変更①】ALLOWED_ORIGINS に king2323 追加
 // ══════════════════════════════════════
 var ALLOWED_ORIGINS = [
-  "https://tamjump.com",
-  "https://www.tamjump.com",
-  "https://develop.tamjump.com",
-  "https://one-touch.tamjump.com",
+  "https://115en.com",
+  "https://115en.com",
+  "https://develop.115en.com",
+  "https://tyaruze.115en.com",
   "https://sitecoding.tamjump.com",
   "https://entry.tamjump.com",
   // ── さかえケアサービス ──
@@ -18,7 +18,7 @@ var ALLOWED_ORIGINS = [
   "https://www.scsgo.co.jp",
   "https://site.scsgo.co.jp",
   // ── KINGMAKER 23:23 ──
-  "https://king2323.tamjump.com",
+  "https://king2323.115en.com",
   // GitHub Pages（ドメイン設定前のテスト用）
   "https://tamjump.github.io",
   // 開発時
@@ -37,7 +37,7 @@ var PROJECT_CONFIG = {
     fromEmail: null,        // env.FROM_EMAIL を使う
     subjectPrefix: "【Tiger.J.Bob】",
     companyName: "Tiger.J.Bob",
-    siteUrl: "https://tamjump.com",
+    siteUrl: "https://115en.com",
     contactEmail: "animalb001@gmail.com"
   },
   scsgo: {
@@ -51,11 +51,11 @@ var PROJECT_CONFIG = {
   },
   kingmaker: {
     prefix: "KM",
-    adminEmail: null,       // env.ADMIN_EMAIL を使う（info@tamjump.com）
+    adminEmail: null,       // env.ADMIN_EMAIL を使う（info@115en.com）
     fromEmail: null,        // env.FROM_EMAIL を使う
     subjectPrefix: "【KINGMAKER 23:23】",
     companyName: "KINGMAKER 23:23 / Tiger.J.Bob",
-    siteUrl: "https://king2323.tamjump.com",
+    siteUrl: "https://king2323.115en.com",
     contactEmail: "animalb001@gmail.com"
   }
 };
@@ -664,8 +664,8 @@ not stored value, not investment product, not exchangeable for cash.
 ──────────────
 KINGMAKER 23:23
 ${config.siteUrl}
-Rules:https://king2323.tamjump.com/rules.html
-Important Notices:https://king2323.tamjump.com/risk.html
+Rules:https://king2323.115en.com/rules.html
+Important Notices:https://king2323.115en.com/risk.html
 Operator(運営):${config.companyName}
 Contact:${config.contactEmail}
 ──────────────
@@ -963,7 +963,7 @@ async function handleMypageMagic(request, env, origin) {
 
     const config = getProjectConfig("kingmaker");
     const fromAddr = config.fromEmail || env.FROM_EMAIL;
-    const link = `https://king2323.tamjump.com/mypage.html?token=${token}`;
+    const link = `https://king2323.115en.com/mypage.html?token=${token}`;
 
     try {
       await sendSES(env, {

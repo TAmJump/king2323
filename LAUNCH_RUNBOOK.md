@@ -52,7 +52,7 @@ Claude 側の作業は基本完了。最新コミット `b28374e` (v20260514an =
 
 - session 6: KINGMAKER の `/entry` ルートと handleEntry 関数追加(セッション 6 引き継ぎ書 §15-1)
 - v20260521b: **`/entry/lookup` ルートと handleEntryLookup 関数追加**(mypage.html がこれ無しでは動かない)
-- ALLOWED_ORIGINS に `https://king2323.tamjump.com` 追加(同 commit)
+- ALLOWED_ORIGINS に `https://king2323.115en.com` 追加(同 commit)
 
 ### 2.1 デプロイ手順(★ mypage.html を動かすために必須)
 
@@ -80,9 +80,9 @@ Cloudflare Workers Dashboard は GitHub repo と自動同期しないため、**
 ```bash
 curl -X POST https://tamjump-contact-api.animalb001.workers.dev/entry \
   -H 'Content-Type: application/json' \
-  -H 'Origin: https://king2323.tamjump.com' \
+  -H 'Origin: https://king2323.115en.com' \
   -d '{
-    "payment_email":"info@tamjump.com",
+    "payment_email":"info@115en.com",
     "receipt_id":"SANITY-20260518",
     "mission_name":"Sanity test after redeploy",
     "country":"Japan",
@@ -97,7 +97,7 @@ curl -X POST https://tamjump-contact-api.animalb001.workers.dev/entry \
 {"success":true,"message":"Mission Entry を受け付けました / Mission Entry received","ticketNumber":"KM-20260518-NNNN"}
 ```
 
-`info@tamjump.com` にも管理者宛メールが届くこと(SES経由)。
+`info@115en.com` にも管理者宛メールが届くこと(SES経由)。
 
 このテストレコードも launch 前に削除します(§12 と一緒)。
 
@@ -106,7 +106,7 @@ curl -X POST https://tamjump-contact-api.animalb001.workers.dev/entry \
 ```bash
 curl -X POST https://tamjump-contact-api.animalb001.workers.dev/entry/lookup \
   -H 'Content-Type: application/json' \
-  -H 'Origin: https://king2323.tamjump.com' \
+  -H 'Origin: https://king2323.115en.com' \
   -d '{"email":"nonexistent@test.com","ticket_number":"KM-20260101-0001"}'
 ```
 
@@ -125,7 +125,7 @@ D1 にテストレコード `KM-20260514-0001`(session 6 から残存)があれ�
 
 CSS / HTML / JS を更新するたびに毎回必要。
 
-1. https://dash.cloudflare.com/ → `tamjump.com` を選択
+1. https://dash.cloudflare.com/ → `115en.com` を選択
 2. 左メニュー **Caching** → **Configuration**
 3. **Purge Everything** ボタン → 確認ダイアログで **Purge Everything**
 
@@ -166,14 +166,14 @@ CSS / HTML / JS を更新するたびに毎回必要。
 ### 5.1 expression(session 7 確定版)
 
 ```
-(http.host eq "king2323.tamjump.com" and ip.geoip.country ne "JP" and not cf.client.bot)
+(http.host eq "king2323.115en.com" and ip.geoip.country ne "JP" and not cf.client.bot)
 ```
 
 3 つの条件すべてを **必ず含める**:
 
 | 条件 | 役割 | 抜くとどうなる |
 |---|---|---|
-| `http.host eq "king2323.tamjump.com"` | ホスト名フィルタ | tamjump.com 親ドメイン全体が JP-only になり、他サブドメイン (運営者所有の別サイト) を巻き込んで殺す |
+| `http.host eq "king2323.115en.com"` | ホスト名フィルタ | 115en.com 親ドメイン全体が JP-only になり、他サブドメイン (運営者所有の別サイト) を巻き込んで殺す |
 | `ip.geoip.country ne "JP"` | 国外ブロック | 国外からのアクセスを通してしまう(法的リスク) |
 | `not cf.client.bot` | クローラ通過 | Google / Bing / Twitterbot がブロックされ、SNS で URL 貼っても OGP プレビュー出ない・検索インデックスされない |
 
@@ -183,7 +183,7 @@ CSS / HTML / JS を更新するたびに毎回必要。
 
 ### 5.2 設定手順
 
-1. https://dash.cloudflare.com/ → `tamjump.com`
+1. https://dash.cloudflare.com/ → `115en.com`
 2. 左メニュー **Security** → **WAF** → **Custom rules** タブ
 3. **Create rule**
 4. 設定:
@@ -201,7 +201,7 @@ CSS / HTML / JS を更新するたびに毎回必要。
 ### 5.3 launch 当日 (5/20 22:00) の手順
 
 1. WAF Custom rule の右側トグルを ON
-2. VPN を米国に切り替えて `https://king2323.tamjump.com` を開く → bilingual 451 ページが出る
+2. VPN を米国に切り替えて `https://king2323.115en.com` を開く → bilingual 451 ページが出る
 3. VPN を切って国内 IP から → 通常のサイトが見える
 4. Twitter Card Validator (https://cards-dev.twitter.com/validator) で URL を入れる → OGP プレビュー出る(= bot 通過)
 5. すべて OK なら 23:23 を待つ
@@ -232,7 +232,7 @@ grep -n bc9p0BET index.html money.html
 
 ### 7.1 シナリオ
 
-1. https://king2323.tamjump.com/ にハードリフレッシュで開く(§3 の Purge 後)
+1. https://king2323.115en.com/ にハードリフレッシュで開く(§3 の Purge 後)
 2. Hero の ▶ ボタン(王冠下の赤宝石)→ クリック → ショートムービー再生 → モーダルを閉じる
 3. CTA「Ring the Bell」をクリック → coin ritual モーダル開く
 4. モーダル内の Square 決済リンク → Square ページへ遷移
@@ -255,7 +255,7 @@ grep -n bc9p0BET index.html money.html
 | Square Dashboard の取引履歴に ¥100 が出ている | ✓ |
 | 完了後 entry.html にリダイレクトされた | ✓ |
 | entry.html フォーム送信が成功し受付番号が出た | ✓ |
-| `info@tamjump.com` に運営宛メールが届いた | ✓ |
+| `info@115en.com` に運営宛メールが届いた | ✓ |
 | 入力したメアドに自動返信が届いた | ✓ |
 | D1 にレコードが入った(下記コマンド) | ✓ |
 
@@ -336,7 +336,7 @@ iPhone Safari と Android Chrome の両方で確認推奨。Pixel 7 サイズ(41
 WAF 本デプロイ後(5/20 22:00 以降)に再確認。
 
 1. https://cards-dev.twitter.com/validator にアクセス(X ログイン要)
-2. URL: `https://king2323.tamjump.com/` を入力 → **Preview card**
+2. URL: `https://king2323.115en.com/` を入力 → **Preview card**
 3. 期待:
    - Card type: `summary_large_image`
    - Title: `KINGMAKER 23:23 — 王を造る五分間 / The Five Minutes That Make a King`
@@ -354,9 +354,9 @@ WAF 本デプロイ前に検証すると Twitterbot が WAF にブロックさ�
 これは 5/20 以降でも可。launch を遅らせる要素ではない。
 
 1. https://search.google.com/search-console にアクセス
-2. プロパティ「`king2323.tamjump.com`」を追加(`tamjump.com` 全体ではなくサブドメイン単位)
+2. プロパティ「`king2323.115en.com`」を追加(`115en.com` 全体ではなくサブドメイン単位)
 3. DNS TXT または HTML ファイルで verification
-4. 左メニュー **Sitemaps** → `https://king2323.tamjump.com/sitemap.xml` を送信
+4. 左メニュー **Sitemaps** → `https://king2323.115en.com/sitemap.xml` を送信
 5. Status `Success` が出れば完了
 
 `robots.txt` と `sitemap.xml` は session 6 (v20260514x) で配置済み。
@@ -424,10 +424,10 @@ wrangler d1 execute YOUR_DB_NAME --command \
   - X はスレッド投稿、Instagram は §5-quat の多言語追記版キャプション
 
 [5/20 (水) 23:23–5/22 (金) 23:23]  受付期間 約46時間
-  - 問い合わせ対応(info@tamjump.com)
+  - 問い合わせ対応(info@115en.com)
   - D1 監視(下記コマンド)
   - 異常検知(Square 決済失敗率、フォーム送信エラー、WAF 誤検知)
-  - 非日本語のリプライ対応は SNS_KIT §5-bis 方針(英語で返す、回答困難なら info@tamjump.com 誘導)
+  - 非日本語のリプライ対応は SNS_KIT §5-bis 方針(英語で返す、回答困難なら info@115en.com 誘導)
 ```
 
 ## 14. D1 監視コマンド(操作中ずっと使う)
@@ -525,7 +525,7 @@ wrangler d1 execute YOUR_DB_NAME --command \
 
 ### 17-4. 「Square 決済成功後に entry.html に戻ってこない」
 
-- Square Dashboard → 該当 Checkout Link → リダイレクト先 URL が `https://king2323.tamjump.com/entry.html` になっているか
+- Square Dashboard → 該当 Checkout Link → リダイレクト先 URL が `https://king2323.115en.com/entry.html` になっているか
 - WAF が Square からのリダイレクトを 451 で弾いていないか(`cf.client.bot` 入れていれば OK)
 
 ### 17-5. 「Bell strike アニメが 23:23 にフラッシュしない」
@@ -542,7 +542,7 @@ wrangler d1 execute YOUR_DB_NAME --command \
 ```
 Option A: Cloudflare WAF で全 IP ブロック
   Custom rule の expression を:
-    (http.host eq "king2323.tamjump.com")
+    (http.host eq "king2323.115en.com")
   に変更し Block → 全アクセスが 451
   即時反映、5分後に解除も可能
 
@@ -550,7 +550,7 @@ Option B: GitHub Pages を停止
   TAmJump/king2323 → Settings → Pages → Source: None
   反映に数分
 
-Option C: tamjump.com DNS から king2323 を削除
+Option C: 115en.com DNS から king2323 を削除
   Cloudflare DNS で CNAME 削除
   伝搬に最長 24時間(TTL次第)
 ```

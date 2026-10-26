@@ -60,7 +60,7 @@ git push origin main
 | リポジトリ | URL | 内容 | 最新コミット(本セッション終了時) |
 |---|---|---|---|
 | **TAmJump/king2323** | https://github.com/TAmJump/king2323 | KINGMAKER 23:23 メインサイト | `a9e69b6` v20260514t |
-| **TAmJump/TAmj** | https://github.com/TAmJump/TAmj | tamjump.com コーポレートサイト | `657351d`(Founding Bell 補足追記) |
+| **TAmJump/TAmj** | https://github.com/TAmJump/TAmj | 115en.com コーポレートサイト | `657351d`(Founding Bell 補足追記) |
 
 **他に大下さん所有のリポジトリ複数あり**(さかえケアサービス scsgo.co.jp 含む)。
 **PAT は全リポに書き込み権限ある**ので、勝手にいじらない。king2323 と TAmj のみ操作対象。
@@ -72,8 +72,8 @@ git push origin main
 ### 公開サイト
 | サイト | URL | リポ | ホスティング |
 |---|---|---|---|
-| メイン | https://king2323.tamjump.com | TAmJump/king2323 | GitHub Pages |
-| コーポレート | https://tamjump.com | TAmJump/TAmj | GitHub Pages |
+| メイン | https://king2323.115en.com | TAmJump/king2323 | GitHub Pages |
+| コーポレート | https://115en.com | TAmJump/TAmj | GitHub Pages |
 
 ### Cloudflare Worker(共用バックエンド)
 | 項目 | 値 |
@@ -100,7 +100,7 @@ git push origin main
 | v20260514f | `5e8edd2` | bilingual 切替バグ修正(`data-display-lang` CSS ルール追加で legal/entry ページの JA/EN 切替が機能するように)|
 | v20260514g | `b0f6826` | privacy.html の `<ul>` を JA/EN ペア化 + LAUNCH_RUNBOOK の WAF 式バグ修正(`http.host eq ...` 必須化)|
 | v20260514h | `05e339d` | 各 legal/entry ページ末尾に統一フッター挿入(legal ページ間の遷移をフッターから可能に)+ commerce.html の h1 を bilingual 化 |
-| v20260514i | `cb8d43d` | **重要:** terms.html / privacy.html / commerce.html を king2323 から削除、tamjump.com 側の同等ページにリンク統合。事業者単位で legal を 1 セットに |
+| v20260514i | `cb8d43d` | **重要:** terms.html / privacy.html / commerce.html を king2323 から削除、115en.com 側の同等ページにリンク統合。事業者単位で legal を 1 セットに |
 | (RUNBOOK) | `2315061` | LAUNCH_RUNBOOK の Step 1(fill_commerce.py)を DEPRECATED マーク |
 | v20260514j | `5769a78` | entry.html を **Formspree → Cloudflare Workers (`/entry`)** に切り替え。JavaScript fetch ベースに完全書き換え、成功画面+エラー画面の UI 追加 |
 | (worker) | `1a14aa5` | `worker/` ディレクトリ追加:Worker のソース `index.js` + デプロイ手順 `README.md` |
@@ -120,19 +120,19 @@ git push origin main
 
 | commit | 内容 |
 |---|---|
-| `657351d` | tamjump.com/commerce.html に「Founding Bell(king2323)に関する補足」セクション追加(商品名・価格 ¥100・性質・提供開始・地域・関連ページ) |
+| `657351d` | 115en.com/commerce.html に「Founding Bell(king2323)に関する補足」セクション追加(商品名・価格 ¥100・性質・提供開始・地域・関連ページ) |
 
 ### 3.3 設計判断のポイント
 
 **legal 集約:**
 - 当初 king2323 内に terms/privacy/commerce/rules/risk の 5 ページがあったが、大下さんから「事業者(タムジ株式会社)は 1 つだから legal もコーポレート側に統合しろ」との指示
 - 結果:king2323 には **rules / risk / entry の 3 ページのみ** 残す(KingMaker 固有の内容)
-- terms / privacy / commerce / cookie / disclaimer / security は **tamjump.com に集約**
-- king2323 の legal-footer / index.html footer / chirashi nav / entry.html の同意リンク全て tamjump.com の絶対 URL に書き換え済
+- terms / privacy / commerce / cookie / disclaimer / security は **115en.com に集約**
+- king2323 の legal-footer / index.html footer / chirashi nav / entry.html の同意リンク全て 115en.com の絶対 URL に書き換え済
 
 **フォーム送信先(Worker 統一):**
 - 当初 Formspree を予定していたが、大下さんから「他サイトと同じにしろ」との指示
-- tamjump.com の contact.html は `tamjump-contact-api` Worker(AWS SES経由)を使っていたので、これを拡張
+- 115en.com の contact.html は `tamjump-contact-api` Worker(AWS SES経由)を使っていたので、これを拡張
 - `/entry` エンドポイント新設、`PROJECT_CONFIG.kingmaker` 追加、既存 `/contact`(tamjump/scsgo)には一切影響なし
 
 **ヒーロー再設計:**
@@ -159,7 +159,7 @@ git push origin main
 ### Step 2.5 · Worker 疎通テスト ⏱ 5分
 **担当:** 大下さん(ブラウザ操作)
 
-1. https://king2323.tamjump.com/entry.html を開く
+1. https://king2323.115en.com/entry.html を開く
 2. Ctrl+Shift+R でハードリフレッシュ
 3. テストデータを入力:
    - Email: 受信できる本物のメアド(Gmail 等)
@@ -172,7 +172,7 @@ git push origin main
 5. 期待動作:
    - フォームが消えて「Mission Entry Received」表示
    - 受付番号 `KM-20260514-NNNN` 表示
-   - `info@tamjump.com` に運営宛通知メール届く
+   - `info@115en.com` に運営宛通知メール届く
    - 入力メアドに自動返信メール届く
 6. NG の場合は次セッション Claude に「entry のテストでエラーが出た」とエラー文を伝える
 
@@ -182,7 +182,7 @@ git push origin main
 これが無いと **海外からの参加が法的問題に**(日本のみで運営、各国法務未対応)。
 
 1. https://dash.cloudflare.com/ にログイン
-2. **`tamjump.com`** をクリック
+2. **`115en.com`** をクリック
 3. 左メニュー **Security** → **WAF** → **Custom rules** タブ
 4. **Create rule** ボタン
 
@@ -192,10 +192,10 @@ git push origin main
 
 **Expression(「Edit expression」モードでコピペ):**
 ```
-(http.host eq "king2323.tamjump.com" and ip.geoip.country ne "JP")
+(http.host eq "king2323.115en.com" and ip.geoip.country ne "JP")
 ```
 
-⚠️ **`http.host eq "king2323.tamjump.com"` を必ず含める。** 抜くと tamjump.com 親ドメイン全体が JP-only になり、コーポレートサイトや他サブドメインを巻き込んで殺します。
+⚠️ **`http.host eq "king2323.115en.com"` を必ず含める。** 抜くと 115en.com 親ドメイン全体が JP-only になり、コーポレートサイトや他サブドメインを巻き込んで殺します。
 
 | 項目 | 値 |
 |---|---|
@@ -252,7 +252,7 @@ been completed.</p>
      に限り、運営者の判断により行われます。自動支給はしません。
      ```
 3. **Checkout Link** 作成(または「リンクから決済」)
-4. **Post-purchase URL** を `https://king2323.tamjump.com/entry.html` に設定
+4. **Post-purchase URL** を `https://king2323.115en.com/entry.html` に設定
    → 決済完了後にエントリーフォームへ自動誘導
 5. リンク URL を取得して、index.html / money.html の CTA ボタンに反映
 
@@ -269,14 +269,14 @@ been completed.</p>
 ### Step 6 · 全ページ目視確認 ⏱ 30分
 **担当:** 大下さん
 
-- https://king2323.tamjump.com/(index)
-- https://king2323.tamjump.com/money.html
-- https://king2323.tamjump.com/verify.html
-- https://king2323.tamjump.com/app.html
-- https://king2323.tamjump.com/rules.html
-- https://king2323.tamjump.com/risk.html
-- https://king2323.tamjump.com/entry.html
-- https://tamjump.com/commerce.html(Founding Bell 補足が表示されてるか)
+- https://king2323.115en.com/(index)
+- https://king2323.115en.com/money.html
+- https://king2323.115en.com/verify.html
+- https://king2323.115en.com/app.html
+- https://king2323.115en.com/rules.html
+- https://king2323.115en.com/risk.html
+- https://king2323.115en.com/entry.html
+- https://115en.com/commerce.html(Founding Bell 補足が表示されてるか)
 
 各ページで:
 - 日本語/英語ピッカー切替が機能
@@ -289,7 +289,7 @@ been completed.</p>
 
 ## 5. 現在のサイト構造(2026-05-14 16:00 時点)
 
-### king2323.tamjump.com(KINGMAKER メイン)
+### king2323.115en.com(KINGMAKER メイン)
 
 **HTML(7 ページ):**
 - `index.html` — トップ。ヒーロー(全画面ゴリラ静止画+▶)、My Section、Legend Section、Manifesto、CTA、ライトボックス、ショートムービーモーダル
@@ -300,10 +300,10 @@ been completed.</p>
 - `risk.html` — Important Notices(KingMaker 固有)
 - `entry.html` — Mission Entry 申込フォーム(Workers API)
 
-**削除済み(tamjump.com に統合):**
-- ~~terms.html~~ → https://tamjump.com/terms.html
-- ~~privacy.html~~ → https://tamjump.com/privacy.html
-- ~~commerce.html~~ → https://tamjump.com/commerce.html
+**削除済み(115en.com に統合):**
+- ~~terms.html~~ → https://115en.com/terms.html
+- ~~privacy.html~~ → https://115en.com/privacy.html
+- ~~commerce.html~~ → https://115en.com/commerce.html
 
 **JS:**
 - `js/main.js` — メインロジック
@@ -328,10 +328,10 @@ been completed.</p>
 - `worker/README.md` — Worker デプロイ手順
 - `CHANGES.md` / `DEPLOY_geoblock.md` / `LAUNCH_RUNBOOK.md`
 
-### tamjump.com(コーポレート)
+### 115en.com(コーポレート)
 
 KingMaker 関連の変更:
-- `commerce.html` の表の下に「Founding Bell(king2323.tamjump.com)に関する補足」セクション追加
+- `commerce.html` の表の下に「Founding Bell(king2323.115en.com)に関する補足」セクション追加
 
 ---
 
@@ -361,7 +361,7 @@ Square Checkout Link が取れたら、次セッション Claude が以下を実
 ```bash
 # 初期セットアップ(最初の1回)
 export GH_TOKEN='ghp_SNxD****REDACTED_SEE_CHAT_LOG****oJln'
-git config --global user.email "info@tamjump.com"
+git config --global user.email "info@115en.com"
 git config --global user.name "TAmJ"
 git config --global init.defaultBranch main
 
@@ -376,7 +376,7 @@ git commit -m "vYYYYMMDDx: summary"
 git push origin main
 ```
 
-### tamjump.com corp リポも触る場合
+### 115en.com corp リポも触る場合
 ```bash
 git clone "https://x-access-token:${GH_TOKEN}@github.com/TAmJump/TAmj.git" corp
 ```
@@ -531,7 +531,7 @@ worker/README.md            ← デプロイ手順
 
 - 会社:タムジ株式会社
 - 代表取締役:大下 甚
-- メール:info@tamjump.com
+- メール:info@115en.com
 - 所在地:〒103-0004 東京都中央区東日本橋3-3-17 Re-Know4B
 - ローカル PC:Windows、OneDrive 配下作業、コードエディタ未指定
 
